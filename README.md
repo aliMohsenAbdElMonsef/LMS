@@ -1,1 +1,1 @@
-# HotelReservationSystem
+# LMS
