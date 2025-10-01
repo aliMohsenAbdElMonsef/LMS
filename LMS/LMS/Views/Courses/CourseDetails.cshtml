@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Course Details";
+}
+
+<div class="container mt-4">
+    <!-- Course Header -->
+    <section class="mb-5">
+        <div class="row">
+            <!-- Left: Image -->
+            <div class="col-md-4">
+                <img src="#"
+                     alt="Course Image"
+                     class="img-fluid rounded shadow-sm" />
+            </div>
+
+            <!-- Right: Course Info -->
+            <div class="col-md-8">
+                <h2 class="mb-3">Course Name Here</h2>
+                <p class="text-muted">This is the course description. It explains what the course is about.</p>
+
+                <!-- Info row -->
+                <div class="row text-center mb-3">
+                    <div class="col-md-4">
+                        <h5 class="mb-1">⭐ 4.7</h5>
+                        <p class="small text-muted">Average Rating</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-1">12</h5>
+                        <p class="small text-muted">Practice Exercises</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-1">20h</h5>
+                        <p class="small text-muted">Total Hours</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <button class="btn btn-success btn-lg">Enroll</button>
+                @if (User.IsInRole("Admin")||User.IsInRole("SubAdmin"))
+                {
+                    <button class="btn edit-course">Edit</button>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- What You'll Learn -->
+    <section>
+        <h3 class="mb-4">🎯 What You'll Learn</h3>
+        <div class="row">
+            <!-- Example skill card -->
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Skill Name</h5>
+                        <p class="card-text">Covers 5 lectures (~4h)</p>
+                        <p class="text-muted small">Description of this skill goes here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Skill Name 2</h5>
+                        <p class="card-text">Covers 8 lectures (~6h)</p>
+                        <p class="text-muted small">Another description here.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- More skill cards will come from DB later -->
+
+        </div>
+    </section>
+</div>
