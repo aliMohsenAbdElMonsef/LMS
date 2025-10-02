@@ -9,6 +9,6 @@ namespace LMS.Models.DataModels
         public string? UserImage {  get; set; }
         public string ApplyAs { get; set; }
         public string Status { get; set; } = "Pending";
-        List<CourseInstructor> CourseInstructors { get; set; } = new();
+        public List<CourseInstructor> CourseInstructors { get; set; } = new();
     }
 }

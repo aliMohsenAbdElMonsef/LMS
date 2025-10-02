@@ -1,161 +1,188 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\training\\Final-Project\\LMS\\",
+  "WorkspaceRootPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\datamodels\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\datamodels\\courseinstructor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\courseinstructor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\datamodels\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\assignment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\assignment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\courseprerequisite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\courseprerequisite.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\admin\\manageusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\admin\\manageusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\courseinstructor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\courseinstructor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\skill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\skill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\controllers\\assignmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\assignmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\courseskill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\courseskill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\account\\accessdenied.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\accessdenied.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\datamodels\\applicationrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\datamodels\\applicationrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\datamodels\\applicationrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\assignments\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\assignments\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\manage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\admin\\manageusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\admin\\manageusers.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\controllers\\assignmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\controllers\\assignmentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\account\\accessdenied.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\account\\accessdenied.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\resetpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\resetpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\resetpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\emailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\emailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\emailsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\models\\viewmodels\\externalloginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\models\\viewmodels\\externalloginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\models\\viewmodels\\externalloginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\courses\\allcourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\courses\\allcourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\courses\\allcourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\courses\\mycourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\courses\\mycourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\courses\\mycourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\courses\\editcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\courses\\editcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\courses\\editcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\courses\\coursepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\courses\\coursepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\courses\\coursepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\courses\\coursedetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\courses\\coursedetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\courses\\coursedetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\shared\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\shared\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\shared\\_authlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\migrations\\20250929072704_set-userimage-nullable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\migrations\\20250929072704_set-userimage-nullable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\migrations\\20250929072704_set-userimage-nullable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|d:\\training\\final-project\\lms\\lms\\migrations\\20250929065059_adding-users-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lmsproject\\lms\\lms\\migrations\\20250929065059_adding-users-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D0766D52-D6A1-4071-B262-E3116620A090}|LMS\\LMS.csproj|solutionrelative:lms\\migrations\\20250929065059_adding-users-columns.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -170,11 +197,11 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 25,
               "Title": "AccessDenied.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\AccessDenied.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\AccessDenied.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\AccessDenied.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\AccessDenied.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\AccessDenied.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\AccessDenied.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -183,26 +210,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CourseInstructor.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\CourseInstructor.cs",
-              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\CourseInstructor.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\CourseInstructor.cs",
-              "RelativeToolTip": "LMS\\Models\\DataModels\\CourseInstructor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "20251002200638_courseTableandRelatedTables.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs",
+              "RelativeDocumentMoniker": "LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs",
+              "RelativeToolTip": "LMS\\Migrations\\20251002200638_courseTableandRelatedTables.cs",
+              "ViewState": "AgIAANIAAAAAAAAAAAAuwNgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-01T08:27:41.583Z",
+              "WhenOpened": "2025-10-02T20:06:38.961Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Course.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\Course.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Course.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\Course.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\Course.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Course.cs",
               "RelativeToolTip": "LMS\\Models\\DataModels\\Course.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAA3wDoAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-01T06:33:24.835Z",
               "EditorCaption": ""
@@ -210,36 +237,153 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "ApplicationUser.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\ApplicationUser.cs",
-              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\ApplicationUser.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\ApplicationUser.cs",
-              "RelativeToolTip": "LMS\\Models\\DataModels\\ApplicationUser.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-29T06:37:23.603Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Data\\ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "LMS\\Data\\ApplicationDbContext.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Data\\ApplicationDbContext.cs",
               "RelativeToolTip": "LMS\\Data\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAiwJsAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-21T14:40:07.06Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\ApplicationUser.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\ApplicationUser.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-29T06:37:23.603Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "CoursePrerequisite.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CoursePrerequisite.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\CoursePrerequisite.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CoursePrerequisite.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\CoursePrerequisite.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T19:59:20.889Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Assignment.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Assignment.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\Assignment.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Assignment.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\Assignment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T18:51:27.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CourseInstructor.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CourseInstructor.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\CourseInstructor.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CourseInstructor.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\CourseInstructor.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-01T08:27:41.583Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Skill.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Skill.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\Skill.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Skill.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\Skill.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T18:16:22.746Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CourseSkill.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CourseSkill.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\CourseSkill.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\CourseSkill.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\CourseSkill.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T18:18:12.773Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Category.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\Category.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\Category.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T17:31:35.463Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ApplicationRole.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\ApplicationRole.cs",
+              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\ApplicationRole.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\DataModels\\ApplicationRole.cs",
+              "RelativeToolTip": "LMS\\Models\\DataModels\\ApplicationRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-29T06:52:40.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "LMS\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "LMS\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADQAAACAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-21T13:15:03.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Assignments\\Index.cshtml",
+              "RelativeDocumentMoniker": "LMS\\Views\\Assignments\\Index.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Assignments\\Index.cshtml",
+              "RelativeToolTip": "LMS\\Views\\Assignments\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-02T19:02:41.24Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "Manage.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Manage.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Manage.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\Manage.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Manage.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Manage.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\Manage.cshtml",
               "ViewState": "AgIAACwAAAAAAAAAAAAswDcAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -247,36 +391,23 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 13,
               "Title": "AccountController.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "LMS\\Controllers\\AccountController.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AccountController.cs",
               "RelativeToolTip": "LMS\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-21T13:18:21.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-21T13:18:21.842Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "LMS\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "LMS\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAHUAAAAAAAAAAAAAAKgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-21T13:15:03.305Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "UpdateProfileViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\UpdateProfileViewModel.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAkwB8AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -284,11 +415,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "EmailService.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Services\\EmailService.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "LMS\\Services\\EmailService.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Services\\EmailService.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Services\\EmailService.cs",
               "RelativeToolTip": "LMS\\Services\\EmailService.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAswA8AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -296,11 +427,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 17,
               "Title": "ManageUsers.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Admin\\ManageUsers.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Admin\\ManageUsers.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Admin\\ManageUsers.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Admin\\ManageUsers.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Admin\\ManageUsers.cshtml",
               "RelativeToolTip": "LMS\\Views\\Admin\\ManageUsers.cshtml",
               "ViewState": "AgIAADYAAAAAAAAAAAAAAEkAAABjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -308,11 +439,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 18,
               "Title": "AdminController.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "LMS\\Controllers\\AdminController.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AdminController.cs",
               "RelativeToolTip": "LMS\\Controllers\\AdminController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -320,11 +451,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 19,
               "Title": "AssignmentsController.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AssignmentsController.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AssignmentsController.cs",
               "RelativeDocumentMoniker": "LMS\\Controllers\\AssignmentsController.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Controllers\\AssignmentsController.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Controllers\\AssignmentsController.cs",
               "RelativeToolTip": "LMS\\Controllers\\AssignmentsController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -332,11 +463,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 20,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Program.cs",
               "RelativeDocumentMoniker": "LMS\\Program.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Program.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Program.cs",
               "RelativeToolTip": "LMS\\Program.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAxwDAAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -344,11 +475,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 21,
               "Title": "Signup.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Signup.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Signup.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\Signup.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Signup.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Signup.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\Signup.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAAADQAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -356,11 +487,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 22,
               "Title": "ResetPassword.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\ResetPassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\ResetPassword.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\ResetPassword.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\ResetPassword.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\ResetPassword.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\ResetPassword.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvx4AAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -368,11 +499,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 23,
               "Title": "Login.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\Login.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\Login.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\Login.cshtml",
               "ViewState": "AgIAAAsAAAAAAAAAAAAqwDUAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -380,11 +511,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 24,
               "Title": "ForgotPassword.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\ForgotPassword.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\ForgotPassword.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Account\\ForgotPassword.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Account\\ForgotPassword.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Account\\ForgotPassword.cshtml",
               "RelativeToolTip": "LMS\\Views\\Account\\ForgotPassword.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -392,11 +523,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 26,
               "Title": "RegisterViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\RegisterViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\RegisterViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\RegisterViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\RegisterViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\RegisterViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\RegisterViewModel.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAgwBwAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -404,11 +535,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 44,
               "Title": "20250929072704_set-userimage-nullable.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
               "RelativeDocumentMoniker": "LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
               "RelativeToolTip": "LMS\\Migrations\\20250929072704_set-userimage-nullable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -416,11 +547,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 27,
               "Title": "ApplicationDbContextModelSnapshot.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "RelativeDocumentMoniker": "LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "RelativeToolTip": "LMS\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -428,35 +559,21 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "ApplicationRole.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\ApplicationRole.cs",
-              "RelativeDocumentMoniker": "LMS\\Models\\DataModels\\ApplicationRole.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\DataModels\\ApplicationRole.cs",
-              "RelativeToolTip": "LMS\\Models\\DataModels\\ApplicationRole.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-29T06:52:40.796Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 28,
               "Title": "20250929064351_adding-status-applyas-columns.cs",
               "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs",
-              "RelativeDocumentMoniker": "LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs",
               "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs",
-              "RelativeToolTip": "LMS\\Migrations\\20250929064351_adding-status-applyas-columns.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAQwBcAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-29T06:43:51.994Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 45,
               "Title": "20250929065059_adding-users-columns.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929065059_adding-users-columns.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20250929065059_adding-users-columns.cs",
               "RelativeDocumentMoniker": "LMS\\Migrations\\20250929065059_adding-users-columns.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Migrations\\20250929065059_adding-users-columns.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Migrations\\20250929065059_adding-users-columns.cs",
               "RelativeToolTip": "LMS\\Migrations\\20250929065059_adding-users-columns.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -464,11 +581,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 29,
               "Title": "LoginViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\LoginViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\LoginViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\LoginViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\LoginViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\LoginViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -476,11 +593,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 30,
               "Title": "ResetPasswordViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\ResetPasswordViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -488,11 +605,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 31,
               "Title": "ForgotPasswordViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -500,11 +617,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 32,
               "Title": "EmailSettings.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\EmailSettings.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\EmailSettings.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\EmailSettings.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\EmailSettings.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\EmailSettings.cs",
               "RelativeToolTip": "LMS\\Models\\EmailSettings.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -512,11 +629,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 33,
               "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\appsettings.json",
               "RelativeDocumentMoniker": "LMS\\appsettings.json",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\appsettings.json",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\appsettings.json",
               "RelativeToolTip": "LMS\\appsettings.json",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -524,11 +641,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 34,
               "Title": "ExternalLoginViewModel.cs",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
               "RelativeDocumentMoniker": "LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
               "RelativeToolTip": "LMS\\Models\\ViewModels\\ExternalLoginViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -536,11 +653,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 35,
               "Title": "AllCourses.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\AllCourses.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\AllCourses.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Courses\\AllCourses.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\AllCourses.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\AllCourses.cshtml",
               "RelativeToolTip": "LMS\\Views\\Courses\\AllCourses.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -548,11 +665,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 37,
               "Title": "EditCourse.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\EditCourse.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\EditCourse.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Courses\\EditCourse.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\EditCourse.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\EditCourse.cshtml",
               "RelativeToolTip": "LMS\\Views\\Courses\\EditCourse.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -560,11 +677,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 36,
               "Title": "MyCourses.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\MyCourses.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\MyCourses.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Courses\\MyCourses.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\MyCourses.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\MyCourses.cshtml",
               "RelativeToolTip": "LMS\\Views\\Courses\\MyCourses.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -572,11 +689,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 38,
               "Title": "CoursePage.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\CoursePage.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\CoursePage.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Courses\\CoursePage.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\CoursePage.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\CoursePage.cshtml",
               "RelativeToolTip": "LMS\\Views\\Courses\\CoursePage.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -584,11 +701,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 39,
               "Title": "CourseDetails.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\CourseDetails.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\CourseDetails.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Courses\\CourseDetails.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Courses\\CourseDetails.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Courses\\CourseDetails.cshtml",
               "RelativeToolTip": "LMS\\Views\\Courses\\CourseDetails.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -596,11 +713,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 40,
               "Title": "_AuthLayout.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_AuthLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_AuthLayout.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Shared\\_AuthLayout.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_AuthLayout.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_AuthLayout.cshtml",
               "RelativeToolTip": "LMS\\Views\\Shared\\_AuthLayout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -608,11 +725,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 42,
               "Title": "Error.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\Error.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\Error.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Shared\\Error.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\Error.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\Error.cshtml",
               "RelativeToolTip": "LMS\\Views\\Shared\\Error.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -620,11 +737,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 41,
               "Title": "launchSettings.json",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Properties\\launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "LMS\\Properties\\launchSettings.json",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Properties\\launchSettings.json",
               "RelativeToolTip": "LMS\\Properties\\launchSettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -632,11 +749,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 43,
               "Title": "_ValidationScriptsPartial.cshtml",
-              "DocumentMoniker": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeDocumentMoniker": "LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
-              "ToolTip": "D:\\training\\Final-Project\\LMS\\LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeToolTip": "LMS\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",

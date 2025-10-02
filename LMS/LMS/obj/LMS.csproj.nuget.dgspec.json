@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\training\\Final-Project\\LMS\\LMS\\LMS.csproj": {}
+    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\LMS.csproj": {}
   },
   "projects": {
-    "D:\\training\\Final-Project\\LMS\\LMS\\LMS.csproj": {
+    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\LMS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\training\\Final-Project\\LMS\\LMS\\LMS.csproj",
+        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\LMS.csproj",
         "projectName": "LMS",
-        "projectPath": "D:\\training\\Final-Project\\LMS\\LMS\\LMS.csproj",
+        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\LMS.csproj",
         "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "D:\\training\\Final-Project\\LMS\\LMS\\obj\\",
+        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LMSProject\\LMS\\LMS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
