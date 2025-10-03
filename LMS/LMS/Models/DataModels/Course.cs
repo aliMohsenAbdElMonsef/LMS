@@ -1,32 +1,55 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Models.DataModels
 {
-    public class course
+    public enum Levels { Beginner, Intermediate, Advanced }
+    public enum DeliveryMode { Online, Onsite, Hybrid }
+    public enum CourseStatus { Draft, Published, Ongoing, Completed, Archived }
+
+    public class Course
     {
         public int Id { get; set; }
+
+        [MaxLength(100)]
+        public string? CourseCode { get; set; } = string.Empty;
+
+        [MaxLength(200)]
         public string Name { get; set; }
+
+        [MaxLength(2000)]
         public string Description { get; set; }
-        public string Prerequisites { get; set; }
-        public string PhotoFileName { get; set; }
-        public string PhotoContentType { get; set; }
-        public byte[] PhotoData { get; set; }
-        public int EnrolledCount { get; set; } = 0;
-        public decimal Price { get; set; } = 0.00m;
-        public int DurationHours { get; set; } = 0;
-        [ForeignKey("Instructor")]
-        public int? InstructorId { get; set; }
-        public decimal AverageRating { get; set; } = 0.00m;
-        public int TotalReviews { get; set; } = 0;
-        public string LastUpdated { get; set; } = DateTime.Now.ToString("MMMM yyyy");
-        public virtual User? Instructor { get; set; }
-        // public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public virtual List<skill> Skills { get; set; } = new List<skill>();
+
+        public int Credits { get; set; }
+
+        public Levels Level { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Language { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public int DurationWeeks { get; set; }
+
+        public List<CourseInstructor> CourseInstructors { get; set; } = new();
+
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
+        public CourseStatus Status { get; set; } = CourseStatus.Draft;
+
+        public decimal Price { get; set; }
+        public bool IsFree { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+
+        public DateTime? LastUpdate { get; set; } = DateTime.UtcNow;
+
+        public List<CourseSkill>? Skills { get; set; } = new();
+        public List<Assignment>? Assignments { get; set; } = new();
+        public List<CoursePrerequisite>? Prerequisites { get; set; } = new();
+        public List<CoursePrerequisite>? IsPrerequisiteFor { get; set; } = new();
+
+        [MaxLength(500)]
+        public string? ThumbnailPath { get; set; }
     }
-
-
-
 }
-

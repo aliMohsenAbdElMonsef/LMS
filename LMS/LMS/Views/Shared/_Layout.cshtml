@@ -110,7 +110,13 @@
                         {
                             <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="ManageUsers">Users</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-controller="Courses" asp-action="Manage">Courses</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Courses</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Courses" asp-action="AllCourses">All Courses</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Courses" asp-action="Create">Create Course</a></li>
+                                </ul>
+                            </li>
                             <li class="nav-item"><a class="nav-link" asp-controller="System" asp-action="Settings">System Settings</a></li>
                             <li class="nav-item"><a class="nav-link" asp-controller="Reports" asp-action="Index">Analytics</a></li>
 

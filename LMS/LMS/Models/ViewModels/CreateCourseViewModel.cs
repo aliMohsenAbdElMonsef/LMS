@@ -1,15 +1,10 @@
 ﻿using LMS.Models.DataModels;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Models.ViewModels
 {
-    public class EditCourseViewModel
+    public class CreateCourseViewModel
     {
-        public int Id { get; set; }
-
         [Required, MaxLength(200)]
         public string Name { get; set; }
 
@@ -32,7 +27,6 @@ namespace LMS.Models.ViewModels
         public DateTime EndDate { get; set; } = DateTime.UtcNow.AddMonths(1);
 
         public int DurationWeeks { get; set; }
-        public int DurationHours { get; set; }
 
         [Required]
         public decimal Price { get; set; }
@@ -41,21 +35,16 @@ namespace LMS.Models.ViewModels
         public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
         public CourseStatus Status { get; set; } = CourseStatus.Draft;
 
+        [Required]
         public int CategoryId { get; set; }
+        public List<Category>? AllCategories { get; set; } = new();
 
         public IFormFile? Thumbnail { get; set; }
-        public string? ThumbnailPath { get; set; }
 
-        // Skills
         public List<int> SelectedSkillIds { get; set; } = new();
-        public List<Skill> AllSkills { get; set; } = new();
+        public List<Skill>? AllSkills { get; set; } = new();
 
-        // Prerequisites
         public List<int> SelectedPrerequisiteIds { get; set; } = new();
-
-        // Statistics (read-only)
-        public int EnrolledCount { get; set; }
-        public double Rating { get; set; }
-        public int RatingCount { get; set; }
+        public List<Course>? AllCourses { get; set; } = new();
     }
 }

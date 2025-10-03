@@ -11,14 +11,6 @@ namespace LMS.Models.ViewModels
         public string Password { get; set; }
 
         [Display(Name = "Remember Me")]
-
-        [Required(ErrorMessage ="Email is Required")]
-        [EmailAddress(ErrorMessage ="Invalid Email Format")]
-        public required string Email { get; set; }
-
-        [Required(ErrorMessage ="Password is Required")]
-        [DataType(DataType.Password)]
-        public required string Password { get; set; }
         public bool RememberMe { get; set; }
     }
 }

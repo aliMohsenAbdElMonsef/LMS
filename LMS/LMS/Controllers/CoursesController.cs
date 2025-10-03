@@ -1,167 +1,194 @@
 using LMS.Data;
 using LMS.Models.DataModels;
 using LMS.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Controllers
 {
+    [Authorize]
     public class CoursesController : Controller
     {
-        ApplicationDbContext LMS = new ApplicationDbContext();
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IActionResult createCourse()
+        public CoursesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            var instructors = LMS.Users
-                         .Include(u => u.UserRole)
-                         .ThenInclude(ur => ur.Role)
-                         .Where(u => u.UserRole.Role.RoleName == "Instructor")
-                         .ToList();
-
-            return View("createCourse", instructors);
+            _context = context;
+            _userManager = userManager;
         }
-        public async Task<IActionResult> SavecreateCourse(course course, IFormFile photo)
+
+        public async Task<IActionResult> AllCourses()
         {
-            if (course.Skills != null)
+            var courses = await _context.Courses
+                .Include(c => c.CourseInstructors)
+                .ThenInclude(ci => ci.Instructor)
+                .ToListAsync();
+
+            return View(courses);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.CourseInstructors)
+                .ThenInclude(ci => ci.Instructor)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null) return NotFound();
+
+            return View(course);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
+        {
+            var viewModel = new CreateCourseViewModel
             {
-                course.Skills = course.Skills
-                    .Where(s => !string.IsNullOrWhiteSpace(s.Name))
-                    .ToList();
+                AllSkills = _context.Skills?.ToList() ?? new List<Skill>(),
+                AllCategories = _context.Categories?.ToList() ?? new List<Category>(),
+                AllCourses = _context.Courses?.ToList() ?? new List<Course>()
+            };
+            return View("CreateCourse",viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(CreateCourseViewModel courseVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                courseVM.AllSkills = _context.Skills?.ToList() ?? new List<Skill>();
+                return View("CreateCourse", courseVM);
             }
 
-            // PROBLEM 2: Skills might not have CourseId set
-            // Make sure each skill is linked to the course
-            if (course.Skills != null)
+            try
             {
-                foreach (var skill in course.Skills)
+                var user = await _userManager.GetUserAsync(User);
+
+                var course = new Course
                 {
-                    skill.CourseId = course.Id; // This will be 0 for new course
-                    skill.Course = course; // Set navigation property
-                }
-            }
+                    Name = courseVM.Name,
+                    CourseCode = courseVM.CourseCode,
+                    Description = courseVM.Description,
+                    Credits = courseVM.Credits,
+                    Level = courseVM.Level,
+                    Language = courseVM.Language,
+                    StartDate = courseVM.StartDate,
+                    EndDate = courseVM.EndDate,
+                    DurationWeeks = courseVM.DurationWeeks,
+                    Price = courseVM.Price,
+                    IsFree = courseVM.IsFree,
+                    DeliveryMode = courseVM.DeliveryMode
+                };
 
-
-
-            // Process PhotoFile
-            if (photo != null && photo.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
+                if (courseVM.Thumbnail != null && courseVM.Thumbnail.Length > 0)
                 {
-                    await photo.CopyToAsync(memoryStream);
-                    course.PhotoData = memoryStream.ToArray();
-                    course.PhotoFileName = photo.FileName;
-                    course.PhotoContentType = photo.ContentType;
-                    // course.Skills.
+                    var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "thumbnails");
+
+                    if (!Directory.Exists(uploadPath))
+                        Directory.CreateDirectory(uploadPath);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(courseVM.Thumbnail.FileName);
+                    var filePath = Path.Combine(uploadPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await courseVM.Thumbnail.CopyToAsync(stream);
+                    }
+
+                    course.ThumbnailPath = $"/images/thumbnails/{fileName}";
+
                 }
-            }
-            LMS.courses.Add(course);
-            await LMS.SaveChangesAsync();
-            return RedirectToAction("AllCourses");
-        }
-        public IActionResult AllCourses()
-        {
-            return View();
-        }
-        public IActionResult MyCourses()
-        {
-            return View();
-        }
 
+                _context.Courses.Add(course);
+                await _context.SaveChangesAsync();
 
-        public IActionResult CourseDetails(int id)
-        {
-            course course = LMS.courses
-                               .Include(c => c.Instructor)
-                              .Include(c => c.Skills)
-                              .FirstOrDefault(c => c.Id == id);
-            return View("CourseDetails", course);
-        }
-
-        public IActionResult EditCourse(int id)
-        {
-            var instructors = LMS.Users
-                         .Include(u => u.UserRole)
-                         .ThenInclude(ur => ur.Role)
-                         .Where(u => u.UserRole.Role.RoleName == "Instructor")
-                         .ToList();
-            course course = LMS.courses
-                     .Include(c => c.Skills)
-                     .FirstOrDefault(c => c.Id == id);
-            editCourseViewModel vm = new editCourseViewModel();
-            vm.Id = course.Id;
-            vm.Name = course.Name;
-            vm.Description = course.Description;
-            vm.Prerequisites = course.Prerequisites;
-            vm.Price = course.Price;
-            vm.LastUpdated = course.LastUpdated;
-            vm.DurationHours = course.DurationHours;
-            vm.InstructorId = course.InstructorId;
-            vm.EnrolledCount = course.EnrolledCount;
-            vm.AverageRating = course.AverageRating;
-            vm.TotalReviews = course.TotalReviews;
-            vm.Instructor = course.Instructor;
-            vm.Instructors = instructors;
-            vm.Skills = course.Skills;
-
-            return View("EditCourse", vm);
-        }
-        public async Task<IActionResult> SaveEditCourse(course course, IFormFile photo)
-        {
-            course courseFromDb = LMS.courses.Find(course.Id);
-            courseFromDb.Name = course.Name;
-            courseFromDb.Description = course.Description;
-            courseFromDb.Prerequisites = course.Prerequisites;
-            courseFromDb.Price = course.Price;
-            courseFromDb.DurationHours = course.DurationHours;
-            courseFromDb.LastUpdated = DateTime.Now.ToString("MMMM yyyy");
-            if (course.InstructorId.HasValue)
-            {
-
-                User user = LMS.Users.Find(course.InstructorId);
-                courseFromDb.Instructor = user;
-                courseFromDb.InstructorId = course.InstructorId;
-
-            }
-            else
-            {
-                courseFromDb.Instructor = null;
-                courseFromDb.InstructorId = null;
-
-            }
-
-            if (course.Skills!=null)
-            {
-                courseFromDb.Skills = course.Skills;
-
-            }
-            else
-            {
-
-            }
-
-
-            //skills
-
-            if (photo != null && photo.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
+                if (courseVM.SelectedSkillIds != null && courseVM.SelectedSkillIds.Any())
                 {
-                    await photo.CopyToAsync(memoryStream);
-                    courseFromDb.PhotoFileName = photo.FileName;
-                    courseFromDb.PhotoContentType = photo.ContentType;
-                    courseFromDb.PhotoData = memoryStream.ToArray();
-                }
-            }
-            LMS.SaveChanges();
-            return RedirectToAction("CourseDetails", new { course.Id });
-        }
-        public IActionResult GetCoursePhoto(int id)
-        {
-            var course = LMS.courses.Find(id);
-            if (course?.PhotoData == null)
-                return NotFound();
+                    var courseSkills = courseVM.SelectedSkillIds.Select(skillId => new CourseSkill
+                    {
+                        CourseId = course.Id,
+                        SkillId = skillId
+                    }).ToList();
 
-            return File(course.PhotoData, course.PhotoContentType);
+                    _context.CourseSkills.AddRange(courseSkills);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                ModelState.AddModelError("", "An error occurred while creating the course.");
+                courseVM.AllSkills = _context.Skills.ToList();
+                return View("CreateCourse", courseVM);
+            }
+        }
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
+
+            return View(course);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> Edit(int id, Course updatedCourse)
+        {
+            if (id != updatedCourse.Id) return BadRequest();
+
+            if (!ModelState.IsValid) return View(updatedCourse);
+
+            _context.Courses.Update(updatedCourse);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null) return NotFound();
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignInstructor(int courseId, string instructorId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return NotFound("Course not found");
+
+            var instructor = await _userManager.FindByIdAsync(instructorId);
+            if (instructor == null) return NotFound("Instructor not found");
+
+            if (!await _userManager.IsInRoleAsync(instructor, "Instructor"))
+                return BadRequest("User is not an Instructor");
+
+            bool alreadyAssigned = await _context.CourseInstructors
+                .AnyAsync(ci => ci.CourseId == courseId && ci.InstructorId == instructorId);
+            if (alreadyAssigned)
+                return BadRequest("Instructor already assigned to this course");
+
+            _context.CourseInstructors.Add(new CourseInstructor
+            {
+                CourseId = courseId,
+                InstructorId = instructorId
+            });
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = courseId });
         }
     }
 }

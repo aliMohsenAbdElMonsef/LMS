@@ -29,7 +29,7 @@ namespace LMS.Models.DataModels
         public UserRole UserRole { get; set; }
 
         // Navigation: one instructor → many courses
-        public virtual ICollection<course> Courses { get; set; } = new List<course>();
+        public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
     }
     
 }
