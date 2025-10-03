@@ -1,3 +1,28 @@
-"LMS/.vs/ LMS/[Bb]in/ LMS/[Oo]bj/ *.user *.suo *.log" 
-".vs/ *.user *.suo bin/ obj/ *.dll *.exe *.pdb *.cache *.db " 
--e ".vs/\nbin/\nobj/\n*.user\n*.db\n*.cache\n*.exe\n*.dll\n*.pdb" 
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+Debug/
+Release/
+[Ll]og/
+[Tt]emp/
+
+# .NET artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.db
+*.mdb
+
+# Others
+*.log
+*.vsidx
+*.vscode/
+*.DS_Store
