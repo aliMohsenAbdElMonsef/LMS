@@ -1,0 +1,126 @@
+﻿@model course
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Web Development Bootcamp - Course Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/CourseDetails.css" rel="stylesheet">
+
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center hero-content">
+                <div class="col-lg-6">
+                    <h1 class="course-title fade-in">@Model.Name</h1>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="course-image fade-in">
+                        <img src="@Url.Action("GetCoursePhoto", new { id = Model.Id })" alt="@Model.Name" class="course-photo" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="row">
+                <!-- Course Details -->
+                <div class="col-lg-8">
+                    <div class="content-card fade-in" id="details">
+                        <h2 class="section-title"><i class="fas fa-info-circle"></i> Course Details</h2>
+                        <p class="description-text">
+                            @Model.Description
+                        </p>
+
+                        <!-- Prerequisites directly after description -->
+                        <div class="content-card fade-in">
+                            <h2 class="section-title"><i class="fas fa-list-check"></i> Prerequisites</h2>
+                            <p>@Model.Prerequisites</p>
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-dollar-sign info-icon"></i>
+                                <div class="info-content">
+                                    <h6>Price</h6>
+                                    <p>@Model.Price</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-user-tie info-icon"></i>
+                                <div class="info-content">
+                                    <h6>Instructor</h6>
+                                    <p>@(Model.Instructor != null ? $"{Model.Instructor.FirstName} {Model.Instructor.LastName}" : "None specified")</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-certificate info-icon"></i>
+                                <div class="info-content">
+                                    <h6>Certificate</h6>
+                                    <p>Completion Certificate Included</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Content (Skills) -->
+                     <div class="content-card fade-in">
+                        <h2 class="section-title"><i class="fas fa-book-open"></i>What will you learn( Course Content)</h2>
+                        <div class="course-features">
+                            @foreach (var skill in Model.Skills)
+                            {
+                                <div class="feature-item">
+                                    <div class="feature-icon"></div>
+                                    <h3>@skill.Name</h3>
+                                    <p>@skill.LecturesHours</p>
+                                </div>
+                            }
+
+                        </div>
+                    </div> 
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="content-card fade-in">
+                        <h3 class="section-title"><i class="fas fa-chart-line"></i> Course Stats</h3>
+                        <div class="info-item mb-3">
+                            <i class="fas fa-users info-icon"></i>
+                            <div class="info-content">
+                                <h6>Enrollment</h6>
+                                <p>@Model.EnrolledCount students enrolled</p>
+                            </div>
+                        </div>
+                        <div class="info-item mb-3">
+                            <i class="fas fa-star info-icon"></i>
+                            <div class="info-content">
+                                <h6>Rating</h6>
+                                <p>@Model.AverageRating/5 (@Model.TotalReviews reviews)</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar info-icon"></i>
+                            <div class="info-content">
+                                <h6>Last Updated</h6>
+                                <p>@Model.LastUpdated</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
