@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@{
     ViewData["Title"] = "Edit Course";
 }
@@ -65,10 +66,65 @@
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Description</label>
                             <input type="text" class="form-control" placeholder="e.g. Learn fundamentals" />
+=======
+﻿@model editCourseViewModel
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/editcourse.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main-container fade-in">
+        <div class="header-section">
+            <h2><i class="fas fa-edit"></i> Edit Course</h2>
+        </div>
+
+        <form method="post" action="/Courses/SaveEditCourse/@Model.Id" enctype="multipart/form-data">
+            <div class="form-content">
+                <div class="row">
+                    <!-- Left Column - Main Content -->
+                    <div class="col-12">
+                        <div class="form-card">
+                            <h5 class="mb-3"><i class="fas fa-info-circle text-primary"></i> Basic Information</h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    Course Name
+                                </label>
+                                <input type="text" name="Name" value="@Model.Name" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-align-left"></i>
+                                    Description
+                                </label>
+                                <textarea class="form-control" name="Description" rows="4" required>@Model.Description</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-list-check"></i>
+                                    Prerequisites
+                                </label>
+                                <textarea class="form-control" name="Prerequisites" rows="3" required>@Model.Prerequisites</textarea>
+                            </div>
+>>>>>>> course-update
                         </div>
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <!-- Another Example Skill -->
                 <div class="card mb-3 p-3">
                     <div class="row">
@@ -100,3 +156,238 @@
         </div>
     </form>
 </div>
+=======
+                <div class="row">
+                    <!-- Image Upload - Full Width -->
+                    <div class="col-12">
+                        <div class="form-card">
+                            <h6 class="mb-3"><i class="fas fa-image text-primary"></i> Course Thumbnail</h6>
+                            <div class="current-image mb-3">
+                                <p class="text-muted mb-2">Current Image:</p>
+                                <img src="@Url.Action("GetCoursePhoto", new { id = Model.Id })" alt="@Model.Name" class="course-photo" />
+                            </div>
+                            <div class="upload-area">
+                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                <p class="mb-2">Click to upload new image</p>
+                                <input type="file" name="photo" class="form-control" accept="image/*" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Enrolled Students - Full Width Stats -->
+                    <div class="col-12">
+                        <div class="stats-card">
+                            <i class="fas fa-users fa-3x mb-3" style="opacity: 0.8;"></i>
+                            <div class="stats-number">@Model.EnrolledCount</div>
+                            <div class="stats-label">Enrolled Students</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Settings & Pricing -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fas fa-cog"></i>
+                            Course Settings & Pricing
+                        </h3>
+                    </div>
+                    <div class="section-content">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Price
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" name="Price" value="@Model.Price" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-clock"></i>
+                                    Total Hours
+                                </label>
+                                <input type="number" name="DurationHours" value="@Model.DurationHours" class="form-control" required />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user-tie"></i>
+                                    Instructor
+                                </label>
+                                <div class="instructor-select">
+                                    <select id="InstructorName" name="InstructorId" class="form-select">
+                                        <option value="">-- Select Instructor --</option>
+                                        @foreach (var ins in Model.Instructors)
+                                        {
+                                            @if (Model.InstructorId == ins.Id)
+                                            {
+                                                <option selected value="@ins.Id">@ins.FirstName @ins.LastName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@ins.Id">@ins.FirstName @ins.LastName</option>
+                                            }
+
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-star"></i>
+                                    Average Rating
+                                </label>
+                                <input type="number" name="AverageRating" value="@Model.AverageRating" class="form-control" disabled />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-comments"></i>
+                                    Total Reviews
+                                </label>
+                                <input type="number" name="TotalReviews" value="@Model.TotalReviews" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="skills-section">
+                    <h4><i class="fas fa-target"></i> Learning Objectives</h4>
+
+                    <div id="skills-container">
+                        @if (Model.Skills != null)
+                        {
+                            @for (int i = 0; i < Model.Skills.Count; i++)
+                            {
+                                <input name="Skills[@i].Id" value="@Model.Skills[i].Id" type="hidden" />
+                                <div class="skill-item" data-skill-index="@i">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-lightbulb"></i>
+                                                Skill Name
+                                            </label>
+                                            <input type="text" name="Skills[@i].Name" value="@Model.Skills[i].Name" class="form-control" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">
+                                                <i class="fas fa-play-circle"></i>
+                                                Lectures / Hours
+                                            </label>
+                                            <input type="text" name="Skills[@i].LecturesHours" value="@Model.Skills[i].LecturesHours" class="form-control" />
+                                        </div>
+                                        <div class="col-md-1 mb-3 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-skill">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="add-skill">
+                        <i class="fas fa-plus"></i>
+                        Add Skill
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="/Courses/Details/@Model.Id" class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let skillIndex = @(Model.Skills?.Count ?? 0);
+
+        // Add skill functionality
+        document.getElementById('add-skill').addEventListener('click', function() {
+            const container = document.getElementById('skills-container');
+            const newSkill = document.createElement('div');
+            newSkill.className = 'skill-item fade-in';
+            newSkill.setAttribute('data-skill-index', skillIndex);
+            newSkill.innerHTML = `
+                <input name="Skills[${skillIndex}].Id" value="0" type="hidden"/>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-lightbulb"></i>
+                            Skill Name
+                        </label>
+                        <input type="text" name="Skills[${skillIndex}].Name" class="form-control" placeholder="e.g. JavaScript Basics" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-play-circle"></i>
+                            Lectures / Hours
+                        </label>
+                        <input type="text" name="Skills[${skillIndex}].LecturesHours" class="form-control" placeholder="e.g. 6 lectures (4h)" />
+                    </div>
+                    <div class="col-md-1 mb-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-skill">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newSkill);
+            skillIndex++;
+        });
+
+        // Remove skill functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-skill') || e.target.parentElement.classList.contains('remove-skill')) {
+                const skillItem = e.target.closest('.skill-item');
+                if (skillItem) {
+                    skillItem.remove();
+                    // Re-index remaining skills
+                    reindexSkills();
+                }
+            }
+        });
+
+        // Re-index skills after removal
+        function reindexSkills() {
+            const skillItems = document.querySelectorAll('.skill-item');
+            skillItems.forEach((item, index) => {
+                item.setAttribute('data-skill-index', index);
+
+                // Update all input names within this skill item
+                const inputs = item.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        if (name.includes('Skills[')) {
+                            const newName = name.replace(/Skills\[\d+\]/, `Skills[${index}]`);
+                            input.setAttribute('name', newName);
+                        }
+                    }
+                });
+            });
+
+            // Update skillIndex for new additions
+            skillIndex = skillItems.length;
+        }
+    </script>
+</body>
+</html>
+>>>>>>> course-update

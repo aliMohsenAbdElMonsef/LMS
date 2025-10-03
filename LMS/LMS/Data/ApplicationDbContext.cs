@@ -1,5 +1,6 @@
 ﻿using LMS.Models.DataModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Data
@@ -156,7 +157,6 @@ namespace LMS.Data
                 .WithMany(c => c.IsPrerequisiteFor)
                 .HasForeignKey(cp => cp.PrerequisiteCourseId)
                 .OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +11,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Site Styles -->
+=======
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+>>>>>>> course-update
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LMS.styles.css" asp-append-version="true" />
 </head>
 <body>
+<<<<<<< HEAD
     <!-- NAVBAR -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
@@ -160,6 +172,139 @@
     </footer>
 
     <!-- Scripts -->
+=======
+    <header>
+        <nav class="navbar">
+            <div class="logo">LMS</div>
+
+            @* --------- Guest (Not Logged In) --------- Done*@
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <ul id="nav-links">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-action="AllCourses" asp-controller="Courses">Courses</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                    <li><a asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                </ul>
+            }
+
+            @* --------- Student --------- *@
+            else if (User.IsInRole("Student"))
+            {
+                <ul id="nav-links">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li>
+                        <span class="instructor-courses">Courses</span>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Courses" asp-action="MyCourses">My Courses</a></li>
+                            <li><a asp-action="AllCourses" asp-controller="Courses">Courses</a></li>
+                        </ul>
+                    </li>
+                    @* view all the lectures comming or not and it is like a history for all lectures that you attended*@
+                    <li><a asp-controller="Lectures" asp-action="Index">Lectures</a></li>
+                    @* view all test you have join or added to you from the instructores of the courses *@
+                    <li><a asp-controller="Tests" asp-action="Index">Tests</a></li>
+                    <li><a asp-controller="Assignments" asp-action="Index">Assignments</a></li>
+
+                    <li><a asp-controller="Discussions" asp-action="Index">Discussions</a></li>
+                    <li><a asp-controller="Certificates" asp-action="Index">Certificates</a></li>
+                    <li class="account-link">
+                        <a href="#">👤 Account ▾</a>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Account" asp-action="Manage">Update Account</a></li>
+                            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+
+            @* --------- Instructor --------- *@
+            else if (User.IsInRole("Instructor"))
+            {
+                <ul id="nav-links">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    @*view all the lectures like a history of the lectures of this instructor*@
+                    <li><a asp-controller="Lectures" asp-action="Start">My Lecture</a></li>
+                    <li>
+                        <span class="instructor-courses">Courses</span>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Courses" asp-action="MyCourses">My Courses</a></li>
+                            <li><a asp-action="AllCourses" asp-controller="Courses">Courses</a></li>
+                        </ul>
+                    </li>
+                    <li><a asp-controller="Assignments" asp-action="Manage">Assignments</a></li>
+                    <li><a asp-controller="Tests" asp-action="Manage">Tests</a></li>
+                    <li class="account-link">
+                        <a href="#">👤 Account ▾</a>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Account" asp-action="Manage">Update Account</a></li>
+                            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+
+            @* --------- Sub Admin --------- *@
+            else if (User.IsInRole("SubAdmin"))
+            {
+                <ul id="nav-links">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li>
+                        <span class="instructor-courses">Courses</span>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Courses" asp-action="MyCourses">My Courses</a></li>
+                            <li><a asp-action="AllCourses" asp-controller="Courses">Courses</a></li>
+                        </ul>
+                    </li>
+                    <li class="account-link">
+                        <a href="#">👤 Account ▾</a>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Account" asp-action="Manage">Update Account</a></li>
+                            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+
+            @* --------- Super Admin --------- *@
+            else if (User.IsInRole("SuperAdmin"))
+            {
+                <ul id="nav-links">
+                    <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-controller="Admin" asp-action="ManageUsers">Users</a></li>
+                    <li><a asp-controller="Courses" asp-action="Manage">Courses</a></li>
+                    <li><a asp-controller="System" asp-action="Settings">System Settings</a></li>
+                    <li><a asp-controller="Reports" asp-action="Index">Analytics</a></li>
+                    <li class="account-link">
+                        <a href="#">👤 Account ▾</a>
+                        <ul class="dropdown">
+                            <li><a asp-controller="Account" asp-action="Manage">Update Account</a></li>
+                            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+  @*   <footer class="border-top footer text-muted">
+        <div class="container">
+            <ul class="footer-links">
+                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                <li><a asp-controller="Home" asp-action="Help">Help</a></li>
+                <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+            </ul>
+        </div>
+    </footer> *@
+
+>>>>>>> course-update
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
