@@ -18,11 +18,7 @@
     <!-- Course Card -->
     <div class="courses-container">
         <div class="card mb-4 shadow-sm" style="cursor: pointer;"
-<<<<<<< HEAD
-             onclick="location.href='@Url.Action("Details", "Courses", new { id = 1 })'">
-=======
-             onclick="location.href='@Url.Action("CourseDetails", "Courses", new { id = 1 })'">
->>>>>>> course-update
+            onclick="location.href='@Url.Action("CourseDetails", "Courses", new { id = 1 })'">
             <img src="~/images/sample-course.jpg" class="card-img-top" alt="Course image" />
             <div class="card-body">
                 <h5 class="card-title">Course Name</h5>
@@ -32,12 +28,7 @@
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
                 <!-- View Details always visible -->
-<<<<<<< HEAD
-                <a asp-action="Details" asp-controller="Courses" asp-route-id="1" class="btn btn-link p-0">View Details</a>
-=======
                 <a asp-action="CourseDetails" asp-controller="Courses" asp-route-id="1" class="btn btn-link p-0">View Details</a>
->>>>>>> course-update
-
                 <!-- Role-based buttons -->
                 @if (User.IsInRole("Instructor"))
                 {

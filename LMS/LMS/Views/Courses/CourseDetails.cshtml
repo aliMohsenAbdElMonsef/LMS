@@ -1,48 +1,4 @@
-<<<<<<< HEAD
-﻿@{
-    ViewData["Title"] = "Course Details";
-}
-
-<div class="container mt-4">
-    <!-- Course Header -->
-    <section class="mb-5">
-        <div class="row">
-            <!-- Left: Image -->
-            <div class="col-md-4">
-                <img src="#"
-                     alt="Course Image"
-                     class="img-fluid rounded shadow-sm" />
-            </div>
-
-            <!-- Right: Course Info -->
-            <div class="col-md-8">
-                <h2 class="mb-3">Course Name Here</h2>
-                <p class="text-muted">This is the course description. It explains what the course is about.</p>
-
-                <!-- Info row -->
-                <div class="row text-center mb-3">
-                    <div class="col-md-4">
-                        <h5 class="mb-1">⭐ 4.7</h5>
-                        <p class="small text-muted">Average Rating</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="mb-1">12</h5>
-                        <p class="small text-muted">Practice Exercises</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5 class="mb-1">20h</h5>
-                        <p class="small text-muted">Total Hours</p>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <button class="btn btn-success btn-lg">Enroll</button>
-                @if (User.IsInRole("Admin")||User.IsInRole("SubAdmin"))
-                {
-                    <button class="btn edit-course">Edit</button>
-                }
-=======
-﻿@model course
+@model course
 
 @{
     ViewData["Title"] = "Course Details";
@@ -53,11 +9,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Web Development Bootcamp - Course Details</title>
+    <title>@Model.Name - Course Details</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/CourseDetails.css" rel="stylesheet">
-
 </head>
 <body>
     <!-- Hero Section -->
@@ -72,42 +27,10 @@
                         <img src="@Url.Action("GetCoursePhoto", new { id = Model.Id })" alt="@Model.Name" class="course-photo" />
                     </div>
                 </div>
->>>>>>> course-update
             </div>
         </div>
     </section>
 
-<<<<<<< HEAD
-    <!-- What You'll Learn -->
-    <section>
-        <h3 class="mb-4">🎯 What You'll Learn</h3>
-        <div class="row">
-            <!-- Example skill card -->
-            <div class="col-md-6 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Skill Name</h5>
-                        <p class="card-text">Covers 5 lectures (~4h)</p>
-                        <p class="text-muted small">Description of this skill goes here.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Skill Name 2</h5>
-                        <p class="card-text">Covers 8 lectures (~6h)</p>
-                        <p class="text-muted small">Another description here.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- More skill cards will come from DB later -->
-
-        </div>
-    </section>
-</div>
-=======
     <!-- Main Content -->
     <section class="main-content">
         <div class="container">
@@ -120,7 +43,7 @@
                             @Model.Description
                         </p>
 
-                        <!-- Prerequisites directly after description -->
+                        <!-- Prerequisites -->
                         <div class="content-card fade-in">
                             <h2 class="section-title"><i class="fas fa-list-check"></i> Prerequisites</h2>
                             <p>@Model.Prerequisites</p>
@@ -152,8 +75,8 @@
                     </div>
 
                     <!-- Course Content (Skills) -->
-                     <div class="content-card fade-in">
-                        <h2 class="section-title"><i class="fas fa-book-open"></i>What will you learn( Course Content)</h2>
+                    <div class="content-card fade-in">
+                        <h2 class="section-title"><i class="fas fa-book-open"></i> What will you learn (Course Content)</h2>
                         <div class="course-features">
                             @foreach (var skill in Model.Skills)
                             {
@@ -163,9 +86,8 @@
                                     <p>@skill.LecturesHours</p>
                                 </div>
                             }
-
                         </div>
-                    </div> 
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -200,4 +122,3 @@
     </section>
 </body>
 </html>
->>>>>>> course-update

@@ -1,3 +1,4 @@
+
 ﻿using System;
 using LMS.Data;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,6 @@ namespace LMS.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
             modelBuilder.Entity("LMS.Models.DataModels.ApplicationRole", b =>
                 {
                     b.Property<string>("Id")
@@ -116,12 +116,10 @@ namespace LMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
-
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -419,7 +417,6 @@ namespace LMS.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
@@ -427,7 +424,6 @@ namespace LMS.Migrations
 
                     b.HasIndex("RoleId");
 
-<<<<<<< HEAD
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
@@ -487,10 +483,8 @@ namespace LMS.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-
                     b.Navigation("Instructor");
                 });
-
             modelBuilder.Entity("LMS.Models.DataModels.CoursePrerequisite", b =>
                 {
                     b.HasOne("LMS.Models.DataModels.Course", "Course")

@@ -4,7 +4,6 @@ namespace LMS.Models.ViewModels
 {
     public class LoginViewModel
     {
-<<<<<<< HEAD
         [Required, EmailAddress]
         public string Email { get; set; }
 
@@ -12,7 +11,7 @@ namespace LMS.Models.ViewModels
         public string Password { get; set; }
 
         [Display(Name = "Remember Me")]
-=======
+
         [Required(ErrorMessage ="Email is Required")]
         [EmailAddress(ErrorMessage ="Invalid Email Format")]
         public required string Email { get; set; }
@@ -20,8 +19,6 @@ namespace LMS.Models.ViewModels
         [Required(ErrorMessage ="Password is Required")]
         [DataType(DataType.Password)]
         public required string Password { get; set; }
-
->>>>>>> course-update
         public bool RememberMe { get; set; }
     }
 }
