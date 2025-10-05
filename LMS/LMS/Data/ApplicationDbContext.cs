@@ -18,6 +18,9 @@ namespace LMS.Data
         public DbSet<Skill> Skills { get; set; }
         public DbSet<CourseSkill> CourseSkills { get; set; }
         public DbSet<CourseInstructor> CourseInstructors { get; set; }
+        public DbSet<Lecture> Lectures { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
