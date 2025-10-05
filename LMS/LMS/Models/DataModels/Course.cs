@@ -51,5 +51,7 @@ namespace LMS.Models.DataModels
 
         [MaxLength(500)]
         public string? ThumbnailPath { get; set; }
+        public List<Lecture>? Lectures { get; set; } = new();
+
     }
 }

@@ -39,7 +39,7 @@ namespace LMS.Controllers
 
             if (course == null) return NotFound();
 
-            return View(course);
+            return View("CourseDetails",course);
         }
 
         [Authorize(Roles = "Admin")]
