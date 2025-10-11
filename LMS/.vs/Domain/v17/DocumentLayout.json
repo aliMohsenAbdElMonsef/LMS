@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\extensions\\dataacessextention.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\extensions\\dataacessextention.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\lms.dataacess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\lms.dataacess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\skillrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\skillrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\assignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\assignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\contracts\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\contracts\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011115402_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DataAccess\\Migrations\\20251011115402_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\relationtables\\studentanswerquestion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\relationtables\\studentanswerquestion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "RelativeDocumentMoniker": "LMS.API\\Program.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "RelativeToolTip": "LMS.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T12:43:34.017Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DataAcessExtention.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Extensions\\DataAcessExtention.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Extensions\\DataAcessExtention.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Extensions\\DataAcessExtention.cs",
+              "RelativeToolTip": "DataAccess\\Extensions\\DataAcessExtention.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T12:34:44.052Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LMS.DataAcess",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
+              "RelativeDocumentMoniker": "DataAccess\\LMS.DataAcess.csproj",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
+              "RelativeToolTip": "DataAccess\\LMS.DataAcess.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-11T12:34:03.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\UnitOfWork.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\UnitOfWork.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\UnitOfWork.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACgAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T12:12:30.464Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SkillRepository.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\SkillRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\SkillRepository.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\SkillRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\SkillRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T12:24:44.487Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AssignmentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\AssignmentRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\AssignmentRepository.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\AssignmentRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\AssignmentRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T12:12:10.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IUnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Contracts\\IUnitOfWork.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Contracts\\IUnitOfWork.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Contracts\\IUnitOfWork.cs",
+              "RelativeToolTip": "DataAccess\\Contracts\\IUnitOfWork.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB8AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T11:59:36.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "20251011115402_init.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011115402_init.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Migrations\\20251011115402_init.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011115402_init.cs",
+              "RelativeToolTip": "DataAccess\\Migrations\\20251011115402_init.cs",
+              "ViewState": "AgIAAFYDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T11:54:02.323Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "BaseRepository.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\BaseRepository.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\BaseRepository.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAQwC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T10:56:27.352Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "StudentAnswerQuestion.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
+              "RelativeToolTip": "Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T09:34:00.286Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
