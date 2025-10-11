@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj": {}
+    "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj": {
+    "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj",
+        "projectUniqueName": "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\obj\\",
+        "projectPath": "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\M.Tech\\.nuget\\packages\\",
+        "outputPath": "D:\\MyProjects\\LMS\\Domain\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\M.Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

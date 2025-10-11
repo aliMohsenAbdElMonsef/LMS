@@ -810,23 +810,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\VICTUS\\.nuget\\packages\\": {},
+    "C:\\Users\\M.Tech\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\DataAccess\\DataAccess.csproj",
+      "projectUniqueName": "D:\\MyProjects\\LMS\\Domain\\DataAccess\\DataAccess.csproj",
       "projectName": "DataAccess",
-      "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\DataAccess\\DataAccess.csproj",
-      "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\DataAccess\\obj\\",
+      "projectPath": "D:\\MyProjects\\LMS\\Domain\\DataAccess\\DataAccess.csproj",
+      "packagesPath": "C:\\Users\\M.Tech\\.nuget\\packages\\",
+      "outputPath": "D:\\MyProjects\\LMS\\Domain\\DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\M.Tech\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -841,8 +841,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\Domain\\Domain\\Domain.csproj"
+            "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj": {
+              "projectPath": "D:\\MyProjects\\LMS\\Domain\\Domain\\Domain.csproj"
             }
           }
         }
