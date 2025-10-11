@@ -1,0 +1,52 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+.nuget/
+packages/
+*.nupkg
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+[Bb]in/
+[Oo]bj/
+
+# MSTest test results
+TestResults/
+*.trx
+
+# Database
+*.mdf
+*.ldf
+
+# User-specific files
+*.user
+
+# ASP.NET
+App_Data/
+
+# Microsoft SQL Server
+*.mdf
+*.ldf
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
