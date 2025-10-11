@@ -239,17 +239,21 @@ namespace LMS.DataAcess.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("TemplateContent")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                    b.Property<string>("MessageBody")
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
 
-                    b.Property<string>("TemplatePath")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -270,12 +274,14 @@ namespace LMS.DataAcess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("AutoIssueCertificates")
+                        .HasColumnType("bit");
+
                     b.Property<string>("CategoryId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CertificateTemplateID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CourseCode")
@@ -319,6 +325,12 @@ namespace LMS.DataAcess.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<double>("MinAttendancePercentage")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinPerformanceScore")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -361,16 +373,13 @@ namespace LMS.DataAcess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan?>("EndHour")
+                    b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
                     b.Property<bool>("IsDeleted")
@@ -385,11 +394,17 @@ namespace LMS.DataAcess.Migrations
                     b.Property<string>("LastUploadedByInstructorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("LectureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LectureScheduleId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("RecordingPath")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<TimeSpan>("StartHour")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
                     b.Property<string>("Title")
@@ -408,6 +423,8 @@ namespace LMS.DataAcess.Migrations
                     b.HasIndex("CourseId");
 
                     b.HasIndex("LastUploadedByInstructorId");
+
+                    b.HasIndex("LectureScheduleId");
 
                     b.ToTable("Lectures");
                 });
@@ -738,6 +755,37 @@ namespace LMS.DataAcess.Migrations
                     b.ToTable("StudentQuizzes");
                 });
 
+            modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CourseId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("LectureSchedules");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -930,11 +978,18 @@ namespace LMS.DataAcess.Migrations
                         .HasForeignKey("LastUploadedByInstructorId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("LMS.Entity.Entities.MainEntities.LectureSchedule", "LectureSchedule")
+                        .WithMany("Lectures")
+                        .HasForeignKey("LectureScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("AssignedInstructor");
 
                     b.Navigation("Course");
 
                     b.Navigation("LastUploadedByInstructor");
+
+                    b.Navigation("LectureSchedule");
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Question", b =>
@@ -942,7 +997,7 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Quiz", "Quiz")
                         .WithMany("Questions")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Quiz");
@@ -983,13 +1038,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Course", "Course")
                         .WithMany("Reviews")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("Reviews")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -1002,13 +1057,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Course", "Course")
                         .WithMany("Skills")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.Skills", "Skill")
                         .WithMany("Courses")
                         .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -1021,13 +1076,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Course", "Course")
                         .WithMany("Instructors")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Instructor")
                         .WithMany("Courses")
                         .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -1040,13 +1095,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Question", "Question")
                         .WithMany("StudentAnswers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("Answers")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Question");
@@ -1059,13 +1114,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Assignment", "Assignment")
                         .WithMany("Students")
                         .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("UploadedAssignemnts")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Assignment");
@@ -1078,13 +1133,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("EarnedCertificates")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.CertificateTemplate", "CertificateTemplate")
-                        .WithMany("studentCertificates")
+                        .WithMany("StudentCertificates")
                         .HasForeignKey("certificateTamplateId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CertificateTemplate");
@@ -1097,13 +1152,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Course", "Course")
                         .WithMany("Students")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("Enrollment")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -1116,13 +1171,13 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Lecture", "Lecture")
                         .WithMany("Students")
                         .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("LecturesAttended")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Lecture");
@@ -1135,18 +1190,29 @@ namespace LMS.DataAcess.Migrations
                     b.HasOne("Domain.Entities.MainEntities.Quiz", "Quiz")
                         .WithMany("Students")
                         .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "Student")
                         .WithMany("QuizzesAttended")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Quiz");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
+                {
+                    b.HasOne("Domain.Entities.MainEntities.Course", "Course")
+                        .WithMany("LectureSchedules")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1247,17 +1313,18 @@ namespace LMS.DataAcess.Migrations
 
             modelBuilder.Entity("Domain.Entities.MainEntities.CertificateTemplate", b =>
                 {
-                    b.Navigation("studentCertificates");
+                    b.Navigation("StudentCertificates");
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Course", b =>
                 {
                     b.Navigation("Assignments");
 
-                    b.Navigation("CertificateTemplate")
-                        .IsRequired();
+                    b.Navigation("CertificateTemplate");
 
                     b.Navigation("Instructors");
+
+                    b.Navigation("LectureSchedules");
 
                     b.Navigation("Lectures");
 
@@ -1290,6 +1357,11 @@ namespace LMS.DataAcess.Migrations
             modelBuilder.Entity("Domain.Entities.MainEntities.Skills", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
+                {
+                    b.Navigation("Lectures");
                 });
 #pragma warning restore 612, 618
         }

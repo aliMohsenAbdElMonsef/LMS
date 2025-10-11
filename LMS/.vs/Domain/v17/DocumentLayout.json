@@ -3,44 +3,176 @@
   "WorkspaceRootPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\extensions\\dataacessextention.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\extensions\\dataacessextention.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\lms.dataacess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\lms.dataacess.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\skillrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\skillrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\assignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\assignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\quiz\\updatequizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\quiz\\updatequizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\contracts\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\contracts\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\quiz\\readquizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\quiz\\readquizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\iuserservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\iuserservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\relationtables\\studentanswerquestion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\relationtables\\studentanswerquestion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\question\\readquestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\question\\readquestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\migrations\\20251011115402_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\migrations\\20251011115402_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\question\\updatequestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\question\\updatequestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\question\\createquestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\question\\createquestiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\quiz\\createquizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\quiz\\createquizdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\question\\options.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\question\\options.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\quiz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\quiz.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\iquizservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\iquizservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\ilectureservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\ilectureservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\lecture\\updatelecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\lecture\\updatelecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\lecture\\readlecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\lecture\\readlecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\lecture\\createlecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\lecture\\createlecturedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\lecture.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\lecture.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\dataaccess\\context\\lmsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\context\\lmsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\lectureschedule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\lectureschedule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\icourseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\icourseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\icertificatetemplateservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\icertificatetemplateservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\course\\createcoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\course\\createcoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\course\\updatecoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\course\\updatecoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\course\\readcoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\course\\readcoursedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\certificatetemplate\\createcertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\certificatetemplate\\createcertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\certificatetemplate\\updatecertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\certificatetemplate\\updatecertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\certificatetemplate\\readcertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\certificatetemplate\\readcertificatetemplatedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\certificatetemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\certificatetemplate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\iassignmentservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\iassignmentservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\icategoryservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\icategoryservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\assignment\\updateassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\assignment\\updateassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\assignment\\readassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\assignment\\readassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\assignment\\createassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\assignment\\createassignmentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\assignment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\assignment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\ibaseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\ibaseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\category\\createcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\category\\createcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\category\\readcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\category\\readcategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\dtos\\category\\updatecategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\dtos\\category\\updatecategorydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\domain\\entities\\mainentities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\contracts\\services\\iskillservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\contracts\\services\\iskillservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,129 +182,530 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
-              "RelativeDocumentMoniker": "LMS.API\\Program.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
-              "RelativeToolTip": "LMS.API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T12:43:34.017Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DataAcessExtention.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Extensions\\DataAcessExtention.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Extensions\\DataAcessExtention.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Extensions\\DataAcessExtention.cs",
-              "RelativeToolTip": "DataAccess\\Extensions\\DataAcessExtention.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
+              "Title": "20251011212738_update-certificate-lecture-adding-soft-deletion.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs",
+              "RelativeToolTip": "DataAccess\\Migrations\\20251011212738_update-certificate-lecture-adding-soft-deletion.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAQwFkAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T12:34:44.052Z",
+              "WhenOpened": "2025-10-11T21:27:38.824Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "LMS.DataAcess.csproj",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "RelativeDocumentMoniker": "LMS.API\\Program.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "RelativeToolTip": "LMS.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:27:00.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LMS.API",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
+              "RelativeDocumentMoniker": "LMS.API\\LMS.API.csproj",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
+              "RelativeToolTip": "LMS.API\\LMS.API.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-11T21:26:03.81Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LMS.DataAcess",
               "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
               "RelativeDocumentMoniker": "DataAccess\\LMS.DataAcess.csproj",
               "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
               "RelativeToolTip": "DataAccess\\LMS.DataAcess.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-10-11T12:34:03.336Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Repositories\\UnitOfWork.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\UnitOfWork.cs",
-              "RelativeToolTip": "DataAccess\\Repositories\\UnitOfWork.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAACgAAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T12:12:30.464Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SkillRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\SkillRepository.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Repositories\\SkillRepository.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\SkillRepository.cs",
-              "RelativeToolTip": "DataAccess\\Repositories\\SkillRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T12:24:44.487Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "AssignmentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\AssignmentRepository.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Repositories\\AssignmentRepository.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\AssignmentRepository.cs",
-              "RelativeToolTip": "DataAccess\\Repositories\\AssignmentRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T12:12:10.143Z"
+              "WhenOpened": "2025-10-11T21:21:38.744Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "IUnitOfWork.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Contracts\\IUnitOfWork.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Contracts\\IUnitOfWork.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Contracts\\IUnitOfWork.cs",
-              "RelativeToolTip": "DataAccess\\Contracts\\IUnitOfWork.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB8AAAASAAAAAAAAAA==",
+              "Title": "IUserServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IUserServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\IUserServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IUserServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\IUserServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAoAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T11:59:36.213Z"
+              "WhenOpened": "2025-10-11T15:36:59.345Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "20251011115402_init.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011115402_init.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Migrations\\20251011115402_init.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Migrations\\20251011115402_init.cs",
-              "RelativeToolTip": "DataAccess\\Migrations\\20251011115402_init.cs",
-              "ViewState": "AgIAAFYDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "ReadQuizDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\ReadQuizDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Quiz\\ReadQuizDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\ReadQuizDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Quiz\\ReadQuizDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T11:54:02.323Z"
+              "WhenOpened": "2025-10-11T21:03:17.504Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UpdateQuizDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\UpdateQuizDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Quiz\\UpdateQuizDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\UpdateQuizDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Quiz\\UpdateQuizDTO.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAgwBsAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:03:33.467Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "BaseRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
-              "RelativeDocumentMoniker": "DataAccess\\Repositories\\BaseRepository.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
-              "RelativeToolTip": "DataAccess\\Repositories\\BaseRepository.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwC0AAAAAAAAAAAAAAA==",
+              "Title": "ReadQuestionDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\ReadQuestionDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Question\\ReadQuestionDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\ReadQuestionDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Question\\ReadQuestionDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T10:56:27.352Z"
+              "WhenOpened": "2025-10-11T21:10:34.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CreateQuestionDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\CreateQuestionDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Question\\CreateQuestionDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\CreateQuestionDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Question\\CreateQuestionDTO.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:10:13.755Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "StudentAnswerQuestion.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
-              "RelativeDocumentMoniker": "Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
-              "RelativeToolTip": "Domain\\Entities\\RelationTables\\StudentAnswerQuestion.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAArAAAAAAAAAA==",
+              "Title": "UpdateQuestionDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\UpdateQuestionDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Question\\UpdateQuestionDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\UpdateQuestionDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Question\\UpdateQuestionDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-11T09:34:00.286Z"
+              "WhenOpened": "2025-10-11T21:10:46.986Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CreateQuizDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\CreateQuizDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Quiz\\CreateQuizDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Quiz\\CreateQuizDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Quiz\\CreateQuizDTO.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwCQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:03:00.012Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Options.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\Options.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Question\\Options.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Question\\Options.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Question\\Options.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:13:42.541Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Quiz.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Quiz.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Quiz.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Quiz.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Quiz.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAA1wC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T21:05:57.964Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UpdateLectureDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\UpdateLectureDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Lecture\\UpdateLectureDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\UpdateLectureDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Lecture\\UpdateLectureDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T20:40:17.206Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ILectureServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ILectureServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\ILectureServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ILectureServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\ILectureServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:35:55.797Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "CreateLectureDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\CreateLectureDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Lecture\\CreateLectureDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\CreateLectureDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Lecture\\CreateLectureDTO.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAoAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T20:39:46.391Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "ReadLectureDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\ReadLectureDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Lecture\\ReadLectureDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Lecture\\ReadLectureDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Lecture\\ReadLectureDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T20:40:03.221Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IQuizServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IQuizServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\IQuizServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IQuizServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\IQuizServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:38:42.256Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Lecture.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Lecture.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Lecture.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Lecture.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Lecture.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAIwDIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:18:13.657Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "LMSDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Context\\LMSDbContext.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Context\\LMSDbContext.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\Context\\LMSDbContext.cs",
+              "RelativeToolTip": "DataAccess\\Context\\LMSDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcBAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:49:36.906Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "LectureSchedule.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\LectureSchedule.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\LectureSchedule.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\LectureSchedule.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\LectureSchedule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:31:06.108Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ICertificateTemplateServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICertificateTemplateServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\ICertificateTemplateServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICertificateTemplateServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\ICertificateTemplateServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:36:26.665Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "ICourseServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICourseServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\ICourseServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICourseServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\ICourseServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:37:23.847Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Course.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Course.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Course.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Course.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Course.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAkwFkAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:57:42.702Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "CreateCourseDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\CreateCourseDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Course\\CreateCourseDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\CreateCourseDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Course\\CreateCourseDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:03:03.919Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "UpdateCourseDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\UpdateCourseDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Course\\UpdateCourseDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\UpdateCourseDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Course\\UpdateCourseDTO.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAACAAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:03:22.14Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ReadCourseDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\ReadCourseDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Course\\ReadCourseDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Course\\ReadCourseDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Course\\ReadCourseDTO.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA1wCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T19:03:52.386Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "CreateCertificateTemplateDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\CreateCertificateTemplateDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\CreateCertificateTemplateDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\CreateCertificateTemplateDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\CreateCertificateTemplateDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:26:33.175Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "UpdateCertificateTemplateDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\UpdateCertificateTemplateDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\UpdateCertificateTemplateDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\UpdateCertificateTemplateDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\UpdateCertificateTemplateDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:25:56.557Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "ReadCertificateTemplateDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\ReadCertificateTemplateDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\ReadCertificateTemplateDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\CertificateTemplate\\ReadCertificateTemplateDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\CertificateTemplate\\ReadCertificateTemplateDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:24:58.796Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "CertificateTemplate.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\CertificateTemplate.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\CertificateTemplate.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\CertificateTemplate.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\CertificateTemplate.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:27:36.891Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "IAssignmentServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IAssignmentServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\IAssignmentServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\IAssignmentServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\IAssignmentServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:38:55.33Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "ICategoryServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICategoryServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\ICategoryServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ICategoryServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\ICategoryServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T17:56:52.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "UpdateAssignmentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\UpdateAssignmentDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Assignment\\UpdateAssignmentDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\UpdateAssignmentDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Assignment\\UpdateAssignmentDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:04:40.652Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "ReadAssignmentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\ReadAssignmentDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Assignment\\ReadAssignmentDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\ReadAssignmentDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Assignment\\ReadAssignmentDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:03:56.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "CreateAssignmentDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\CreateAssignmentDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Assignment\\CreateAssignmentDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Assignment\\CreateAssignmentDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Assignment\\CreateAssignmentDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:05:32.172Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "Assignment.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Assignment.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Assignment.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Assignment.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Assignment.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA3wCAAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T18:05:40.567Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "IBaseServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\IBaseServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\IBaseServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\IBaseServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\IBaseServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:31:25.547Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "CreateCategoryDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\CreateCategoryDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Category\\CreateCategoryDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\CreateCategoryDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Category\\CreateCategoryDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T16:03:40.392Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "ReadCategoryDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\ReadCategoryDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Category\\ReadCategoryDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\ReadCategoryDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Category\\ReadCategoryDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:55:55.737Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "UpdateCategoryDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\UpdateCategoryDTO.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\DTOs\\Category\\UpdateCategoryDTO.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\DTOs\\Category\\UpdateCategoryDTO.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\DTOs\\Category\\UpdateCategoryDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T16:01:36.217Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Category.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Category.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\Entities\\MainEntities\\Category.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:56:10.473Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "ISkillServices.cs",
+              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ISkillServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Contracts\\Services\\ISkillServices.cs",
+              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Contracts\\Services\\ISkillServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Contracts\\Services\\ISkillServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-11T15:38:20.37Z"
             }
           ]
         }

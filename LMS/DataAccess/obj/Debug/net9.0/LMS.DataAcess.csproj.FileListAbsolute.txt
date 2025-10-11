@@ -15,3 +15,4 @@ C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\DataAccess\o
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\DataAccess\obj\Debug\net9.0\LMS.DataAcess.pdb
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\DataAccess\obj\Debug\net9.0\LMS.DataAcess.genruntimeconfig.cache
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\DataAccess\obj\Debug\net9.0\ref\LMS.DataAcess.dll
+C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\DataAccess\obj\Debug\net9.0\LMS.DataAcess.sourcelink.json

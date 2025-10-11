@@ -172,3 +172,4 @@ C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.API\obj\
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.API\obj\Debug\net9.0\LMS.API.pdb
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.API\obj\Debug\net9.0\LMS.API.genruntimeconfig.cache
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.API\obj\Debug\net9.0\ref\LMS.API.dll
+C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.API\obj\Debug\net9.0\LMS.API.sourcelink.json

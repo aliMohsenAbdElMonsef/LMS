@@ -15,3 +15,4 @@ C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.Business
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.BusinessLogic\obj\Debug\net9.0\refint\LMS.BusinessLogic.dll
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.BusinessLogic\obj\Debug\net9.0\LMS.BusinessLogic.pdb
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.BusinessLogic\obj\Debug\net9.0\ref\LMS.BusinessLogic.dll
+C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\LMS.BusinessLogic\obj\Debug\net9.0\LMS.BusinessLogic.sourcelink.json

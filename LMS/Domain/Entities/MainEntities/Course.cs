@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.RelationTables;
 using Domain.Enums;
+using LMS.Entity.Entities.MainEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -49,9 +50,19 @@ namespace Domain.Entities.MainEntities
         [MaxLength(500)]
         public string? ThumbnailPath { get; set; }
 
+        public bool AutoIssueCertificates { get; set; } = false;
+
+        // course post requirements
+
+        [Range(0, 100)]
+        public double MinPerformanceScore { get; set; } = 60;
+
+        [Range(0, 100)]
+        public double MinAttendancePercentage { get; set; } = 75;
+
         // Relations
         // user
-            // instructor
+        // instructor
         public ICollection<InstructorCourse> Instructors { get; set; } = new List<InstructorCourse>();
             // student
         public ICollection<StudentEnrollIntoCourse> Students { get; set; }= new List<StudentEnrollIntoCourse>();
@@ -61,10 +72,9 @@ namespace Domain.Entities.MainEntities
         public string AdminId { get; set; }
         public ApplicationUser Admin { get; set; }
         // certificate template
-        [Required]
-        public string CertificateTemplateID { get; set; }
+        public string? CertificateTemplateID { get; set; }
 
-        public CertificateTemplate CertificateTemplate { get; set; }
+        public CertificateTemplate? CertificateTemplate { get; set; }
 
         //assignment
         public ICollection<Assignment> Assignments { get; set; } = new List<Assignment>();
@@ -76,8 +86,11 @@ namespace Domain.Entities.MainEntities
 
         //lecture
         public ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+
+        // lecture schedulling 
+        public ICollection<LectureSchedule> LectureSchedules { get; set; } = new List<LectureSchedule>();
         // quiz
-         public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
         // course skills
         public ICollection<CourseSkill> Skills { get; set; } = new List<CourseSkill>();
     }

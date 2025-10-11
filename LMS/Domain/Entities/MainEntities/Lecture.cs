@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.RelationTables;
+using LMS.Entity.Entities.MainEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,11 +19,6 @@ namespace Domain.Entities.MainEntities
         [MaxLength(500)]
         public string? RecordingPath { get; set; }
 
-        public DayOfWeek DayOfWeek { get; set; }
-
-        public TimeSpan StartHour { get; set; }
-        public TimeSpan? EndHour { get; set; }
-
         [MaxLength(500)]
         public string? ZoomLink { get; set; }
 
@@ -30,12 +26,22 @@ namespace Domain.Entities.MainEntities
 
         public DateTime? LastUpdatedAt { get; set; }
 
+        public DateTime LectureDate { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+
         public DateTime? LastRecordingUploadDate { get; set; }
         // relations
         // course
         [Required]
         public string CourseId { get; set; }
         public Course Course { get; set; }
+
+        // lecture schedulling
+        // could follow scheduling
+        public string ? LectureScheduleId { get; set; }
+
+        public LectureSchedule? LectureSchedule { get; set; }
 
         // user
         // instructor
