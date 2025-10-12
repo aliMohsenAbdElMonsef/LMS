@@ -3172,6 +3172,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "LMS.DataAcess >= 1.0.0",
+      "LMS.Entity >= 1.0.0",
       "Microsoft.AspNetCore.Http >= 2.3.0"
     ]
   },
@@ -3209,6 +3210,9 @@
           "projectReferences": {
             "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
               "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj"
+            },
+            "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj": {
+              "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj"
             }
           }
         }

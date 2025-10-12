@@ -247,6 +247,7 @@ namespace LMS.DataAcess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MessageBody")
+                        .IsRequired()
                         .HasMaxLength(3000)
                         .HasColumnType("nvarchar(3000)");
 
@@ -708,6 +709,9 @@ namespace LMS.DataAcess.Migrations
 
                     b.Property<string>("CourseId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("progress")
+                        .HasColumnType("float");
 
                     b.HasKey("StudentId", "CourseId");
 

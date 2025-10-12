@@ -9,6 +9,7 @@
       "LMS.BusinessLogic/1.0.0": {
         "dependencies": {
           "LMS.DataAcess": "1.0.0",
+          "LMS.Entity": "1.0.0",
           "Microsoft.AspNetCore.Http": "2.3.0"
         },
         "runtime": {

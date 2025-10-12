@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using LMS.DataAcess.Extensions;
+using LMS.BusinessLogic.Extensions;
 namespace LMS.API
 {
     public class Program
@@ -15,13 +16,20 @@ namespace LMS.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddDataAcessServices(builder.Configuration);
+            builder.Services
+                .AddDataAcessServices(builder.Configuration)
+                .AddBusinessLogicServices();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI();
                 app.MapOpenApi();
             }
 

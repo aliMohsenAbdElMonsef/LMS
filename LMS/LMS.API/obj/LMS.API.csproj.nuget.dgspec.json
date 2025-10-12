@@ -239,6 +239,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.6, )"
             }
           },
           "imports": [
@@ -294,6 +298,9 @@
             "projectReferences": {
               "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
                 "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj"
+              },
+              "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj": {
+                "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj"
               }
             }
           }

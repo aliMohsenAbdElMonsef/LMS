@@ -26,10 +26,11 @@ namespace LMS.DataAcess.Repositories
         public void Delete(TId id)
         {
             TEntity? entity = FindByID(id);
-            if (entity != null)
-            {
-                _set.Remove(entity);
-            }
+            if (entity == null)
+                throw new Exception($"Entity with id '{id}' does not exist.");
+
+            _set.Remove(entity);
+            
         }
 
         public TEntity? FindByID(TId id)

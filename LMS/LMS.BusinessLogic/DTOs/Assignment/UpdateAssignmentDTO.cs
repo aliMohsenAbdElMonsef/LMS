@@ -23,9 +23,9 @@ namespace LMS.BusinessLogic.DTOs.Assignment
         public DateTime? DueDate { get; set; }
 
         [Required]
-        public string InstructorId { get; set; }
+        public string? InstructorId { get; set; }
 
         [Required]
-        public string CourseId { get; set; }
+        public string? CourseId { get; set; }
     }
 }

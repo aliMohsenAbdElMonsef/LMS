@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace LMS.BusinessLogic.DTOs.Question
     // check if the quiz pass or not
     public class CreateQuestionDTO
     {
+        [Required]
         public string QuizId { get; set; }
         [Required]
         public string Text { get; set; }

@@ -21,7 +21,7 @@ namespace Domain.Entities.MainEntities
         public string? Description { get; set; }
 
         [MaxLength(3000)]
-        public string? MessageBody { get; set; } =
+        public string MessageBody { get; set; } =
             "This certificate is presented to {StudentName} for successfully completing the course \"{CourseName}\" with outstanding performance.";
 
 

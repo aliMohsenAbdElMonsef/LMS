@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace LMS.BusinessLogic.DTOs.Question
     {
         [Required]
         public string Id { get; set; }
-
+        [Required]
+        public string QuizId { get; set; }
         public string? Text { get; set; }
         public string? OptionA { get; set; }
         public string? OptionB { get; set; }

@@ -8,10 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\LMS.DataAcess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\Domain\LMS.Entity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
