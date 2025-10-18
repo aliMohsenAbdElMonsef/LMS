@@ -11,3 +11,16 @@ C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\Domain\obj\D
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\Domain\obj\Debug\net9.0\LMS.Entity.pdb
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\Domain\obj\Debug\net9.0\ref\LMS.Entity.dll
 C:\Users\VICTUS\OneDrive\Desktop\WebProjects\LastVersionWithApi\LMS\Domain\obj\Debug\net9.0\LMS.Entity.sourcelink.json
+D:\LMS\LMS\LMS\Domain\bin\Debug\net9.0\LMS.Entity.deps.json
+D:\LMS\LMS\LMS\Domain\bin\Debug\net9.0\LMS.Entity.dll
+D:\LMS\LMS\LMS\Domain\bin\Debug\net9.0\LMS.Entity.pdb
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.csproj.AssemblyReference.cache
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.GeneratedMSBuildEditorConfig.editorconfig
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.AssemblyInfoInputs.cache
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.AssemblyInfo.cs
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.csproj.CoreCompileInputs.cache
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.sourcelink.json
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.dll
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\refint\LMS.Entity.dll
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\LMS.Entity.pdb
+D:\LMS\LMS\LMS\Domain\obj\Debug\net9.0\ref\LMS.Entity.dll

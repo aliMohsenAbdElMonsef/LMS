@@ -3,9 +3,11 @@ using Domain.Entities.MainEntities;
 using Domain.Entities.RelationTables;
 using Domain.Enums;
 using LMS.Entity.Entities.MainEntities;
+using LMS.Entity.Entities.RelationTables;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Reflection.Emit;
 
 namespace DataAccess.Context
 {
@@ -14,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-422RLAR\\AliMohsen;Initial Catalog=LMS;Integrated Security=True;Trust Server Certificate=True");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-QVS4OPK;Initial Catalog=LMS;Integrated Security=True;Trust Server Certificate=True");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -38,7 +40,7 @@ namespace DataAccess.Context
         // Relation Entities
         public DbSet<CourseReview> CourseReviews { get; set; }
         public DbSet<StudentCertificate> StudentCertificates { get; set; }
-        public DbSet<InstructorCourse> InstructorCourses { get; set; }
+        public DbSet<InstructorEnrolltoCourse> InstructorEnrollments { get; set; }
         public DbSet<StudentEnrollIntoCourse> StudentEnrollments { get; set; }
         public DbSet<StudentLecture> StudentLectures { get; set; }
         public DbSet<StudentQuiz> StudentQuizzes { get; set; }
@@ -218,21 +220,24 @@ namespace DataAccess.Context
                 .HasForeignKey(cs => cs.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // instructor course
-            builder.Entity<InstructorCourse>()
-                .HasKey(ic => new { ic.InstructorId, ic.CourseId });
+            // InstructorEnrollment configuration
+            builder.Entity<InstructorEnrolltoCourse>(entity =>
+            {
+                entity.HasKey(e => e.Id);
 
-            builder.Entity<InstructorCourse>()
-                .HasOne(ic => ic.Instructor)
-                .WithMany(i => i.Courses)
-                .HasForeignKey(ic => ic.InstructorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.Instructor)
+                    .WithMany()
+                    .HasForeignKey(e => e.InstructorId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<InstructorCourse>()
-                .HasOne(ic => ic.Course)
-                .WithMany(c => c.Instructors)
-                .HasForeignKey(ic => ic.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.Course)
+                    .WithMany(c => c.InstructorEnrollments)
+                    .HasForeignKey(e => e.CourseId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Prevent duplicate pending enrollments
+                entity.HasIndex(e => new { e.InstructorId, e.CourseId, e.Status });
+            });
 
             // student answer question
             builder.Entity<StudentAnswerQuestion>()

@@ -19,8 +19,8 @@ namespace LMS.BusinessLogic.Services
         protected abstract TEntity UpdateToEntity(TUpdateDTO dto, TEntity existingEntity); 
         protected abstract TReadDTO MapToReadDTO(TEntity entity); 
         protected abstract IBaseRepository<TEntity,string> GetRepo();
-
         protected abstract string GetIdFromUpdateDTO(TUpdateDTO dto); 
+
         public TReadDTO Create(TCreateDTO dto)
         {
             TEntity entity = MapToEntity(dto);

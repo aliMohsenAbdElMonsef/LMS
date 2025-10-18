@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.RelationTables;
 using Domain.Enums;
 using LMS.Entity.Entities.MainEntities;
+using LMS.Entity.Entities.RelationTables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -63,8 +64,8 @@ namespace Domain.Entities.MainEntities
         // Relations
         // user
         // instructor
-        public ICollection<InstructorCourse> Instructors { get; set; } = new List<InstructorCourse>();
-            // student
+        public ICollection<InstructorEnrolltoCourse> InstructorEnrollments { get; set; }
+        // student
         public ICollection<StudentEnrollIntoCourse> Students { get; set; }= new List<StudentEnrollIntoCourse>();
         public ICollection<CourseReview> Reviews { get; set; } = new List<CourseReview>();
         // admin

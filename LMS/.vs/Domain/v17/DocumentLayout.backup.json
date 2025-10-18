@@ -1,33 +1,97 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\",
+  "WorkspaceRootPath": "D:\\LMS\\LMS\\LMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\migrations\\20251018140434_addedinstructorenrollment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\migrations\\20251018140434_addedinstructorenrollment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\contracts\\repositories\\iinstructorenrollmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\contracts\\repositories\\iinstructorenrollmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\repositories\\instructorenrollmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\instructorenrollmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\entities\\relationtables\\instructorenrolltocourse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\relationtables\\instructorenrolltocourse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\entities\\relationtables\\studentenrollintocourse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\relationtables\\studentenrollintocourse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\entities\\mainentities\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\course.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\contracts\\repositories\\icourserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\contracts\\repositories\\icourserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\context\\lmsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\context\\lmsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\repositories\\courserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\courserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\entities\\mainentities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|d:\\lms\\lms\\lms\\lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|d:\\lms\\lms\\lms\\lms.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\extensions\\businesslogicextesnion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\extensions\\businesslogicextesnion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|d:\\lms\\lms\\lms\\dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}|DataAccess\\LMS.DataAcess.csproj|solutionrelative:dataaccess\\repositories\\baserepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\services\\baseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\enums\\applicationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\enums\\applicationstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\enums\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\enums\\status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|d:\\lms\\lms\\lms\\domain\\entities\\mainentities\\applicationrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}|Domain\\LMS.Entity.csproj|solutionrelative:domain\\entities\\mainentities\\applicationrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|d:\\lms\\lms\\lms\\lms.businesslogic\\services\\baseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\services\\baseservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|c:\\users\\victus\\onedrive\\desktop\\webprojects\\lastversionwithapi\\lms\\lms.businesslogic\\services\\categoryservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|d:\\lms\\lms\\lms\\lms.businesslogic\\services\\assignmentservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\services\\assignmentservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|d:\\lms\\lms\\lms\\lms.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|d:\\lms\\lms\\lms\\lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\lms.api.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|d:\\lms\\lms\\lms\\lms.api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41325B4A-1421-4B2E-AB93-C243D86DB0E8}|LMS.API\\LMS.API.csproj|solutionrelative:lms.api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|d:\\lms\\lms\\lms\\lms.businesslogic\\extensions\\businesslogicextesnion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\extensions\\businesslogicextesnion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|d:\\lms\\lms\\lms\\lms.businesslogic\\services\\categoryservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}|LMS.BusinessLogic\\LMS.BusinessLogic.csproj|solutionrelative:lms.businesslogic\\services\\categoryservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -43,92 +107,292 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "LMS.API\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Properties\\launchSettings.json",
-              "RelativeToolTip": "LMS.API\\Properties\\launchSettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-12T22:12:07.898Z",
+              "Title": "20251018140434_addedInstructorEnrollment.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Migrations\\20251018140434_addedInstructorEnrollment.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Migrations\\20251018140434_addedInstructorEnrollment.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Migrations\\20251018140434_addedInstructorEnrollment.cs",
+              "RelativeToolTip": "DataAccess\\Migrations\\20251018140434_addedInstructorEnrollment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T14:04:35.367Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "LMS.API",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
-              "RelativeDocumentMoniker": "LMS.API\\LMS.API.csproj",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
-              "RelativeToolTip": "LMS.API\\LMS.API.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-10-12T22:12:03.288Z",
+              "DocumentIndex": 11,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.API\\appsettings.json",
+              "RelativeDocumentMoniker": "LMS.API\\appsettings.json",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.API\\appsettings.json",
+              "RelativeToolTip": "LMS.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-18T13:44:57.324Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "BaseRepository.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\BaseRepository.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\BaseRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\BaseRepository.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAkwDMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T13:37:28.521Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ICourseRepository.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Contracts\\Repositories\\ICourseRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Contracts\\Repositories\\ICourseRepository.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Contracts\\Repositories\\ICourseRepository.cs",
+              "RelativeToolTip": "DataAccess\\Contracts\\Repositories\\ICourseRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAsAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T13:34:10.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CourseRepository.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\CourseRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\CourseRepository.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\CourseRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\CourseRepository.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAwBkAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T13:09:29.156Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "InstructorEnrollmentRepository.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\InstructorEnrollmentRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Repositories\\InstructorEnrollmentRepository.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Repositories\\InstructorEnrollmentRepository.cs",
+              "RelativeToolTip": "DataAccess\\Repositories\\InstructorEnrollmentRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T12:41:35.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IInstructorEnrollmentRepository.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Contracts\\Repositories\\IInstructorEnrollmentRepository.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Contracts\\Repositories\\IInstructorEnrollmentRepository.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Contracts\\Repositories\\IInstructorEnrollmentRepository.cs",
+              "RelativeToolTip": "DataAccess\\Contracts\\Repositories\\IInstructorEnrollmentRepository.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAowBIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T12:30:57.789Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LMSDbContext.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\DataAccess\\Context\\LMSDbContext.cs",
+              "RelativeDocumentMoniker": "DataAccess\\Context\\LMSDbContext.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\DataAccess\\Context\\LMSDbContext.cs",
+              "RelativeToolTip": "DataAccess\\Context\\LMSDbContext.cs",
+              "ViewState": "AgIAAOoAAAAAAAAAAAAIwOoAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-18T12:15:12.346Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\ApplicationUser.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\ApplicationUser.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\ApplicationUser.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAA7wBoAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:23:34.196Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ApplicationRole.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\ApplicationRole.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\ApplicationRole.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\ApplicationRole.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\ApplicationRole.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:23:30.724Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "InstructorEnrolltoCourse.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\RelationTables\\InstructorEnrolltoCourse.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\RelationTables\\InstructorEnrolltoCourse.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\RelationTables\\InstructorEnrolltoCourse.cs",
+              "RelativeToolTip": "Domain\\Entities\\RelationTables\\InstructorEnrolltoCourse.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAiwA0AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:21:53.634Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Course.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\Course.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\MainEntities\\Course.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\MainEntities\\Course.cs",
+              "RelativeToolTip": "Domain\\Entities\\MainEntities\\Course.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAAAEgAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:20:10.492Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StudentEnrollIntoCourse.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\RelationTables\\StudentEnrollIntoCourse.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\RelationTables\\StudentEnrollIntoCourse.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Entities\\RelationTables\\StudentEnrollIntoCourse.cs",
+              "RelativeToolTip": "Domain\\Entities\\RelationTables\\StudentEnrollIntoCourse.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:16:23.217Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ApplicationStatus.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Enums\\ApplicationStatus.cs",
+              "RelativeDocumentMoniker": "Domain\\Enums\\ApplicationStatus.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Enums\\ApplicationStatus.cs",
+              "RelativeToolTip": "Domain\\Enums\\ApplicationStatus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:15:25.048Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Status.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\Domain\\Enums\\Status.cs",
+              "RelativeDocumentMoniker": "Domain\\Enums\\Status.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\Domain\\Enums\\Status.cs",
+              "RelativeToolTip": "Domain\\Enums\\Status.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:15:16.988Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "AssignmentServices.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\AssignmentServices.cs",
+              "RelativeDocumentMoniker": "LMS.BusinessLogic\\Services\\AssignmentServices.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\AssignmentServices.cs",
+              "RelativeToolTip": "LMS.BusinessLogic\\Services\\AssignmentServices.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAswBIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-17T22:02:34.93Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.API\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "LMS.API\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.API\\Properties\\launchSettings.json",
+              "RelativeToolTip": "LMS.API\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-12T22:12:07.898Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "LMS.API",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj",
+              "RelativeDocumentMoniker": "LMS.API\\LMS.API.csproj",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj",
+              "RelativeToolTip": "LMS.API\\LMS.API.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-12T22:12:03.288Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.API\\Program.cs",
               "RelativeDocumentMoniker": "LMS.API\\Program.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Program.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.API\\Program.cs",
               "RelativeToolTip": "LMS.API\\Program.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAQwB8AAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAACUAAAAAAAAAAAAQwC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-12T22:04:41.133Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 21,
               "Title": "BusinessLogicExtesnion.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
               "RelativeDocumentMoniker": "LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
               "RelativeToolTip": "LMS.BusinessLogic\\Extensions\\BusinessLogicExtesnion.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T22:01:07.458Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-12T22:01:07.458Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 20,
               "Title": "CategoryController.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Controllers\\CategoryController.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.API\\Controllers\\CategoryController.cs",
               "RelativeDocumentMoniker": "LMS.API\\Controllers\\CategoryController.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\Controllers\\CategoryController.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.API\\Controllers\\CategoryController.cs",
               "RelativeToolTip": "LMS.API\\Controllers\\CategoryController.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAowBcAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T21:47:44.808Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-12T21:47:44.808Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 22,
               "Title": "CategoryServices.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Services\\CategoryServices.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\CategoryServices.cs",
               "RelativeDocumentMoniker": "LMS.BusinessLogic\\Services\\CategoryServices.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Services\\CategoryServices.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\CategoryServices.cs",
               "RelativeToolTip": "LMS.BusinessLogic\\Services\\CategoryServices.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T21:47:40.083Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-12T21:47:40.083Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 16,
               "Title": "BaseServices.cs",
-              "DocumentMoniker": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Services\\BaseServices.cs",
+              "DocumentMoniker": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\BaseServices.cs",
               "RelativeDocumentMoniker": "LMS.BusinessLogic\\Services\\BaseServices.cs",
-              "ToolTip": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\Services\\BaseServices.cs",
+              "ToolTip": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\Services\\BaseServices.cs",
               "RelativeToolTip": "LMS.BusinessLogic\\Services\\BaseServices.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAA5wAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-12T21:47:33.781Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-12T21:47:33.781Z"
             }
           ]
         }

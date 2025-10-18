@@ -26,6 +26,7 @@ namespace LMS.DataAcess.Contracts
         ISkillRepository Skills { get; }
 
         IUserRepository Users { get; }
+        IInstructorEnrolltoCourseRepository InstructorEnrollments { get; }
 
         int SaveChanges();
 

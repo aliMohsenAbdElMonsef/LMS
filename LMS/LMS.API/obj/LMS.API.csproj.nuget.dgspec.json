@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj": {}
+    "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
+    "D:\\LMS\\LMS\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
+        "projectUniqueName": "D:\\LMS\\LMS\\LMS\\DataAccess\\LMS.DataAcess.csproj",
         "projectName": "LMS.DataAcess",
-        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj",
-        "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\obj\\",
+        "projectPath": "D:\\LMS\\LMS\\LMS\\DataAccess\\LMS.DataAcess.csproj",
+        "packagesPath": "C:\\Users\\ik\\.nuget\\packages\\",
+        "outputPath": "D:\\LMS\\LMS\\LMS\\DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj": {
-                "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj"
+              "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj": {
+                "projectPath": "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj"
               }
             }
           }
@@ -95,20 +95,20 @@
         }
       }
     },
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj": {
+    "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj",
+        "projectUniqueName": "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj",
         "projectName": "LMS.Entity",
-        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj",
-        "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\obj\\",
+        "projectPath": "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj",
+        "packagesPath": "C:\\Users\\ik\\.nuget\\packages\\",
+        "outputPath": "D:\\LMS\\LMS\\LMS\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -166,20 +166,20 @@
         }
       }
     },
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj": {
+    "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
+        "projectUniqueName": "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj",
         "projectName": "LMS.API",
-        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\LMS.API.csproj",
-        "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.API\\obj\\",
+        "projectPath": "D:\\LMS\\LMS\\LMS\\LMS.API\\LMS.API.csproj",
+        "packagesPath": "C:\\Users\\ik\\.nuget\\packages\\",
+        "outputPath": "D:\\LMS\\LMS\\LMS\\LMS.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -194,8 +194,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj": {
-                "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj"
+              "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj": {
+                "projectPath": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj"
               }
             }
           }
@@ -268,20 +268,20 @@
         }
       }
     },
-    "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj": {
+    "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj",
+        "projectUniqueName": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj",
         "projectName": "LMS.BusinessLogic",
-        "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj",
-        "packagesPath": "C:\\Users\\VICTUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\LMS.BusinessLogic\\obj\\",
+        "projectPath": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\LMS.BusinessLogic.csproj",
+        "packagesPath": "C:\\Users\\ik\\.nuget\\packages\\",
+        "outputPath": "D:\\LMS\\LMS\\LMS\\LMS.BusinessLogic\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\VICTUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ik\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -296,11 +296,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
-                "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\DataAccess\\LMS.DataAcess.csproj"
+              "D:\\LMS\\LMS\\LMS\\DataAccess\\LMS.DataAcess.csproj": {
+                "projectPath": "D:\\LMS\\LMS\\LMS\\DataAccess\\LMS.DataAcess.csproj"
               },
-              "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj": {
-                "projectPath": "C:\\Users\\VICTUS\\OneDrive\\Desktop\\WebProjects\\LastVersionWithApi\\LMS\\Domain\\LMS.Entity.csproj"
+              "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj": {
+                "projectPath": "D:\\LMS\\LMS\\LMS\\Domain\\LMS.Entity.csproj"
               }
             }
           }
