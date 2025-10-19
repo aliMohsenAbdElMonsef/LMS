@@ -51,5 +51,6 @@ namespace LMS.DataAcess.Repositories
             _set.Update(entity);
             return Task.CompletedTask;
         }
+
     }
 }

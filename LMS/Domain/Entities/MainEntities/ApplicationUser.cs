@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.RelationTables;
 using Domain.Enums;
+using LMS.Entity.Entities.RelationTables;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Domain.Entities.MainEntities
         //Relations
         //course
         // instructor
-        public ICollection<InstructorCourse> Courses { get; set; } = new List<InstructorCourse>();
+        public ICollection<InstructorEnrolltoCourse> Courses { get; set; } = new List<InstructorEnrolltoCourse>();
             // student
         public ICollection<StudentEnrollIntoCourse> Enrollment { get; set; } = new List<StudentEnrollIntoCourse>();
         public ICollection<CourseReview> Reviews { get; set; } = new List<CourseReview>();

@@ -9,6 +9,7 @@ namespace LMS.DataAcess.Contracts.Repositories
 {
     public interface ICourseRepository: IBaseRepository<Course,string>
     {
-
+        Course? GetByIdWithAcceptedInstructors(string id);
     }
+
 }
