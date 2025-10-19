@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.API", "LMS.API\LMS.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.BusinessLogic", "LMS.BusinessLogic\LMS.BusinessLogic.csproj", "{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.MVC", "LMS.MVC\LMS.MVC.csproj", "{548824FC-7E31-4FCD-822A-472E67EC2C8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55CCDD30-4757-4AF8-B9BC-E07F57EE31DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{548824FC-7E31-4FCD-822A-472E67EC2C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{548824FC-7E31-4FCD-822A-472E67EC2C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{548824FC-7E31-4FCD-822A-472E67EC2C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{548824FC-7E31-4FCD-822A-472E67EC2C8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

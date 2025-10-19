@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Contracts
 {
-    public interface IBaseRepository <TEntity,TId> where TEntity : class
+    public interface IBaseRepository<TEntity, TId> where TEntity : class
     {
-        IQueryable<TEntity> GetAll();
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
-        TEntity? FindByID(TId id);
+        Task<TEntity?> FindByIdAsync(TId id);
 
-        void Create(TEntity entity);
+        Task CreateAsync(TEntity entity);
 
-        void Update(TEntity entity);
+        Task UpdateAsync(TEntity entity);
 
-        void Delete(TId id);
+        Task DeleteAsync(TId id);
     }
 }

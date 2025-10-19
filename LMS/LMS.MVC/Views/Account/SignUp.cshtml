@@ -1,0 +1,72 @@
+﻿@model LMS.MVC.Models.ViewModels.SignUpViewModel
+
+@{
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="signup-page d-flex justify-content-center align-items-center min-vh-100" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/images/backGroundImage.jpg'); background-size: cover; background-position: center;">
+    <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 450px; background-color: rgba(255,255,255,0.95);">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4 text-primary">Create an Account</h3>
+
+            <form asp-action="SignUp" method="post" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="ApplyAs" class="form-label">Register As</label>
+                    <select asp-for="ApplyAs" class="form-select">
+                        <option value="">-- Select User Type --</option>
+                        @foreach (var type in Model.AllowedUserTypes)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ApplyAs" class="text-danger small"></span>
+                </div>
+
+                <div class="mt-3">
+                    <label asp-for="UserImage" class="form-label">Profile Image (optional)</label>
+                    <input asp-for="UserImage" class="form-control" type="file" />
+                    <span asp-validation-for="UserImage" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-4">Sign Up</button>
+            </form>
+
+            <p class="text-center mt-3 small">
+                Already have an account? <a asp-action="Login" class="text-decoration-none text-primary fw-bold">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+

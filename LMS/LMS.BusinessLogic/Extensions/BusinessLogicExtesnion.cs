@@ -1,4 +1,5 @@
 ﻿using LMS.BusinessLogic.Contracts;
+using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -14,6 +15,8 @@ namespace LMS.BusinessLogic.Extensions
         public static IServiceCollection AddBusinessLogicServices(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfServices, UnitOfServices>();
+            services.AddScoped<ITokenServices, TokenServices>();
+            services.AddScoped<IUserServices, UserServices>();
             return services;
         }
     }

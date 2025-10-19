@@ -9,5 +9,6 @@ namespace LMS.DataAcess.Contracts.Repositories
 {
     public interface IUserRepository: IBaseRepository<ApplicationUser,string>
     {
+       
     }
 }

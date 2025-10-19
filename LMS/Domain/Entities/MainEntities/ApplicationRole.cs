@@ -9,11 +9,11 @@ namespace Domain.Entities.MainEntities
 {
     public class ApplicationRole:IdentityRole<string>
     {
-        ApplicationRole():base() 
+        public ApplicationRole():base() 
         { 
             Id = Guid.NewGuid().ToString();
         }
-        ApplicationRole(string roleName) : base(roleName)
+        public ApplicationRole(string roleName) : base(roleName)
         {
             Id = Guid.NewGuid().ToString();
         }

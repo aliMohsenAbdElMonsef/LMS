@@ -9,12 +9,12 @@ namespace LMS.BusinessLogic.Contracts
 
     public interface IBaseService<TReadDto, TCreateDto, TUpdateDto> where TReadDto : class where TCreateDto : class where TUpdateDto : class
     {
-        IEnumerable<TReadDto> GetAll();
-        TReadDto GetById(string id);
+        Task<IEnumerable<TReadDto>> GetAllAsync();
+        Task<TReadDto> GetByIdAsync(string id);
 
-        TReadDto Create(TCreateDto dto);
-        TReadDto Update(TUpdateDto dto);
-        void Delete(string id);
+        Task<TReadDto> CreateAsync(TCreateDto dto);
+        Task<TReadDto> UpdateAsync(TUpdateDto dto);
+        Task DeleteAsync(string id);
     }
 
 }

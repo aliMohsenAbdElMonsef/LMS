@@ -21,7 +21,7 @@ namespace LMS.API.Controllers
         [HttpPost]
         public ActionResult CreateCategory(CreateCategoryDTO category)
         {
-            return Ok( CategoryService.Create(category) );   
+            return Ok( CategoryService.CreateAsync(category) );   
         }
     }
 }
