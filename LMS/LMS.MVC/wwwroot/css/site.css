@@ -1,31 +1,175 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+margin: 0;
+padding: 0;
+font-family: Arial, sans-serif;
+color: #fff;
+background: linear-gradient(to top, rgba(0,0,0,0.5)30%, rgba(0,0,0,0.5)40%), url('/images/backGroundImage.jpg') center/cover no-repeat;
+width: 100%;
+min-height: 100vh;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.main {
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 90%;
+max-width: 1200px;
+margin: 0 auto;
+padding-top: 100px;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.welcome-text h1 {
+font-size: 50px;
+line-height: 1.2;
+}
+
+.welcome-text span {
+color: #c70808;
+}
+
+.signup-form {
+background: rgba(0,0,0,0.8);
+backdrop-filter: blur(10px);
+padding: 30px;
+border-radius: 15px;
+width: 350px;
+}
+
+.signup-form h2 {
+    color: #c70808;
+    background-color: #fff;
+    text-align: center;
+    padding: 8px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="email"],
+.signup-form input[type="password"],
+.signup-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #c70808;
+    color: #fff;
+}
+
+.signup-form input:focus,
+.signup-form select:focus {
+    outline: none;
+    border-bottom: 1px solid #fff;
+}
+
+.signup-form ::placeholder {
+    color: #fff;
+}
+
+.file-input-group {
+margin: 15px 0;
+position: relative;
+}
+
+.file-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.custom-file-input {
+width: 100%;
+padding: 10px;
+background: transparent;
+border: none;
+border-bottom: 1px solid #c70808;
+color: #fff;
+cursor: pointer;
+}
+
+.custom-file-input::file-selector-button {
+    background: #c70808;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-file-input::file-selector-button:hover {
+    background: #fff;
+    color: #c70808;
+}
+
+.custom-file-input:focus {
+    outline: none;
+    border-bottom: 1px solid #fff;
+}
+
+.file-info {
+    font-size: 12px;
+    color: #ccc;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.file-name {
+    font-size: 12px;
+    color: #fff;
+    margin-top: 5px;
+    display: block;
+}
+
+.signup-form .btn-signup {
+    width: 100%;
+    padding: 10px;
+    background: #c70808;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 18px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.signup-form .btn-signup:hover {
+    background: #fff;
+    color: #c70808;
+}
+
+.role-group {
+    margin: 15px 0;
+}
+
+.role-group input[type="radio"] {
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.role-group label {
+    margin-right: 15px;
+    color: #fff;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-link a {
+    color: #c70808;
+    text-decoration: none;
+}
+
+.text-danger {
+    font-size: 12px;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    color: #ff6b6b;
 }

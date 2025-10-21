@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.User;
 using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.DTOs.Auth;
+using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace LMS.BusinessLogic.Contracts.Services
     public interface IUserServices 
     {
         
-        Task<SignUpResponseDTO> CreateUserAsync(SignUpDTO dto);
+        Task<BasicResponseDTO> CreateUserAsync(SignUpDTO dto);
         
         Task<IdentityResult> AddUserToRoleAsync(ApplicationUser user, string role);
         
@@ -33,7 +34,7 @@ namespace LMS.BusinessLogic.Contracts.Services
         
         Task<IEnumerable<ReadUserDTO>> GetCurrentUsers();
 
-        Task<LoginResponseDTO> LoginUser(LoginDTO dto);
+        Task<BasicResponseDTO> LoginUser(LoginDTO dto);
 
 
 

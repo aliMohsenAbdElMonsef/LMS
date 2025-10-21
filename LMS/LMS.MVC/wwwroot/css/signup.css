@@ -1,0 +1,216 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0,0,0,0.5)30%, rgba(0,0,0,0.5)40%), url('/images/backGroundImage.jpg') center/cover no-repeat;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 100px;
+    gap: 2rem;
+}
+
+/* Responsive welcome text */
+.welcome-text h1 {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.welcome-text span {
+    color: #c70808;
+}
+
+/* Responsive signup form */
+.signup-form {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+    .signup-form h2 {
+        color: #c70808;
+        background-color: #fff;
+        text-align: center;
+        padding: 8px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: clamp(1.1rem, 3vw, 1.6rem);
+    }
+
+    /* Inputs */
+    .signup-form input[type="text"],
+    .signup-form input[type="email"],
+    .signup-form input[type="password"],
+    .signup-form select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #c70808;
+        color: #fff;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        transition: border-color 0.3s ease, color 0.3s ease;
+    }
+
+        .signup-form input:focus,
+        .signup-form select:focus {
+            outline: none;
+            border-bottom: 1px solid #fff;
+        }
+
+    .signup-form ::placeholder {
+        color: #fff;
+    }
+
+/* File input */
+.file-input-group {
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border-bottom: 1px solid #c70808;
+    padding: 8px 0;
+}
+
+.upload-btn {
+    background: #c70808;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+    .upload-btn:hover {
+        background: #fff;
+        color: #c70808;
+        transform: scale(1.03);
+    }
+
+#file-chosen {
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    opacity: 0.8;
+}
+
+/* Signup button */
+.signup-form .btn-signup {
+    width: 100%;
+    padding: 10px;
+    background: #c70808;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    margin-top: 15px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+    .signup-form .btn-signup:hover {
+        background: #fff;
+        color: #c70808;
+        transform: scale(1.03);
+    }
+
+/* Custom radios */
+.role-group {
+    margin: 15px 0;
+}
+
+    .role-group input[type="radio"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #c70808;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        background: transparent;
+        vertical-align: middle;
+        margin-right: 6px;
+        transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .role-group input[type="radio"]:checked {
+            background-color: #c70808;
+            border-color: #c70808;
+            transform: scale(1.1);
+        }
+
+    .role-group label {
+        margin-right: 15px;
+        cursor: pointer;
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+    .login-link a {
+        color: #c70808;
+        text-decoration: none;
+    }
+.text-danger {
+    color: #8b0000 !important; /* dark red */
+    font-size: 0.80rem !important; /* smaller text */
+    margin-top: -5px;
+    margin-bottom: 10px;
+    display: block;
+    font-weight: bold;
+}
+
+/* Responsive layout stacking */
+@media (max-width: 900px) {
+    .main {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+   
+
+    .welcome-text {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .custom-file-upload {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .upload-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    #file-chosen {
+        width: 100%;
+    }
+}

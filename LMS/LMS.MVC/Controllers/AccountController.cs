@@ -1,10 +1,16 @@
-﻿using LMS.MVC.Models.ViewModels;
-using Microsoft.AspNetCore.Identity;
+﻿using LMS.MVC.Models.ViewModels.Account;
+using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Entities.MainEntities;
 
 public class AccountController : Controller
 {
+    private readonly IUnitOfServices _services;
+
+    public AccountController(IUnitOfServices services)
+    {
+        _services = services;
+    }
+
     [HttpGet]
     public IActionResult SignUp()
     {
@@ -13,15 +19,66 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public IActionResult SignUp(SignUpViewModel model)
+    public async Task<IActionResult> SignUp(SignUpViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var result = await _services.AccountService.RegisterUserAsync(model);
+
+        if (result.Success)
+            return RedirectToAction("Login");
+
+        if (result.Errors != null && result.Errors.Count > 0)
         {
-            // Handle successful sign-up logic here
-            return RedirectToAction("Index", "Home");
+            foreach (var errorMsg in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, errorMsg);
+            }
         }
+        else if (!string.IsNullOrEmpty(result.Message))
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty, "Registration failed. Please check your data.");
+        }
+
+
         return View(model);
     }
 
+    [HttpGet]
+    public IActionResult Login()
+    {
+        var model = new LoginViewModel();
+        return View(model);
+    }
 
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+        var result = await _services.AccountService.LoginUserAsync(model);
+        if (result.Success)
+            return RedirectToAction("Index", "Home");
+        if (result.Errors != null && result.Errors.Count > 0)
+        {
+            foreach (var errorMsg in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, errorMsg);
+            }
+        }
+        else if (!string.IsNullOrEmpty(result.Message))
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials.");
+        }
+        return View(model);
+    }
 }

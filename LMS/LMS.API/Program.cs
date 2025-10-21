@@ -76,6 +76,16 @@ namespace LMS.API
                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
 
             // ---------------------- Build App ----------------------
             var app = builder.Build();
@@ -99,6 +109,7 @@ namespace LMS.API
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication(); // Must come BEFORE UseAuthorization
             app.UseAuthorization();

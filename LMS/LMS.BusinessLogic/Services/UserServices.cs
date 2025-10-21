@@ -3,6 +3,7 @@ using Domain.Entities.MainEntities;
 using Domain.Enums;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Auth;
+using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,21 +22,29 @@ namespace LMS.BusinessLogic.Services
             _tokenServices = tokenServices;
         }
 
-        private static void CreateFile(IFormFile file, ApplicationUser user)
+        private static void CreateFile(IFormFile? file, ApplicationUser user)
         {
+            if (file == null || file.Length == 0)
+            {
+                user.UserImage = "uploads/users/photos/profile-images/default.jpg";
+                return;
+            }
+
             string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "users", "photos", "profile-images");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
+
             string fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
             string filePath = Path.Combine(uploadsFolder, fileName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
             }
-            user.UserImage = Path.Combine("uploads", "users","photos","profile-images", fileName);
+            user.UserImage = Path.Combine("uploads", "users", "photos", "profile-images", fileName);
         }
+
         private static ReadUserDTO MapToReadUserDTO(ApplicationUser user)
         {
             ReadUserDTO dto = new ReadUserDTO
@@ -68,28 +77,39 @@ namespace LMS.BusinessLogic.Services
             };
             return user;
         }
-        public async Task<SignUpResponseDTO> CreateUserAsync(SignUpDTO dto)//done
+        public async Task<BasicResponseDTO> CreateUserAsync(SignUpDTO dto)
         {
-            var user = MapToApplicationUser(dto);
-
-            CreateFile(dto.UserImage, user);
-
-            var result = await _userManager.CreateAsync(user, dto.Password);
-
-            var response = new SignUpResponseDTO();
-
-            if (result.Succeeded)
+            var response = new BasicResponseDTO();
+            var existuser = await _userManager.FindByEmailAsync(dto.Email);
+            if(existuser != null)
             {
-                response.Success = true;
-                response.Message = "User created successfully. Pending approval from admin.";
-                response.UserId = user.Id;
+                response.Success = false;
+                response.Message = "User with this email already exist.";
+                response.UserId = existuser.Id;
             }
             else
             {
-                response.Success = false;
-                response.Message = "User creation failed.";
-                response.Errors = result.Errors.Select(e => e.Description).ToList();
+                var user = MapToApplicationUser(dto);
+
+                CreateFile(dto.UserImage, user);
+
+                var result = await _userManager.CreateAsync(user, dto.Password);
+
+
+                if (result.Succeeded)
+                {
+                    response.Success = true;
+                    response.Message = "User created successfully. Pending approval from admin.";
+                    response.UserId = user.Id;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "User creation failed.";
+                    response.Errors = result.Errors.Select(e => e.Description).ToList();
+                }
             }
+                
 
             return response;
         }
@@ -100,25 +120,25 @@ namespace LMS.BusinessLogic.Services
             return await _userManager.Users.Select(u => MapToReadUserDTO(u)).ToListAsync();
         }
 
-        public async Task<LoginResponseDTO> LoginUser(LoginDTO dto)
+        public async Task<BasicResponseDTO> LoginUser(LoginDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.EmailOrUserName)
                      ?? await _userManager.FindByEmailAsync(dto.EmailOrUserName);
 
             if (user == null)
-                return new LoginResponseDTO { Success = false, Message = "User not found" };
+                return new BasicResponseDTO { Success = false, Message = "User not found" };
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!isPasswordValid)
-                return new LoginResponseDTO { Success = false, Message = "Invalid password" };
+                return new BasicResponseDTO { Success = false, Message = "Invalid password" };
 
             if (user.Status != ApplicationStatus.Approved)
-                return new LoginResponseDTO { Success = false, Message = "User not approved by admin yet" };
+                return new BasicResponseDTO { Success = false, Message = "User not approved by admin yet" };
 
             var roles = await _userManager.GetRolesAsync(user);
             var token = _tokenServices.CreateToken(user, roles);
 
-            return new LoginResponseDTO
+            return new BasicResponseDTO
             {
                 Success = true,
                 Message = "Login successful",
