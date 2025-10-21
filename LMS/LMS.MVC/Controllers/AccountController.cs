@@ -1,5 +1,7 @@
 ﻿using LMS.MVC.Models.ViewModels.Account;
 using LMS.MVC.Services.Contracts;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 public class AccountController : Controller
@@ -17,7 +19,13 @@ public class AccountController : Controller
         var model = new SignUpViewModel();
         return View(model);
     }
+    [HttpPost]
+    public IActionResult Logout()
+    {
 
+
+        return RedirectToAction("Login", "Account");
+    }
     [HttpPost]
     public async Task<IActionResult> SignUp(SignUpViewModel model)
     {

@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-QVS4OPK;Initial Catalog=LMS;Integrated Security=True;Trust Server Certificate=True");
+            optionsBuilder.UseSqlServer("Server=.\\ALIMOHSEN;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -24,7 +24,31 @@ namespace DataAccess.Context
 
     internal class LMSDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
-        public LMSDbContext(DbContextOptions<LMSDbContext> options) : base(options) { }
+
+        public LMSDbContext(DbContextOptions<LMSDbContext> options) : base(options)
+        {
+            // Add this constructor to see what's being passed
+            if (Database.IsSqlServer())
+            {
+                try
+                {
+                    var connection = Database.GetDbConnection();
+                    Console.WriteLine($"DbContext Connection String: {connection.ConnectionString}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error getting connection string: {ex.Message}");
+                }
+            }
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                Console.WriteLine("OnConfiguring called - using design-time connection");
+                optionsBuilder.UseSqlServer("Server=.\\ALIMOHSEN;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true;");
+            }
+        }
 
         // Main Entities
         public DbSet<Course> Courses { get; set; }
@@ -32,6 +56,8 @@ namespace DataAccess.Context
         public DbSet<Quiz> Quizzes { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
+
+        public DbSet<BlackListedTokens> BlackListedTokens { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Skills> Skills { get; set; }
         public DbSet<CertificateTemplate> CertificateTemplates { get; set; }

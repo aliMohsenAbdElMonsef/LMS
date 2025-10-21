@@ -29,6 +29,7 @@ namespace LMS.MVC.Services.Services
 
                 if (serviceResult != null && serviceResult.Success && !string.IsNullOrEmpty(serviceResult.Token))
                 {
+                    _httpContextAccessor.HttpContext?.Session.SetString("JWToken", serviceResult.Token);
                     _httpContextAccessor.HttpContext?.Response.Cookies.Append(
                         "AuthToken",
                         serviceResult.Token,
@@ -69,6 +70,11 @@ namespace LMS.MVC.Services.Services
                 };
             }
         }
+
+        //public Task<ServiceResult> LogoutUserAsync()
+        //{
+            
+        //}
 
         public async Task<ServiceResult> RegisterUserAsync(SignUpViewModel model)
         {

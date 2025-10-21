@@ -1,6 +1,7 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
 using LMS.DataAcess.Contracts;
+using LMS.DataAcess.Contracts.Repositories;
 using LMS.DataAcess.Repositories;
 using Microsoft.AspNetCore.Identity; 
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,8 @@ namespace LMS.DataAcess.Extensions
         public static IServiceCollection AddDataAcessServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            string connectionString = config.GetConnectionString("LMSDb");
+            services.AddScoped<IBlackListedTokens, BlackListedTokensRepository>();
+            string connectionString = config.GetConnectionString("DefaultConnection");
             services.AddDbContext<LMSDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);

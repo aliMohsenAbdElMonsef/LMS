@@ -7,6 +7,7 @@ namespace LMS.MVC.Services.Services
     public class UnitOfServices : IUnitOfServices
     {
         private readonly Lazy<IAccountService> _accountService;
+        private readonly Lazy<IUserService> _userService;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -17,9 +18,12 @@ namespace LMS.MVC.Services.Services
 
             _accountService = new Lazy<IAccountService>(() =>
                 new AccountServices(_httpClientFactory, _httpContextAccessor));
+            _userService = new Lazy<IUserService>(() => new UserServices(_httpClientFactory, _httpContextAccessor));
         }
 
         public IAccountService AccountService => _accountService.Value;
+
+        public IUserService UserService => _userService.Value;
     }
 
 }

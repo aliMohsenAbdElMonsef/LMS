@@ -1,5 +1,5 @@
-using LMS.MVC;
 using LMS.MVC.Services.Contracts;
+using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,20 +14,32 @@ namespace LMS.MVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // ---------------------- MVC ----------------------
             builder.Services.AddControllersWithViews();
+
+            // ---------------------- Session ----------------------
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             builder.Services.AddHttpContextAccessor();
 
             // ---------------------- HttpClient for API ----------------------
             builder.Services.AddHttpClient("LMS.API", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7033/");
+                client.BaseAddress = new Uri("https://localhost:7033/"); // API base URL
             });
 
             // ---------------------- Custom Services ----------------------
             builder.Services.AddScoped<IUnitOfServices, UnitOfServices>();
+            builder.Services.AddScoped<IUserService, UserServices>();
+            builder.Services.AddScoped<IAccountService, AccountServices>();
 
             // ---------------------- Authentication ----------------------
-            // Use cookies to persist login state
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -40,7 +52,7 @@ namespace LMS.MVC
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
-            // Optional: Use JWT Bearer to validate the API token if needed
+            // Optional: JWT Bearer setup for API validation (if needed)
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -62,7 +74,7 @@ namespace LMS.MVC
                     {
                         OnMessageReceived = context =>
                         {
-                            var token = context.Request.Cookies["LMS.Jwt"]; // Replace with your cookie name
+                            var token = context.Request.Cookies["AuthToken"]; // your cookie name
                             if (!string.IsNullOrEmpty(token))
                             {
                                 context.Token = token;
@@ -78,10 +90,15 @@ namespace LMS.MVC
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseRouting();
+
+            app.UseSession(); // <-- important: enable session
 
             app.UseAuthentication();
             app.UseAuthorization();

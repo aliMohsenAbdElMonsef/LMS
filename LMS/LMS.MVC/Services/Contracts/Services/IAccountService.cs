@@ -7,5 +7,7 @@ namespace LMS.MVC.Services.Contracts.Services
     {
         Task<ServiceResult> RegisterUserAsync(SignUpViewModel model);
         Task<ServiceResult> LoginUserAsync(LoginViewModel model);
+
+        //Task<ServiceResult> LogoutUserAsync();
     }
 }

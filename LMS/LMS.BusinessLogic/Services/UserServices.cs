@@ -52,10 +52,11 @@ namespace LMS.BusinessLogic.Services
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email = user.Email,
+                Email = user.Email??"",
                 UserImage = user.UserImage,
                 ApplyAs = user.ApplyAs,
                 Status = user.Status,
+                username = user.UserName??"",
                 IsDeleted = user.IsDeleted
             };
             if (user.IsDeleted)
@@ -213,6 +214,11 @@ namespace LMS.BusinessLogic.Services
                 .Where(u => u.Status == ApplicationStatus.Approved)
                 .Select(u => MapToReadUserDTO(u))
                 .ToListAsync();
+        }
+
+        public Task<BasicResponseDTO> LogoutUser()
+        {
+           
         }
     }
 }

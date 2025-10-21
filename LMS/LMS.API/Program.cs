@@ -1,10 +1,13 @@
 using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.Contracts.Seedings;
+using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Extensions;
 using LMS.DataAcess.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace LMS.API
@@ -19,14 +22,12 @@ namespace LMS.API
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            // Add DataAccess and BusinessLogic services
             builder.Services
                 .AddDataAcessServices(builder.Configuration)
                 .AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
 
-            // Swagger with Bearer JWT
             builder.Services.AddSwaggerGen(c =>
             {
                 c.UseInlineDefinitionsForEnums();
@@ -57,6 +58,10 @@ namespace LMS.API
             });
 
             // ---------------------- JWT Authentication ----------------------
+            // ---------------------- JWT Authentication ----------------------
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,24 +72,40 @@ namespace LMS.API
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
                     ValidateAudience = true,
-                    ValidateLifetime = true,
+                    ValidAudience = jwtSettings["Audience"],
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],      // "LMS.API"
-                    ValidAudience = builder.Configuration["Jwt:Audience"],  // "LMS.MVC"
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var jwtToken = context.SecurityToken as JwtSecurityToken;
+                        var token = jwtToken?.RawData;
+
+                        if (string.IsNullOrEmpty(token))
+                        {
+                            context.Fail("Invalid token format");
+                            return;
+                        }
+
+                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<IBlackListedTokensServices>();
+
+                        bool isBlackListed = await tokenService.IsTokenBlackListedAsync(token);
+
+                        if (isBlackListed)
+                        {
+                            context.Fail("This token is blacklisted");
+                        }
+                    }
                 };
             });
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
+
 
 
             // ---------------------- Build App ----------------------

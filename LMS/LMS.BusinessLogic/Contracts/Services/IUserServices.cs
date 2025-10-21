@@ -36,7 +36,7 @@ namespace LMS.BusinessLogic.Contracts.Services
 
         Task<BasicResponseDTO> LoginUser(LoginDTO dto);
 
-
+        Task<BasicResponseDTO> LogoutUser(string token, string userId);
 
 
     }

@@ -49,6 +49,7 @@ namespace LMS.DataAcess.Repositories
         public IUserRepository Users => _users.Value;
         public IInstructorEnrolltoCourseRepository InstructorEnrollments => _instructorEnrollments.Value;
 
+
         public int SaveChanges()
         {
             return _db.SaveChanges();

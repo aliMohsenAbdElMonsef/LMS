@@ -31,12 +31,11 @@
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @* If the user is logged in *@
                             
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                                    <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="UserManagement">User Dashboard</a>
                                 </li>
                             }
                             <li class="nav-item">

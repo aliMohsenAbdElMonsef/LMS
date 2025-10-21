@@ -9,6 +9,12 @@ namespace LMS.BusinessLogic.Contracts.Services
 {
     public interface ITokenServices
     {
-        string CreateToken(ApplicationUser user, IList<string> roles);
+        string GenerateAccessToken(ApplicationUser user);
+        Task<string> GenerateRefreshToken(string userId);
+        DateTime GetExpiryFromToken(string token);
+        Task<bool> ValidateRefreshToken(string refreshToken, string userId);
+        Task<bool> IsAccessTokenBlacklisted(string token);
+        Task BlacklistAccessToken(string token, DateTime expiry, string userId);
+        Task SaveRefreshTokenAsync(ApplicationUser user, string refreshToken, DateTime expiryDate)
     }
 }

@@ -2,11 +2,7 @@
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LMS.BusinessLogic.Extensions
 {
@@ -17,6 +13,7 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<IUnitOfServices, UnitOfServices>();
             services.AddScoped<ITokenServices, TokenServices>();
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IBlackListedTokensServices, BlackListedTokensServices>();
             return services;
         }
     }

@@ -1,8 +1,8 @@
 ﻿using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Auth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LMS.API.Controllers
 {
@@ -11,9 +11,13 @@ namespace LMS.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
-        public UserController(IUserServices userServices)
+        private readonly IBlackListedTokensServices _blackListedTokensService;
+        private readonly ITokenServices _tokenServices;
+        public UserController(IUserServices userServices, IBlackListedTokensServices blacklistedServices, ITokenServices tokenServices)
         {
             _userServices = userServices;
+            _blackListedTokensService = blacklistedServices;
+            _tokenServices = tokenServices;
         }
         // ---------------Admin---------------
         [HttpGet("all")]
@@ -53,7 +57,21 @@ namespace LMS.API.Controllers
             }
             return BadRequest(response);
         }
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> LogoutUser()
+        {
+            var token = HttpContext.Request.Headers["Authorization"]
+            .ToString()
+            .Replace("Bearer ", "");
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var expiryDate = _tokenServices.GetExpiryFromToken(token);
+
+            await _blackListedTokensService.AddTokenAsync(token, expiryDate, userId);
+
+            return Ok(new { message = "Logged out successfully" });
+        }
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> LoginUser(LoginDTO dto)
