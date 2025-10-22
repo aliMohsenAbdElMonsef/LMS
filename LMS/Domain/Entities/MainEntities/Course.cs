@@ -53,6 +53,15 @@ namespace Domain.Entities.MainEntities
 
         public bool AutoIssueCertificates { get; set; } = false;
 
+        [Range(1, 7)]
+        public int DaysPerWeek { get; set; }
+
+        [Range(0.5, 12)]
+
+        public double HoursPerSession { get; set; }
+
+        [Range(1, 1000)]
+        public int TotalSessions { get; set; }
         // course post requirements
 
         [Range(0, 100)]
@@ -87,6 +96,9 @@ namespace Domain.Entities.MainEntities
 
         //lecture
         public ICollection<Lecture> Lectures { get; set; } = new List<Lecture>();
+
+        //CourseDaySchedule
+        public ICollection<CourseDaySchedule> DaySchedules { get; set; } = new List<CourseDaySchedule>();
 
         // lecture schedulling 
         public ICollection<LectureSchedule> LectureSchedules { get; set; } = new List<LectureSchedule>();
