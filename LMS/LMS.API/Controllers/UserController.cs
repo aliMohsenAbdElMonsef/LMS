@@ -61,16 +61,12 @@ namespace LMS.API.Controllers
         [Authorize]
         public async Task<IActionResult> LogoutUser()
         {
-            var token = HttpContext.Request.Headers["Authorization"]
-            .ToString()
-            .Replace("Bearer ", "");
+            var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var expiryDate = _tokenServices.GetExpiryFromToken(token);
 
-            await _blackListedTokensService.AddTokenAsync(token, expiryDate, userId);
-
-            return Ok(new { message = "Logged out successfully" });
+            var response = await _userServices.LogoutUser(token, userId);
+            return Ok(response);
         }
         [HttpPost("login")]
         [AllowAnonymous]
