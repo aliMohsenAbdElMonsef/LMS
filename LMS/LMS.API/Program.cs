@@ -28,6 +28,17 @@ namespace LMS.API
 
             builder.Services.AddEndpointsApiExplorer();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+            });
+
+
+
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.UseInlineDefinitionsForEnums();
@@ -69,6 +80,8 @@ namespace LMS.API
             })
             .AddJwtBearer(options =>
             {
+                options.SaveToken = true;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -94,10 +107,10 @@ namespace LMS.API
                             return;
                         }
 
-                        var tokenService = context.HttpContext.RequestServices.GetRequiredService<IBlackListedTokensServices>();
+                        var blacklistService = context.HttpContext.RequestServices
+                            .GetRequiredService<IBlackListedTokensServices>();
 
-                        bool isBlackListed = await tokenService.IsTokenBlackListedAsync(token);
-
+                        bool isBlackListed = await blacklistService.IsTokenBlackListedAsync(token);
                         if (isBlackListed)
                         {
                             context.Fail("This token is blacklisted");
@@ -105,6 +118,7 @@ namespace LMS.API
                     }
                 };
             });
+
 
 
 
@@ -121,7 +135,6 @@ namespace LMS.API
                 await IdentitySeeding.SeedAdminAsync(userManager, roleManager);
             }
 
-            // ---------------------- Middleware ----------------------
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -132,7 +145,8 @@ namespace LMS.API
             app.UseHttpsRedirection();
             app.UseCors("AllowAll");
 
-            app.UseAuthentication(); // Must come BEFORE UseAuthorization
+
+            app.UseAuthentication(); 
             app.UseAuthorization();
 
             app.MapControllers();

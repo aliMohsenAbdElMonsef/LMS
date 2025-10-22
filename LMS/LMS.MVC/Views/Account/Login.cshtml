@@ -1,6 +1,6 @@
 ﻿@model LMS.MVC.Models.ViewModels.Account.LoginViewModel
 @{
-  Layout = null;
+    Layout = null;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -27,9 +27,14 @@
                 <input asp-for="Password" type="password" placeholder="Password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
 
+                <div class="form-check mb-3">
+                    <input asp-for="rememberMe" class="form-check-input" type="checkbox" id="RememberMe" />
+                    <label class="form-check-label" for="RememberMe">Remember Me</label>
+                </div>
+
                 <button type="submit" class="btn-signup">Login</button>
 
-                <div class="login-link">
+                <div class="login-link mt-3">
                     Don't have an account? <a asp-action="SignUp">Sign up here</a>
                 </div>
             </form>

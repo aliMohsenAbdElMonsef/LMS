@@ -6,16 +6,24 @@ namespace LMS.BusinessLogic.Services
 {
     internal class BlackListedTokensServices : IBlackListedTokensServices
     {
-        private readonly IBlackListedTokens _repository;
+        private readonly IBlackListedTokens _blackListedTokensRepository;
         public BlackListedTokensServices(IBlackListedTokens repository)
         {
-            _repository = repository;
+            _blackListedTokensRepository = repository;
         }
 
         public async Task<bool> IsTokenBlackListedAsync(string token)
         {
-            var result = await _repository.GetFirstOrDefaultAsync(t => t.Token == token);
-            return result != null && result.ExpiryDate > DateTime.UtcNow;
+            var blackToken = await _blackListedTokensRepository
+            .GetFirstOrDefaultAsync(x => x.Token == token);
+
+            if (blackToken == null)
+                return false;
+
+            if (blackToken.ExpiryDate < DateTime.UtcNow)
+                return false;
+
+            return true;
         }
 
         public async Task AddTokenAsync(string token, DateTime expiryDate, string userId)
@@ -28,15 +36,15 @@ namespace LMS.BusinessLogic.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _repository.AddAsync(blackListed);
+            await _blackListedTokensRepository.AddAsync(blackListed);
         }
 
         public async Task RemoveExpiredTokensAsync()
         {
-            var expired = await _repository.GetAllAsync(t => t.ExpiryDate < DateTime.UtcNow);
+            var expired = await _blackListedTokensRepository.GetAllAsync(t => t.ExpiryDate < DateTime.UtcNow);
             foreach (var item in expired)
             {
-                await _repository.DeleteAsync(item);
+                await _blackListedTokensRepository.DeleteAsync(item);
             }
         }
     }

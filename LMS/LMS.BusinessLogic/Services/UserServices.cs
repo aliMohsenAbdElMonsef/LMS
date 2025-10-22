@@ -7,6 +7,7 @@ using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace LMS.BusinessLogic.Services
 {
@@ -15,11 +16,13 @@ namespace LMS.BusinessLogic.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ITokenServices _tokenServices;
-        public UserServices(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ITokenServices tokenServices)
+        private readonly IBlackListedTokensServices _blackListedTokensService;
+        public UserServices(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, ITokenServices tokenServices, IBlackListedTokensServices blackListedTokensService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenServices = tokenServices;
+            _blackListedTokensService = blackListedTokensService;
         }
 
         private static void CreateFile(IFormFile? file, ApplicationUser user)
@@ -78,9 +81,9 @@ namespace LMS.BusinessLogic.Services
             };
             return user;
         }
-        public async Task<BasicResponseDTO> CreateUserAsync(SignUpDTO dto)
+        public async Task<CreateUserResponseDTO> CreateUserAsync(SignUpDTO dto)
         {
-            var response = new BasicResponseDTO();
+            var response = new CreateUserResponseDTO();
             var existuser = await _userManager.FindByEmailAsync(dto.Email);
             if(existuser != null)
             {
@@ -116,36 +119,62 @@ namespace LMS.BusinessLogic.Services
         }
 
 
-        public async Task<IEnumerable<ReadUserDTO>> GetAllUsers()// done
+        public async Task<IEnumerable<ReadUserDTO>> GetAllUsers()
         {
             return await _userManager.Users.Select(u => MapToReadUserDTO(u)).ToListAsync();
         }
 
-        public async Task<BasicResponseDTO> LoginUser(LoginDTO dto)
+        public async Task<LoginResponseDTO> LoginUser(LoginDTO dto)
         {
             var user = await _userManager.FindByNameAsync(dto.EmailOrUserName)
                      ?? await _userManager.FindByEmailAsync(dto.EmailOrUserName);
 
             if (user == null)
-                return new BasicResponseDTO { Success = false, Message = "User not found" };
+                return new LoginResponseDTO { Success = false, Message = "User not found" };
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!isPasswordValid)
-                return new BasicResponseDTO { Success = false, Message = "Invalid password" };
+                return new LoginResponseDTO { Success = false, Message = "Invalid password" };
 
             if (user.Status != ApplicationStatus.Approved)
-                return new BasicResponseDTO { Success = false, Message = "User not approved by admin yet" };
+                return new LoginResponseDTO { Success = false, Message = "User not approved by admin yet" };
 
-            var roles = await _userManager.GetRolesAsync(user);
-            var token = _tokenServices.CreateToken(user, roles);
+            var roles = (await _userManager.GetRolesAsync(user)).ToList();
 
-            return new BasicResponseDTO
+            var (accessToken, accessTokenExpiry) = await _tokenServices.GenerateAccessToken(user, roles);
+
+            var (refreshToken, refreshTokenExpiry) = _tokenServices.GenerateRefreshToken();
+
+            await _tokenServices.SaveRefreshTokenAsync(user, refreshToken, refreshTokenExpiry);
+
+            var userDto = new ReadUserDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email ?? string.Empty,
+                UserImage = user.UserImage,
+                ApplyAs = user.ApplyAs,
+                Status = user.Status,
+                username = user.UserName ?? string.Empty,
+                IsDeleted = user.IsDeleted,
+                DeletedAt = user.DeletedAt
+            };
+
+            return new LoginResponseDTO
             {
                 Success = true,
                 Message = "Login successful",
-                Token = token
+                AccessToken = accessToken,
+                AccessTokenExpiresAt = accessTokenExpiry,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiresAt = refreshTokenExpiry,
+                Roles = roles,
+                User = userDto
             };
         }
+
+
 
         public async Task<IdentityResult> AddUserToRoleAsync(ApplicationUser user, string role)
         {
@@ -216,9 +245,19 @@ namespace LMS.BusinessLogic.Services
                 .ToListAsync();
         }
 
-        public Task<BasicResponseDTO> LogoutUser()
+        public async Task<BasicResponseDTO> LogoutUser(string token, string userId)
         {
-           
+            var expiryDate = _tokenServices.GetExpiryFromToken(token);
+
+            await _blackListedTokensService.AddTokenAsync(token, expiryDate, userId);
+
+            return new BasicResponseDTO
+            {
+                Success = true,
+                Message = "User logged out successfully"
+            };
         }
+
+       
     }
 }

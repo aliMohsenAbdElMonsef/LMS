@@ -14,7 +14,7 @@ namespace LMS.BusinessLogic.Contracts.Services
     public interface IUserServices 
     {
         
-        Task<BasicResponseDTO> CreateUserAsync(SignUpDTO dto);
+        Task<CreateUserResponseDTO> CreateUserAsync(SignUpDTO dto);
         
         Task<IdentityResult> AddUserToRoleAsync(ApplicationUser user, string role);
         
@@ -34,7 +34,7 @@ namespace LMS.BusinessLogic.Contracts.Services
         
         Task<IEnumerable<ReadUserDTO>> GetCurrentUsers();
 
-        Task<BasicResponseDTO> LoginUser(LoginDTO dto);
+        Task<LoginResponseDTO> LoginUser(LoginDTO dto);
 
         Task<BasicResponseDTO> LogoutUser(string token, string userId);
 

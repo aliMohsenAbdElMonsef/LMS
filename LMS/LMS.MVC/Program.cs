@@ -1,10 +1,10 @@
+using System.Text;
 using LMS.MVC.Services.Contracts;
 using LMS.MVC.Services.Contracts.Services;
+using LMS.MVC.Services.Handlers;
 using LMS.MVC.Services.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace LMS.MVC
 {
@@ -14,10 +14,14 @@ namespace LMS.MVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ---------------------- MVC ----------------------
+            // ================================================================
+            // MVC Core Setup
+            // ================================================================
             builder.Services.AddControllersWithViews();
 
-            // ---------------------- Session ----------------------
+            // ================================================================
+            // Session
+            // ================================================================
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
@@ -26,67 +30,93 @@ namespace LMS.MVC
                 options.Cookie.IsEssential = true;
             });
 
+            // ================================================================
+            // Access HttpContext (needed for cookies in TokenService)
+            // ================================================================
             builder.Services.AddHttpContextAccessor();
 
-            // ---------------------- HttpClient for API ----------------------
+            // ================================================================
+            // Token & Auth Handler
+            // ================================================================
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddTransient<AuthHeaderHandler>();
+
+            // ================================================================
+            // HttpClient Configurations
+            // ================================================================
+            // Base client (used by TokenService)
             builder.Services.AddHttpClient("LMS.API", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7033/"); // API base URL
+                client.BaseAddress = new Uri("https://localhost:7033/");
             });
 
-            // ---------------------- Custom Services ----------------------
-            builder.Services.AddScoped<IUnitOfServices, UnitOfServices>();
-            builder.Services.AddScoped<IUserService, UserServices>();
-            builder.Services.AddScoped<IAccountService, AccountServices>();
-
-            // ---------------------- Authentication ----------------------
-            builder.Services.AddAuthentication(options =>
+            // Example clients with automatic token attachment
+            builder.Services.AddHttpClient<IUserService, UserServices>(client =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                client.BaseAddress = new Uri("https://localhost:7033/");
             })
-            .AddCookie(options =>
+            .AddHttpMessageHandler<AuthHeaderHandler>();
+
+            builder.Services.AddHttpClient<IAccountService, AccountServices>(client =>
             {
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Account/AccessDenied";
-            });
+                client.BaseAddress = new Uri("https://localhost:7033/");
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
-            // Optional: JWT Bearer setup for API validation (if needed)
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            // ================================================================
+            // Custom Service Container
+            // ================================================================
+            builder.Services.AddScoped<IUnitOfServices, UnitOfServices>();
+
+            // ================================================================
+            // Cookie Authentication
+            // ================================================================
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "LMS.API",
-                        ValidAudience = builder.Configuration["Jwt:Audience"] ?? "LMS.MVC",
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "YourSecretKey")),
-                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                    };
-
-                    // Read token from cookie if present
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var token = context.Request.Cookies["AuthToken"]; // your cookie name
-                            if (!string.IsNullOrEmpty(token))
-                            {
-                                context.Token = token;
-                            }
-                            return Task.CompletedTask;
-                        }
-                    };
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
                 });
 
+            // ================================================================
+            // Optional: JWT validation (for MVC API calls, not required unless you validate MVC tokens)
+            // ================================================================
+            builder.Services.AddAuthentication().AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "LMS.API",
+                    ValidAudience = builder.Configuration["Jwt:Audience"] ?? "LMS.MVC",
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "YourSecretKey")),
+                    RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                };
+
+                // Read token from cookies if necessary
+                options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Cookies["AccessToken"];
+                        if (!string.IsNullOrEmpty(token))
+                            context.Token = token;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            // ================================================================
+            // Build App
+            // ================================================================
             var app = builder.Build();
 
-            // ---------------------- Middleware ----------------------
+            // ================================================================
+            // Middleware Pipeline
+            // ================================================================
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -98,8 +128,7 @@ namespace LMS.MVC
 
             app.UseRouting();
 
-            app.UseSession(); // <-- important: enable session
-
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 
