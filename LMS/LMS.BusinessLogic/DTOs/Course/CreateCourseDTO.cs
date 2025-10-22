@@ -22,11 +22,13 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string Language { get; set; }
 
         public DateTime StartDate { get; set; }
+
         public DateTime EndDate { get; set; }
 
         public int DurationWeeks { get; set; }
 
         public decimal Price { get; set; }
+
         public bool IsFree { get; set; } = false;
 
         public IFormFile? ThumbnailFile { get; set; }
@@ -47,5 +49,22 @@ namespace LMS.BusinessLogic.DTOs.Course
         public double MinPerformanceScore { get; set; } = 60;
 
         public bool AutoIssueCertificates { get; set; } = false;
+
+        [Range(1, 7)]
+        public int DaysPerWeek { get; set; }
+
+        
+        [Range(0.5, 12)]
+        public double HoursPerSession { get; set; }
+
+        
+        [Range(1, 1000)]
+        public int TotalSessions { get; set; }
+
+        
+        public List<DayScheduleDTO> DaySchedules { get; set; } = new List<DayScheduleDTO>();
+
+       
+        public List<int> SelectedDays { get; set; } = new List<int>();
     }
 }

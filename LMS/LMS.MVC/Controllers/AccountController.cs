@@ -17,7 +17,7 @@ public class AccountController : Controller
     public IActionResult SignUp()
     {
         var model = new SignUpViewModel();
-        return View(model);
+        return View("SignUp",model);
     }
     [HttpPost]
     public IActionResult Logout()
