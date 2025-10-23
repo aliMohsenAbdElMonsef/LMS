@@ -27,14 +27,6 @@ namespace LMS.MVC.Services.Services
                 return null;
             }
 
-            var allCookies = _httpContextAccessor.HttpContext.Request.Cookies;
-            Console.WriteLine($"[TokenService] Total cookies found: {allCookies.Count}");
-
-            foreach (var cookie in allCookies)
-            {
-                Console.WriteLine($"[TokenService] Cookie: {cookie.Key} = {cookie.Value.Substring(0, Math.Min(20, cookie.Value.Length))}...");
-            }
-
             var accessToken = _httpContextAccessor.HttpContext.Request.Cookies["AccessToken"];
             Console.WriteLine($"[TokenService] AccessToken from cookies: {(string.IsNullOrEmpty(accessToken) ? "NOT FOUND" : "FOUND")}");
 
@@ -44,14 +36,13 @@ namespace LMS.MVC.Services.Services
                 {
                     var jwt = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
 
-                    // 🔍 DEBUG: Print all claims to see what's in the token
+                    // Debug claims
                     Console.WriteLine($"[TokenService] 🔍 JWT Claims Debug:");
                     foreach (var claim in jwt.Claims)
                     {
                         Console.WriteLine($"[TokenService]   {claim.Type} = {claim.Value}");
                     }
 
-                    // Check specifically for roles
                     var roleClaims = jwt.Claims.Where(c =>
                         c.Type == ClaimTypes.Role ||
                         c.Type == "role" ||
@@ -64,11 +55,7 @@ namespace LMS.MVC.Services.Services
                         Console.WriteLine($"[TokenService]   Role: {roleClaim.Value}");
                     }
 
-                    // Check for Admin role specifically
-                    bool hasAdminRole = roleClaims.Any(c => c.Value == "Admin");
-                    Console.WriteLine($"[TokenService] 🔍 Has Admin role: {hasAdminRole}");
-
-                    Console.WriteLine($"[TokenService] JWT parsed successfully, expires at: {jwt.ValidTo}");
+                    Console.WriteLine($"[TokenService] JWT expires at: {jwt.ValidTo}");
                     Console.WriteLine($"[TokenService] Current time: {DateTime.UtcNow}");
 
                     if (jwt.ValidTo > DateTime.UtcNow.AddSeconds(5))
@@ -104,7 +91,6 @@ namespace LMS.MVC.Services.Services
 
             Console.WriteLine("[TokenService] Attempting to refresh token...");
 
-            // Use the injected HttpClient directly
             var refreshResponse = await _httpClient.PostAsJsonAsync("api/token/refresh", refreshDto);
             Console.WriteLine($"[TokenService] Refresh response status: {refreshResponse.StatusCode}");
 
@@ -118,6 +104,7 @@ namespace LMS.MVC.Services.Services
             if (refreshResult?.Success != true)
                 return null;
 
+            // Store new tokens
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(
                 "AccessToken",
                 refreshResult.AccessToken,
@@ -167,6 +154,16 @@ namespace LMS.MVC.Services.Services
             }
 
             return _httpContextAccessor.HttpContext?.Request.Cookies["UserId"];
+        }
+
+        public void ClearAuthCookies()
+        {
+            var cookiesToDelete = new[] { "AccessToken", "RefreshToken", "UserId" };
+            foreach (var cookieName in cookiesToDelete)
+            {
+                _httpContextAccessor.HttpContext?.Response.Cookies.Delete(cookieName);
+            }
+            Console.WriteLine("[TokenService] ✅ Auth cookies cleared");
         }
     }
 }

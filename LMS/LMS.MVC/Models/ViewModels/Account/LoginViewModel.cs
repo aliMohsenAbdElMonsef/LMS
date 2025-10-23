@@ -6,16 +6,13 @@ namespace LMS.MVC.Models.ViewModels.Account
     {
         [Required(ErrorMessage = "Email or username is required")]
         [Display(Name = "Email or Username")]
-        [StringLength(100, ErrorMessage = "Email or username cannot exceed 100 characters")]
-        public string EmailOrUserName { get; set; }
+        public string EmailOrUserName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 100 characters")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Display(Name = "Remember me")]
-        public bool rememberMe { get; set; } = false;
+        public bool rememberMe { get; set; } = true;
     }
 }

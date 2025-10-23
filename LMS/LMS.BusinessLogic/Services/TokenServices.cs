@@ -162,7 +162,6 @@ namespace LMS.BusinessLogic.Services
                 }
             }
 
-            // Generate new tokens
             var roles = await _userManager.GetRolesAsync(user);
             var (newAccessToken, accessExpiry) = await GenerateAccessToken(user, roles);
             var (newRefreshToken, refreshExpiry) = GenerateRefreshToken();

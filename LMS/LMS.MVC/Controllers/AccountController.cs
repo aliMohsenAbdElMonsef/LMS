@@ -20,12 +20,22 @@ public class AccountController : Controller
         return View(model);
     }
     [HttpPost]
-    public IActionResult Logout()
+    [HttpPost]
+    public async Task<IActionResult> Logout()
     {
 
+        try
+        {
+            await _services.AccountService.LogoutUserAsync();
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Logout failed: {ex.Message}");
+        }
 
         return RedirectToAction("Login", "Account");
     }
+
     [HttpPost]
     public async Task<IActionResult> SignUp(SignUpViewModel model)
     {
