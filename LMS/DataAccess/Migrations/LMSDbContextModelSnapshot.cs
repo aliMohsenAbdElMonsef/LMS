@@ -292,9 +292,6 @@ namespace LMS.DataAcess.Migrations
                     b.Property<int>("Credits")
                         .HasColumnType("int");
 
-                    b.Property<int>("DaysPerWeek")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -311,9 +308,6 @@ namespace LMS.DataAcess.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<double>("HoursPerSession")
-                        .HasColumnType("float");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -355,9 +349,6 @@ namespace LMS.DataAcess.Migrations
                     b.Property<string>("ThumbnailPath")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("TotalSessions")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -406,9 +397,6 @@ namespace LMS.DataAcess.Migrations
 
                     b.Property<DateTime>("LectureDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("LectureNumber")
-                        .HasColumnType("int");
 
                     b.Property<string>("LectureScheduleId")
                         .HasColumnType("nvarchar(450)");
@@ -781,37 +769,6 @@ namespace LMS.DataAcess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BlackListedTokens");
-                });
-
-            modelBuilder.Entity("LMS.Entity.Entities.MainEntities.CourseDaySchedule", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CourseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<TimeSpan>("StartaTime")
-                        .HasColumnType("time");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("CourseDaySchedule");
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
@@ -1283,17 +1240,6 @@ namespace LMS.DataAcess.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("LMS.Entity.Entities.MainEntities.CourseDaySchedule", b =>
-                {
-                    b.HasOne("Domain.Entities.MainEntities.Course", "Course")
-                        .WithMany("DaySchedules")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
             modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
                 {
                     b.HasOne("Domain.Entities.MainEntities.Course", "Course")
@@ -1434,8 +1380,6 @@ namespace LMS.DataAcess.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("CertificateTemplate");
-
-                    b.Navigation("DaySchedules");
 
                     b.Navigation("InstructorEnrollments");
 

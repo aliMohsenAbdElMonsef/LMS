@@ -25,10 +25,6 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         public DateTime? LectureDate { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
-        public string? ZoomLink { get; set; }
-
-        public string? RecordingPath { get; set; }
-
         // should be after the lecture date
         public string? lastUpdatedById { get; set; }
         // end

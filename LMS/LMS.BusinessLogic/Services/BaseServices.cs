@@ -20,96 +20,68 @@ namespace LMS.BusinessLogic.Services
             _unitOfWork = unitOfWork;
         }
         protected abstract TEntity MapToEntity(TCreateDTO dto);
-
         protected abstract TEntity UpdateToEntity(TUpdateDTO dto, TEntity existingEntity);
         protected abstract TReadDTO MapToReadDTO(TEntity entity);
-
         protected abstract IBaseRepository<TEntity, string> GetRepo();
-
         protected abstract string GetIdFromUpdateDTO(TUpdateDTO dto);
 
-       
+
         public virtual async Task<TReadDTO> CreateAsync(TCreateDTO dto)
+
         {
-            try
-            {
-                TEntity entity = MapToEntity(dto);
-                await GetRepo().CreateAsync(entity);
-                await _unitOfWork.SaveChangesAsync();
-                return MapToReadDTO(entity);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error creating entity: {ex.Message}", ex);
-            }
-        }
+            TEntity entity = MapToEntity(dto);
 
-        public virtual async Task<TReadDTO> UpdateAsync(TUpdateDTO dto)
-        {
-            try
-            {
-                var id = GetIdFromUpdateDTO(dto);
+            await GetRepo().CreateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
 
-                var existingEntity = await GetRepo().FindByIdAsync(id);
-                if (existingEntity == null)
-                    throw new Exception($"Entity with id '{id}' not found.");
-
-                var updatedEntity = UpdateToEntity(dto, existingEntity);
-                await GetRepo().UpdateAsync(updatedEntity);
-                await _unitOfWork.SaveChangesAsync();
-
-                return MapToReadDTO(updatedEntity);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating entity: {ex.Message}", ex);
-            }
+            return MapToReadDTO(entity);
         }
 
         public virtual async Task DeleteAsync(string id)
         {
             try
             {
-                var entity = await GetRepo().FindByIdAsync(id);
-                if (entity == null)
-                    throw new Exception($"Entity with id '{id}' not found.");
-
                 await GetRepo().DeleteAsync(id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error deleting entity with id '{id}': {ex.Message}", ex);
+                throw new Exception($"Error deleting entity with id '{id}': {ex.Message}");
             }
         }
 
         public virtual async Task<IEnumerable<TReadDTO>> GetAllAsync()
         {
-            try
-            {
-                var entities = await GetRepo().GetAllAsync();
-                return entities.Select(e => MapToReadDTO(e)).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving entities: {ex.Message}", ex);
-            }
+            var entities = await GetRepo().GetAllAsync();
+            return entities.Select(e => MapToReadDTO(e)).ToList();
         }
 
         public virtual async Task<TReadDTO> GetByIdAsync(string id)
         {
-            try
-            {
-                var entity = await GetRepo().FindByIdAsync(id);
-                if (entity == null)
-                    throw new Exception($"Entity with id '{id}' not found.");
+            var entity = await GetRepo().FindByIdAsync(id);
+            if (entity == null)
+                throw new Exception($"Entity with id '{id}' not found.");
 
-                return MapToReadDTO(entity);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving entity with id '{id}': {ex.Message}", ex);
-            }
+            return MapToReadDTO(entity);
         }
+
+        public virtual async Task<TReadDTO> UpdateAsync(TUpdateDTO dto)
+        {
+            var id = GetIdFromUpdateDTO(dto);
+            var existingEntity = await GetRepo().FindByIdAsync(id);
+
+            if (existingEntity == null)
+                throw new Exception($"Entity with id '{id}' not found.");
+
+            var updatedEntity = UpdateToEntity(dto, existingEntity);
+
+            await GetRepo().UpdateAsync(updatedEntity);
+            await _unitOfWork.SaveChangesAsync();
+
+            return MapToReadDTO(updatedEntity);
+        }
+        
+
+
     }
 }

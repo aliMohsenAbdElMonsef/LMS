@@ -3,7 +3,6 @@ using Domain.Entities.MainEntities;
 using Domain.Enums;
 using LMS.DataAcess.Contracts.Repositories;
 using LMS.Entity.Entities.RelationTables;
-
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Repositories
 {
-    internal class InstructorEnrolltoCourseRepository : BaseRepository<InstructorEnrolltoCourse, string>,
+    internal class InstructorEnrolltoCourseRepository : BaseRepository<InstructorEnrolltoCourse, int>,
         IInstructorEnrolltoCourseRepository
     {
         public InstructorEnrolltoCourseRepository(LMSDbContext context) : base(context)
@@ -56,9 +55,5 @@ namespace LMS.DataAcess.Repositories
                 .ToList();
         }
 
-        public async Task AddRangeAsync(List<InstructorEnrolltoCourse> instructorEnrollments)
-        {
-            await _set.AddRangeAsync(instructorEnrollments);
-        }
     }
 }

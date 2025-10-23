@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Contracts.Repositories
 {
-    public interface IInstructorEnrolltoCourseRepository : IBaseRepository<InstructorEnrolltoCourse,string>
+    public interface IInstructorEnrolltoCourseRepository : IBaseRepository<InstructorEnrolltoCourse, int>
     {
         InstructorEnrolltoCourse? GetByIdWithDetails(string id);
         List<InstructorEnrolltoCourse> GetByInstructorId(string instructorId);
         List<InstructorEnrolltoCourse> GetPendingEnrollments();
         List<InstructorEnrolltoCourse> GetByCourseId(string courseId);
-        Task AddRangeAsync(List<InstructorEnrolltoCourse> instructorEnrollments);
+       
     }
 }
