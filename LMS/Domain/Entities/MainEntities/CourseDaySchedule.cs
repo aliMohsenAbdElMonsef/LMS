@@ -16,10 +16,13 @@ namespace LMS.Entity.Entities.MainEntities
         public string CourseId { get; set; }
         public Course Course { get; set; }
 
+        public string InstructorId { get; set; }
+        public ApplicationUser Instructor { get; set; }
+
         [Range(0,6)]
         public int DayOfWeek { get; set; }
 
-        public TimeSpan StartaTime { get; set; }
+        public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
 
     }

@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.BusinessLogic.DTOs.Course
+namespace LMS.BusinessLogic.DTOs.DaySchedule
 {
-    public class DayScheduleDTO
+    public class UpdateDayScheduleDTO
     {
+        [Required]
+        public string Id { get; set; }
         public int DayOfWeek { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         [Required]
         public string InstructorId { get; set; }
-        public string InstructorName { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Domain.Enums;
+using LMS.BusinessLogic.DTOs.DaySchedule;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +18,8 @@ namespace LMS.BusinessLogic.DTOs.Course
         public int DaysPerWeek { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DeliveryMode DeliveryMode { get; set; }
+        public Status Status { get; set; }
 
         public string Description { get; set; }
 
@@ -40,7 +44,7 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         public bool AutoIssueCertificates { get; set; }
 
-        public List<DayScheduleDTO> Schedule { get; set; } = new List<DayScheduleDTO>();
+        public List<CreateDayScheduleDTO> Schedule { get; set; } = new List<CreateDayScheduleDTO>();
 
         public List<InstructorInformationDTO> Instructors { get; set; } = new List<InstructorInformationDTO>();
 

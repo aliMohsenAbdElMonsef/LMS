@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Enums;
+using LMS.BusinessLogic.DTOs.DaySchedule;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +17,8 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         [MaxLength(2000)]
         public string Description { get; set; }
+        [Required]
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
 
         public int Credits { get; set; }
 
@@ -62,7 +66,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         public int TotalSessions { get; set; }
 
         
-        public List<DayScheduleDTO> DaySchedules { get; set; } = new List<DayScheduleDTO>();
+        public List<CreateDayScheduleDTO> DaySchedules { get; set; } = new List<CreateDayScheduleDTO>();
 
        
         public List<int> SelectedDays { get; set; } = new List<int>();
