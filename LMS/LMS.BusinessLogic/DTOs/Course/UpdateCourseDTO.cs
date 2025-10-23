@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,6 +30,8 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        [Required]
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
 
         public int? DurationWeeks { get; set; }
 

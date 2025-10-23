@@ -1,6 +1,8 @@
 ﻿using DataAccess.Context;
 using LMS.DataAcess.Contracts;
 using LMS.DataAcess.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace LMS.DataAcess.Repositories
         private readonly Lazy<ISkillRepository> _skills;
         private readonly Lazy<IUserRepository> _users;
         private readonly Lazy<IInstructorEnrolltoCourseRepository> _instructorEnrollments;
+        private readonly Lazy<ICourseDayScheduleRepository> _daySchedules;
 
         public UnitOfWork(LMSDbContext db)
         {
@@ -36,6 +39,7 @@ namespace LMS.DataAcess.Repositories
             _skills = new Lazy<ISkillRepository>(() => new SkillRepository(_db));
             _users = new Lazy<IUserRepository>(() => new UserRepository(_db));
             _instructorEnrollments = new Lazy<IInstructorEnrolltoCourseRepository>(() => new InstructorEnrolltoCourseRepository(_db));
+            _daySchedules = new Lazy<ICourseDayScheduleRepository>(() => new CourseDayScheduleRepository(_db));
         }
 
         public IAssignmentRepository Assignments => _assignments.Value;
@@ -44,12 +48,16 @@ namespace LMS.DataAcess.Repositories
         public ICourseRepository Courses => _courses.Value; 
         public ILectureRepository Lectures => _lectures.Value;
         public IQuestionRepository Questions => _questions.Value;
+        public ICourseDayScheduleRepository DaySchedules => _daySchedules.Value;
         public IQuizRepository Quizzes => _quizzes.Value;
         public ISkillRepository Skills => _skills.Value;
         public IUserRepository Users => _users.Value;
         public IInstructorEnrolltoCourseRepository InstructorEnrollments => _instructorEnrollments.Value;
 
-
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _db.Database.BeginTransactionAsync();
+        }
         public int SaveChanges()
         {
             return _db.SaveChanges();
@@ -59,6 +67,7 @@ namespace LMS.DataAcess.Repositories
         {
             return await _db.SaveChangesAsync();
         }
+
 
     }
 }

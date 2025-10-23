@@ -14,6 +14,7 @@ namespace LMS.BusinessLogic.Contracts
         ICertificateTemplateServices CertificateTemplates { get; }
         ICourseServices Courses { get; }
         ILectureServices Lectures { get; }
+        ICourseDayScheduleServices DaySchedules { get; }
         IQuestionServices Questions { get; }
         IQuizServices Quizzes { get; }
         ISkillServices Skills { get; }
