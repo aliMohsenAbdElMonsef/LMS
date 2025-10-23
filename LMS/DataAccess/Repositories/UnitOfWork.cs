@@ -41,7 +41,7 @@ namespace LMS.DataAcess.Repositories
         public IAssignmentRepository Assignments => _assignments.Value;
         public ICategoryRepository Categories => _categories.Value;
         public ICertificateTemplateRepository CertificateTemplates => _certificateTemplates.Value;
-        public ICourseRepository Coures => _courses.Value; 
+        public ICourseRepository Courses => _courses.Value; 
         public ILectureRepository Lectures => _lectures.Value;
         public IQuestionRepository Questions => _questions.Value;
         public IQuizRepository Quizzes => _quizzes.Value;

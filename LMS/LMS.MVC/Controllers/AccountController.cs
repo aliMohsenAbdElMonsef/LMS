@@ -89,4 +89,22 @@ public class AccountController : Controller
         }
         return View(model);
     }
+
+    [HttpGet]
+    public IActionResult TestCookies()
+    {
+        var cookies = Request.Cookies;
+        var cookieInfo = new List<object>();
+        
+        foreach (var cookie in cookies)
+        {
+            cookieInfo.Add(new { Name = cookie.Key, Value = cookie.Value });
+        }
+        
+        return Json(new { 
+            Message = "Cookie test", 
+            Cookies = cookieInfo,
+            Count = cookies.Count 
+        });
+    }
 }

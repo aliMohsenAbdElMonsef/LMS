@@ -38,6 +38,8 @@ namespace LMS.BusinessLogic.DTOs.Course
         public double MinPerformanceScore { get; set; }
         public bool AutoIssueCertificates { get; set; }
 
+        public DateTime? LastUpdate { get; set; }
+
         public int EnrolledStudentsCount { get; set; }
         public double AverageRating { get; set; }
     }

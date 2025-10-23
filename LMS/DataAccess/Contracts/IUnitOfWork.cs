@@ -15,7 +15,7 @@ namespace LMS.DataAcess.Contracts
 
         ICertificateTemplateRepository CertificateTemplates { get; }
 
-        ICourseRepository Coures { get; }
+        ICourseRepository Courses { get; }
 
         ILectureRepository Lectures { get; }
 

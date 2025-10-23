@@ -1,0 +1,53 @@
+@model IEnumerable<LMS.BusinessLogic.DTOs.Course.ReadCourseDTO>
+
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Available Courses</h2>
+            
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row">
+                    @foreach (var course in Model)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                @if (!string.IsNullOrEmpty(course.ThumbnailPath))
+                                {
+                                    <img src="@course.ThumbnailPath" class="card-img-top" alt="@course.Name">
+                                }
+                                <div class="card-body">
+                                    <h5 class="card-title">@course.Name</h5>
+                                    <p class="card-text">@course.Description</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Level: @course.Level | Credits: @course.Credits
+                                        </small>
+                                    </p>
+                                    <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No courses available at the moment.
+                </div>
+            }
+        </div>
+    </div>
+</div>

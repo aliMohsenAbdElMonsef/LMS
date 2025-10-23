@@ -5,11 +5,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace LMS.BusinessLogic.DTOs.Course
 {
     public class CreateCourseDTO
     {
+        [MaxLength(100)]
+        public string? CourseCode { get; set; }
+
         [Required, MaxLength(200)]
         public string Name { get; set; }
 
@@ -17,6 +21,8 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string Description { get; set; }
 
         public int Credits { get; set; }
+
+        public Level Level { get; set; }
 
         [Required]
         public string Language { get; set; }
@@ -26,10 +32,14 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         public int DurationWeeks { get; set; }
 
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
+        public Status Status { get; set; } = Status.Draft;
+
         public decimal Price { get; set; }
         public bool IsFree { get; set; } = false;
 
         public IFormFile? ThumbnailFile { get; set; }
+        public string? ThumbnailPath { get; set; }
 
         [Required]
         public string AdminId { get; set; }
@@ -37,8 +47,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Required]
         public string CategoryId { get; set; }
 
-        [Required]
-        public string? CertificateTemplateId { get; set; }
+        public string? CertificateTemplateID { get; set; }
 
         [Range(0, 100)]
         public double MinAttendancePercentage { get; set; } = 75;

@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 
 namespace LMS.MVC.Services.Services
 {
-    internal abstract class BaseMVCServices: IBaseMVCServices
+    internal abstract class BaseMVCServices : IBaseMVCServices
     {
         protected readonly HttpClient _client;
 
-        protected BaseMVCServices(IHttpClientFactory httpClientFactory)
+        protected BaseMVCServices(HttpClient client)
         {
-            _client = httpClientFactory.CreateClient("LMS.API");
+            _client = client;
         }
 
         public async Task<T> GetAsync<T>(string url)
@@ -18,7 +18,7 @@ namespace LMS.MVC.Services.Services
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             if (string.IsNullOrWhiteSpace(json) || json == "null")
-                throw new Exception($"API returned null for POST {url}");
+                throw new Exception($"API returned null for GET {url}");
 
             return JsonConvert.DeserializeObject<T>(json);
         }
@@ -33,7 +33,5 @@ namespace LMS.MVC.Services.Services
 
             return JsonConvert.DeserializeObject<T>(json);
         }
-
-        
     }
 }
