@@ -21,6 +21,8 @@ namespace Domain.Entities.MainEntities
 
         [MaxLength(500)]
         public string? ZoomLink { get; set; }
+        public string InstructorId { get; set; }
+        public ApplicationUser Instructor { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
