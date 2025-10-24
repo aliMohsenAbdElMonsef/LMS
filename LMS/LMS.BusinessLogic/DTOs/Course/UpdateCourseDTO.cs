@@ -18,17 +18,18 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string? CourseCode { get; set; }
 
         [MaxLength(200)]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [MaxLength(2000)]
         public string? Description { get; set; }
 
         public int? Credits { get; set; }
-        public Level? Level { get; set; }
         public string? Language { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        [Required]
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
 
         public int? DurationWeeks { get; set; }
 
