@@ -35,6 +35,7 @@ namespace LMS.BusinessLogic.Services
             _categoryServices = new Lazy<ICategoryServices>(() => new CategoryServices(_unitOfWork));
             _certificateTemplateServices = new Lazy<ICertificateTemplateServices>(() => new CertificateTemplateServices(_unitOfWork));
             _courseServices = new Lazy<ICourseServices>(() => new CourseServices(_unitOfWork , _webHostEnvironment , _mapper));
+            _lectureServices = new Lazy<ILectureServices>(() => new LectureService(_unitOfWork, _mapper));
 
         }
 
