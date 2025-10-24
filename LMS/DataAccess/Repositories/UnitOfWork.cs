@@ -22,6 +22,7 @@ namespace LMS.DataAcess.Repositories
         private readonly Lazy<ISkillRepository> _skills;
         private readonly Lazy<IUserRepository> _users;
         private readonly Lazy<IInstructorEnrolltoCourseRepository> _instructorEnrollments;
+        private readonly Lazy<IStudentEnrollIntoCourseRepository> _studentEnrollments;
 
         public UnitOfWork(LMSDbContext db)
         {
@@ -36,6 +37,7 @@ namespace LMS.DataAcess.Repositories
             _skills = new Lazy<ISkillRepository>(() => new SkillRepository(_db));
             _users = new Lazy<IUserRepository>(() => new UserRepository(_db));
             _instructorEnrollments = new Lazy<IInstructorEnrolltoCourseRepository>(() => new InstructorEnrolltoCourseRepository(_db));
+            _studentEnrollments = new Lazy<IStudentEnrollIntoCourseRepository>(() => new StudentEnrollIntoCourseRepository(_db));
         }
 
         public IAssignmentRepository Assignments => _assignments.Value;
@@ -48,6 +50,7 @@ namespace LMS.DataAcess.Repositories
         public ISkillRepository Skills => _skills.Value;
         public IUserRepository Users => _users.Value;
         public IInstructorEnrolltoCourseRepository InstructorEnrollments => _instructorEnrollments.Value;
+        public IStudentEnrollIntoCourseRepository StudentEnrollments => _studentEnrollments.Value;
 
 
         public int SaveChanges()

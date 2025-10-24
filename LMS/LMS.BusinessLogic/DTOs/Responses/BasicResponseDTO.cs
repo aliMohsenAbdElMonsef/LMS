@@ -13,4 +13,13 @@ namespace LMS.BusinessLogic.DTOs.Responses
 
         public List<string> Errors { get; set; } = new List<string>();
     }
+
+    // For queries (with data)
+    public class ServiceResponseDTO<T>
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public List<string> Errors { get; set; } = new List<string>();
+        public T? Data { get; set; }
+    }
 }

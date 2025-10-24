@@ -22,11 +22,13 @@ namespace LMS.BusinessLogic.Services
         private readonly Lazy<IQuizServices> _quizServices;
         private readonly Lazy<ISkillServices> _skillServices;
         private readonly Lazy<IUserServices> _userServices;
+        private readonly Lazy<IStudentEnrollIntoCourseServices> _studentEnrollIntoCourseServices;
         public UnitOfServices(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _assignmentServices = new Lazy<IAssignmentServices>(() => new AssignmentServices(_unitOfWork));
             _categoryServices = new Lazy<ICategoryServices>(() => new CategoryServices(_unitOfWork));
+            _studentEnrollIntoCourseServices = new Lazy<IStudentEnrollIntoCourseServices>(() => new StudentEnrollIntoCourseServices(_unitOfWork));
         }
 
         public IAssignmentServices Assignments => _assignmentServices.Value;
@@ -46,5 +48,6 @@ namespace LMS.BusinessLogic.Services
         public ISkillServices Skills => _skillServices.Value;
 
         public IUserServices Users => _userServices.Value;
+        public IStudentEnrollIntoCourseServices StudentEnrollIntoCourse => _studentEnrollIntoCourseServices.Value;
     }
 }

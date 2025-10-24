@@ -9,9 +9,10 @@ namespace Domain.Entities.RelationTables
 {
     public class StudentEnrollIntoCourse
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string StudentId { get; set; } = string.Empty;
         public ApplicationUser Student;
-
+        
         public string CourseId { get; set; } = string.Empty;
         public Course Course;
 

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\LMS.BusinessLogic\LMS.BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Dashboard\Student\" />
+  </ItemGroup>
+
 </Project>

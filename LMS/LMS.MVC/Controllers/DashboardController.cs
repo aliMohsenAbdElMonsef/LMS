@@ -21,5 +21,7 @@ namespace LMS.MVC.Controllers
 
             return View("Admin/UserManagement", users);
         }
+
+
     }
 }
