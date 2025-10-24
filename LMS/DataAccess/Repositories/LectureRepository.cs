@@ -1,7 +1,6 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
 using LMS.DataAcess.Contracts.Repositories;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +21,6 @@ namespace LMS.DataAcess.Repositories
                  .Where(a => a.CourseId == courseId && !a.IsDeleted)
                  .OrderBy(a => a.StartTime)
                  .ToListAsync();
-        }
-
-        public async Task AddRangeAsync(List<Lecture> lectures)
-        {
-            await _set.AddRangeAsync(lectures);
         }
     }
 }
