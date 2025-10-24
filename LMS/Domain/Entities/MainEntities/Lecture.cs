@@ -33,9 +33,6 @@ namespace Domain.Entities.MainEntities
         public DateTime? LastRecordingUploadDate { get; set; }
         // relations
         // course
-
-        [Range(1, 10000)]
-        public int LectureNumber { get; set; }
         [Required]
         public string CourseId { get; set; }
         public Course Course { get; set; }

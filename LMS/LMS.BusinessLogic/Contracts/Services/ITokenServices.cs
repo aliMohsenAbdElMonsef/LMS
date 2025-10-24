@@ -11,7 +11,7 @@ namespace LMS.BusinessLogic.Contracts.Services
         (string refreshToken, DateTime expires) GenerateRefreshToken();
         DateTime GetExpiryFromToken(string token);
 
-        Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string refreshToken);
+        Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string userId, string refreshToke);
         Task<bool> ValidateRefreshToken(string refreshToken, string userId);
         Task<bool> ValidateRefreshTokenAsync(ApplicationUser user, string refreshToken); 
 

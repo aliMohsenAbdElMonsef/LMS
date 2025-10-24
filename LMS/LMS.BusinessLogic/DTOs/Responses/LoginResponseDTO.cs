@@ -12,7 +12,7 @@ namespace LMS.BusinessLogic.DTOs.Responses
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiresAt { get; set; }
 
-        public ReadUserDTO User { get; set; }
+        public ReadUserDTO User { get; set; }   
         public IList<string> Roles { get; set; } = new List<string>();
     }
 }

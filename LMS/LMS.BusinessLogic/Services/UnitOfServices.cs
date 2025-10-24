@@ -28,7 +28,6 @@ namespace LMS.BusinessLogic.Services
             _unitOfWork = unitOfWork;
             _assignmentServices = new Lazy<IAssignmentServices>(() => new AssignmentServices(_unitOfWork));
             _categoryServices = new Lazy<ICategoryServices>(() => new CategoryServices(_unitOfWork));
-            _studentEnrollIntoCourseServices = new Lazy<IStudentEnrollIntoCourseServices>(() => new StudentEnrollIntoCourseServices(_unitOfWork));
         }
 
         public IAssignmentServices Assignments => _assignmentServices.Value;
@@ -37,7 +36,7 @@ namespace LMS.BusinessLogic.Services
 
         public ICertificateTemplateServices CertificateTemplates => _certificateTemplateServices.Value;
 
-        public ICourseServices Coures => _courseServices.Value;
+        public ICourseServices Courses => _courseServices.Value;
 
         public ILectureServices Lectures => _lectureServices.Value;
 

@@ -1,0 +1,125 @@
+@using LMS.BusinessLogic.DTOs.Course
+@model IEnumerable<GetCourseDTO>
+
+@{
+    ViewData["Title"] = "Course Management";
+}
+
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>
+            <i class="bi bi-book-half"></i> Course Management
+        </h2>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Course
+        </a>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info text-center" role="alert">
+        <i class="bi bi-info-circle"></i> No courses available. Create your first course to get started!
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card course-card">
+                    @if (!string.IsNullOrEmpty(course.ThumbnailPath))
+                    {
+                        <img src="@course.ThumbnailPath" class="card-img-top" alt="@course.Name">
+                    }
+                    <div class="card-header">
+                        <h5 class="mb-0">@course.Name</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="course-description">
+                            @(string.IsNullOrEmpty(course.Description)
+                                ? "No description available"
+                                : (course.Description.Length > 120
+                                ? course.Description.Substring(0, 120) + "..."
+                                : course.Description))
+                        </p>
+
+                        <div class="course-meta mb-3">
+                            <div class="mb-2">
+                                <i class="bi bi-translate text-primary-custom"></i>
+                                <span class="badge badge-language">@course.Language</span>
+                            </div>
+                            <div class="mb-2">
+                                <i class="bi bi-calendar-event text-primary-custom"></i>
+                                <strong>Start:</strong> @course.StartDate.ToString("MMM dd, yyyy")
+                            </div>
+                            <div class="mb-2">
+                                <i class="bi bi-calendar-check text-primary-custom"></i>
+                                <strong>End:</strong> @course.EndDate.ToString("MMM dd, yyyy")
+                            </div>
+                            <div class="mb-2">
+                                <i class="bi bi-bar-chart text-primary-custom"></i>
+                                <strong>Level:</strong> @course.Level
+                            </div>
+                            @if (course.Credits > 0)
+                            {
+                                <div class="mb-2">
+                                    <i class="bi bi-award text-primary-custom"></i>
+                                    <strong>Credits:</strong> @course.Credits
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mt-auto">
+                            @if (course.IsFree)
+                            {
+                                <span class="badge badge-free">
+                                    <i class="bi bi-gift"></i> FREE
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-price">
+                                    <i class="bi bi-currency-dollar"></i>@course.Price.ToString("N2")
+                                </span>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-primary btn-sm">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-info btn-sm">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                    onclick="confirmDelete('@course.Id', '@course.Name')">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function confirmDelete(courseId, courseName) {
+            if (confirm(`Are you sure you want to delete "${courseName}"?`)) {
+                // TODO: Implement delete functionality
+                alert('Delete functionality to be implemented');
+            }
+        }
+    </script>
+}

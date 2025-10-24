@@ -12,7 +12,7 @@ namespace LMS.BusinessLogic.Contracts
         IAssignmentServices Assignments { get; }
         ICategoryServices Categories { get; }
         ICertificateTemplateServices CertificateTemplates { get; }
-        ICourseServices Coures { get; }
+        ICourseServices Courses { get; }
         ILectureServices Lectures { get; }
         IQuestionServices Questions { get; }
         IQuizServices Quizzes { get; }
