@@ -24,34 +24,34 @@ namespace Domain.Entities.MainEntities
         public string Name { get; set; }
 
         [MaxLength(2000)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public int Credits { get; set; }
+        public int? Credits { get; set; }
 
         public Level Level { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string Language { get; set; }
+        public string? Language { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public int DurationWeeks { get; set; }
+        public int? DurationWeeks { get; set; }
 
 
         public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
         public Status Status { get; set; } = Status.Draft;
 
-        public decimal Price { get; set; }
-        public bool IsFree { get; set; }
+        public decimal? Price { get; set; }
+        public bool? IsFree { get; set; }
 
         public DateTime? LastUpdate { get; set; } = DateTime.UtcNow;
 
         [MaxLength(500)]
         public string? ThumbnailPath { get; set; }
 
-        public bool AutoIssueCertificates { get; set; } = false;
+        public bool? AutoIssueCertificates { get; set; } = false;
 
         [Range(1, 7)]
         public int DaysPerWeek { get; set; }
@@ -65,10 +65,10 @@ namespace Domain.Entities.MainEntities
         // course post requirements
 
         [Range(0, 100)]
-        public double MinPerformanceScore { get; set; } = 60;
+        public double? MinPerformanceScore { get; set; } = 60;
 
         [Range(0, 100)]
-        public double MinAttendancePercentage { get; set; } = 75;
+        public double? MinAttendancePercentage { get; set; } = 75;
 
         // Relations
         // user

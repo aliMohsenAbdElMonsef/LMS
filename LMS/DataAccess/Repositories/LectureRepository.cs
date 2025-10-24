@@ -23,5 +23,10 @@ namespace LMS.DataAcess.Repositories
                  .OrderBy(a => a.StartTime)
                  .ToListAsync();
         }
+
+        public async Task AddRangeAsync(List<Lecture> lectures)
+        {
+            await _set.AddRangeAsync(lectures);
+        }
     }
 }
