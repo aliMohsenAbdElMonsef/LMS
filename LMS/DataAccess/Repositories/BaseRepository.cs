@@ -1,9 +1,10 @@
 ﻿using DataAccess.Context;
-using Microsoft.EntityFrameworkCore;
 using LMS.DataAcess.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Repositories
@@ -50,6 +51,14 @@ namespace LMS.DataAcess.Repositories
         {
             _set.Update(entity);
             return Task.CompletedTask;
+        }
+        public virtual async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _set.FirstOrDefaultAsync(predicate);
+        }
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _set.Where(predicate).ToListAsync();
         }
 
     }

@@ -7,9 +7,9 @@ namespace LMS.MVC.Controllers
     [Authorize]
     public class CourseController : Controller
     {
-        private readonly IUnitOfServices _services;
+        private readonly LMS.MVC.Services.Contracts.IUnitOfServices _services;
 
-        public CourseController(IUnitOfServices services)
+        public CourseController(LMS.MVC.Services.Contracts.IUnitOfServices services)
         {
             _services = services;
         }

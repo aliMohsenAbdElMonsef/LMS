@@ -1,4 +1,5 @@
 ﻿using LMS.BusinessLogic.Contracts.Services;
+using LMS.DataAcess.Contracts.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,6 @@ namespace LMS.BusinessLogic.Contracts
         IQuizServices Quizzes { get; }
         ISkillServices Skills { get; }
         IUserServices Users { get; }
+        IStudentEnrollIntoCourseServices StudentEnrollIntoCourse { get; }
     }
 }

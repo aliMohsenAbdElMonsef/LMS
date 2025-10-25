@@ -24,10 +24,9 @@ namespace LMS.BusinessLogic.DTOs.Course
         public Level? Level { get; set; }
         public string? Language { get; set; }
 
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
-        public int? DurationWeeks { get; set; }
         
 
         public Status? Status { get; set; }

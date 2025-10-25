@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Contracts
@@ -11,6 +12,8 @@ namespace LMS.DataAcess.Contracts
 
         Task CreateAsync(TEntity entity);
 
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);
         Task UpdateAsync(TEntity entity);
 
         Task DeleteAsync(TId id);

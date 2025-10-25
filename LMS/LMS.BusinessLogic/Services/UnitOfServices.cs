@@ -3,6 +3,7 @@ using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.DataAcess.Contracts;
+using LMS.DataAcess.Contracts.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace LMS.BusinessLogic.Services
         private readonly Lazy<IQuizServices> _quizServices;
         private readonly Lazy<ISkillServices> _skillServices;
         private readonly Lazy<IUserServices> _userServices;
-       
+        private readonly Lazy<IStudentEnrollIntoCourseServices> _studentEnrollIntoCourseServices;
         public UnitOfServices(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -36,6 +37,8 @@ namespace LMS.BusinessLogic.Services
             _certificateTemplateServices = new Lazy<ICertificateTemplateServices>(() => new CertificateTemplateServices(_unitOfWork));
             _courseServices = new Lazy<ICourseServices>(() => new CourseServices(_unitOfWork , _webHostEnvironment , _mapper));
             _lectureServices = new Lazy<ILectureServices>(() => new LectureService(_unitOfWork, _mapper));
+            _studentEnrollIntoCourseServices = new Lazy<IStudentEnrollIntoCourseServices>(() => new StudentEnrollIntoCourseServices(_unitOfWork));
+
 
         }
 
@@ -44,7 +47,6 @@ namespace LMS.BusinessLogic.Services
         public ICategoryServices Categories => _categoryServices.Value;
 
         public ICertificateTemplateServices CertificateTemplates => _certificateTemplateServices.Value;
-
         public ICourseServices Courses => _courseServices.Value;
 
         public ILectureServices Lectures => _lectureServices.Value;
@@ -58,6 +60,6 @@ namespace LMS.BusinessLogic.Services
         public IUserServices Users => _userServices.Value;
         public ICourseDayScheduleServices DaySchedules => _dayScheduleServices.Value;
 
-       
+        public IStudentEnrollIntoCourseServices StudentEnrollIntoCourse => _studentEnrollIntoCourseServices.Value;
     }
 }

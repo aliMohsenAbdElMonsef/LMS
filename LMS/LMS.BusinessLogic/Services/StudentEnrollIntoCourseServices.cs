@@ -65,7 +65,6 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // Validate input
                 if (string.IsNullOrWhiteSpace(dto.StudentId) || string.IsNullOrWhiteSpace(dto.CourseId))
                 {
                     return new BasicResponseDTO
@@ -76,7 +75,6 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Check if student is already enrolled
                 var existingEnrollment = await _unitOfWork.StudentEnrollments
                     .FirstOrDefaultAsync(e => e.StudentId == dto.StudentId && e.CourseId == dto.CourseId );
 

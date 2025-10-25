@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=.\\AliMohsen;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }

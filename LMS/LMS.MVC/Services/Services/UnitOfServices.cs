@@ -7,11 +7,17 @@ namespace LMS.MVC.Services.Services
     {
         public IAccountService AccountService { get; }
         public IUserService UserService { get; }
+        public ICourseService CourseService { get; } 
 
-        public UnitOfServices(IAccountService accountService, IUserService userService)
+        public UnitOfServices(
+            IAccountService accountService,
+            IUserService userService,
+            ICourseService courseService              
+        )
         {
             AccountService = accountService;
             UserService = userService;
+            CourseService = courseService;             
         }
     }
 }

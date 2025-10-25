@@ -25,7 +25,7 @@ namespace LMS.DataAcess.Repositories
         private readonly Lazy<IUserRepository> _users;
         private readonly Lazy<IInstructorEnrolltoCourseRepository> _instructorEnrollments;
         private readonly Lazy<ICourseDayScheduleRepository> _daySchedules;
-
+        private readonly Lazy<IStudentEnrollIntoCourseRepository> _studentEnrollments;
         public UnitOfWork(LMSDbContext db)
         {
             _db = db;
@@ -40,6 +40,7 @@ namespace LMS.DataAcess.Repositories
             _users = new Lazy<IUserRepository>(() => new UserRepository(_db));
             _instructorEnrollments = new Lazy<IInstructorEnrolltoCourseRepository>(() => new InstructorEnrolltoCourseRepository(_db));
             _daySchedules = new Lazy<ICourseDayScheduleRepository>(() => new CourseDayScheduleRepository(_db));
+            _studentEnrollments = new Lazy<IStudentEnrollIntoCourseRepository>(() => new StudentEnrollIntoCourseRepository(_db));
         }
 
         public IAssignmentRepository Assignments => _assignments.Value;
@@ -52,6 +53,8 @@ namespace LMS.DataAcess.Repositories
         public IQuizRepository Quizzes => _quizzes.Value;
         public ISkillRepository Skills => _skills.Value;
         public IUserRepository Users => _users.Value;
+
+        public IStudentEnrollIntoCourseRepository StudentEnrollments => _studentEnrollments.Value;
         public IInstructorEnrolltoCourseRepository InstructorEnrollments => _instructorEnrollments.Value;
 
         public async Task<IDbContextTransaction> BeginTransactionAsync()
