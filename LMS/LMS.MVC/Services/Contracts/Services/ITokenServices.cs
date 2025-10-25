@@ -3,7 +3,6 @@
     public interface ITokenService
     {
         Task<string?> GetAccessTokenAsync();
-        string? GetUserId();
     }
 
 }

@@ -1,11 +1,10 @@
-using LMS.BusinessLogic.Contracts.Services;
+using System.Text;
 using LMS.MVC.Services.Contracts;
 using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Handlers;
 using LMS.MVC.Services.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace LMS.MVC
 {
@@ -68,11 +67,6 @@ namespace LMS.MVC
             // Custom Service Container
             // ================================================================
             builder.Services.AddScoped<IUnitOfServices, UnitOfServices>();
-
-            //// ================================================================
-            //// Custom Service Container
-            //// ================================================================
-            //builder.Services.AddScoped<IStudentEnrollIntoCourseServices, StudentEnrollIntoCourseServices>();
 
             // ================================================================
             // Cookie Authentication

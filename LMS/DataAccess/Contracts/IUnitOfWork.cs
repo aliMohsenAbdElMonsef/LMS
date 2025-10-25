@@ -1,4 +1,5 @@
 ﻿using LMS.DataAcess.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,10 @@ namespace LMS.DataAcess.Contracts
 
         ICertificateTemplateRepository CertificateTemplates { get; }
 
-        ICourseRepository Courses { get; }
+        ICourseRepository Coures { get; }
 
         ILectureRepository Lectures { get; }
+        ICourseDayScheduleRepository DaySchedules { get; }
 
         IQuestionRepository Questions { get; }
 
@@ -27,9 +29,9 @@ namespace LMS.DataAcess.Contracts
 
         IUserRepository Users { get; }
         IInstructorEnrolltoCourseRepository InstructorEnrollments { get; }
-        IStudentEnrollIntoCourseRepository StudentEnrollments { get; }
 
         int SaveChanges();
+        Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task<int> SaveChangesAsync();
     }

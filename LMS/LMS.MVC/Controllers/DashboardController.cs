@@ -17,32 +17,9 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserManagement()
         {
-            try
-            {
-                Console.WriteLine("[DashboardController] UserManagement called - attempting to get users");
-                var users = await _services.UserService.GetAllUsers();
-                Console.WriteLine($"[DashboardController] Successfully retrieved {users?.Count() ?? 0} users");
-                return View("Admin/UserManagement", users);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DashboardController] Error in UserManagement: {ex.Message}");
-                TempData["Error"] = $"Error loading users: {ex.Message}";
-                return View("Admin/UserManagement", new List<object>());
-            }
+            var users = await _services.UserService.GetAllUsers();
+
+            return View("Admin/UserManagement", users);
         }
-
-        [Authorize]
-        public IActionResult TestAuth()
-        {
-            return Json(new { 
-                Message = "Authentication successful", 
-                User = User.Identity?.Name,
-                IsAuthenticated = User.Identity?.IsAuthenticated,
-                Claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList()
-            });
-        }
-
-
     }
 }

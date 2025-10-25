@@ -22,12 +22,12 @@ namespace LMS.BusinessLogic.Services
         private readonly Lazy<ICertificateTemplateServices> _certificateTemplateServices;
         private readonly Lazy<ICourseServices> _courseServices;
         private readonly Lazy<ILectureServices> _lectureServices;
-        
-       private readonly Lazy<IQuestionServices> _questionServices;
+        private readonly Lazy<ICourseDayScheduleServices> _dayScheduleServices;
+        private readonly Lazy<IQuestionServices> _questionServices;
         private readonly Lazy<IQuizServices> _quizServices;
         private readonly Lazy<ISkillServices> _skillServices;
         private readonly Lazy<IUserServices> _userServices;
-        private readonly Lazy<IStudentEnrollIntoCourseServices> _studentEnrollIntoCourseServices;
+       
         public UnitOfServices(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -56,9 +56,8 @@ namespace LMS.BusinessLogic.Services
         public ISkillServices Skills => _skillServices.Value;
 
         public IUserServices Users => _userServices.Value;
-  
+        public ICourseDayScheduleServices DaySchedules => _dayScheduleServices.Value;
 
        
-        public IStudentEnrollIntoCourseServices StudentEnrollIntoCourse => _studentEnrollIntoCourseServices.Value;
     }
 }

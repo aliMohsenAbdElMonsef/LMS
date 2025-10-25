@@ -17,25 +17,15 @@ public class AccountController : Controller
     public IActionResult SignUp()
     {
         var model = new SignUpViewModel();
-        return View(model);
+        return View("SignUp",model);
     }
     [HttpPost]
-    [HttpPost]
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
 
-        try
-        {
-            await _services.AccountService.LogoutUserAsync();
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, $"Logout failed: {ex.Message}");
-        }
 
         return RedirectToAction("Login", "Account");
     }
-
     [HttpPost]
     public async Task<IActionResult> SignUp(SignUpViewModel model)
     {
@@ -98,23 +88,5 @@ public class AccountController : Controller
             ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials.");
         }
         return View(model);
-    }
-
-    [HttpGet]
-    public IActionResult TestCookies()
-    {
-        var cookies = Request.Cookies;
-        var cookieInfo = new List<object>();
-        
-        foreach (var cookie in cookies)
-        {
-            cookieInfo.Add(new { Name = cookie.Key, Value = cookie.Value });
-        }
-        
-        return Json(new { 
-            Message = "Cookie test", 
-            Cookies = cookieInfo,
-            Count = cookies.Count 
-        });
     }
 }

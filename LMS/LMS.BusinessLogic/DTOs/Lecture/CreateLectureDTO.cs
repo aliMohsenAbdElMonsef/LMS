@@ -10,6 +10,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
 {
     public class CreateLectureDTO
     {
+
         [Required, MaxLength(150)]
         public string Title { get; set; }
 
@@ -24,9 +25,11 @@ namespace LMS.BusinessLogic.DTOs.Lecture
 
         [Required]
         public string CourseId { get; set; }
-
+        public int LectureNumber { get; set; }
+        [Required]
+        public string InstructorId { get; set; }
         public string? AssignedInstructorId { get; set; }
 
-        public IFormFile? RecordingFile { get; set; }
+        public string? RecordingPath { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Server=.;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -46,7 +46,7 @@ namespace DataAccess.Context
             if (!optionsBuilder.IsConfigured)
             {
                 Console.WriteLine("OnConfiguring called - using design-time connection");
-                optionsBuilder.UseSqlServer("Server=.;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true;");
+                optionsBuilder.UseSqlServer("Server=.\\ALIMOHSEN;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true;");
             }
         }
 

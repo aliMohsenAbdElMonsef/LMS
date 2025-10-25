@@ -18,7 +18,7 @@ namespace LMS.API.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO request)
         {
-            var result = await _tokenServices.RefreshAccessTokenAsync(request.UserId, request.RefreshToken);
+            var result = await _tokenServices.RefreshAccessTokenAsync(request.RefreshToken);
             if (result.Success)
             {
                 return Ok(result);
