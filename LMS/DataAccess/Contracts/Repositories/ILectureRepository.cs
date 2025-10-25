@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Contracts.Repositories
 {
-    public interface ILectureRepository: IBaseRepository<Lecture,string>
+    public interface ILectureRepository : IBaseRepository<Lecture, string>
     {
         Task AddRangeAsync(List<Lecture> lectures);
         Task<IEnumerable<Lecture>> GetCourseOcturesAsync(string courseId);

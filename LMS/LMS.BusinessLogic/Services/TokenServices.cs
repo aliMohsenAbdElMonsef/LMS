@@ -125,23 +125,22 @@ namespace LMS.BusinessLogic.Services
             return expiryDate > DateTime.UtcNow;
         }
 
-        public async Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string userId, string refreshToken)
+        public async Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string refreshToken)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            var users = _userManager.Users.ToList(); 
+            ApplicationUser? user = null;
+
+            foreach (var u in users)
             {
-                return new RefreshTokenResponseDTO
+                var storedToken = await _userManager.GetAuthenticationTokenAsync(u, "LMS", "RefreshToken");
+                if (storedToken == refreshToken)
                 {
-                    Success = false,
-                    Message = "User not found."
-                };
+                    user = u;
+                    break;
+                }
             }
 
-            // Get stored tokens for this user
-            var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "LMS", "RefreshToken");
-            var storedExpiry = await _userManager.GetAuthenticationTokenAsync(user, "LMS", "RefreshTokenExpiry");
-
-            if (storedToken != refreshToken)
+            if (user == null)
             {
                 return new RefreshTokenResponseDTO
                 {
@@ -150,22 +149,21 @@ namespace LMS.BusinessLogic.Services
                 };
             }
 
-            if (DateTime.TryParse(storedExpiry, out var expiryDate))
+            var isValid = await ValidateRefreshTokenAsync(user, refreshToken);
+            if (!isValid)
             {
-                if (expiryDate < DateTime.UtcNow)
+                return new RefreshTokenResponseDTO
                 {
-                    return new RefreshTokenResponseDTO
-                    {
-                        Success = false,
-                        Message = "Refresh token expired."
-                    };
-                }
+                    Success = false,
+                    Message = "Refresh token expired or invalid."
+                };
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            var (newAccessToken, accessExpiry) = await GenerateAccessToken(user, roles);
-            var (newRefreshToken, refreshExpiry) = GenerateRefreshToken();
 
+            var (newAccessToken, accessExpiry) = await GenerateAccessToken(user, roles);
+
+            var (newRefreshToken, refreshExpiry) = GenerateRefreshToken();
             await SaveRefreshTokenAsync(user, newRefreshToken, refreshExpiry);
 
             return new RefreshTokenResponseDTO
@@ -178,7 +176,5 @@ namespace LMS.BusinessLogic.Services
                 RefreshTokenExpiresAt = refreshExpiry
             };
         }
-
-       
     }
 }

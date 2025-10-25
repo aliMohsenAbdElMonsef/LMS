@@ -1,4 +1,6 @@
+﻿using AutoMapper;
 using Domain.Entities.MainEntities;
+using Domain.Enums;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.DaySchedule;
@@ -18,17 +20,25 @@ namespace LMS.BusinessLogic.Services
 {
     internal class CourseServices : BaseServices<Course, GetCourseDTO, CreateCourseDTO, UpdateCourseDTO>, ICourseServices
     {
-        public CourseServices(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IMapper _mapper;
+
+        public CourseServices(
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment webHostEnvironment,
+            IMapper mapper) : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+            _mapper = mapper;
         }
 
-        protected override string GetIdFromUpdateDTO(UpdateCourseDTO dto) => dto.Id;
-
-        protected override IBaseRepository<Course, string> GetRepo() => _unitOfWork.Courses;
-
-        protected override Course MapToEntity(CreateCourseDTO dto)
+        public async Task<GetCourseDTO> CreateCourseWithScheduleAsync(CreateCourseDTO dto)
         {
-            return new Course
+            await using var transaction = await _unitOfWork.BeginTransactionAsync();
+
+            try
             {
                 // ============ VALIDATION ============
                 ValidateCreateCourseDTO(dto);
