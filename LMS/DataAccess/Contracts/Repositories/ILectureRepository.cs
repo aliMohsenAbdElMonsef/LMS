@@ -2,12 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LMS.DataAcess.Contracts.Repositories
 {
-    public interface ILectureRepository: IBaseRepository<Lecture,string>
+    public interface ILectureRepository : IBaseRepository<Lecture, string>
     {
+        Task AddRangeAsync(List<Lecture> lectures);
+        Task<Lecture> FindByIdAsync(string id);
+        Task<IEnumerable<Lecture>> GetCourseOcturesAsync(string courseId);
     }
 }

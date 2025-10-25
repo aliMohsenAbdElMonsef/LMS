@@ -1,14 +1,19 @@
-﻿using Domain.Entities.MainEntities;
+using Domain.Entities.MainEntities;
+using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Seedings;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Extensions;
+using LMS.DataAcess.Contracts;
 using LMS.DataAcess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
+using AutoMapper;
+
 
 namespace LMS.API
 {
@@ -27,23 +32,23 @@ namespace LMS.API
                 .AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // ---------------------- CORS ----------------------
+
+
+
+
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowMvc", policy =>
-                    policy.WithOrigins(
-                        "https://localhost:5120",
-                        "http://localhost:5119",
-                        "https://localhost:7001",
-                        "http://localhost:5000"
-                    )
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                options.AddPolicy("AllowAll", policy =>
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
             });
 
-            // ---------------------- Swagger ----------------------
+
+
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.UseInlineDefinitionsForEnums();
@@ -74,6 +79,7 @@ namespace LMS.API
             });
 
             // ---------------------- JWT Authentication ----------------------
+            // ---------------------- JWT Authentication ----------------------
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -85,7 +91,6 @@ namespace LMS.API
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = false; // For development
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -101,49 +106,31 @@ namespace LMS.API
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
+                    OnTokenValidated = async context =>
                     {
-                        Console.WriteLine($"[API JWT] ❌ Authentication failed: {context.Exception.Message}");
-                        Console.WriteLine($"[API JWT] Exception: {context.Exception}");
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = context =>
-                    {
-                        Console.WriteLine($"[API JWT] ✅ Token validated for user: {context.Principal.Identity?.Name}");
-                        var roles = context.Principal.Claims
-                            .Where(c => c.Type == ClaimTypes.Role)
-                            .Select(c => c.Value)
-                            .ToList();
-                        Console.WriteLine($"[API JWT] Roles found: {string.Join(", ", roles)}");
-                        return Task.CompletedTask;
-                    },
-                    OnMessageReceived = context =>
-                    {
-                        // Check both header and query string for token
-                        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                        Console.WriteLine($"[API JWT] 📨 Token from header: {!string.IsNullOrEmpty(token)}");
+                        var jwtToken = context.SecurityToken as JwtSecurityToken;
+                        var token = jwtToken?.RawData;
 
                         if (string.IsNullOrEmpty(token))
                         {
-                            token = context.Request.Query["access_token"];
-                            Console.WriteLine($"[API JWT] 📨 Token from query: {!string.IsNullOrEmpty(token)}");
+                            context.Fail("Invalid token format");
+                            return;
                         }
 
-                        context.Token = token;
-                        return Task.CompletedTask;
-                    },
-                    OnForbidden = context =>
-                    {
-                        Console.WriteLine($"[API JWT] 🚫 Access forbidden for: {context.HttpContext.User.Identity?.Name}");
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = context =>
-                    {
-                        Console.WriteLine($"[API JWT] 🚨 Challenge issued: {context.Error} - {context.ErrorDescription}");
-                        return Task.CompletedTask;
+                        var blacklistService = context.HttpContext.RequestServices
+                            .GetRequiredService<IBlackListedTokensServices>();
+
+                        bool isBlackListed = await blacklistService.IsTokenBlackListedAsync(token);
+                        if (isBlackListed)
+                        {
+                            context.Fail("This token is blacklisted");
+                        }
                     }
                 };
             });
+
+
+
 
             // ---------------------- Build App ----------------------
             var app = builder.Build();
@@ -166,13 +153,14 @@ namespace LMS.API
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
-            // CORS must come first
-            app.UseCors("AllowMvc");
 
-            app.UseAuthentication();
+            app.UseAuthentication(); 
             app.UseAuthorization();
+
             app.MapControllers();
+
             app.Run();
         }
     }

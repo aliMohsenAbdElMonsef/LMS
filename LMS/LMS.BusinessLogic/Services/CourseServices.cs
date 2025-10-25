@@ -97,7 +97,7 @@ namespace LMS.BusinessLogic.Services
                 // ============ GENERATE LECTURES ============
                 await GenerateLecturesAsync(course, daySchedules);
 
-                // ✅ لو كل حاجة مشت تمام
+              
                 await transaction.CommitAsync();
 
                 // ============ RETURN DTO ============
