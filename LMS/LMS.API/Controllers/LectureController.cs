@@ -1,76 +1,32 @@
 ﻿using LMS.BusinessLogic.Contracts;
-using LMS.BusinessLogic.DTOs.Course;
+using LMS.BusinessLogic.DTOs.Lecture;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace LMS.API.Controllers
 {
-    public class CourseController : ControllerBase
+    public class LectureController : ControllerBase
     {
         [ApiController]
         [Route("api/[controller]")]
         [Authorize]
-
-        public class CoursesController : ControllerBase
+        public class LecturesController : ControllerBase
         {
             private readonly IUnitOfServices _unitOfServices;
 
-            public CoursesController(IUnitOfServices unitOfServices)
+            public LecturesController(IUnitOfServices unitOfServices)
             {
                 _unitOfServices = unitOfServices;
             }
 
-            
-            [HttpPost("create")]
-            [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> CreateCourse([FromForm] CreateCourseDTO dto)
-            {
-                try
-                {
-                    if (!ModelState.IsValid)
-                    {
-                        return BadRequest(new
-                        {
-                            success = false,
-                            message = "Invalid data",
-                            errors = ModelState
-                        });
-                    }
 
-                    // تأكد من AdminId
-                    if (string.IsNullOrEmpty(dto.AdminId))
-                    {
-                        dto.AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    }
-
-                    var result = await _unitOfServices.Courses.CreateCourseWithScheduleAsync(dto);
-
-                    return Ok(new
-                    {
-                        success = true,
-                        data = result,
-                        message = "Course created successfully"
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = ex.Message
-                    });
-                }
-            }
-
-           
             [HttpGet]
             [AllowAnonymous]
-            public async Task<IActionResult> GetAllCourses()
+            public async Task<IActionResult> GetAllLectures()
             {
                 try
                 {
-                    var result = await _unitOfServices.Courses.GetAllAsync();
+                    var result = await _unitOfServices.Lectures.GetAllAsync();
                     return Ok(new
                     {
                         success = true,
@@ -87,14 +43,14 @@ namespace LMS.API.Controllers
                 }
             }
 
-            
-            [HttpGet("{courseId}")]
+
+            [HttpGet("{lectureId}")]
             [AllowAnonymous]
-            public async Task<IActionResult> GetCourse(string courseId)
+            public async Task<IActionResult> GetLecture(string lectureId)
             {
                 try
                 {
-                    var result = await _unitOfServices.Courses.GetByIdAsync(courseId);
+                    var result = await _unitOfServices.Lectures.GetByIdAsync(lectureId);
                     return Ok(new
                     {
                         success = true,
@@ -111,13 +67,13 @@ namespace LMS.API.Controllers
                 }
             }
 
-            [HttpGet("{courseId}/lectures")]
+            [HttpGet("course/{courseId}")]
             [AllowAnonymous]
             public async Task<IActionResult> GetCourseLectures(string courseId)
             {
                 try
                 {
-                    var result = await _unitOfServices.Courses.GetCourseLecturesAsync(courseId);
+                    var result = await _unitOfServices.Lectures.GetCourseOcturesAsync(courseId);
                     return Ok(new
                     {
                         success = true,
@@ -134,14 +90,13 @@ namespace LMS.API.Controllers
                 }
             }
 
-           
-            [HttpGet("{courseId}/schedule")]
-            [AllowAnonymous]
-            public async Task<IActionResult> GetCourseSchedule(string courseId)
+            [HttpGet("instructor/{instructorId}")]
+            [Authorize(Roles = "Instructor,Admin")]
+            public async Task<IActionResult> GetInstructorLectures(string instructorId)
             {
                 try
                 {
-                    var result = await _unitOfServices.Courses.GetCourseScheduleAsync(courseId);
+                    var result = await _unitOfServices.Lectures.GetInstructorOcturesAsync(instructorId);
                     return Ok(new
                     {
                         success = true,
@@ -158,18 +113,49 @@ namespace LMS.API.Controllers
                 }
             }
 
-            
-            [HttpPut("{courseId}")]
+
+            [HttpPost]
             [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> UpdateCourse(string courseId, [FromBody] UpdateCourseDTO dto)
+            public async Task<IActionResult> CreateLecture([FromBody] CreateLectureDTO dto)
             {
                 try
                 {
-                    if (courseId != dto.Id)
+                    if (!ModelState.IsValid)
                         return BadRequest(new
                         {
                             success = false,
-                            message = "Course ID mismatch"
+                            message = "Invalid data"
+                        });
+
+                    var result = await _unitOfServices.Lectures.CreateAsync(dto);
+                    return Ok(new
+                    {
+                        success = true,
+                        data = result,
+                        message = "Lecture created successfully"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = ex.Message
+                    });
+                }
+            }
+
+            [HttpPut("{lectureId}")]
+            [Authorize(Roles = "Admin,Instructor")]
+            public async Task<IActionResult> UpdateLecture(string lectureId, [FromBody] UpdateLectureDTO dto)
+            {
+                try
+                {
+                    if (lectureId != dto.Id)
+                        return BadRequest(new
+                        {
+                            success = false,
+                            message = "Lecture ID mismatch"
                         });
 
                     if (!ModelState.IsValid)
@@ -179,12 +165,12 @@ namespace LMS.API.Controllers
                             message = "Invalid data"
                         });
 
-                    var result = await _unitOfServices.Courses.UpdateAsync(dto);
+                    var result = await _unitOfServices.Lectures.UpdateAsync(dto);
                     return Ok(new
                     {
                         success = true,
                         data = result,
-                        message = "Course updated successfully"
+                        message = "Lecture updated successfully"
                     });
                 }
                 catch (Exception ex)
@@ -197,18 +183,18 @@ namespace LMS.API.Controllers
                 }
             }
 
-            
-            [HttpDelete("{courseId}")]
+
+            [HttpDelete("{lectureId}")]
             [Authorize(Roles = "Admin")]
-            public async Task<IActionResult> DeleteCourse(string courseId)
+            public async Task<IActionResult> DeleteLecture(string lectureId)
             {
                 try
                 {
-                    await _unitOfServices.Courses.DeleteAsync(courseId);
+                    await _unitOfServices.Lectures.DeleteAsync(lectureId);
                     return Ok(new
                     {
                         success = true,
-                        message = "Course deleted successfully"
+                        message = "lectures deleted successfully"
                     });
                 }
                 catch (Exception ex)
@@ -222,4 +208,5 @@ namespace LMS.API.Controllers
             }
         }
     }
+
 }

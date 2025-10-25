@@ -18,7 +18,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string? CourseCode { get; set; }
 
         [MaxLength(200)]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [MaxLength(2000)]
         public string? Description { get; set; }
@@ -31,7 +31,8 @@ namespace LMS.BusinessLogic.DTOs.Course
         public DateTime? EndDate { get; set; }
 
         public int? DurationWeeks { get; set; }
-
+        
+        [Required]
         public DeliveryMode? DeliveryMode { get; set; }
         public Status? Status { get; set; }
 

@@ -1,14 +1,20 @@
-﻿using Domain.Entities.MainEntities;
+using Domain.Entities.MainEntities;
+using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Seedings;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Extensions;
+using LMS.DataAcess.Contracts;
 using LMS.DataAcess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
+
 
 namespace LMS.API
 {
@@ -27,6 +33,11 @@ namespace LMS.API
                 .AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+
+
 
             // ---------------------- CORS ----------------------
             builder.Services.AddCors(options =>

@@ -14,5 +14,18 @@ namespace LMS.DataAcess.Repositories
         public LectureRepository(LMSDbContext db) : base(db)
         {
         }
+        public async Task<IEnumerable<Lecture>> GetCourseOcturesAsync(string courseId)
+        {
+            return await _set
+                 .AsNoTracking()
+                 .Where(a => a.CourseId == courseId && !a.IsDeleted)
+                 .OrderBy(a => a.StartTime)
+                 .ToListAsync();
+        }
+
+        public async Task AddRangeAsync(List<Lecture> lectures)
+        {
+            await _set.AddRangeAsync(lectures);
+        }
     }
 }
