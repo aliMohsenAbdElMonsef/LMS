@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Contracts.Repositories
+namespace LMS.DataAccess.Contracts.Repositories
 {
     public interface ICourseRepository: IBaseRepository<Course,string>
     {

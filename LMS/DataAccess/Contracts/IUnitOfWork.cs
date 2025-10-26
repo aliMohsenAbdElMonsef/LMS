@@ -1,4 +1,4 @@
-﻿using LMS.DataAcess.Contracts.Repositories;
+﻿using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Contracts
+namespace LMS.DataAccess.Contracts
 {
     public interface IUnitOfWork
     {

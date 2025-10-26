@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace LMS.DataAcess.Migrations
+namespace LMS.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class addStudentInrollmentTabel : Migration

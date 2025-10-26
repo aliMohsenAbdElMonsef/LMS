@@ -41,31 +41,12 @@ namespace LMS.API.Controllers
             }
         }
 
-        [HttpPut("unenroll/{enrollmentId}")]
-        public async Task<IActionResult> UnenrollStudent(string enrollmentId)
+        [HttpPut("unenroll")]
+        public async Task<IActionResult> UnenrollStudent(StudentUnenrollfromCourseDTO dto)
         {
             try
             {
-                var result = await StudentEnrollIntoCourseServices.UnenrollStudentAsync(enrollmentId);
-                return result.Success ? Ok(result) : BadRequest(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new BasicResponseDTO
-                {
-                    Success = false,
-                    Message = "An internal server error occurred.",
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
-
-        [HttpPut("unenroll-by-course")]
-        public async Task<IActionResult> UnenrollStudentFromCourse([FromQuery] string studentId, [FromQuery] string courseId)
-        {
-            try
-            {
-                var result = await StudentEnrollIntoCourseServices.UnenrollStudentFromCourseAsync(studentId, courseId);
+                var result = await StudentEnrollIntoCourseServices.UnenrollStudentFromCourseAsync(dto);
                 return result.Success ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
@@ -81,65 +62,16 @@ namespace LMS.API.Controllers
 
         #endregion
 
-        #region Progress Management
-
-        [HttpPut("progress/after-assignment")]
-        public async Task<IActionResult> UpdateProgressAfterAssignment(
-            [FromQuery] string studentId,
-            [FromQuery] string courseId,
-            [FromQuery] double assignmentScore,
-            [FromQuery] double assignmentWeight)
-        {
-            try
-            {
-                var result = await StudentEnrollIntoCourseServices.UpdateProgressAfterAssignmentAsync(studentId, courseId, assignmentScore, assignmentWeight);
-                return result.Success ? Ok(result) : BadRequest(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ServiceResponseDTO<double>
-                {
-                    Success = false,
-                    Message = "An internal server error occurred.",
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
-
-        [HttpPut("progress/after-quiz")]
-        public async Task<IActionResult> UpdateProgressAfterQuiz(
-            [FromQuery] string studentId,
-            [FromQuery] string courseId,
-            [FromQuery] double quizScore,
-            [FromQuery] int correctAnswers,
-            [FromQuery] int totalQuestions)
-        {
-            try
-            {
-                var result = await StudentEnrollIntoCourseServices.UpdateProgressAfterQuizAsync(studentId, courseId, quizScore, correctAnswers, totalQuestions);
-                return result.Success ? Ok(result) : BadRequest(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ServiceResponseDTO<double>
-                {
-                    Success = false,
-                    Message = "An internal server error occurred.",
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
-
-        #endregion
+        
 
         #region Retrieval Endpoints
 
-        [HttpGet("{enrollmentId}")]
-        public async Task<IActionResult> GetEnrollmentById(string enrollmentId)
+        [HttpGet("Get")]
+        public async Task<IActionResult> GetEnrollmentById(GetEnrollmentDTO dto)
         {
             try
             {
-                var result = await StudentEnrollIntoCourseServices.GetEnrollmentByIdAsync(enrollmentId);
+                var result = await StudentEnrollIntoCourseServices.GetEnrollmentByIdAsync(dto);
                 return result.Success ? Ok(result) : NotFound(result);
             }
             catch (Exception ex)
@@ -196,11 +128,11 @@ namespace LMS.API.Controllers
         #region Check & Validation Endpoints
 
         [HttpGet("check-enrollment")]
-        public async Task<IActionResult> IsStudentEnrolled([FromQuery] string studentId, [FromQuery] string courseId)
+        public async Task<IActionResult> IsStudentEnrolled(GetEnrollmentDTO dto)
         {
             try
             {
-                var isEnrolled = await StudentEnrollIntoCourseServices.IsStudentEnrolledAsync(studentId, courseId);
+                var isEnrolled = await StudentEnrollIntoCourseServices.IsStudentEnrolledAsync(dto);
                 return Ok(new { IsEnrolled = isEnrolled });
             }
             catch (Exception ex)
@@ -247,11 +179,11 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("course/{courseId}/low-progress")]
-        public async Task<IActionResult> GetStudentsWithLowProgress(string courseId, [FromQuery] double threshold = 30.0)
+        public async Task<IActionResult> GetStudentsWithLowProgress(GetStudentLessThersholdDTO dto)
         {
             try
             {
-                var result = await StudentEnrollIntoCourseServices.GetStudentsWithLowProgressAsync(courseId, threshold);
+                var result = await StudentEnrollIntoCourseServices.GetStudentsWithLowProgressAsync(dto);
                 return result.Success ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
@@ -269,62 +201,23 @@ namespace LMS.API.Controllers
 
         #region Base CRUD Operations (from IBaseService)
 
-        [HttpGet]
+        [HttpGet("enrollments")]
         public async Task<IActionResult> GetAllEnrollments()
         {
             try
             {
                 var result = await StudentEnrollIntoCourseServices.GetAllAsync();
 
-                // Wrap the list in a success response
                 return Ok(new ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>
                 {
                     Success = true,
                     Message = "Enrollments retrieved successfully.",
-                    Data = result.ToList()  // Add .ToList() here
+                    Data = result.ToList() 
                 });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>
-                {
-                    Success = false,
-                    Message = "An internal server error occurred.",
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
-        [HttpGet("get-by-id/{id}")]
-        public async Task<IActionResult> GetEnrollmentByIdFromBase(string id)
-        {
-            try
-            {
-                var result = await StudentEnrollIntoCourseServices.GetByIdAsync(id);
-
-                if (result != null)
-                {
-                    // Wrap the DTO in a success response
-                    return Ok(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
-                    {
-                        Success = true,
-                        Message = "Enrollment retrieved successfully.",
-                        Data = result
-                    });
-                }
-                else
-                {
-                    // Return not found response
-                    return NotFound(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
-                    {
-                        Success = false,
-                        Message = "Enrollment not found.",
-                        Errors = new List<string> { $"Enrollment with ID {id} does not exist." }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
                 {
                     Success = false,
                     Message = "An internal server error occurred.",
@@ -340,7 +233,7 @@ namespace LMS.API.Controllers
             {
                 var result = await StudentEnrollIntoCourseServices.CreateAsync(dto);
 
-                if (result != null) // Assuming CreateAsync returns the created DTO
+                if (result != null) 
                 {
                     return Ok(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
                     {
@@ -377,7 +270,7 @@ namespace LMS.API.Controllers
             {
                 var result = await StudentEnrollIntoCourseServices.UpdateAsync(dto);
 
-                if (result != null) // Assuming UpdateAsync returns the updated DTO
+                if (result != null) 
                 {
                     return Ok(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
                     {
@@ -407,41 +300,7 @@ namespace LMS.API.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteEnrollment(string id)
-        {
-            try
-            {
-                await StudentEnrollIntoCourseServices.DeleteAsync(id);
-
-                // If we reach here, deletion was successful
-                return Ok(new BasicResponseDTO
-                {
-                    Success = true,
-                    Message = "Enrollment deleted successfully."
-                });
-            }
-            catch (Exception ex)
-            {
-                // Handle specific exceptions if needed
-                if (ex.Message.Contains("not found") || ex.Message.Contains("does not exist"))
-                {
-                    return NotFound(new BasicResponseDTO
-                    {
-                        Success = false,
-                        Message = "Enrollment not found.",
-                        Errors = new List<string> { ex.Message }
-                    });
-                }
-
-                return StatusCode(500, new BasicResponseDTO
-                {
-                    Success = false,
-                    Message = "An internal server error occurred.",
-                    Errors = new List<string> { ex.Message }
-                });
-            }
-        }
+        
         #endregion 
     }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LMS.BusinessLogic.Contracts;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 
 namespace LMS.BusinessLogic.Services
 {
@@ -74,7 +74,7 @@ namespace LMS.BusinessLogic.Services
                 if (entity == null)
                     throw new Exception($"Entity with id '{id}' not found.");
 
-                await GetRepo().DeleteAsync(id);
+                await GetRepo().DeleteWithIDAsync(id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

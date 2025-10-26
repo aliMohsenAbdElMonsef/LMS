@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LMS.BusinessLogic.DTOs.Assignment;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using Microsoft.AspNetCore.Http;
 using LMS.BusinessLogic.Contracts.Services;
 namespace LMS.BusinessLogic.Services

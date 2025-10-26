@@ -6,7 +6,7 @@ using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.DaySchedule;
 using LMS.BusinessLogic.DTOs.Lecture;
 using LMS.BusinessLogic.Services.Helpers;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using LMS.Entity.Entities.MainEntities;
 using LMS.Entity.Entities.RelationTables;
 using Microsoft.AspNetCore.Hosting;

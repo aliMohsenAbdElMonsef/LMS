@@ -1,5 +1,5 @@
 ﻿using DataAccess.Context;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts.Repositories;
 using LMS.Entity.Entities.MainEntities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Repositories
+namespace LMS.DataAccess.Repositories
 {
     internal class CourseDayScheduleRepository :BaseRepository<CourseDaySchedule ,string> ,ICourseDayScheduleRepository
     {

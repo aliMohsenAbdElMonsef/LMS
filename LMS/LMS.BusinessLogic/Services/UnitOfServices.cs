@@ -2,8 +2,8 @@
 using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Services;
-using LMS.DataAcess.Contracts;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts;
+using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;

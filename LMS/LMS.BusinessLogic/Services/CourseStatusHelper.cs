@@ -2,7 +2,7 @@
 using Domain.Entities.MainEntities;
 using Domain.Enums;
 using LMS.BusinessLogic.DTOs.Course;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using LMS.Entity.Entities.MainEntities;
 using Microsoft.AspNetCore.Hosting;
 

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LMS.DataAcess.Migrations
+namespace LMS.DataAccess.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
     [Migration("20251011115402_init")]

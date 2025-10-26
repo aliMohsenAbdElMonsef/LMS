@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Contracts.Repositories
+namespace LMS.DataAccess.Contracts.Repositories
 {
     public interface ILectureRepository : IBaseRepository<Lecture, string>
     {

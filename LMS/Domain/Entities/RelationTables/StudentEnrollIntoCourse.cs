@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.RelationTables
 {
-    public class StudentEnrollIntoCourse
+    public class StudentEnrollIntoCourse: SoftDeletion
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string StudentId { get; set; } = string.Empty;
         public ApplicationUser Student;
 
         public string CourseId { get; set; } = string.Empty;
         public Course Course;
 
-        public double progress { get; set; } = 0.0;// calculated from average grades in assessments and attendance of lectures
+        public double progress { get; set; } = 0.0;
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Entity", "Domain\LMS.Entity.csproj", "{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.DataAcess", "DataAccess\LMS.DataAcess.csproj", "{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.DataAccess", "DataAccess\LMS.DataAccess.csproj", "{5096A3D7-31F9-41F0-A6FB-E1EE906A6B33}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2AE82ED4-0488-4D19-9A12-6DA17BF97C1A} = {2AE82ED4-0488-4D19-9A12-6DA17BF97C1A}
 	EndProjectSection

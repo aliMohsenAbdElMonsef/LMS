@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Domain.Entities.MainEntities;
-using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Lecture;
-using LMS.DataAcess.Contracts;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts;
 
 public class LectureService : ILectureServices
 {
@@ -45,7 +43,7 @@ public class LectureService : ILectureServices
 
     public async Task DeleteAsync(string id)
     {
-        await _unitOfWork.Lectures.DeleteAsync(id);
+        await _unitOfWork.Lectures.DeleteWithIDAsync(id);
     }
 
     public async Task<IEnumerable<GetLectureDTO>> GetCourseOcturesAsync(string courseId)

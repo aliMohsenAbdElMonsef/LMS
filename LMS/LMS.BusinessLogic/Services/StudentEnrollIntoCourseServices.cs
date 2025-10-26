@@ -4,7 +4,7 @@ using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Assignment;
 using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.Responses;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,6 @@ namespace LMS.BusinessLogic.Services
         {
             StudentEnrollIntoCourse StudentEnrollIntoCourse = new StudentEnrollIntoCourse
             {
-                Id = Guid.NewGuid().ToString(),
                 CourseId = dto.CourseId,
                 StudentId = dto.StudentId
             };
@@ -46,7 +45,6 @@ namespace LMS.BusinessLogic.Services
             {
                 StudentId = entity.StudentId,
                 CourseId = entity.CourseId,
-                Id = entity.Id,
                 StudentName = entity.Student.FirstName + " " + entity.Student.LastName,
                 CourseName = entity.Course.Name,
                 Progress = entity.progress
@@ -56,8 +54,7 @@ namespace LMS.BusinessLogic.Services
 
         protected override IBaseRepository<StudentEnrollIntoCourse, string> GetRepo() => _unitOfWork.StudentEnrollments;
 
-        protected override string GetIdFromUpdateDTO(UpdateStudentEnrollIntoCourseDTO dto) => dto.Id;
-
+       
 
         #region Enrollment Management
 
@@ -115,7 +112,6 @@ namespace LMS.BusinessLogic.Services
                 // Create enrollment
                 var enrollment = new StudentEnrollIntoCourse
                 {
-                    Id = Guid.NewGuid().ToString(),
                     StudentId = dto.StudentId,
                     CourseId = dto.CourseId,
                     //EnrollmentDate = DateTime.UtcNow,
@@ -143,56 +139,13 @@ namespace LMS.BusinessLogic.Services
             }
         }
 
-        public async Task<BasicResponseDTO> UnenrollStudentAsync(string enrollmentId)
+        
+
+        public async Task<BasicResponseDTO> UnenrollStudentFromCourseAsync(StudentUnenrollfromCourseDTO dto)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(enrollmentId))
-                {
-                    return new BasicResponseDTO
-                    {
-                        Success = false,
-                        Message = "Enrollment ID is required.",
-                        Errors = new List<string> { "Invalid enrollment ID." }
-                    };
-                }
-
-                var enrollment = await _unitOfWork.StudentEnrollments.FindByIdAsync(enrollmentId);
-                if (enrollment == null)
-                {
-                    return new BasicResponseDTO
-                    {
-                        Success = false,
-                        Message = "Enrollment not found.",
-                        Errors = new List<string> { $"Enrollment with ID {enrollmentId} does not exist." }
-                    };
-                }
-
-                await _unitOfWork.StudentEnrollments.UpdateAsync(enrollment);
-                await _unitOfWork.SaveChangesAsync();
-
-                return new BasicResponseDTO
-                {
-                    Success = true,
-                    Message = "Student unenrolled successfully."
-                };
-            }
-            catch (Exception ex)
-            {
-                return new BasicResponseDTO
-                {
-                    Success = false,
-                    Message = "An error occurred while unenrolling the student.",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }
-
-        public async Task<BasicResponseDTO> UnenrollStudentFromCourseAsync(string studentId, string courseId)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId))
+                if (string.IsNullOrWhiteSpace(dto.StudentId) || string.IsNullOrWhiteSpace(dto.CourseId))
                 {
                     return new BasicResponseDTO
                     {
@@ -203,7 +156,7 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 var enrollment = await _unitOfWork.StudentEnrollments
-                    .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId );
+                    .FirstOrDefaultAsync(e => e.StudentId == dto.StudentId && e.CourseId == dto.CourseId );
 
                 if (enrollment == null)
                 {
@@ -213,12 +166,12 @@ namespace LMS.BusinessLogic.Services
                         Message = "Active enrollment not found.",
                         Errors = new List<string>
                         {
-                            $"No active enrollment found for Student ID {studentId} in Course ID {courseId}."
+                            $"No active enrollment found for Student ID {dto.StudentId} in Course ID {dto.CourseId}."
                         }
                     };
                 }
 
-                await _unitOfWork.StudentEnrollments.UpdateAsync(enrollment);
+                await _unitOfWork.StudentEnrollments.DeleteByEntityAsync(enrollment);
                 await _unitOfWork.SaveChangesAsync();
 
                 return new BasicResponseDTO
@@ -241,161 +194,14 @@ namespace LMS.BusinessLogic.Services
 
         #endregion
 
-        #region Progress Management
-
-        public async Task<ServiceResponseDTO<double>> UpdateProgressAfterAssignmentAsync(string studentId, string courseId, double assignmentScore, double assignmentWeight)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId))
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Student ID and Course ID are required.",
-                        Errors = new List<string> { "Invalid input data." }
-                    };
-                }
-
-                if (assignmentScore < 0 || assignmentScore > 100)
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Assignment score must be between 0 and 100.",
-                        Errors = new List<string> { "Invalid assignment score." }
-                    };
-                }
-
-                if (assignmentWeight <= 0 || assignmentWeight > 100)
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Assignment weight must be between 0 and 100.",
-                        Errors = new List<string> { "Invalid assignment weight." }
-                    };
-                }
-
-                // Get current enrollment
-                var enrollment = await _unitOfWork.StudentEnrollments
-                    .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId );
-
-                if (enrollment == null)
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Active enrollment not found.",
-                        Errors = new List<string> { $"No active enrollment found for student {studentId} in course {courseId}." }
-                    };
-                }
-
-                // SIMPLE CALCULATION: Assignment contribution based on score and weight
-                double assignmentContribution = (assignmentScore / 100.0) * assignmentWeight;
-
-                // Add to current progress (simple approach)
-                double newProgress = enrollment.progress + assignmentContribution;
-                newProgress = Math.Min(newProgress, 100.0); // Cap at 100%
-
-                // Update enrollment
-                enrollment.progress = newProgress;
-                await _unitOfWork.StudentEnrollments.UpdateAsync(enrollment);
-                await _unitOfWork.SaveChangesAsync();
-
-                return new ServiceResponseDTO<double>
-                {
-                    Success = true,
-                    Message = $"Progress updated to {newProgress:F2}% after assignment (Score: {assignmentScore}%, Weight: {assignmentWeight}%).",
-                    Data = newProgress
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponseDTO<double>
-                {
-                    Success = false,
-                    Message = "An error occurred while updating progress after assignment.",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }
-        public async Task<ServiceResponseDTO<double>> UpdateProgressAfterQuizAsync(string studentId, string courseId, double quizScore, int correctAnswers, int totalQuestions)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId))
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Student ID and Course ID are required.",
-                        Errors = new List<string> { "Invalid input data." }
-                    };
-                }
-
-                if (quizScore < 0 || quizScore > 100)
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Quiz score must be between 0 and 100.",
-                        Errors = new List<string> { "Invalid quiz score." }
-                    };
-                }
-
-                // Get current enrollment
-                var enrollment = await _unitOfWork.StudentEnrollments
-                    .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId );
-
-                if (enrollment == null)
-                {
-                    return new ServiceResponseDTO<double>
-                    {
-                        Success = false,
-                        Message = "Active enrollment not found.",
-                        Errors = new List<string> { $"No active enrollment found for student {studentId} in course {courseId}." }
-                    };
-                }
-
-                // Quiz progress calculation - fixed small weight
-                double quizWeight = 5.0; // Quizzes have smaller impact
-                double quizContribution = (quizScore / 100.0) * quizWeight;
-
-                // Add to current progress
-                double newProgress = enrollment.progress + quizContribution;
-                newProgress = Math.Min(newProgress, 100.0); // Cap at 100%
-
-                // Update enrollment
-                enrollment.progress = newProgress;
-                await _unitOfWork.StudentEnrollments.UpdateAsync(enrollment);
-                await _unitOfWork.SaveChangesAsync();
-
-                return new ServiceResponseDTO<double>
-                {
-                    Success = true,
-                    Message = $"Progress updated to {newProgress:F2}% after quiz (Score: {quizScore}%, {correctAnswers}/{totalQuestions} correct).",
-                    Data = newProgress
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponseDTO<double>
-                {
-                    Success = false,
-                    Message = "An error occurred while updating progress after quiz.",
-                    Errors = new List<string> { ex.Message }
-                };
-            }
-        }       
-        #endregion
+        
         #region Retrieval Methods
 
-        public async Task<ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>> GetEnrollmentByIdAsync(string enrollmentId)
+        public async Task<ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>> GetEnrollmentByIdAsync(GetEnrollmentDTO dto)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(enrollmentId))
+                if (string.IsNullOrWhiteSpace(dto.studentId)||string.IsNullOrEmpty(dto.courseId))
                 {
                     return new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
                     {
@@ -405,20 +211,21 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                var enrollment = await _unitOfWork.StudentEnrollments.FindByIdAsync(enrollmentId);
+                var enrollment = await _unitOfWork.StudentEnrollments
+                                .GetFirstOrDefaultAsync(dto.studentId, dto.courseId,
+                                  includeProperties: "Student,Course");
                 if (enrollment == null)
                 {
                     return new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
                     {
                         Success = false,
                         Message = "Enrollment not found.",
-                        Errors = new List<string> { $"Enrollment with ID {enrollmentId} does not exist." }
+                        Errors = new List<string> { $"Student with ID {dto.studentId} doesn't enroll into course with id {dto.courseId}" }
                     };
                 }
 
                 var data = new ReadStudentEnrollIntoCourseDTO
                 {
-                    Id = enrollment.Id,
                     StudentId = enrollment.StudentId,
                     StudentName = enrollment.Student?.FirstName + " " + enrollment.Student?.LastName ?? "N/A",
                     CourseId = enrollment.CourseId,
@@ -459,11 +266,10 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 var enrollments = await _unitOfWork.StudentEnrollments
-                    .GetAllAsync(e => e.StudentId == studentId );
+                    .GetAllAsync(e => e.StudentId == studentId && e.Course.IsDeleted==false);
 
                 var data = enrollments.Select(e => new ReadStudentEnrollIntoCourseDTO
                 {
-                    Id = e.Id,
                     StudentId = e.StudentId,
                     StudentName = e.Student?.FirstName + " " + e.Student?.LastName ?? "N/A",
                     CourseId = e.CourseId,
@@ -504,11 +310,10 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 var enrollments = await _unitOfWork.StudentEnrollments
-                    .GetAllAsync(e => e.CourseId == courseId );
+                    .GetAllAsync(e => e.CourseId == courseId && e.Student.IsDeleted == false);
 
                 var data = enrollments.Select(e => new ReadStudentEnrollIntoCourseDTO
                 {
-                    Id = e.Id,
                     StudentId = e.StudentId,
                     StudentName = e.Student?.FirstName + " " + e.Student?.LastName ?? "N/A",
                     CourseId = e.CourseId,
@@ -538,15 +343,15 @@ namespace LMS.BusinessLogic.Services
 
         #region Check Methods
 
-        public async Task<bool> IsStudentEnrolledAsync(string studentId, string courseId)
+        public async Task<bool> IsStudentEnrolledAsync(GetEnrollmentDTO dto)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId))
+                if (string.IsNullOrWhiteSpace(dto.studentId) || string.IsNullOrWhiteSpace(dto.courseId))
                     return false;
 
                 var enrollment = await _unitOfWork.StudentEnrollments
-                    .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+                    .FirstOrDefaultAsync(e => e.StudentId == dto.studentId && e.CourseId == dto.courseId);
 
                 return enrollment != null;
             }
@@ -563,7 +368,7 @@ namespace LMS.BusinessLogic.Services
                     return 0;
 
                 var enrollments = await _unitOfWork.StudentEnrollments
-                    .GetAllAsync(e => e.CourseId == courseId );
+                    .GetAllAsync(e => e.CourseId == courseId && e.Student.IsDeleted == false);
 
                 return enrollments.Count();
             }
@@ -591,7 +396,7 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 var enrollments = await _unitOfWork.StudentEnrollments
-                    .GetAllAsync(e => e.CourseId == courseId );
+                    .GetAllAsync(e => e.CourseId == courseId && e.Student.IsDeleted == false);
 
                 if (!enrollments.Any())
                 {
@@ -622,11 +427,11 @@ namespace LMS.BusinessLogic.Services
                 };
             }
         }
-        public async Task<ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>> GetStudentsWithLowProgressAsync(string courseId, double threshold = 30.0)
+        public async Task<ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>> GetStudentsWithLowProgressAsync(GetStudentLessThersholdDTO dto)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(courseId))
+                if (string.IsNullOrWhiteSpace(dto.courseId))
                 {
                     return new ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>
                     {
@@ -636,7 +441,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                if (threshold < 0 || threshold > 100)
+                if (dto.threshold < 0 || dto.threshold > 100)
                 {
                     return new ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>
                     {
@@ -647,11 +452,10 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 var enrollments = await _unitOfWork.StudentEnrollments
-                    .GetAllAsync(e => e.CourseId == courseId  && e.progress < threshold);
+                    .GetAllAsync(e => e.CourseId == dto.courseId && e.Student.IsDeleted == false && e.progress < dto.threshold);
 
                 var data = enrollments.Select(e => new ReadStudentEnrollIntoCourseDTO
                 {
-                    Id = e.Id,
                     StudentId = e.StudentId,
                     StudentName = e.Student?.FirstName + " " + e.Student?.LastName ?? "N/A",
                     CourseId = e.CourseId,
@@ -662,7 +466,7 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<List<ReadStudentEnrollIntoCourseDTO>>
                 {
                     Success = true,
-                    Message = $"Found {data.Count} students with progress below {threshold}%.",
+                    Message = $"Found {data.Count} students with progress below {dto.threshold}%.",
                     Data = data
                 };
             }
@@ -675,6 +479,11 @@ namespace LMS.BusinessLogic.Services
                     Errors = new List<string> { ex.Message }
                 };
             }
+        }
+
+        protected override string GetIdFromUpdateDTO(UpdateStudentEnrollIntoCourseDTO dto)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

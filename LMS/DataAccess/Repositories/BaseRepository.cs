@@ -1,13 +1,9 @@
 ﻿using DataAccess.Context;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Repositories
+namespace LMS.DataAccess.Repositories
 {
     internal class BaseRepository<TEntity, TId> : IBaseRepository<TEntity, TId> where TEntity : class
     {
@@ -24,13 +20,17 @@ namespace LMS.DataAcess.Repositories
         {
             await _set.AddAsync(entity);
         }
-
-        public virtual async Task DeleteAsync(TId id)
+        public virtual async Task DeleteWithIDAsync(TId id)
         {
             var entity = await FindByIdAsync(id);
             if (entity == null)
-                throw new Exception($"Entity with id '{id}' does not exist.");
-
+                throw new Exception($"Entity with id {id} not exist.");
+            _set.Remove(entity);
+        }
+        public virtual async Task DeleteByEntityAsync(TEntity entity)
+        {
+            if (entity == null)
+                throw new Exception($"Entity not exist.");
             _set.Remove(entity);
         }
 
@@ -61,5 +61,6 @@ namespace LMS.DataAcess.Repositories
             return await _set.Where(predicate).ToListAsync();
         }
 
+       
     }
 }

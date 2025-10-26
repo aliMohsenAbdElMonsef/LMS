@@ -62,7 +62,6 @@ namespace Domain.Entities.MainEntities
 
         [Range(1, 1000)]
         public int TotalSessions { get; set; }
-        // course post requirements
 
         [Range(0, 100)]
         public double? MinPerformanceScore { get; set; } = 60;

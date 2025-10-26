@@ -1,9 +1,9 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts.Repositories;
 
 
-namespace LMS.DataAcess.Repositories
+namespace LMS.DataAccess.Repositories
 {
     internal class UserRepository: BaseRepository<ApplicationUser,string>,IUserRepository
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.RelationTables
 {
-    public class CourseSkill
+    public class CourseSkill: SoftDeletion
     {
         public string CourseId { get; set; }= string.Empty;
         public Course Course { get; set; }

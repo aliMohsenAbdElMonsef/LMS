@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\LMS.DataAcess.csproj" />
+    <ProjectReference Include="..\DataAccess\LMS.DataAccess.csproj" />
     <ProjectReference Include="..\Domain\LMS.Entity.csproj" />
   </ItemGroup>
 

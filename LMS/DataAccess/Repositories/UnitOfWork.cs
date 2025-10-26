@@ -1,6 +1,6 @@
 ﻿using DataAccess.Context;
-using LMS.DataAcess.Contracts;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts;
+using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Repositories
+namespace LMS.DataAccess.Repositories
 {
     internal class UnitOfWork : IUnitOfWork
     {

@@ -21,6 +21,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         public DeliveryMode DeliveryMode { get; set; }
         public Status Status { get; set; }
 
+        public Level Level { get; set; }
         public string Description { get; set; }
 
         public int Credits { get; set; }

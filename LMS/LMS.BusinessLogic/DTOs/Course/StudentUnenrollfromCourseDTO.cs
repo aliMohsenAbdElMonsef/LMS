@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace LMS.BusinessLogic.DTOs.Course
 {
-    public class ReadStudentEnrollIntoCourseDTO
+    public class StudentUnenrollfromCourseDTO
     {
-       
         public string StudentId { get; set; } = string.Empty;
-        public string StudentName { get; set; } = string.Empty;
         public string CourseId { get; set; } = string.Empty;
-        public string CourseName { get; set; } = string.Empty;
-        public double Progress { get; set; }
     }
 }

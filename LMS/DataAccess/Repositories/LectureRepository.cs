@@ -1,6 +1,6 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Repositories
+namespace LMS.DataAccess.Repositories
 {
     internal class LectureRepository: BaseRepository<Lecture,string>, ILectureRepository
     {

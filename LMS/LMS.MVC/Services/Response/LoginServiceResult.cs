@@ -2,7 +2,7 @@
 
 namespace LMS.MVC.Services.Response
 {
-    public class LoginServiceResult: BasicServiceResult
+    public class LoginServiceResult : BasicServiceResult
     {
         public string AccessToken { get; set; } = string.Empty;
         public DateTime AccessTokenExpiresAt { get; set; }
