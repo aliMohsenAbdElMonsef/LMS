@@ -1,11 +1,12 @@
-﻿using LMS.DataAcess.Contracts.Repositories;
+﻿using LMS.DataAccess.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.DataAcess.Contracts
+namespace LMS.DataAccess.Contracts
 {
     public interface IUnitOfWork
     {
@@ -18,6 +19,7 @@ namespace LMS.DataAcess.Contracts
         ICourseRepository Courses { get; }
 
         ILectureRepository Lectures { get; }
+        ICourseDayScheduleRepository DaySchedules { get; }
 
         IQuestionRepository Questions { get; }
 
@@ -28,7 +30,10 @@ namespace LMS.DataAcess.Contracts
         IUserRepository Users { get; }
         IInstructorEnrolltoCourseRepository InstructorEnrollments { get; }
 
+        IStudentEnrollIntoCourseRepository StudentEnrollments { get; }
+
         int SaveChanges();
+        Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task<int> SaveChangesAsync();
     }

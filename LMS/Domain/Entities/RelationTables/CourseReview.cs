@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.RelationTables
 {
-    public class CourseReview
+    public class CourseReview: SoftDeletion
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
 

@@ -1,14 +1,14 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
-using LMS.DataAcess.Contracts;
-using LMS.DataAcess.Contracts.Repositories;
-using LMS.DataAcess.Repositories;
+using LMS.DataAccess.Contracts;
+using LMS.DataAccess.Contracts.Repositories;
+using LMS.DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LMS.DataAcess.Extensions
+namespace LMS.DataAccess.Extensions
 {
     public static class DataAcessExtention
     {

@@ -1,10 +1,10 @@
+using LMS.MVC.Models.ViewModels.Course;
 using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.MVC.Controllers
 {
-    [Authorize]
     public class CourseController : Controller
     {
         private readonly IUnitOfServices _services;
@@ -19,7 +19,6 @@ namespace LMS.MVC.Controllers
         {
             try
             {
-                // This will call the API endpoint /api/course/all
                 var courses = await _services.CourseService.GetAllCoursesAsync();
                 return View(courses);
             }
@@ -27,28 +26,36 @@ namespace LMS.MVC.Controllers
             {
                 // Log the exception
                 TempData["Error"] = $"Error loading courses: {ex.Message}";
-                return View(new List<LMS.BusinessLogic.DTOs.Course.ReadCourseDTO>());
+                return View(new List<AllCoursesResult>());
             }
         }
 
-        [HttpGet("details/{id}")]
-        public async Task<IActionResult> Details(string id)
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
         {
-            try
-            {
-                var course = await _services.CourseService.GetCourseByIdAsync(id);
-                if (course == null)
-                {
-                    TempData["Error"] = "Course not found";
-                    return RedirectToAction("Index");
-                }
-                return View(course);
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Error loading course: {ex.Message}";
-                return RedirectToAction("Index");
-            }
+            CreateCourseViewModel model = new CreateCourseViewModel();
+            return View(model);
         }
+
+        //[HttpGet("details/{id}")]
+        //public async Task<IActionResult> Details(string id)
+        //{
+        //    try
+        //    {
+        //        var course = await _services.CourseService.GetCourseByIdAsync(id);
+        //        if (course == null)
+        //        {
+        //            TempData["Error"] = "Course not found";
+        //            return RedirectToAction("Index");
+        //        }
+        //        return View(course);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        TempData["Error"] = $"Error loading course: {ex.Message}";
+        //        return RedirectToAction("Index");
+        //    }
+        //}
     }
 }

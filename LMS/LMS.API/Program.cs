@@ -2,7 +2,8 @@
 using LMS.BusinessLogic.Contracts.Seedings;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Extensions;
-using LMS.DataAcess.Extensions;
+using LMS.DataAccess.Extensions;
+using LMS.DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

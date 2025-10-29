@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LMS.DataAcess.Migrations
+namespace LMS.DataAccess.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
     [Migration("20251021161452_adding-blacklisted-tokens")]

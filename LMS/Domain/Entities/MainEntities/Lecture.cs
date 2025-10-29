@@ -21,6 +21,8 @@ namespace Domain.Entities.MainEntities
 
         [MaxLength(500)]
         public string? ZoomLink { get; set; }
+        public string InstructorId { get; set; }
+        public ApplicationUser Instructor { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -33,6 +35,9 @@ namespace Domain.Entities.MainEntities
         public DateTime? LastRecordingUploadDate { get; set; }
         // relations
         // course
+
+        [Range(1, 10000)]
+        public int LectureNumber { get; set; }
         [Required]
         public string CourseId { get; set; }
         public Course Course { get; set; }

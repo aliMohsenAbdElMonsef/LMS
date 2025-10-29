@@ -14,6 +14,7 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<ITokenServices, TokenServices>();
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IBlackListedTokensServices, BlackListedTokensServices>();
+            
             return services;
         }
     }

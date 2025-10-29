@@ -35,8 +35,9 @@ namespace LMS.MVC.Controllers
         [Authorize]
         public IActionResult TestAuth()
         {
-            return Json(new { 
-                Message = "Authentication successful", 
+            return Json(new
+            {
+                Message = "Authentication successful",
                 User = User.Identity?.Name,
                 IsAuthenticated = User.Identity?.IsAuthenticated,
                 Claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList()

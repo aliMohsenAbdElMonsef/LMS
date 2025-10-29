@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\LMS.DataAcess.csproj" />
+    <ProjectReference Include="..\DataAccess\LMS.DataAccess.csproj" />
     <ProjectReference Include="..\Domain\LMS.Entity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
   </ItemGroup>
 

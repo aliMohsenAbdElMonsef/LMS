@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.RelationTables
 {
-    public class StudentCertificate
+    public class StudentCertificate: SoftDeletion
     {
         public string Id { get; set; }
         public StudentCertificate()

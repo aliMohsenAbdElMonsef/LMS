@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Server=.\\ALIMOHSEN;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=.\\AliMohsen;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -41,14 +41,7 @@ namespace DataAccess.Context
                 }
             }
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                Console.WriteLine("OnConfiguring called - using design-time connection");
-                optionsBuilder.UseSqlServer("Server=.\\ALIMOHSEN;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true;");
-            }
-        }
+
 
         // Main Entities
         public DbSet<Course> Courses { get; set; }
@@ -78,7 +71,7 @@ namespace DataAccess.Context
         {
             base.OnModelCreating(builder);
 
-            // global query filters
+            // global query filters - ADDED ALL RELATIONSHIP ENTITIES
             builder.Entity<ApplicationUser>().HasQueryFilter(u => !u.IsDeleted);
             builder.Entity<Course>().HasQueryFilter(c => !c.IsDeleted);
             builder.Entity<Lecture>().HasQueryFilter(l => !l.IsDeleted);
@@ -89,6 +82,22 @@ namespace DataAccess.Context
             builder.Entity<Skills>().HasQueryFilter(s => !s.IsDeleted);
             builder.Entity<CertificateTemplate>().HasQueryFilter(ct => !ct.IsDeleted);
             builder.Entity<LectureSchedule>().HasQueryFilter(ls => !ls.IsDeleted);
+
+            // ADDED: Query filters for relationship entities to fix warnings
+            builder.Entity<CourseReview>().HasQueryFilter(cr => !cr.IsDeleted);
+            builder.Entity<StudentCertificate>().HasQueryFilter(sc => !sc.IsDeleted);
+            builder.Entity<InstructorEnrolltoCourse>().HasQueryFilter(ie => !ie.IsDeleted);
+            builder.Entity<StudentEnrollIntoCourse>().HasQueryFilter(se => !se.IsDeleted);
+            builder.Entity<StudentLecture>().HasQueryFilter(sl => !sl.IsDeleted);
+            builder.Entity<StudentQuiz>().HasQueryFilter(sq => !sq.IsDeleted);
+            builder.Entity<StudentAssignment>().HasQueryFilter(sa => !sa.IsDeleted);
+            builder.Entity<StudentAnswerQuestion>().HasQueryFilter(saq => !saq.IsDeleted);
+            builder.Entity<CourseSkill>().HasQueryFilter(cs => !cs.IsDeleted);
+
+            // ADDED: Decimal precision for Price
+            builder.Entity<Course>()
+                .Property(c => c.Price)
+                .HasPrecision(18, 2);
 
             // with admin
             builder.Entity<Course>()
@@ -358,6 +367,8 @@ namespace DataAccess.Context
             HandleSoftDeleteForLectures();
             HandleSoftDeleteForAssignments();
             HandleSoftDeleteForCertificateTemplates();
+            // ADDED: Handle soft delete for relationship entities
+            HandleSoftDeleteForRelationshipEntities();
             return base.SaveChanges();
         }
 
@@ -373,7 +384,41 @@ namespace DataAccess.Context
             HandleSoftDeleteForLectures();
             HandleSoftDeleteForAssignments();
             HandleSoftDeleteForCertificateTemplates();
+            // ADDED: Handle soft delete for relationship entities
+            HandleSoftDeleteForRelationshipEntities();
             return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        // ADDED: Combined method to handle soft delete for all relationship entities
+        private void HandleSoftDeleteForRelationshipEntities()
+        {
+            HandleSoftDeleteForEntity<CourseReview>();
+            HandleSoftDeleteForEntity<StudentCertificate>();
+            HandleSoftDeleteForEntity<InstructorEnrolltoCourse>();
+            HandleSoftDeleteForEntity<StudentEnrollIntoCourse>();
+            HandleSoftDeleteForEntity<StudentLecture>();
+            HandleSoftDeleteForEntity<StudentQuiz>();
+            HandleSoftDeleteForEntity<StudentAssignment>();
+            HandleSoftDeleteForEntity<StudentAnswerQuestion>();
+            HandleSoftDeleteForEntity<CourseSkill>();
+        }
+
+        // ADDED: Generic method to handle soft delete for any entity
+        private void HandleSoftDeleteForEntity<T>() where T : class
+        {
+            var entities = ChangeTracker.Entries<T>()
+                .Where(e => e.State == EntityState.Deleted && e.Entity is SoftDeletion);
+
+            foreach (var entry in entities)
+            {
+                entry.State = EntityState.Modified;
+                var softDeletionEntity = entry.Entity as SoftDeletion;
+                if (softDeletionEntity != null)
+                {
+                    softDeletionEntity.IsDeleted = true;
+                    softDeletionEntity.DeletedAt = DateTime.UtcNow;
+                }
+            }
         }
 
         private void HandleSoftDeleteForCategories()
@@ -485,8 +530,6 @@ namespace DataAccess.Context
                 ((SoftDeletion)entry.Entity).IsDeleted = true;
                 ((SoftDeletion)entry.Entity).DeletedAt = DateTime.UtcNow;
             }
-
-
         }
         private void HandleSoftDeleteForLectures()
         {

@@ -1,5 +1,5 @@
 ﻿using LMS.BusinessLogic.Contracts.Services;
-using LMS.DataAcess.Contracts.Repositories;
+using LMS.DataAccess.Contracts.Repositories;
 using LMS.Entity.Entities.MainEntities;
 
 namespace LMS.BusinessLogic.Services

@@ -1,13 +1,10 @@
 ﻿using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LMS.BusinessLogic.DTOs.Course;
+using LMS.BusinessLogic.DTOs.DaySchedule;
 
-namespace LMS.BusinessLogic.DTOs.Course
+namespace LMS.MVC.Models.ViewModels.Course
 {
-    public class ReadCourseDTO
+    public class AllCoursesResult
     {
         public string Id { get; set; }
         public string CourseCode { get; set; }
@@ -27,20 +24,24 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         public string AdminId { get; set; }
         public string AdminName { get; set; }
-
         public string CategoryId { get; set; }
         public string CategoryName { get; set; }
 
         public string CertificateTemplateId { get; set; }
         public string CertificateTemplateTitle { get; set; }
-
         public double MinAttendancePercentage { get; set; }
         public double MinPerformanceScore { get; set; }
         public bool AutoIssueCertificates { get; set; }
-
         public DateTime? LastUpdate { get; set; }
 
         public int EnrolledStudentsCount { get; set; }
         public double AverageRating { get; set; }
+
+        public int TotalSessions { get; set; }
+        public double HoursPerSession { get; set; }
+        public int DaysPerWeek { get; set; }
+
+        public List<CreateDayScheduleDTO> Schedule { get; set; } = new List<CreateDayScheduleDTO>();
+        public List<InstructorInformationDTO> Instructors { get; set; } = new List<InstructorInformationDTO>();
     }
 }

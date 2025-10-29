@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 
 namespace LMS.MVC.Services.Handlers
 {
-    public class AuthHeaderHandler: DelegatingHandler
+    public class AuthHeaderHandler : DelegatingHandler
     {
         private readonly ITokenService _tokenService;
 

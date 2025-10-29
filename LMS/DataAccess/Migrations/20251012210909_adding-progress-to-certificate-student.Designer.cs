@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace LMS.DataAcess.Migrations
+namespace LMS.DataAccess.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
     [Migration("20251012210909_adding-progress-to-certificate-student")]

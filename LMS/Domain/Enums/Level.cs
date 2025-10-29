@@ -8,7 +8,7 @@ namespace Domain.Enums
 {
     public enum Level
     {
-        BegBeginner,
+        Beginner,
         Intermediate,
         Advanced
     }

@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using LMS.MVC.Services.Contracts;
 using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Handlers;

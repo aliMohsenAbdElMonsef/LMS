@@ -21,9 +21,9 @@
     <div class="col-12 col-md-3">
         <select id="statusFilter" class="form-select">
             <option value="">All Status</option>
-            <option value="Active">Approved</option>
+            <option value="Active">Active</option>
             <option value="Pending">Pending</option>
-            <option value="Suspended">Rejected</option>
+            <option value="Suspended">Suspended</option>
         </select>
     </div>
     <div class="col-12 col-md-2">
@@ -31,7 +31,8 @@
     </div>
 </div>
 
-<table class="table table-striped table-hover">
+<!-- Added id="usersTable" to the table -->
+<table class="table table-striped table-hover" id="usersTable">
     <thead class="table-dark">
         <tr>
             <th style="width:5%">Avatar</th>
@@ -46,8 +47,14 @@
         @foreach (var user in Model)
         {
             <tr>
-                <td><img src="@(user.UserImage ?? "~/images/default-avatar.png")" class="rounded-circle" width="40" /></td>
-                <td class="text-truncate" style="max-width:150px;">@user.FirstName</td>
+                <td>
+                    <img src="@(user.UserImage ?? "/images/default-avatar.png")"
+                         class="rounded-circle" width="40" height="40"
+                         alt="@user.FirstName" />
+                </td>
+                <td class="text-truncate" style="max-width:150px;">
+                    @user.FirstName @user.LastName
+                </td>
                 <td class="text-truncate" style="max-width:150px;">@user.Email</td>
                 <td>@user.ApplyAs</td>
                 <td>
@@ -55,13 +62,13 @@
                     {
                         case ApplicationStatus.Approved:
                             <span class="badge bg-success">Active</span>
-                            ; break;
+                            break;
                         case ApplicationStatus.Pending:
                             <span class="badge bg-warning">Pending</span>
-                            ; break;
+                            break;
                         case ApplicationStatus.Rejected:
                             <span class="badge bg-danger">Suspended</span>
-                            ; break;
+                            break;
                     }
                 </td>
                 <td>
@@ -81,22 +88,36 @@
                 var status = $("#statusFilter").val();
 
                 $("#usersTable tbody tr").each(function () {
-                    var name = $(this).find("td:eq(1)").text().toLowerCase();
-                    var username = $(this).find("td:eq(2)").text().toLowerCase();
-                    var email = $(this).find("td:eq(3)").text().toLowerCase();
-                    var rowRole = $(this).find("td:eq(4)").text();
-                    var rowStatus = $(this).find("td:eq(5)").text();
+                    var $row = $(this);
+                    var name = $row.find("td:eq(1)").text().toLowerCase();
+                    var email = $row.find("td:eq(2)").text().toLowerCase();
+                    var rowRole = $row.find("td:eq(3)").text();
+                    var rowStatus = $row.find("td:eq(4)").find(".badge").text().trim();
 
-                    var matchSearch = name.includes(search) || username.includes(search) || email.includes(search);
+                    // Fix status mapping
+                    var statusMap = {
+                        'Active': 'Active',
+                        'Pending': 'Pending',
+                        'Suspended': 'Suspended'
+                    };
+
+                    var matchSearch = name.includes(search) || email.includes(search);
                     var matchRole = role === "" || role === rowRole;
                     var matchStatus = status === "" || status === rowStatus;
 
                     if (matchSearch && matchRole && matchStatus) {
-                        $(this).show();
+                        $row.show();
                     } else {
-                        $(this).hide();
+                        $row.hide();
                     }
                 });
+            });
+
+            // Optional: Add enter key support for search
+            $("#searchInput").keypress(function (e) {
+                if (e.which == 13) {
+                    $("#filterBtn").click();
+                }
             });
         });
     </script>

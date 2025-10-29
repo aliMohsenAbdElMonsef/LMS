@@ -1,81 +1,215 @@
+﻿using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Services;
+using LMS.BusinessLogic.DTOs.Course;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LMS.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class CourseController : ControllerBase
+    [Route("api/[controller]")]
+    [Authorize]
+    public class CoursesController : ControllerBase
     {
-        private readonly ICourseServices _courseServices;
+        private readonly IUnitOfServices _unitOfServices;
 
-        public CourseController(ICourseServices courseServices)
+        public CoursesController(IUnitOfServices unitOfServices)
         {
-            _courseServices = courseServices;
+            _unitOfServices = unitOfServices;
         }
+        
+
+        [HttpPost("create")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateCourse([FromForm] CreateCourseDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Invalid data",
+                        errors = ModelState
+                    });
+                }
+                if (string.IsNullOrEmpty(dto.AdminId))
+                {
+                    dto.AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                }
+
+                var result = await _unitOfServices.Courses.CreateCourseWithScheduleAsync(dto);
+
+                return Ok(new
+                {
+                    success = true,
+                    data = result,
+                    message = "Course created successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
 
         [HttpGet("all")]
-        [Authorize] // Require authentication
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllCourses()
         {
-            var courses = await _courseServices.GetAllAsync();
-            return Ok(courses);
-        }
-
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetCourseById(string id)
-        {
-            var course = await _courseServices.GetByIdAsync(id);
-            if (course == null)
-                return NotFound();
-            return Ok(course);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateCourse([FromBody] LMS.BusinessLogic.DTOs.Course.CreateCourseDTO dto)
-        {
             try
             {
-                var result = await _courseServices.CreateAsync(dto);
+                var result = await _unitOfServices.Courses.GetAllAsync();
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Success = false, Message = ex.Message });
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCourse(string id, [FromBody] LMS.BusinessLogic.DTOs.Course.UpdateCourseDTO dto)
+
+        [HttpGet("{courseId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCourse(string courseId)
         {
             try
             {
-                dto.Id = id;
-                var result = await _courseServices.UpdateAsync(dto);
-                return Ok(result);
+                var result = await _unitOfServices.Courses.GetByIdAsync(courseId);
+                return Ok(new
+                {
+                    success = true,
+                    data = result
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Success = false, Message = ex.Message });
+                return NotFound(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCourse(string id)
+        [HttpGet("{courseId}/lectures")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCourseLectures(string courseId)
         {
             try
             {
-                await _courseServices.DeleteAsync(id);
-                return Ok(new { Success = true, Message = "Course deleted successfully" });
+                var result = await _unitOfServices.Courses.GetCourseLecturesAsync(courseId);
+                return Ok(new
+                {
+                    success = true,
+                    data = result
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Success = false, Message = ex.Message });
+                return NotFound(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet("{courseId}/schedule")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCourseSchedule(string courseId)
+        {
+            try
+            {
+                var result = await _unitOfServices.Courses.GetCourseScheduleAsync(courseId);
+                return Ok(new
+                {
+                    success = true,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPut("{courseId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateCourse(string courseId, [FromBody] UpdateCourseDTO dto)
+        {
+            try
+            {
+                if (courseId != dto.Id)
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Course ID mismatch"
+                    });
+
+                if (!ModelState.IsValid)
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Invalid data"
+                    });
+
+                var result = await _unitOfServices.Courses.UpdateAsync(dto);
+                return Ok(new
+                {
+                    success = true,
+                    data = result,
+                    message = "Course updated successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpDelete("{courseId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteCourse(string courseId)
+        {
+            try
+            {
+                await _unitOfServices.Courses.DeleteAsync(courseId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Course deleted successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
     }

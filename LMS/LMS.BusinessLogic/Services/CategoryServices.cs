@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Category;
-using LMS.DataAcess.Contracts;
+using LMS.DataAccess.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

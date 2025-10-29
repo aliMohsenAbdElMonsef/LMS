@@ -1,4 +1,5 @@
-﻿using Domain.Entities.MainEntities;
+﻿using Domain.Entities;
+using Domain.Entities.MainEntities;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace LMS.Entity.Entities.RelationTables
 {
-    public class InstructorEnrolltoCourse
+    public class InstructorEnrolltoCourse: SoftDeletion
     {
-            public string Id { get; set; }
-            public string InstructorId { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string InstructorId { get; set; }
             public ApplicationUser Instructor { get; set; }
             public string CourseId { get; set; }
             public Course Course { get; set; }
