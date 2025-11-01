@@ -3,8 +3,9 @@ using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Category;
 using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using LMS.BusinessLogic.DTOs.Recieve.Categories;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LMS.API.Controllers
 {
@@ -18,19 +19,31 @@ namespace LMS.API.Controllers
         {
             _unitOfServices = unitOfServices;
         }
+        private string? GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         private ICategoryServices CategoryService => _unitOfServices.Categories;
 
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponseDTO<ReadCategoryDTO>>> CreateCategory(CreateCategoryDTO category)
+        public async Task<ActionResult<ServiceResponseDTO<ReadCategoryDTO>>> CreateCategory(ReadCategoryFromUserDTO category)
         {
-            var result = await CategoryService.CreateAsync(category);
+            var adminId = GetCurrentUserId() ?? "";
+
+            CreateCategoryDTO newdto = new CreateCategoryDTO
+            {
+                AdminID = adminId,
+                AdminName = User.FindFirst("FullName")?.Value ?? "",
+                Description = category.Description,
+                Name = category.Name
+            };
+
+            var result = await CategoryService.CreateAsync(newdto);
             if (!result.Success)
                 return BadRequest(result);
 
             return Ok(result);
         }
+
 
         [HttpPut("update")]
         [Authorize(Roles = "Admin")]
@@ -51,11 +64,21 @@ namespace LMS.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("details/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ServiceResponseDTO<CategoryDetailsDTO>>> GetCategoryByIdInDetails(string id)
+        {
+            var result = await CategoryService.GetCategoryWithCourseDetails(id);
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<ServiceResponseDTO<ReadCategoryDTO>>> GetCategoryById(string id)
         {
-            var result = await CategoryService.GetByIdAsync(id);
+            var result = await CategoryService.GetCategoryAsync(id);
             if (!result.Success)
                 return NotFound(result);
 

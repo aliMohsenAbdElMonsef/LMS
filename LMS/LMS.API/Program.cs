@@ -1,13 +1,10 @@
 ﻿using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.Contracts.Seedings;
-using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.Extensions;
-using LMS.DataAccess.Extensions;
 using LMS.DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -23,9 +20,7 @@ namespace LMS.API
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            builder.Services
-                .AddDataAcessServices(builder.Configuration)
-                .AddBusinessLogicServices();
+            builder.Services.AddDataAcessServices(builder.Configuration).AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -86,7 +81,7 @@ namespace LMS.API
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = false; // For development
+                options.RequireHttpsMetadata = false; 
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -145,6 +140,7 @@ namespace LMS.API
                     }
                 };
             });
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // ---------------------- Build App ----------------------
             var app = builder.Build();
@@ -168,7 +164,6 @@ namespace LMS.API
 
             app.UseHttpsRedirection();
 
-            // CORS must come first
             app.UseCors("AllowMvc");
 
             app.UseAuthentication();

@@ -1,4 +1,5 @@
 ﻿using LMS.BusinessLogic.DTOs.Category;
+using LMS.BusinessLogic.DTOs.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace LMS.BusinessLogic.Contracts.Services
 {
     public interface ICategoryServices : IBaseService<ReadCategoryDTO, CreateCategoryDTO, UpdateCategoryDTO>
     {
-
+        Task<ServiceResponseDTO<CategoryDetailsDTO>> GetCategoryWithCourseDetails(string Id);
+        Task<ServiceResponseDTO<ReadCategoryDTO>> GetCategoryAsync(string Id);
     }
 }

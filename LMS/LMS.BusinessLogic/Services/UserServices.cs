@@ -258,6 +258,15 @@ namespace LMS.BusinessLogic.Services
             };
         }
 
-       
+        public async Task<ApplicationUser?> FindByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
+
+        public async Task<string?> GetUserName(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            return user?.UserName;
+        }
     }
 }

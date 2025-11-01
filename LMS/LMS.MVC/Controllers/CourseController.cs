@@ -26,7 +26,7 @@ namespace LMS.MVC.Controllers
             {
                 // Log the exception
                 TempData["Error"] = $"Error loading courses: {ex.Message}";
-                return View(new List<AllCoursesResult>());
+                return View(new List<ReadCourseResult>());
             }
         }
 

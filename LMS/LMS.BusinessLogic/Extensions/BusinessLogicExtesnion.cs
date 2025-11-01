@@ -10,12 +10,18 @@ namespace LMS.BusinessLogic.Extensions
     {
         public static IServiceCollection AddBusinessLogicServices(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfServices, UnitOfServices>();
             services.AddScoped<ITokenServices, TokenServices>();
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<ICategoryServices, CategoryServices>();
+            services.AddScoped<ICourseServices, CourseServices>();
+            services.AddScoped<IAssignmentServices, AssignmentServices>();
+            services.AddScoped<ILectureServices, LectureService>();
+            services.AddScoped<IUnitOfServices, UnitOfServices>();
             services.AddScoped<IBlackListedTokensServices, BlackListedTokensServices>();
-            
+
             return services;
         }
+
+
     }
 }

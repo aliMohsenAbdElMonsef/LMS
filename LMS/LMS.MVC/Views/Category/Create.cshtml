@@ -1,0 +1,36 @@
+﻿@model LMS.MVC.Models.ViewModels.Category.ReadCategoryResult
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<h2 class="mb-4">Create New Category</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<form asp-action="Create" method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Category Name</label>
+        <input asp-for="Name" class="form-control" placeholder="Enter category name" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" placeholder="Enter category description" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Category</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

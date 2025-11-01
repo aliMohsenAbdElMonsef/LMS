@@ -9,6 +9,6 @@ namespace LMS.DataAccess.Contracts.Repositories
 {
     public interface IUserRepository: IBaseRepository<ApplicationUser,string>
     {
-       
+        Task<string?> GetUserNameAsync(string id);
     }
 }

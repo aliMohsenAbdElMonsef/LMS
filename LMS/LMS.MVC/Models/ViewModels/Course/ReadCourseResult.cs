@@ -4,7 +4,7 @@ using LMS.BusinessLogic.DTOs.DaySchedule;
 
 namespace LMS.MVC.Models.ViewModels.Course
 {
-    public class AllCoursesResult
+    public class ReadCourseResult
     {
         public string Id { get; set; }
         public string CourseCode { get; set; }

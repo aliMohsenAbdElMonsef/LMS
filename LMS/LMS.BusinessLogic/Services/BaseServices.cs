@@ -82,16 +82,30 @@ namespace LMS.BusinessLogic.Services
             }
         }
 
-        public virtual async Task DeleteAsync(string id)
+        public virtual async Task<ServiceResponseDTO<TReadDTO>> DeleteAsync(string id)
         {
             try
             {
                 var entity = await GetRepo().FindByIdAsync(id);
                 if (entity == null)
-                    throw new Exception($"Entity with id '{id}' not found.");
+                {
+                    ServiceResponseDTO<TReadDTO> Errorresponse = new ServiceResponseDTO<TReadDTO>
+                    {
+                        Success = false,
+                        Message = "Entity Not Found."
+                    };
+                    return Errorresponse;
+                }
 
                 await GetRepo().DeleteWithIDAsync(id);
                 await _unitOfWork.SaveChangesAsync();
+
+                ServiceResponseDTO<TReadDTO> response = new ServiceResponseDTO<TReadDTO>
+                {
+                    Success = true,
+                    Message = "Entity Deleted Succesfully."
+                };
+                return response;
             }
             catch (Exception ex)
             {
@@ -126,7 +140,14 @@ namespace LMS.BusinessLogic.Services
             {
                 var entity = await GetRepo().FindByIdAsync(id);
                 if (entity == null)
-                    throw new Exception($"Entity with id '{id}' not found.");
+                {
+                    ServiceResponseDTO<TReadDTO> Errorresponse = new ServiceResponseDTO<TReadDTO>
+                    {
+                        Success = false,
+                        Message = "Entity Not Found."
+                    };
+                    return Errorresponse;
+                }
 
                 var ReadEntity = MapToReadDTO(entity);
                 ServiceResponseDTO<TReadDTO> response = new ServiceResponseDTO<TReadDTO>

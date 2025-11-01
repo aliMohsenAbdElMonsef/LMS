@@ -29,11 +29,13 @@ namespace LMS.BusinessLogic.Services
         private readonly Lazy<ISkillServices> _skillServices;
         private readonly Lazy<IUserServices> _userServices;
         private readonly Lazy<IStudentEnrollIntoCourseServices> _studentEnrollIntoCourseServices;
-        public UnitOfServices(IUnitOfWork unitOfWork)
+        public UnitOfServices(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
             _assignmentServices = new Lazy<IAssignmentServices>(() => new AssignmentServices(_unitOfWork));
-            _categoryServices = new Lazy<ICategoryServices>(() => new CategoryServices(_unitOfWork));
+            _categoryServices = new Lazy<ICategoryServices>(() => new CategoryServices(_unitOfWork, _mapper));
             _certificateTemplateServices = new Lazy<ICertificateTemplateServices>(() => new CertificateTemplateServices(_unitOfWork));
             _courseServices = new Lazy<ICourseServices>(() => new CourseServices(_unitOfWork , _webHostEnvironment , _mapper));
             _lectureServices = new Lazy<ILectureServices>(() => new LectureService(_unitOfWork, _mapper));

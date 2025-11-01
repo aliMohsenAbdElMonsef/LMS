@@ -15,7 +15,7 @@ namespace LMS.BusinessLogic.Contracts
 
         Task<ServiceResponseDTO<TReadDto>> CreateAsync(TCreateDto dto);
         Task<ServiceResponseDTO<TReadDto>> UpdateAsync(TUpdateDto dto);
-        Task DeleteAsync(string id);
+        Task<ServiceResponseDTO<TReadDto>> DeleteAsync(string id);
     }
 
 }

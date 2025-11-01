@@ -59,7 +59,7 @@ namespace LMS.BusinessLogic.Services
                 course.Status = CourseStatusHelper.DetermineCourseStatus(dto.StartDate, dto.EndDate);
                 course.LastUpdate = DateTime.UtcNow;
 
-                await _unitOfWork.Coures.CreateAsync(course);
+                await _unitOfWork.Courses.CreateAsync(course);
                 await _unitOfWork.SaveChangesAsync();
 
                 // ============ ADD DAY SCHEDULES ============
@@ -103,7 +103,7 @@ namespace LMS.BusinessLogic.Services
                 await transaction.CommitAsync();
 
                 // ============ RETURN DTO ============
-                var refreshedCourse = await _unitOfWork.Coures.FindByIdAsync(course.Id);
+                var refreshedCourse = await _unitOfWork.Courses.FindByIdAsync(course.Id);
                 return _mapper.Map<GetCourseDTO>(refreshedCourse);
             }
             catch (Exception ex)
@@ -222,7 +222,7 @@ namespace LMS.BusinessLogic.Services
         }
 
 
-        protected override IBaseRepository<Course, string> GetRepo() => _unitOfWork.Coures;
+        protected override IBaseRepository<Course, string> GetRepo() => _unitOfWork.Courses;
 
         protected override Course MapToEntity(CreateCourseDTO dto) => _mapper.Map<Course>(dto);
 

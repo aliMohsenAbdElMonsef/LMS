@@ -14,14 +14,8 @@ namespace LMS.MVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ================================================================
-            // MVC Setup
-            // ================================================================
+            // ---------------- MVC & Session ----------------
             builder.Services.AddControllersWithViews();
-
-            // ================================================================
-            // Session Configuration
-            // ================================================================
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
@@ -29,15 +23,9 @@ namespace LMS.MVC
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
-            // ================================================================
-            // HttpContext Accessor
-            // ================================================================
             builder.Services.AddHttpContextAccessor();
 
-            // ================================================================
-            // CORS Configuration
-            // ================================================================
+            // ---------------- CORS ----------------
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowMvc", policy =>
@@ -45,41 +33,25 @@ namespace LMS.MVC
                         "https://localhost:5120",
                         "http://localhost:5119",
                         "https://localhost:7001",
-                        "http://localhost:5000"
-                    )
+                        "http://localhost:5000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials());
             });
 
-            // ================================================================
-            // Token Service
-            // ================================================================
             var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7033/";
 
-            builder.Services.AddHttpClient<ITokenService, TokenService>((sp, client) =>
-            {
-                var config = sp.GetRequiredService<IConfiguration>();
-                var baseUrl = config["ApiSettings:BaseUrl"] ?? "https://localhost:7033/";
-                client.BaseAddress = new Uri(baseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
-            })
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            });
-
+            // ---------------- Token & Auth ----------------
+            builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddTransient<AuthHeaderHandler>();
 
-            // ================================================================
-            // HttpClients Configuration
-            // ================================================================
+            // ---------------- HttpClients ----------------
             builder.Services.AddHttpClient("LMS.API", client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
             })
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
             });
@@ -88,43 +60,27 @@ namespace LMS.MVC
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>()
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            });
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<IUserService, UserServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>()
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            });
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<ICourseService, CourseService>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
-            })
-            .AddHttpMessageHandler<AuthHeaderHandler>()
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+                client.Timeout = TimeSpan.FromSeconds(300);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
+            builder.Services.AddHttpClient<IUnitOfServices, UnitOfServices>(client =>
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            });
+                client.BaseAddress = new Uri(apiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(30);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
 
-            // ================================================================
-            // Custom Services Container
-            // ================================================================
-            builder.Services.AddScoped<IUnitOfServices, UnitOfServices>();
-
-            // ================================================================
-            // Authentication Configuration
-            // ================================================================
+            // ---------------- JWT Authentication ----------------
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -165,14 +121,12 @@ namespace LMS.MVC
                     };
                 });
 
-            // ================================================================
-            // Build Application
-            // ================================================================
+            // ---------------- AutoMapper ----------------
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // ---------------- Build App ----------------
             var app = builder.Build();
 
-            // ================================================================
-            // Middleware Pipeline
-            // ================================================================
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -181,16 +135,12 @@ namespace LMS.MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseCors("AllowMvc");
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // ================================================================
-            // Routes
-            // ================================================================
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -235,12 +235,7 @@ namespace LMS.API.Controllers
 
                 if (result != null) 
                 {
-                    return Ok(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
-                    {
-                        Success = true,
-                        Message = "Enrollment created successfully.",
-                        Data = result
-                    });
+                    return Ok(result);
                 }
                 else
                 {
@@ -272,12 +267,7 @@ namespace LMS.API.Controllers
 
                 if (result != null) 
                 {
-                    return Ok(new ServiceResponseDTO<ReadStudentEnrollIntoCourseDTO>
-                    {
-                        Success = true,
-                        Message = "Enrollment updated successfully.",
-                        Data = result
-                    });
+                    return Ok(result);
                 }
                 else
                 {

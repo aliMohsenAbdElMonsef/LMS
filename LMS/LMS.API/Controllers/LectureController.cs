@@ -1,5 +1,7 @@
-﻿using LMS.BusinessLogic.Contracts;
+﻿using Domain.Entities.MainEntities;
+using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.DTOs.Lecture;
+using LMS.BusinessLogic.DTOs.Recieve.Lectures;
 using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +21,8 @@ namespace LMS.API.Controllers
             _unitOfServices = unitOfServices;
         }
 
-        private string GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        private string GetCurrentUserRole() => User.FindFirst(ClaimTypes.Role)?.Value;
+        private string? GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        private string? GetCurrentUserRole() => User.FindFirst(ClaimTypes.Role)?.Value;
 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
@@ -31,12 +33,12 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("get_lecture/{lectureId}")]
-        public async Task<IActionResult> GetLecture(string lectureId, string courseId)
+        public async Task<IActionResult> GetLecture(GetLectureRecieveDTO dto)
         {
             var userId = GetCurrentUserId();
             var userRole = GetCurrentUserRole();
 
-            var result = await _unitOfServices.Lectures.GetByIdAsync(lectureId, courseId, userId, userRole);
+            var result = await _unitOfServices.Lectures.GetByIdAsync(dto.courseId, dto.LectureId, userId, userRole);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -55,7 +57,7 @@ namespace LMS.API.Controllers
         {
             var userId = GetCurrentUserId();
             var userRole = GetCurrentUserRole();
-            // need update
+             //need update
             var result = await _unitOfServices.Lectures.GetInstructorLecturesAsync(instructorId, userId, userRole);
             return result.Success ? Ok(result) : BadRequest(result);
         }
@@ -144,7 +146,6 @@ namespace LMS.API.Controllers
             }
         }
 
-        // Helper methods to create responses
         private ServiceResponseDTO<T> CreateErrorResponse<T>(string message, List<string> errors = null)
         {
             return new ServiceResponseDTO<T>
@@ -165,7 +166,6 @@ namespace LMS.API.Controllers
             };
         }
 
-        // Helper method to get ModelState errors
         private List<string> GetModelStateErrors()
         {
             return ModelState.Values

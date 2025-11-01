@@ -10,6 +10,7 @@ namespace LMS.DataAccess.Contracts.Repositories
     public interface ICourseRepository: IBaseRepository<Course,string>
     {
         Course? GetByIdWithAcceptedInstructors(string id);
+        Task<List<Course>> GetCoursesByCategoryIdAsync(string id);
     }
 
 }

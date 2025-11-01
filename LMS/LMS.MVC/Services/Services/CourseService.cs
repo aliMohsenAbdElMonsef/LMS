@@ -18,7 +18,7 @@ namespace LMS.MVC.Services.Services
             _tokenService = tokenService;
         }
 
-        public async Task<IEnumerable<AllCoursesResult>> GetAllCoursesAsync()
+        public async Task<IEnumerable<ReadCourseResult>> GetAllCoursesAsync()
         {
             var token = await _tokenService.GetAccessTokenAsync();
 
@@ -36,7 +36,7 @@ namespace LMS.MVC.Services.Services
 
                 var dtoCourses = serviceResponse?.Data ?? new List<GetCourseDTO>();
 
-                var result = dtoCourses.Select(dto => new AllCoursesResult
+                var result = dtoCourses.Select(dto => new ReadCourseResult
                 {
                     Id = dto.Id,
                     CourseCode = dto.CourseCode,
@@ -76,26 +76,10 @@ namespace LMS.MVC.Services.Services
                 return result;
             }
 
-            return new List<AllCoursesResult>();
+            return new List<ReadCourseResult>();
         }
 
 
-        //public async Task<ReadCourseDTO?> GetCourseByIdAsync(string id)
-        //{
-        //    var token = await _tokenService.GetAccessTokenAsync();
-        //    if (!string.IsNullOrEmpty(token))
-        //    {
-        //        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        //    }
-
-        //    var response = await _client.GetAsync($"api/course/{id}");
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var course = await response.Content.ReadFromJsonAsync<ReadCourseDTO>();
-        //        return course;
-        //    }
-
-        //    return null;
-        //}
+        
     }
 }

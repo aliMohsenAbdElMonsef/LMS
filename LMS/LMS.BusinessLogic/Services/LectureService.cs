@@ -44,12 +44,33 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         return dto.Id;
     }
 
-    private async Task<bool> CanAccessLecture(string lectureId, string userId, string userRole)
+    private async Task<bool> CanAccessLecture(string courseid,string lectureId, string userId, string userRole)
     {
+        Course c = await _unitOfWork.Courses.FindByIdAsync(courseid);
+        if (c == null) {
+            return false;
+        }
+        else
+        {
+            var Lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseid);
+            bool ck = false;
+            foreach (var Lecture in Lectures)
+            {
+                if(Lecture.Id == lectureId)
+                {
+                    ck = true;
+                    break;
+                }
+            }
+            if (!ck)
+            {
+                return false;
+            }
+        }
         if (userRole == "Admin") return true;
 
         var lecture = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
-        if (lecture == null) return false;
+        if (lecture == null) return false; 
 
         if (userRole == "Instructor" && lecture.InstructorId == userId) return true;
         if (userRole == "Student")
@@ -58,15 +79,21 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             return enrollment != null;
         }
 
+
         return false;
     }
 
     private async Task<bool> CanAccessCourseLectures(string courseId, string userId, string userRole)
     {
-        if (userRole == "Admin") return true;
+        if (userRole == "Admin") 
+            return true;
 
         var course = await _unitOfWork.Courses.FindByIdAsync(courseId);
-        if (course == null) return false;
+
+
+        if (course == null) 
+            return false;
+
 
         if (userRole == "Instructor")
         {
@@ -192,16 +219,16 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         }
     }
 
-    public async Task<ServiceResponseDTO<GetLectureDTO>> GetByIdAsync(string id, string userId, string userRole)
+    public  async Task<ServiceResponseDTO<GetLectureDTO>> GetByIdAsync(string courseid,string lectureid, string userId, string userRole)
     {
         try
         {
-            if (!await CanAccessLecture(id, userId, userRole))
+            if (!await CanAccessLecture(courseid,lectureid, userId, userRole))
             {
                 return ErrorResponse<GetLectureDTO>("You are not authorized to access this lecture");
             }
 
-            return await base.GetByIdAsync(id);
+            return await base.GetByIdAsync(lectureid);
         }
         catch (Exception ex)
         {
@@ -264,7 +291,6 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
     {
         try
         {
-            // Authorization check
             if (!await CanAccessCourseLectures(courseId, userId, userRole))
             {
                 return ErrorResponse<IEnumerable<GetLectureDTO>>("You are not authorized to access lectures for this course");
@@ -272,8 +298,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             DateTime fromDate = DateTime.UtcNow.Date;
             var lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
-            var upcomingLectures = lectures.Where(l => l.LectureDate >= fromDate)
-                                         .OrderBy(l => l.LectureDate);
+            var upcomingLectures = lectures.Where(l => l.LectureDate >= fromDate).OrderBy(l => l.LectureDate);
 
             var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(upcomingLectures);
 
@@ -289,7 +314,6 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
     {
         try
         {
-            // Authorization check
             if (!await CanAccessCourseLectures(courseId, userId, userRole))
             {
                 return ErrorResponse<IEnumerable<GetLectureDTO>>("You are not authorized to access lectures for this course");

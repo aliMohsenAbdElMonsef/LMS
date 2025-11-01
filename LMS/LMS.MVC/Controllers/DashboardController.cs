@@ -1,9 +1,7 @@
-﻿using Domain.Enums;
-using LMS.MVC.Models.ViewModels.User;
-using LMS.MVC.Services.Contracts;
+﻿using LMS.MVC.Services.Contracts;
+using LMS.MVC.Services.Contracts.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace LMS.MVC.Controllers
 {
@@ -14,6 +12,7 @@ namespace LMS.MVC.Controllers
         {
             _services = services;
         }
+        private ICategoryService CategoryService => _services.CategoryService;
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserManagement()
         {
@@ -32,16 +31,23 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        [Authorize]
-        public IActionResult TestAuth()
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> CategoryManagement()
         {
-            return Json(new
+            try
             {
-                Message = "Authentication successful",
-                User = User.Identity?.Name,
-                IsAuthenticated = User.Identity?.IsAuthenticated,
-                Claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList()
-            });
+                Console.WriteLine("[DashboardController] UserManagement called - attempting to get users");
+                var categories = await CategoryService.GetAllCategories();
+                Console.WriteLine($"[DashboardController] Successfully retrieved {categories?.Count() ?? 0} users");
+                return View("Admin/CategoryManagement", categories);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DashboardController] Error in UserManagement: {ex.Message}");
+                TempData["Error"] = $"Error loading users: {ex.Message}";
+                return View("Admin/CategoryManagement", new List<object>());
+            }
         }
     }
 }

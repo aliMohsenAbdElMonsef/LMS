@@ -26,5 +26,17 @@ namespace LMS.DataAccess.Repositories
                 .FirstOrDefault(c => c.Id == id);
         }
 
+
+        public async Task<List<Course>> GetCoursesByCategoryIdAsync(string id)
+        {
+            return await _set
+                .Where(c => c.CategoryId == id)
+                .Include(c => c.InstructorEnrollments
+                .Where(e => e.Status == ApplicationStatus.Approved))
+                .ThenInclude(e => e.Instructor)
+                .Include(c => c.Category)
+                .ToListAsync();
+        }
+    
     }
 }

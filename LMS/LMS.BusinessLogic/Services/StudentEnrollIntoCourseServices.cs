@@ -98,7 +98,7 @@ namespace LMS.BusinessLogic.Services
                 }
 
                 // Check if course exists
-                var course = await _unitOfWork.Coures.FindByIdAsync(dto.CourseId);
+                var course = await _unitOfWork.Courses.FindByIdAsync(dto.CourseId);
                 if (course == null)
                 {
                     return new BasicResponseDTO

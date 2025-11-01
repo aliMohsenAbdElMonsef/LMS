@@ -5,19 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.BusinessLogic.DTOs.Category
+namespace LMS.BusinessLogic.DTOs.Recieve.Categories
 {
-    public class CreateCategoryDTO
+    public class ReadCategoryFromUserDTO
     {
         [Required, MaxLength(100)]
         public string Name { get; set; }
 
         public string? Description { get; set; }
-
-        public string AdminID { get; set; } = string.Empty;
-
-        public string AdminName { get; set; }
-        
-        
     }
 }
