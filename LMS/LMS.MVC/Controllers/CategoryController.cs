@@ -15,7 +15,6 @@ namespace LMS.MVC.Controllers
             _services = services;
         }
 
-        private ICategoryService CategoryService => _services.CategoryService;
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {

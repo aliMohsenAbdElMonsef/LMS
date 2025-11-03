@@ -258,9 +258,28 @@ namespace LMS.BusinessLogic.Services
             };
         }
 
-        public async Task<ApplicationUser?> FindByIdAsync(string id)
+        public async Task<ServiceResponseDTO<ReadUserDTO?>> FindByIdAsync(string id)
         {
-            return await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user == null)
+            {
+                ServiceResponseDTO<ReadUserDTO?> ErrorResponse = new ServiceResponseDTO<ReadUserDTO?>
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "User not found."
+                };
+                return ErrorResponse;
+            }
+            var userDto = MapToReadUserDTO(user);
+            ServiceResponseDTO<ReadUserDTO?> response = new ServiceResponseDTO<ReadUserDTO?>
+            {
+                Data = userDto,
+                Success = true,
+                Message = "User found successfully."
+            };
+            return response;
         }
 
         public async Task<string?> GetUserName(string id)

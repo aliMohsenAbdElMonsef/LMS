@@ -34,7 +34,7 @@ namespace LMS.BusinessLogic.Contracts.Services
         
         Task<IEnumerable<ReadUserDTO>> GetCurrentUsers();
 
-        Task<ApplicationUser?> FindByIdAsync(string id);
+        Task<ServiceResponseDTO<ReadUserDTO?>> FindByIdAsync(string id);
 
         Task<string?> GetUserName(string id);
 

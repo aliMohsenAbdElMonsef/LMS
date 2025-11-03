@@ -102,6 +102,7 @@ namespace LMS.BusinessLogic.Services
                 CreationDate = DateTime.UtcNow,
             };
             category.LastUpdated = category.CreationDate;
+            category.Admin = _unitOfWork.Users.FindByIdAsync(dto.AdminID).Result;
             return category;
         }
 

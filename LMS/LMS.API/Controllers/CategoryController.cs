@@ -32,7 +32,7 @@ namespace LMS.API.Controllers
             CreateCategoryDTO newdto = new CreateCategoryDTO
             {
                 AdminID = adminId,
-                AdminName = User.FindFirst("FullName")?.Value ?? "",
+                AdminName = await _unitOfServices.Users.GetUserName(adminId)??"",
                 Description = category.Description,
                 Name = category.Name
             };
