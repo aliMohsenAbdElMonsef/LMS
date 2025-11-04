@@ -5,8 +5,7 @@ namespace LMS.MVC.Services.Services
 {
     internal class UserServices : BaseMVCServices, IUserService
     {
-        public UserServices(HttpClient client)
-            : base(client)
+        public UserServices(HttpClient client, IHttpContextAccessor contextAccessor) : base(client, contextAccessor)
         {
         }
 
@@ -14,40 +13,25 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
-                Console.WriteLine($"[UserServices] Making API call to: {_client.BaseAddress}api/User/all");
-
                 var response = await _client.GetAsync("api/User/all");
-                Console.WriteLine($"[UserServices] Response status: {response.StatusCode}");
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[UserServices] Error: {error}");
-                    throw new Exception($"API call failed: {response.StatusCode} - {error}");
-                }
-
-                var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"[UserServices] Response content length: {content.Length}");
+                response.EnsureSuccessStatusCode();
 
                 var users = await response.Content.ReadFromJsonAsync<IEnumerable<UserViewModel>>();
-                Console.WriteLine($"[UserServices] Deserialized users count: {users?.Count() ?? 0}");
 
                 return users ?? new List<UserViewModel>();
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"[UserServices] ❌ Request timeout: {ex.Message}");
-                throw new Exception("Request timeout: The server took too long to respond");
+                throw new Exception("Request timeout: The server took too long to respond", ex);
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"[UserServices] ❌ HTTP error: {ex.Message}");
-                throw;
+                throw new Exception("HTTP request failed while fetching users", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserServices] ❌ Unexpected error: {ex.Message}");
-                throw;
+                throw new Exception("Unexpected error occurred while fetching users", ex);
             }
         }
     }

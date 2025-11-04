@@ -1,74 +1,132 @@
 ﻿using Domain.Enums;
-using LMS.BusinessLogic.DTOs.DaySchedule;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LMS.BusinessLogic.DTOs.Course
 {
-    public class CreateCourseDTO
+    public class CreateCourseDTO: IValidatableObject
     {
-        [Required, MaxLength(200)]
-        public string Name { get; set; }
+        // ================= BASIC COURSE INFO =================
+        [Required(ErrorMessage = "Course name is required")]
+        [MaxLength(200)]
+        [Display(Name = "Course Name")]
+        public string Name { get; set; } = string.Empty;
 
         [MaxLength(2000)]
-        public string Description { get; set; }
+        [Display(Name = "Description")]
         [Required]
-        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
+        public string? Description { get; set; } = string.Empty;
 
+        [MaxLength(100)]
+        [Display(Name = "Course Code")]
+        public string? CourseCode { get; set; }
+
+        [Required]
+        [Range(0, 300)]
+        [Display(Name = "Credits")]
         public int Credits { get; set; }
 
         [Required]
-        public string Language { get; set; }
+        [Display(Name = "Level")]
+        public Level Level { get; set; } = Level.Beginner;
 
-        public DateTime StartDate { get; set; }
+        [Required]
+        [MaxLength(50)]
+        [Display(Name = "Language")]
+        public string Language { get; set; } = "English";
 
-        public DateTime EndDate { get; set; }
+        // ================= DURATION =================
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; } = DateTime.Today.AddDays(7);
 
-        public int DurationWeeks { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; } = DateTime.Today.AddDays(7 + 84);
 
-        public decimal Price { get; set; }
+        [Display(Name = "Duration (Weeks)")]
+        public int? DurationWeeks => CalculateTotalWeeks();
 
+        // ================= MODE & STATUS =================
+        [Required]
+        [Display(Name = "Delivery Mode")]
+        public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
+
+        [Display(Name = "Status")]
+        public Status Status { get; set; } = Status.Draft;
+
+        // ================= PRICE & CERTIFICATE =================
+        [Range(0, 10000)]
+        [Display(Name = "Price")]
+        public decimal? Price { get; set; } = 0;
+
+        [Display(Name = "Free Course")]
         public bool IsFree { get; set; } = false;
 
-        public IFormFile? ThumbnailFile { get; set; }
-
-        [Required]
-        public string AdminId { get; set; }
-
-        [Required]
-        public string CategoryId { get; set; }
-
-        [Required]
-        public string? CertificateTemplateId { get; set; }
+        [Display(Name = "Auto-Issue Certificates")]
+        public bool AutoIssueCertificates { get; set; } = false;
 
         [Range(0, 100)]
+        [Display(Name = "Minimum Attendance %")]
         public double MinAttendancePercentage { get; set; } = 75;
 
         [Range(0, 100)]
+        [Display(Name = "Minimum Performance Score")]
         public double MinPerformanceScore { get; set; } = 60;
 
-        public bool AutoIssueCertificates { get; set; } = false;
+        [Display(Name = "Certificate Template")]
+        public string? CertificateTemplateId { get; set; }
 
-        [Range(1, 7)]
-        public int DaysPerWeek { get; set; }
+        // ================= MEDIA =================
+        [Display(Name = "Course Thumbnail")]
+        public IFormFile? ThumbnailFile { get; set; }
 
-        
-        [Range(0.5, 12)]
-        public double HoursPerSession { get; set; }
+        // ================= RELATIONS =================
+        [Required]
+        [Display(Name = "Category")]
+        public string CategoryId { get; set; } = string.Empty;
 
-        
-        [Range(1, 1000)]
-        public int TotalSessions { get; set; }
+        [Required]
+        [Display(Name = "Created By (Admin)")]
+        public string AdminId { get; set; } = string.Empty;
 
-        
-        public List<CreateDayScheduleDTO> DaySchedules { get; set; } = new List<CreateDayScheduleDTO>();
 
-       
-        public List<int> SelectedDays { get; set; } = new List<int>();
+        // ================= ADDITIONAL HELPERS =================
+        [Display(Name = "Available Categories")]
+        public List<CategoryOption> AvailableCategories { get; set; } = new();
+
+        private int CalculateTotalWeeks()
+        {
+            if (StartDate == default || EndDate == default)
+                return 0;
+
+            var totalDays = (EndDate - StartDate).Days;
+            return (int)Math.Ceiling(totalDays / 7.0);
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EndDate <= StartDate)
+                yield return new ValidationResult("End date must be after start date.", new[] { nameof(EndDate) });
+
+            if (StartDate < DateTime.Today)
+                yield return new ValidationResult("Start date cannot be in the past.", new[] { nameof(StartDate) });
+
+            if (DurationWeeks < 1)
+                yield return new ValidationResult("Course duration must be at least 1 week.", new[] { nameof(EndDate) });
+
+            if (DurationWeeks > 52)
+                yield return new ValidationResult("Course duration cannot exceed 52 weeks.", new[] { nameof(EndDate) });
+        }
+    }
+
+    public class CategoryOption
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

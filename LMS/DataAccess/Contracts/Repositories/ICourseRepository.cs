@@ -11,6 +11,8 @@ namespace LMS.DataAccess.Contracts.Repositories
     {
         Course? GetByIdWithAcceptedInstructors(string id);
         Task<List<Course>> GetCoursesByCategoryIdAsync(string id);
+
+        Task<Course?> FindByCodeAsync(string code);
     }
 
 }

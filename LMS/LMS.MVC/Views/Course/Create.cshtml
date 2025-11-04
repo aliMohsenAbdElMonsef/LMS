@@ -1,9 +1,24 @@
-﻿@using LMS.MVC.Models.ViewModels.Course
+﻿@using Domain.Enums
+@using LMS.MVC.Models.ViewModels.Course
 @model CreateCourseViewModel
 
 @{
     ViewData["Title"] = "Create Course";
 }
+
+<style>
+    .category-badge {
+        background-color: var(--primary-color);
+        color: #fff !important;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+        .category-badge .btn-close-white {
+            filter: brightness(0) invert(1);
+        }
+</style>
 
 <div class="page-header">
     <h2>
@@ -12,101 +27,136 @@
 </div>
 
 <div class="form-container">
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" asp-controller="Course" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="AdminId" />
         <div class="row g-3">
+
             <!-- Course Name -->
-            <div class="col-md-12">
-                <label asp-for="Name" class="form-label">
-                    <i class="bi bi-card-heading"></i> Course Name
-                </label>
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label"><i class="bi bi-card-heading"></i> Course Name</label>
                 <input asp-for="Name" class="form-control" placeholder="Enter course name" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
+            <!-- Course Code -->
+            <div class="col-md-6">
+                <label asp-for="CourseCode" class="form-label"><i class="bi bi-hash"></i> Course Code</label>
+                <input asp-for="CourseCode" class="form-control" placeholder="Optional course code" />
+                <span asp-validation-for="CourseCode" class="text-danger"></span>
+            </div>
+
             <!-- Description -->
             <div class="col-md-12">
-                <label asp-for="Description" class="form-label">
-                    <i class="bi bi-file-text"></i> Description
-                </label>
-                <textarea asp-for="Description" class="form-control" rows="4"
-                          placeholder="Enter course description"></textarea>
+                <label asp-for="Description" class="form-label"><i class="bi bi-file-text"></i> Description</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter course description"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <!-- Category ID -->
+
+            <!-- Category -->
             <div class="col-md-12">
-                <label asp-for="CategoryId" class="form-label">
-                    <i class="bi bi-tags"></i> Category ID
-                </label>
-                <input asp-for="CategoryId" class="form-control" placeholder="Enter category ID" />
+                <label class="form-label"><i class="bi bi-tags"></i> Category</label>
+                <input type="text" id="categorySearch" class="form-control mb-2" placeholder="Search or type to find a category..." autocomplete="off" />
+                <ul id="categorySuggestions" class="list-group position-absolute w-50 shadow-sm" style="z-index: 1000; display: none;"></ul>
+                <div id="selectedCategories" class="mt-3 d-flex flex-wrap gap-2"></div>
+                <div id="hiddenCategoryInputs"></div>
+                <small class="text-muted">Can't find a category? <a asp-controller="Category" asp-action="Create" target="_blank">Create a new one</a></small>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <!-- Level -->
+            <div class="col-md-6">
+                <label asp-for="Level" class="form-label"><i class="bi bi-bar-chart-line"></i> Level</label>
+                <select asp-for="Level" class="form-select">
+                    @foreach (var lvl in Enum.GetValues(typeof(Level)).Cast<Level>())
+                    {
+                        <option value="@lvl">@lvl</option>
+                    }
+                </select>
+
+                <span asp-validation-for="Level" class="text-danger"></span>
             </div>
 
             <!-- Language -->
             <div class="col-md-6">
-                <label asp-for="Language" class="form-label">
-                    <i class="bi bi-translate"></i> Language
-                </label>
+                <label asp-for="Language" class="form-label"><i class="bi bi-translate"></i> Language</label>
                 <input asp-for="Language" class="form-control" placeholder="e.g., English, Arabic" />
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
 
             <!-- Credits -->
             <div class="col-md-6">
-                <label asp-for="Credits" class="form-label">
-                    <i class="bi bi-award"></i> Credits
-                </label>
+                <label asp-for="Credits" class="form-label"><i class="bi bi-award"></i> Credits</label>
                 <input asp-for="Credits" type="number" class="form-control" min="0" placeholder="0" />
                 <span asp-validation-for="Credits" class="text-danger"></span>
             </div>
 
             <!-- Start Date -->
             <div class="col-md-6">
-                <label asp-for="StartDate" class="form-label">
-                    <i class="bi bi-calendar-event"></i> Start Date
-                </label>
+                <label asp-for="StartDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
                 <input asp-for="StartDate" type="date" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
 
             <!-- End Date -->
             <div class="col-md-6">
-                <label asp-for="EndDate" class="form-label">
-                    <i class="bi bi-calendar-check"></i> End Date
-                </label>
+                <label asp-for="EndDate" class="form-label"><i class="bi bi-calendar-check"></i> End Date</label>
                 <input asp-for="EndDate" type="date" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
 
-            
             <!-- Price -->
             <div class="col-md-6">
-                <label asp-for="Price" class="form-label">
-                    <i class="bi bi-currency-dollar"></i> Price
-                </label>
-                <input asp-for="Price" type="number" step="0.01" class="form-control"
-                       min="0" placeholder="0.00" />
+                <label asp-for="Price" class="form-label"><i class="bi bi-currency-dollar"></i> Price</label>
+                <input asp-for="Price" type="number" step="0.01" class="form-control" min="0" placeholder="0.00" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            
+
             <!-- Delivery Mode -->
             <div class="col-md-6">
-                <label asp-for="DeliveryMode" class="form-label">
-                    <i class="bi bi-laptop"></i> Delivery Mode
-                </label>
+                <label asp-for="DeliveryMode" class="form-label"><i class="bi bi-laptop"></i> Delivery Mode</label>
                 <select asp-for="DeliveryMode" asp-items="ViewBag.DeliveryModes" class="form-select">
                     <option value="">-- Select Delivery Mode --</option>
                 </select>
                 <span asp-validation-for="DeliveryMode" class="text-danger"></span>
             </div>
 
-            
-            <!-- Is Free Checkbox -->
+            <!-- Status -->
+            <div class="col-md-6">
+                <label asp-for="Status" class="form-label"><i class="bi bi-flag"></i> Status</label>
+                <select asp-for="Status" class="form-select">
+                    @foreach (var s in Enum.GetValues(typeof(Status)).Cast<Status>())
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <!-- Thumbnail -->
+            <div class="col-md-12">
+                <label asp-for="ThumbnailFile" class="form-label"><i class="bi bi-image"></i> Course Thumbnail</label>
+                <input asp-for="ThumbnailFile" type="file" class="form-control" />
+                <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
+            </div>
+
+            <!-- Min Attendance -->
+            <div class="col-md-6">
+                <label asp-for="MinAttendancePercentage" class="form-label"><i class="bi bi-check2-square"></i> Minimum Attendance %</label>
+                <input asp-for="MinAttendancePercentage" type="number" step="0.1" class="form-control" min="0" max="100" />
+                <span asp-validation-for="MinAttendancePercentage" class="text-danger"></span>
+            </div>
+
+            <!-- Min Performance Score -->
+            <div class="col-md-6">
+                <label asp-for="MinPerformanceScore" class="form-label"><i class="bi bi-stars"></i> Minimum Performance Score</label>
+                <input asp-for="MinPerformanceScore" type="number" step="0.1" class="form-control" min="0" max="100" />
+                <span asp-validation-for="MinPerformanceScore" class="text-danger"></span>
+            </div>
+
+            <!-- Is Free -->
             <div class="col-md-6">
                 <div class="form-check mt-4">
                     <input asp-for="IsFree" class="form-check-input" type="checkbox" />
-                    <label asp-for="IsFree" class="form-check-label">
-                        <i class="bi bi-gift"></i> This course is free
-                    </label>
+                    <label asp-for="IsFree" class="form-check-label"><i class="bi bi-gift"></i> This course is free</label>
                 </div>
                 <span asp-validation-for="IsFree" class="text-danger"></span>
             </div>
@@ -115,39 +165,39 @@
             <div class="col-md-6">
                 <div class="form-check mt-4">
                     <input asp-for="AutoIssueCertificates" class="form-check-input" type="checkbox" />
-                    <label asp-for="AutoIssueCertificates" class="form-check-label">
-                        <i class="bi bi-patch-check"></i> Auto-issue certificates
-                    </label>
+                    <label asp-for="AutoIssueCertificates" class="form-check-label"><i class="bi bi-patch-check"></i> Auto-issue certificates</label>
                 </div>
                 <span asp-validation-for="AutoIssueCertificates" class="text-danger"></span>
+            </div>
+
+            <!-- Certificate Template -->
+            <div class="col-md-12">
+                <label asp-for="CertificateTemplateId" class="form-label"><i class="bi bi-award"></i> Certificate Template</label>
+                <input asp-for="CertificateTemplateId" class="form-control" placeholder="Enter certificate template ID" />
+                <span asp-validation-for="CertificateTemplateId" class="text-danger"></span>
             </div>
 
             <!-- Action Buttons -->
             <div class="col-md-12 mt-4">
                 <div class="d-flex gap-2 justify-content-end">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Create Course
-                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Cancel</a>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Create Course</button>
                 </div>
             </div>
+
         </div>
     </form>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
-        // Auto-disable price field when "Is Free" is checked
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const isFreeCheckbox = document.getElementById('IsFree');
             const priceInput = document.getElementById('Price');
 
             if (isFreeCheckbox && priceInput) {
-                isFreeCheckbox.addEventListener('change', function() {
+                isFreeCheckbox.addEventListener('change', function () {
                     if (this.checked) {
                         priceInput.value = '0';
                         priceInput.disabled = true;
@@ -156,6 +206,70 @@
                     }
                 });
             }
+
+            const categories = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AvailableCategories));
+            const searchBox = document.getElementById('categorySearch');
+            const suggestionsList = document.getElementById('categorySuggestions');
+            const selectedContainer = document.getElementById('selectedCategories');
+            const hiddenInputs = document.getElementById('hiddenCategoryInputs');
+
+            function updateSuggestions() {
+                const query = searchBox.value.trim().toLowerCase();
+                suggestionsList.innerHTML = '';
+                if (!query) { suggestionsList.style.display = 'none'; return; }
+
+                const matches = categories.filter(c => c && c.Name && c.Name.toLowerCase().includes(query)).slice(0, 5);
+                if (matches.length === 0) { suggestionsList.style.display = 'none'; return; }
+
+                matches.forEach(c => {
+                    const item = document.createElement('li');
+                    item.classList.add('list-group-item', 'list-group-item-action');
+                    item.textContent = c.Name;
+                    item.dataset.id = c.Id;
+                    item.addEventListener('click', () => selectCategory(c));
+                    suggestionsList.appendChild(item);
+                });
+                suggestionsList.style.display = 'block';
+            }
+
+            function selectCategory(category) {
+                selectedContainer.innerHTML = '';
+                hiddenInputs.innerHTML = '';
+
+                const badge = document.createElement('span');
+                badge.classList.add('badge', 'category-badge', 'p-2', 'd-flex', 'align-items-center', 'gap-1');
+                badge.textContent = category.Name;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.classList.add('btn-close', 'btn-close-white', 'ms-2');
+                removeBtn.addEventListener('click', () => {
+                    badge.remove();
+                    hiddenInputs.innerHTML = '';
+                    searchBox.style.display = 'block';
+                });
+
+                badge.appendChild(removeBtn);
+                selectedContainer.appendChild(badge);
+
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'CategoryId';
+                hidden.value = category.Id;
+                hidden.id = `cat_${category.Id}`;
+                hiddenInputs.appendChild(hidden);
+
+                searchBox.value = '';
+                searchBox.style.display = 'none';
+                suggestionsList.style.display = 'none';
+            }
+
+            searchBox.addEventListener('input', updateSuggestions);
+            document.addEventListener('click', e => {
+                if (!searchBox.contains(e.target) && !suggestionsList.contains(e.target)) {
+                    suggestionsList.style.display = 'none';
+                }
+            });
         });
     </script>
 }

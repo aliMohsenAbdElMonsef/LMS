@@ -1,37 +1,92 @@
 ﻿using LMS.MVC.Services.Contracts;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace LMS.MVC.Services.Services
 {
     internal abstract class BaseMVCServices : IBaseMVCServices
     {
         protected readonly HttpClient _client;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        protected BaseMVCServices(HttpClient client)
+        protected BaseMVCServices(HttpClient client, IHttpContextAccessor contextAccessor)
         {
             _client = client;
+            _contextAccessor = contextAccessor;
         }
 
-        public async Task<T> GetAsync<T>(string url)
+        protected async Task<T> SendRequestAsync<T>(Func<Task<HttpResponseMessage>> sendRequest)
         {
-            var response = await _client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            if (string.IsNullOrWhiteSpace(json) || json == "null")
-                throw new Exception($"API returned null for GET {url}");
+            await AttachAccessTokenAsync();
 
-            return JsonConvert.DeserializeObject<T>(json);
+            var response = await sendRequest();
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                if (await TryRefreshTokenAsync())
+                {
+                    await AttachAccessTokenAsync();
+                    response = await sendRequest(); 
+                }
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"API Error: {content}");
+
+            if (string.IsNullOrWhiteSpace(content))
+                throw new Exception("API returned empty response");
+
+            return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        public async Task<T> PostAsync<T>(string url, HttpContent content)
+        private async Task AttachAccessTokenAsync()
         {
-            var response = await _client.PostAsync(url, content);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            if (string.IsNullOrWhiteSpace(json) || json == "null")
-                throw new Exception($"API returned null for POST {url}");
+            var context = _contextAccessor.HttpContext;
+            var token = context?.Request.Cookies["AccessToken"];
 
-            return JsonConvert.DeserializeObject<T>(json);
+            if (!string.IsNullOrEmpty(token))
+            {
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
+            else
+            {
+                _client.DefaultRequestHeaders.Authorization = null;
+            }
         }
+
+        private async Task<bool> TryRefreshTokenAsync()
+        {
+            var context = _contextAccessor.HttpContext;
+            var refreshToken = context?.Request.Cookies["RefreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return false;
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/user/refresh-token");
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                {"refreshToken", refreshToken}
+            });
+
+            var response = await _client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var tokenData = JsonSerializer.Deserialize<dynamic>(json);
+
+            context!.Response.Cookies.Append("AccessToken", (string)tokenData!.accessToken);
+            return true;
+        }
+
+        public Task<T> GetAsync<T>(string url) =>
+            SendRequestAsync<T>(() => _client.GetAsync(url));
+
+        public Task<T> PostAsync<T>(string url, HttpContent content) =>
+            SendRequestAsync<T>(() => _client.PostAsync(url, content));
     }
 }

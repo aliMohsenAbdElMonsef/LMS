@@ -31,6 +31,7 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Lectures.GetAllAsync();
             return result.Success ? Ok(result) : BadRequest(result);
         }
+        
 
         [HttpGet("get_lecture/{lectureId}")]
         public async Task<IActionResult> GetLecture(GetLectureRecieveDTO dto)

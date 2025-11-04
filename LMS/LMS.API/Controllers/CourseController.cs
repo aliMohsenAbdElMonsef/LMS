@@ -1,5 +1,4 @@
 ﻿using LMS.BusinessLogic.Contracts;
-using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Course;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,204 +12,130 @@ namespace LMS.API.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly IUnitOfServices _unitOfServices;
-
-        public CoursesController(IUnitOfServices unitOfServices)
+        public CoursesController(
+            IUnitOfServices unitOfServices)
         {
             _unitOfServices = unitOfServices;
         }
-        
+
+        private string? GetCurrentUserId() =>
+            User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCourse([FromForm] CreateCourseDTO dto)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Invalid data",
-                        errors = ModelState
-                    });
-                }
-                if (string.IsNullOrEmpty(dto.AdminId))
-                {
-                    dto.AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                }
+            dto.AdminId = GetCurrentUserId() ?? string.Empty;
 
-                var result = await _unitOfServices.Courses.CreateCourseWithScheduleAsync(dto);
-
-                return Ok(new
-                {
-                    success = true,
-                    data = result,
-                    message = "Course created successfully"
-                });
-            }
-            catch (Exception ex)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new
                 {
                     success = false,
-                    message = ex.Message
+                    message = "Invalid data",
+                    errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
                 });
             }
+
+            var result = await _unitOfServices.Courses.CreateCourse(dto);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new
+            {
+                success = true,
+                message = "Course created successfully",
+                data = result.Data
+            });
         }
 
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCourseById(string id)
+        {
+            var result = await _unitOfServices.Courses.GetByIdAsync(id);
+
+            if (!result.Success)
+                return NotFound(new { success = false, message = result.Message });
+
+            return Ok(new { success = true, data = result.Data });
+        }
 
         [HttpGet("all")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllCourses()
         {
-            try
+            var result = await _unitOfServices.Courses.GetAllAsync();
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new
             {
-                var result = await _unitOfServices.Courses.GetAllAsync();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
+                success = true,
+                data = result.Data,
+                totalCount = result.Data?.Count() ?? 0
+            });
         }
 
-
-        [HttpGet("{courseId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCourse(string courseId)
-        {
-            try
-            {
-                var result = await _unitOfServices.Courses.GetByIdAsync(courseId);
-                return Ok(new
-                {
-                    success = true,
-                    data = result
-                });
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("{courseId}/lectures")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCourseLectures(string courseId)
-        {
-            try
-            {
-                var result = await _unitOfServices.Courses.GetCourseLecturesAsync(courseId);
-                return Ok(new
-                {
-                    success = true,
-                    data = result
-                });
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
-        }
-
-
-        [HttpGet("{courseId}/schedule")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetCourseSchedule(string courseId)
-        {
-            try
-            {
-                var result = await _unitOfServices.Courses.GetCourseScheduleAsync(courseId);
-                return Ok(new
-                {
-                    success = true,
-                    data = result
-                });
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
-        }
-
-
-        [HttpPut("{courseId}")]
+        [HttpPut("update/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCourse(string courseId, [FromBody] UpdateCourseDTO dto)
+        public async Task<IActionResult> UpdateCourse(string id, [FromForm] UpdateCourseDTO dto)
         {
-            try
-            {
-                if (courseId != dto.Id)
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Course ID mismatch"
-                    });
+            if (id != dto.Id)
+                return BadRequest(new { success = false, message = "Course ID mismatch" });
 
-                if (!ModelState.IsValid)
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Invalid data"
-                    });
-
-                var result = await _unitOfServices.Courses.UpdateAsync(dto);
-                return Ok(new
-                {
-                    success = true,
-                    data = result,
-                    message = "Course updated successfully"
-                });
-            }
-            catch (Exception ex)
-            {
+            if (!ModelState.IsValid)
                 return BadRequest(new
                 {
                     success = false,
-                    message = ex.Message
+                    message = "Invalid data",
+                    errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
                 });
-            }
+
+            
+
+            var result = await _unitOfServices.Courses.UpdateAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new
+            {
+                success = true,
+                message = "Course updated successfully",
+                data = result.Data
+            });
         }
 
-
-        [HttpDelete("{courseId}")]
+        [HttpPut("update-thumbnail/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCourse(string courseId)
+        public async Task<IActionResult> UpdateCourseThumbnail(string id, IFormFile thumbnailFile)
         {
-            try
+            var result = await _unitOfServices.Courses.UpdateThumbnailAsync(id, thumbnailFile);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new
             {
-                await _unitOfServices.Courses.DeleteAsync(courseId);
-                return Ok(new
-                {
-                    success = true,
-                    message = "Course deleted successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
+                success = true,
+                message = "Thumbnail updated successfully",
+                data = result.Data
+            });
+        }
+
+        [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteCourse(string id)
+        {
+            var result = await _unitOfServices.Courses.DeleteAsync(id);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new { success = true, message = "Course deleted successfully" });
         }
     }
 }

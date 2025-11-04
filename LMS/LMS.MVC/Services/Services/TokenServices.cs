@@ -17,19 +17,16 @@ namespace LMS.MVC.Services.Services
             _httpContextAccessor = httpContextAccessor;
             _httpClient = httpClient;
         }
+       
 
         public async Task<string?> GetAccessTokenAsync()
         {
             var context = _httpContextAccessor.HttpContext;
-            if (context == null)
-                return null;
+            if (context == null) return null;
 
             var accessToken = context.Request.Cookies["AccessToken"];
-            if (!string.IsNullOrEmpty(accessToken))
-            {
-                if (IsTokenValid(accessToken))
-                    return accessToken;
-            }
+            if (!string.IsNullOrEmpty(accessToken) && IsTokenValid(accessToken))
+                return accessToken;
 
             var refreshToken = context.Request.Cookies["RefreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
@@ -41,26 +38,32 @@ namespace LMS.MVC.Services.Services
             var userId = GetUserId();
             var refreshDto = new { RefreshToken = refreshToken, UserId = userId };
 
-            var refreshResponse = await _httpClient.PostAsJsonAsync("api/token/refresh", refreshDto);
-            if (!refreshResponse.IsSuccessStatusCode)
+            try
+            {
+                var refreshResponse = await _httpClient.PostAsJsonAsync("api/token/refresh", refreshDto);
+                if (!refreshResponse.IsSuccessStatusCode)
+                {
+                    await SignOutUserAsync();
+                    return null;
+                }
+
+                var refreshResult = await refreshResponse.Content.ReadFromJsonAsync<LoginServiceResult>();
+                if (refreshResult?.Success != true)
+                {
+                    await SignOutUserAsync();
+                    return null;
+                }
+                SetTokenCookie("AccessToken", refreshResult.AccessToken, refreshResult.AccessTokenExpiresAt);
+                if (!string.IsNullOrEmpty(refreshResult.RefreshToken))
+                    SetTokenCookie("RefreshToken", refreshResult.RefreshToken, refreshResult.RefreshTokenExpiresAt);
+
+                return refreshResult.AccessToken;
+            }
+            catch
             {
                 await SignOutUserAsync();
                 return null;
             }
-
-            var refreshResult = await refreshResponse.Content.ReadFromJsonAsync<LoginServiceResult>();
-            if (refreshResult?.Success != true)
-            {
-                await SignOutUserAsync();
-                return null;
-            }
-
-            // Save new tokens
-            SetTokenCookie("AccessToken", refreshResult.AccessToken, refreshResult.AccessTokenExpiresAt);
-            if (!string.IsNullOrEmpty(refreshResult.RefreshToken))
-                SetTokenCookie("RefreshToken", refreshResult.RefreshToken, refreshResult.RefreshTokenExpiresAt);
-
-            return refreshResult.AccessToken;
         }
 
         private bool IsTokenValid(string token)
@@ -88,7 +91,6 @@ namespace LMS.MVC.Services.Services
                 }
                 catch { }
             }
-
             return _httpContextAccessor.HttpContext?.Request.Cookies["UserId"];
         }
 
@@ -100,9 +102,11 @@ namespace LMS.MVC.Services.Services
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
+                    Secure = false, 
                     SameSite = SameSiteMode.Lax,
-                    Expires = expires
+                    Expires = expires,
+                    IsEssential = true,
+                    Path = "/"
                 });
         }
 

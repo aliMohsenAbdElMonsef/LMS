@@ -1,14 +1,8 @@
 ﻿using DataAccess.Context;
 using Domain.Entities.MainEntities;
+using Domain.Enums;
 using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
-using LMS.Entity.Entities.RelationTables;
-using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LMS.DataAccess.Repositories
 {
@@ -26,6 +20,16 @@ namespace LMS.DataAccess.Repositories
                 .FirstOrDefault(c => c.Id == id);
         }
 
+        public override async Task<Course?> FindByIdAsync(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            return await _set
+                .Include(c => c.Admin)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
 
         public async Task<List<Course>> GetCoursesByCategoryIdAsync(string id)
         {
@@ -37,6 +41,14 @@ namespace LMS.DataAccess.Repositories
                 .Include(c => c.Category)
                 .ToListAsync();
         }
-    
+
+        public Task<Course?> FindByCodeAsync(string code)
+        {
+            return _set.FirstOrDefaultAsync(c => c.CourseCode == code);
+        }
+        public override async Task<IEnumerable<Course>> GetAllAsync()
+        {
+            return await _set.Include(c=>c.Admin).Include(c=>c.Category).ToListAsync();
+        }
     }
 }

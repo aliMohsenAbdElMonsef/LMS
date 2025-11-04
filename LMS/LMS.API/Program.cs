@@ -36,8 +36,9 @@ namespace LMS.API
                     )
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .AllowCredentials());
-            });
+                    .AllowCredentials()
+                    .WithExposedHeaders("*"));
+        });
 
             // ---------------------- Swagger ----------------------
             builder.Services.AddSwaggerGen(c =>
@@ -165,7 +166,7 @@ namespace LMS.API
             app.UseHttpsRedirection();
 
             app.UseCors("AllowMvc");
-
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

@@ -1,10 +1,11 @@
-using System.Text;
 using LMS.MVC.Services.Contracts;
+using LMS.MVC.Services.Contracts.Middleware;
 using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Handlers;
 using LMS.MVC.Services.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace LMS.MVC
 {
@@ -49,7 +50,7 @@ namespace LMS.MVC
             builder.Services.AddHttpClient("LMS.API", client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
+                client.Timeout = TimeSpan.FromSeconds(300);
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
@@ -59,13 +60,13 @@ namespace LMS.MVC
             builder.Services.AddHttpClient<IAccountService, AccountServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
+                client.Timeout = TimeSpan.FromSeconds(300);
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<IUserService, UserServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
+                client.Timeout = TimeSpan.FromSeconds(300);
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<ICourseService, CourseService>(client =>
@@ -77,7 +78,7 @@ namespace LMS.MVC
             builder.Services.AddHttpClient<IUnitOfServices, UnitOfServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
-                client.Timeout = TimeSpan.FromSeconds(30);
+                client.Timeout = TimeSpan.FromSeconds(300);
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
             // ---------------- JWT Authentication ----------------
@@ -140,6 +141,7 @@ namespace LMS.MVC
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<AuthRedirectMiddleware>();
 
             app.MapControllerRoute(
                 name: "default",

@@ -15,5 +15,7 @@ namespace LMS.BusinessLogic.DTOs.Category
         public string? Name { get; set; }
 
         public string? Description { get; set; }
+        public string AdminID { get; set; } = string.Empty;
+        public string AdminName { get; set; } = string.Empty;
     }
 }

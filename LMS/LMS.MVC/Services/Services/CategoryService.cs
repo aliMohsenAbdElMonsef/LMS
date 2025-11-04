@@ -1,198 +1,114 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.DTOs.Category;
 using LMS.BusinessLogic.DTOs.Responses;
 using LMS.MVC.Models.ViewModels.Category;
 using LMS.MVC.Models.ViewModels.Course;
 using LMS.MVC.Services.Contracts.Services;
-using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using System.Text;
+using System.Text.Json;
 
 namespace LMS.MVC.Services.Services
 {
     internal class CategoryService : BaseMVCServices, ICategoryService
     {
+        private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
 
-        private readonly IMapper _mapper;
-        public CategoryService(HttpClient client, ITokenService tokenService, IMapper mapper): base(client) 
-        { 
-            _tokenService = tokenService;
+        public CategoryService(
+            HttpClient client,
+            IHttpContextAccessor contextAccessor,
+            IMapper mapper,
+            ITokenService tokenService)
+            : base(client, contextAccessor)
+        {
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task<IEnumerable<ReadCategoryResult>> GetAllCategories()
         {
-            var accessToken = await _tokenService.GetAccessTokenAsync();
-            if (!string.IsNullOrEmpty(accessToken))
-            {
-                _client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", accessToken);
-            }
+            var serviceResponse = await GetAsync<ServiceResponseDTO<IEnumerable<ReadCategoryDTO>>>("api/category/all");
 
-            var response = await _client.GetAsync("api/category/all");
+            var categories = serviceResponse?.Data ?? Enumerable.Empty<ReadCategoryDTO>();
 
-            if (response.IsSuccessStatusCode) 
-            {
-                var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<IEnumerable<ReadCategoryDTO>>>();
-
-                var dtoCategories = serviceResponse?.Data ?? new List<ReadCategoryDTO>();
-
-                var result = dtoCategories.Select(dto => new ReadCategoryResult
-                {
-                    Id = dto.Id,
-                    Name = dto.Name,
-                    Description = dto.Description,
-                    CreationDate = dto.CreationDate,
-                    LastUpdated = dto.LastUpdated,
-                    AdminId = dto.AdminId,
-                    AdminName = dto.AdminName,
-                    CoursesCount = dto.CoursesCount
-                });
-                return result;
-                
-            }
-            return new List<ReadCategoryResult>();
-
+            return _mapper.Map<IEnumerable<ReadCategoryResult>>(categories);
         }
 
-        public async Task<CategoryDetailsResult> GetCategoryById(string Id)
+        public async Task<CategoryDetailsResult> GetCategoryById(string id)
         {
-            var accessToken = await _tokenService.GetAccessTokenAsync();
-            if (!string.IsNullOrEmpty(accessToken))
+            var response = await GetAsync<ServiceResponseDTO<CategoryDetailsDTO>>($"api/category/details/{id}");
+
+            var category = response?.Data ?? new CategoryDetailsDTO();
+
+            return new CategoryDetailsResult
             {
-                _client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", accessToken);
-            }
-            var response = await _client.GetAsync($"api/category/details/{Id}");
-            if (response.IsSuccessStatusCode)
-            {
-                var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<CategoryDetailsDTO>>();
-
-                var category = serviceResponse?.Data ?? new CategoryDetailsDTO();
-                var result = new CategoryDetailsResult
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    CreationDate = category.CreationDate,
-                    LastUpdated = category.LastUpdated,
-                    CoursesCount = category.CoursesCount,
-                    Courses = _mapper.Map<List<ReadCourseResult>>(category.Courses)
-                };
-                return result;
-            }
-
-            return new CategoryDetailsResult();
-
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                CreationDate = category.CreationDate,
+                LastUpdated = category.LastUpdated,
+                CoursesCount = category.CoursesCount,
+                Courses = _mapper.Map<List<ReadCourseResult>>(category.Courses)
+            };
         }
 
-        public async Task<ReadCategoryResult> GetEditModel(string Id)
+        public async Task<ReadCategoryResult> GetEditModel(string id)
         {
-            var token = await _tokenService.GetAccessTokenAsync();
-            if (!string.IsNullOrEmpty(token))
-            {
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+            var response = await GetAsync<ServiceResponseDTO<ReadCategoryDTO>>($"api/category/{id}");
 
-            var response = await _client.GetAsync($"api/category/{Id}");
-            if (response.IsSuccessStatusCode)
-            {
-                var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<ReadCategoryDTO>>();
-
-                var category = serviceResponse?.Data ?? new ReadCategoryDTO();
-                var result = new ReadCategoryResult
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    CreationDate = category.CreationDate,
-                    LastUpdated = category.LastUpdated,
-                    CoursesCount = category.CoursesCount,
-                    AdminId = category.AdminId,
-                    AdminName = category.AdminName,
-                };
-                return result;
-            }
-
-            return new ReadCategoryResult();
-
+            return _mapper.Map<ReadCategoryResult>(response?.Data ?? new ReadCategoryDTO());
         }
+
+
+        public async Task<T> PutAsync<T>(string url, object content)
+        {
+            var json = JsonConvert.SerializeObject(content);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync(url, httpContent);
+            response.EnsureSuccessStatusCode();
+            var responseJson = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(responseJson) || responseJson == "null")
+                throw new Exception($"API returned null for PUT {url}");
+            return JsonConvert.DeserializeObject<T>(responseJson)!;
+        }
+
+
+
+
         public async Task<ReadCategoryResult> EditCategory(ReadCategoryResult model)
         {
-            var token = await _tokenService.GetAccessTokenAsync();
-            if (!string.IsNullOrEmpty(token))
-            {
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-            var updateDto = new UpdateCategoryDTO
-            {
-                Id = model.Id,
-                Name = model.Name,
-                Description = model.Description,
-            };
-            var response = await _client.PutAsJsonAsync("api/category/update", updateDto);
+            if (string.IsNullOrEmpty(model.AdminId))
+                model.AdminId = _tokenService.GetUserId();
 
-            if (response.IsSuccessStatusCode)
-            {
-                var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<ReadCategoryDTO>>();
+            if (string.IsNullOrEmpty(model.AdminName))
+                model.AdminName = "Admin";
 
-                var category = serviceResponse?.Data ?? new ReadCategoryDTO();
-                var result = new ReadCategoryResult
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    CreationDate = category.CreationDate,
-                    LastUpdated = category.LastUpdated,
-                    CoursesCount = category.CoursesCount,
-                    AdminName = category.AdminName,
-                    AdminId = category.AdminId
-                };
-                return result;
-            }
+            var updateDTO = _mapper.Map<UpdateCategoryDTO>(model);
 
-            return new ReadCategoryResult();
+            var response = await PutAsync<ServiceResponseDTO<ReadCategoryDTO>>(
+                "api/category/update",
+                updateDTO
+            );
 
+            return _mapper.Map<ReadCategoryResult>(response.Data);
         }
 
-        public ReadCategoryResult GetCreateModel()
-        {
-            return new ReadCategoryResult();
-        }
+
+
+        public ReadCategoryResult GetCreateModel() => new();
 
         public async Task<ReadCategoryResult> CreateCategory(ReadCategoryResult model)
         {
-            var token = await _tokenService.GetAccessTokenAsync();
-            if (!string.IsNullOrEmpty(token))
-            {
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-            CreateCategoryDTO dto = new CreateCategoryDTO { 
-                Name = model.Name,
-                Description = model.Description,
-            };
-            var response = await _client.PostAsJsonAsync("api/category/create", dto);
-            if (response.IsSuccessStatusCode)
-            {
-                var serviceResponse = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<ReadCategoryDTO>>();
+            var dto = _mapper.Map<CreateCategoryDTO>(model);
 
-                var category = serviceResponse?.Data ?? new ReadCategoryDTO();
-                var result = new ReadCategoryResult
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    CreationDate = category.CreationDate,
-                    LastUpdated = category.LastUpdated,
-                    CoursesCount = category.CoursesCount,
-                    AdminName = category.AdminName,
-                    AdminId = category.AdminId
-                };
-                return result;
-            }
+            var response = await PostAsync<ServiceResponseDTO<ReadCategoryDTO>>(
+                "api/category/create",
+                JsonContent.Create(dto)
+            );
 
-            return new ReadCategoryResult();
+            return _mapper.Map<ReadCategoryResult>(response.Data);
         }
     }
 }

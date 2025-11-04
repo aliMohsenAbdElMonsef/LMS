@@ -18,13 +18,16 @@ namespace LMS.BusinessLogic.Services
         public ICourseDayScheduleServices DaySchedules { get; }
         public IStudentEnrollIntoCourseServices StudentEnrollIntoCourse { get; }
 
-        public UnitOfServices(IAssignmentServices assignments, ICategoryServices categories, ICertificateTemplateServices certificateTemplates, ICourseServices courses, ILectureServices lectures, IUserServices users, IStudentEnrollIntoCourseServices studentEnrollIntoCourse)
+        public IFileService FileService { get; }
+
+        public UnitOfServices(IAssignmentServices assignments, IFileService fileSerivce, ICategoryServices categories, ICertificateTemplateServices certificateTemplates, ICourseServices courses, ILectureServices lectures, IUserServices users, IStudentEnrollIntoCourseServices studentEnrollIntoCourse)
         {
             Assignments = assignments;
             Categories = categories;
             CertificateTemplates = certificateTemplates;
             Courses = courses;
             Lectures = lectures;
+            FileService = fileSerivce;
             //Questions = questions;
             //Quizzes = quizzes;
             //Skills = skills;

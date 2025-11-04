@@ -19,22 +19,10 @@ namespace LMS.MVC.Models.ViewModels.Course
         [DataType(DataType.Time)]
         public TimeSpan EndTime { get; set; }
 
-        [Required(ErrorMessage = "Lecture title is required")]
-        [MaxLength(200, ErrorMessage = "Lecture title cannot exceed 200 characters")]
-        [Display(Name = "Lecture Title Pattern")]
-        public string LectureTitlePattern { get; set; } = "Week {week} - Lecture {lecture}";
-
         [Display(Name = "Duration")]
         public TimeSpan Duration => EndTime - StartTime;
 
         [Display(Name = "Duration Hours")]
         public double DurationHours => Duration.TotalHours;
-    }
-
-    public class DayOfWeekOption
-    {
-        public int Value { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public bool IsSelected { get; set; }
     }
 }

@@ -19,6 +19,8 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<ILectureServices, LectureService>();
             services.AddScoped<IStudentEnrollIntoCourseServices, StudentEnrollIntoCourseServices>();
             services.AddScoped<ICertificateTemplateServices, CertificateTemplateServices>();
+            services.AddScoped<IFileService, FileService>();
+
             //services.AddScoped<IQuestionServices, QuestionServices>();
             //services.AddScoped<IQuizServices, QuizServices>();
             //services.AddScoped<ISkillServices, SkillServices>();
