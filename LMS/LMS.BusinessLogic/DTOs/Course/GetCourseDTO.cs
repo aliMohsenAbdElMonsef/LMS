@@ -1,7 +1,6 @@
 ﻿using Domain.Enums;
 using LMS.BusinessLogic.DTOs.DaySchedule;
-using System;
-using System.Collections.Generic;
+
 
 namespace LMS.BusinessLogic.DTOs.Course
 {
@@ -16,6 +15,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string Language { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public bool EveryStuCouldEnroll { get; set; }
         public int DurationWeeks { get; set; }
         public DeliveryMode DeliveryMode { get; set; }
         public Status Status { get; set; }

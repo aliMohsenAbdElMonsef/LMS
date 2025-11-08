@@ -23,11 +23,7 @@
                             <i class="bi bi-book"></i> Courses
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("CategoryManagement", "Dashboard")">
-                            <i class="bi bi-tags"></i> Categories
-                        </a>
-                    </li>
+                   
 
                     <!-- Authentication Section -->
                     @if (User.Identity.IsAuthenticated)
@@ -35,8 +31,18 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("CategoryManagement", "Dashboard")">
+                                    <i class="bi bi-tags"></i> Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-controller="Dashboard" asp-action="UserManagement">
                                     <i class="bi bi-people"></i> User Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="CourseEnrollments">
+                                    <i class="bi bi-people"></i> Enrollment Dashboard
                                 </a>
                             </li>
                         }

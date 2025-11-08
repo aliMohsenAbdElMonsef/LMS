@@ -16,24 +16,31 @@
 
             var allowPaths = new[]
             {
-            "/account/login",
-            "/account/register",
-            "/css",
-            "/js",
-            "/images",
-            "/lib"
-        };
+                "/account/login",
+                "/account/signup",
+                "/css",
+                "/js",
+                "/images",
+                "/lib"
+            };
 
             bool isAllowedPath = allowPaths.Any(p => path.StartsWith(p));
 
             if (!isAuthenticated && !isAllowedPath)
             {
-                context.Response.Redirect("/Account/Login");
+                if (context.Request.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Response.Redirect("/Account/Login");
+                    return;
+                }
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 return;
             }
 
             await _next(context);
         }
+
     }
 
 }

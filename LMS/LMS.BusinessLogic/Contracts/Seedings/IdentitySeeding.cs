@@ -16,6 +16,14 @@ namespace LMS.BusinessLogic.Contracts.Seedings
             {
                 await roleManager.CreateAsync(new ApplicationRole("Admin"));
             }
+            if(!await roleManager.RoleExistsAsync("Instructor"))
+            {
+                await roleManager.CreateAsync(new ApplicationRole("Instructor"));
+            }
+            if (!await roleManager.RoleExistsAsync("Student"))
+            {
+                await roleManager.CreateAsync(new ApplicationRole("Student"));
+            }
 
             var admin = await userManager.FindByEmailAsync("admin@lms.com");
             if (admin == null)

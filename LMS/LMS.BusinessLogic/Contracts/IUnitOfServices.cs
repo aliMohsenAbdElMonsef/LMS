@@ -21,6 +21,9 @@ namespace LMS.BusinessLogic.Contracts
         IQuizServices Quizzes { get; }
         ISkillServices Skills { get; }
         IUserServices Users { get; }
-        IStudentEnrollIntoCourseServices StudentEnrollIntoCourse { get; }
+        IStudentEnrollment StudentEnrollIntoCourse { get; }
+        IEnrollmentManagement EnrollmentManagement { get; }
+
+        IInstructorEnrollIntoCourse InstructorEnrollIntoCourse { get; }
     }
 }

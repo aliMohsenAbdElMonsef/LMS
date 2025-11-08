@@ -1,7 +1,9 @@
 ﻿using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Auth;
+using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using System.Security.Claims;
 
 namespace LMS.API.Controllers
@@ -11,13 +13,9 @@ namespace LMS.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserServices _userServices;
-        private readonly IBlackListedTokensServices _blackListedTokensService;
-        private readonly ITokenServices _tokenServices;
-        public UserController(IUserServices userServices, IBlackListedTokensServices blacklistedServices, ITokenServices tokenServices)
+        public UserController(IUserServices userServices)
         {
             _userServices = userServices;
-            _blackListedTokensService = blacklistedServices;
-            _tokenServices = tokenServices;
         }
         // ---------------Admin---------------
         [HttpGet("all")]
@@ -41,6 +39,21 @@ namespace LMS.API.Controllers
         public async Task<IActionResult> GetCurrentUsers()
         {
             var users = await _userServices.GetCurrentUsers();
+            return Ok(users);
+        }
+
+        [HttpPost("approve/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ApproveUser(string id)
+        {
+            var users = await _userServices.ApproveUserAsync(id);
+            return Ok(users);
+        }
+        [HttpPost("deny/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DenyUser(string id)
+        {
+            var users = await _userServices.DenyUserAsync(id);
             return Ok(users);
         }
 
@@ -78,6 +91,24 @@ namespace LMS.API.Controllers
                 return Ok(response);
             }
             return BadRequest(response);
+        }
+        [HttpGet("{userId}/role")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserRole(string userId)
+        {
+            var response = await _userServices.FindByIdAsync(userId);
+            if (response.Success)
+            {
+                var newres = new ServiceResponseDTO<string>
+                {
+                    Success = true,
+                    Message = "Role gotten successfully.",
+                    Data = response.Data.ApplyAs.ToString()
+                };
+                return Ok(newres);
+            }
+            return BadRequest(response);
+            
         }
     }
 }

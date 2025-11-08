@@ -35,6 +35,12 @@ namespace LMS.DataAccess.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+        public async Task<bool> ExistsAsync(string studentId, string courseId)
+        {
+            return await _set
+                .AnyAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+        }
+
 
     }
 }

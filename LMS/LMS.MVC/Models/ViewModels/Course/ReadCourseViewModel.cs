@@ -1,6 +1,7 @@
 ﻿using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.DaySchedule;
 using Microsoft.EntityFrameworkCore.Query;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.MVC.Models.ViewModels.Course
 {
@@ -12,7 +13,7 @@ namespace LMS.MVC.Models.ViewModels.Course
 
         public int EnrolledStudentsCount { get; set; }
         public double AverageRating { get; set; }
-
+        public bool EveryStuCouldEnroll { get; set; }
         public int TotalSessions { get; set; }
         public double HoursPerSession { get; set; }
         public int DaysPerWeek { get; set; }

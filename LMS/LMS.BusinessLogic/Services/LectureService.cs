@@ -164,11 +164,11 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
                 return ErrorResponse<GetLectureDTO>("Start time must be before end time");
             }
 
-            var conflictCheck = await CheckLectureConflictAsync(dto.CourseId, dto.LectureDate, dto.StartTime, dto.EndTime);
-            if (conflictCheck.Data)
-            {
-                return ErrorResponse<GetLectureDTO>($"Time conflict detected: {conflictCheck.Message}");
-            }
+            //var conflictCheck = await CheckLectureConflictAsync(dto.CourseId, dto.LectureDate, dto.StartTime, dto.EndTime);
+            //if (conflictCheck.Data)
+            //{
+            //    return ErrorResponse<GetLectureDTO>($"Time conflict detected: {conflictCheck.Message}");
+            //}
 
             var baseResult = await base.CreateAsync(dto);
             return baseResult;

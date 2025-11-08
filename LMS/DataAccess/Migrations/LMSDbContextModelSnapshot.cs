@@ -311,6 +311,9 @@ namespace LMS.DataAccess.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("EveryStuCouldEnroll")
+                        .HasColumnType("bit");
+
                     b.Property<double>("HoursPerSession")
                         .HasColumnType("float");
 
@@ -743,11 +746,17 @@ namespace LMS.DataAccess.Migrations
                     b.Property<string>("CourseId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<double>("progress")
                         .HasColumnType("float");

@@ -84,40 +84,62 @@ namespace LMS.BusinessLogic.Services
         public async Task<CreateUserResponseDTO> CreateUserAsync(SignUpDTO dto)
         {
             var response = new CreateUserResponseDTO();
-            var existuser = await _userManager.FindByEmailAsync(dto.Email);
-            if(existuser != null)
+
+            var existingUser = await _userManager.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+            var existingUsername = await _userManager.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.UserName == dto.UserName);
+
+            if (existingUser != null || existingUsername != null)
             {
-                response.Success = false;
-                response.Message = "User with this email already exist.";
-                response.UserId = existuser.Id;
-            }
-            else
-            {
-                var user = MapToApplicationUser(dto);
+                var user = existingUser ?? existingUsername;
 
-                CreateFile(dto.UserImage, user);
-
-                var result = await _userManager.CreateAsync(user, dto.Password);
-
-
-                if (result.Succeeded)
+                if (user.IsDeleted)
                 {
+                    user.IsDeleted = false;
+                    user.Status = Domain.Enums.ApplicationStatus.Pending;
+
+                    CreateFile(dto.UserImage, user);
+
+                    await _userManager.UpdateAsync(user);
+
                     response.Success = true;
-                    response.Message = "User created successfully. Pending approval from admin.";
+                    response.Message = "Account reactivated. Pending approval from admin.";
                     response.UserId = user.Id;
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "User creation failed.";
-                    response.Errors = result.Errors.Select(e => e.Description).ToList();
+                    response.Message = "A user with this email or username already exists.";
                 }
+
+                return response;
             }
-                
+
+            var newUser = MapToApplicationUser(dto);
+
+            CreateFile(dto.UserImage, newUser);
+
+            var result = await _userManager.CreateAsync(newUser, dto.Password);
+
+            if (result.Succeeded)
+            {
+                response.Success = true;
+                response.Message = "User created successfully. Pending approval from admin.";
+                response.UserId = newUser.Id;
+            }
+            else
+            {
+                response.Success = false;
+                response.Message = "User creation failed.";
+                response.Errors = result.Errors.Select(e => e.Description).ToList();
+            }
 
             return response;
         }
-
 
         public async Task<IEnumerable<ReadUserDTO>> GetAllUsers()
         {

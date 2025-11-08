@@ -120,5 +120,28 @@ namespace LMS.MVC.Controllers
                 Count = cookies.Count
             });
         }
+        [HttpPost("ApproveUser/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveUser(string id)
+        {
+            var result = await _services.AccountService.ApproveUser(id);
+
+            if (result.Success)
+                return RedirectToAction("UserManagement", "Dashboard");
+
+            TempData["Error"] = result.Message;
+            return RedirectToAction("UserManagement", "Dashboard");
+        }
+        [HttpPost("DenyUser/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DenyUser(string id)
+        {
+            var result = await _services.AccountService.DenyUser(id);
+            if (result.Success)
+                return RedirectToAction("UserManagement", "Dashboard");
+
+            TempData["Error"] = result.Message;
+            return RedirectToAction("UserManagement", "Dashboard");
+        }
     }
 }

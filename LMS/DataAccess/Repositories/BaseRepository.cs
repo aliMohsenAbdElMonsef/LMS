@@ -61,6 +61,9 @@ namespace LMS.DataAccess.Repositories
             return await _set.Where(predicate).ToListAsync();
         }
 
-        
+        public IQueryable<TEntity> GetQueryable()
+        {
+            return _set.AsQueryable();
+        }
     }
 }

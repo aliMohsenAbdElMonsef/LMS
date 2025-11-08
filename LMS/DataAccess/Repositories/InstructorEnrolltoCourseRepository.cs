@@ -83,5 +83,6 @@ namespace LMS.DataAccess.Repositories
                 .CountAsync(e => e.Status == ApplicationStatus.Pending);
         }
 
+       
     }
 }

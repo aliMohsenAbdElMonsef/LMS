@@ -37,7 +37,6 @@ namespace LMS.MVC.Services.Services
             return $"{ThumbnailEndpoint}/{fileName}";
         }
 
-      
         private void AttachTokenFromCookie()
         {
             try
@@ -190,6 +189,7 @@ namespace LMS.MVC.Services.Services
                 Status = data.Status,
                 Price = data.Price,
                 IsFree = data.IsFree,
+                EveryStuCouldEnroll = data.EveryStuCouldEnroll,
                 AdminId = data.AdminId,
                 CategoryId = data.CategoryId,
                 CourseCode = data.CourseCode,
@@ -218,11 +218,13 @@ namespace LMS.MVC.Services.Services
             formData.Add(new StringContent(vm.Status.ToString()), "Status");
             formData.Add(new StringContent(vm.Price?.ToString() ?? "0"), "Price");
             formData.Add(new StringContent(vm.IsFree.ToString()), "IsFree");
+            formData.Add(new StringContent(vm.EveryStuCouldEnroll.ToString()), "EveryStuCouldEnroll");
             formData.Add(new StringContent(vm.AdminId ?? ""), "AdminId");
             formData.Add(new StringContent(vm.CategoryId ?? ""), "CategoryId");
             formData.Add(new StringContent(vm.AutoIssueCertificates.ToString()), "AutoIssueCertificates");
             formData.Add(new StringContent(vm.MinAttendancePercentage.ToString()), "MinAttendancePercentage");
             formData.Add(new StringContent(vm.MinPerformanceScore.ToString()), "MinPerformanceScore");
+
             if (!string.IsNullOrEmpty(vm.CertificateTemplateId))
                 formData.Add(new StringContent(vm.CertificateTemplateId), "CertificateTemplateId");
 
@@ -262,6 +264,7 @@ namespace LMS.MVC.Services.Services
             formData.Add(new StringContent(vm.Status.ToString()), "Status");
             formData.Add(new StringContent(vm.Price?.ToString() ?? "0"), "Price");
             formData.Add(new StringContent(vm.IsFree.ToString()), "IsFree");
+            formData.Add(new StringContent(vm.EveryStuCouldEnroll.ToString()), "EveryStuCouldEnroll");
             formData.Add(new StringContent(vm.AdminId ?? ""), "AdminId");
             formData.Add(new StringContent(vm.CategoryId ?? ""), "CategoryId");
             formData.Add(new StringContent(vm.AutoIssueCertificates.ToString()), "AutoIssueCertificates");
@@ -284,7 +287,11 @@ namespace LMS.MVC.Services.Services
             if (wrapper?.Data != null)
                 wrapper.Data.ThumbnailPath = ConvertThumbnail(wrapper.Data.ThumbnailPath);
 
-            return wrapper ?? new SuccessServiceResult<ReadCourseResult>() { Success = false, Message = "Failed to update course" };
+            return wrapper ?? new SuccessServiceResult<ReadCourseResult>()
+            {
+                Success = false,
+                Message = "Failed to update course"
+            };
         }
 
         public async Task<SuccessServiceResult<ReadCourseViewModel>> GetCourseDetails(Guid id)
@@ -316,6 +323,7 @@ namespace LMS.MVC.Services.Services
                 Status = data.Status,
                 Price = data.Price,
                 IsFree = data.IsFree,
+                EveryStuCouldEnroll = data.EveryStuCouldEnroll,
                 AdminId = data.AdminId,
                 AdminName = data.AdminName,
                 CategoryId = data.CategoryId,
@@ -343,8 +351,6 @@ namespace LMS.MVC.Services.Services
             };
         }
 
-
-
         public async Task<bool> DeleteCourse(Guid id)
         {
             var wrapper = await SendAndReadAsync<object>(
@@ -354,6 +360,28 @@ namespace LMS.MVC.Services.Services
             return wrapper?.Success == true;
         }
 
+        public async Task<bool> IsUserEnrollIntoCourse(string id, string courseId)
+        {
+            AttachTokenFromCookie();
+
+            var model = new
+            {
+                UserId = id,
+                CourseId = courseId
+            };
+
+            var jsonContent = new StringContent(
+                JsonSerializer.Serialize(model),
+                System.Text.Encoding.UTF8,
+                "application/json"
+            );
+
+            var wrapper = await SendAndReadAsync<bool>(
+                () => _httpClient.PostAsync($"{ApiBase}/api/courses/isenrolled", jsonContent)
+            );
+
+            return wrapper != null && wrapper.Success && wrapper.Data;
+        }
 
     }
 }

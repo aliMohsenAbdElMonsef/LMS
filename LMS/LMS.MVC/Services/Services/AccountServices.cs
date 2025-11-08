@@ -15,12 +15,19 @@ namespace LMS.MVC.Services.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<AccountServices> _logger;
 
-        public AccountServices(HttpClient client, IHttpContextAccessor httpContextAccessor, ILogger<AccountServices> logger)
+        private readonly ITokenService _tokenService;
+
+        public AccountServices(HttpClient client,
+                               IHttpContextAccessor httpContextAccessor,
+                               ILogger<AccountServices> logger,
+                               ITokenService tokenService)
         {
             _client = client;
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
+            _tokenService = tokenService;
         }
+
 
         public async Task<LoginServiceResult> LoginUserAsync(LoginViewModel model)
         {
@@ -144,5 +151,79 @@ namespace LMS.MVC.Services.Services
             return await response.Content.ReadFromJsonAsync<RegisterUserResult>()
                    ?? new RegisterUserResult { Success = false, Message = "Unknown error" };
         }
+
+        public async Task<ApproveSerivceResult> ApproveUser(string userId)
+        {
+            try
+            {
+                var token = await _tokenService.GetAccessTokenAsync();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return new ApproveSerivceResult
+                    {
+                        Success = false,
+                        Message = "User not authenticated"
+                    };
+                }
+
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _client.PostAsync($"api/user/approve/{userId}", null);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var err = await response.Content.ReadAsStringAsync();
+                    return new ApproveSerivceResult { Success = false, Message = err };
+                }
+
+                return await response.Content.ReadFromJsonAsync<ApproveSerivceResult>()
+                       ?? new ApproveSerivceResult { Success = false, Message = "Unknown response" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error approving user");
+                return new ApproveSerivceResult { Success = false, Message = "Error approving user" };
+            }
+        }
+
+        public async Task<DenySerivceResult> DenyUser(string userId)
+        {
+            try
+            {
+                var token = await _tokenService.GetAccessTokenAsync();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return new DenySerivceResult
+                    {
+                        Success = false,
+                        Message = "User not authenticated"
+                    };
+                }
+
+                _client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _client.PostAsync($"api/user/deny/{userId}", null);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var err = await response.Content.ReadAsStringAsync();
+                    return new DenySerivceResult { Success = false, Message = err };
+                }
+
+                return await response.Content.ReadFromJsonAsync<DenySerivceResult>()
+                       ?? new DenySerivceResult { Success = false, Message = "Unknown response" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error approving user");
+                return new DenySerivceResult { Success = false, Message = "Error approving user" };
+            }
+        }
+
+
     }
 }

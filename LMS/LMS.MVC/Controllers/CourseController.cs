@@ -1,12 +1,10 @@
 ﻿using Domain.Enums;
-using LMS.BusinessLogic.DTOs.Course;
 using LMS.MVC.Models.ViewModels.Course;
+using LMS.MVC.Models.ViewModels.Enrollment;
 using LMS.MVC.Services.Contracts;
-using LMS.MVC.Views.Course;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace LMS.MVC.Controllers
@@ -27,7 +25,7 @@ namespace LMS.MVC.Controllers
         {
             try
             {
-                var courses = await _services.CourseService.GetAllCoursesAsync(); 
+                var courses = await _services.CourseService.GetAllCoursesAsync();
                 if (!courses.Success)
                 {
                     return View(Enumerable.Empty<ReadCourseResult>());
@@ -89,7 +87,7 @@ namespace LMS.MVC.Controllers
             try
             {
                 var result = await _services.CourseService.CreateCourse(model);
-                
+
 
                 if (!result.Success)
                 {
@@ -124,7 +122,7 @@ namespace LMS.MVC.Controllers
             await LoadDropdownData(createModel);
 
             var result = await _services.CourseService.GetCourseForEdit(Guid.Parse(id));
-          
+
             if (!result.Success || result.Data == null)
             {
                 TempData["Error"] = result.Message ?? "Course not found!";
@@ -133,6 +131,7 @@ namespace LMS.MVC.Controllers
 
             return View(result.Data);
         }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(EditCourseViewModel model)
@@ -160,12 +159,28 @@ namespace LMS.MVC.Controllers
         {
             if (string.IsNullOrEmpty(id))
                 return BadRequest();
+
             var result = await _services.CourseService.GetCourseDetails(Guid.Parse(id));
             if (!result.Success || result.Data == null)
             {
                 TempData["Error"] = result.Message ?? "Course not found!";
                 return RedirectToAction(nameof(Index));
             }
+
+            var course = result.Data;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)?.ToString();
+            var userRole = User.IsInRole("Instructor") ? "Instructor" :
+                           User.IsInRole("Student") ? "Student" : "None";
+
+            var enrolledin = false;
+            if (userRole != "None" && !string.IsNullOrEmpty(userId))
+            {
+                enrolledin = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
+            }
+
+            ViewBag.UserRole = userRole;
+            ViewBag.IsEnrolled = enrolledin;
+
             return View(result.Data);
         }
 
@@ -183,5 +198,101 @@ namespace LMS.MVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Instructor,Student")]
+        public async Task<IActionResult> Enroll(string CourseId)
+        {
+
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new { success = false, message = "User not authenticated." });
+
+                RequestErollmentintCourseViewModel model = new RequestErollmentintCourseViewModel
+                {
+                    UserId = userId,
+                    CourseId = CourseId
+                };
+                var result = await _services.EnrollmentService.EnrollAsync(model);
+
+                if (result.Success)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = result.Message
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = result.Message
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"An error occurred: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Instructor,Student")]
+        public async Task<IActionResult> Unenroll(string CourseId)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new { success = false, message = "User not authenticated." });
+                RequestErollmentintCourseViewModel model = new RequestErollmentintCourseViewModel
+                {
+                    UserId = userId,
+                    CourseId = CourseId
+                };
+
+                var result = await _services.EnrollmentService.UnenrollAsync(model);
+
+                if (result.Success)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        unenrolled = true,
+                        message = result.Message
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = result.Message
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"An error occurred: {ex.Message}"
+                });
+            }
+        }
+
+
+        
+
     }
+
+   
 }

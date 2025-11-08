@@ -1,22 +1,62 @@
-
-@model IEnumerable<LMS.MVC.Models.ViewModels.Course.ReadCourseResult>
+﻿@model IEnumerable<LMS.MVC.Models.ViewModels.Course.ReadCourseResult>
 
 @{
     ViewData["Title"] = "Course Management";
 }
 
+<style>
+    .badge-free {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-price {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .badge-language {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .badge-open-enrollment {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .card.course-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card.course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .course-description {
+        min-height: 60px;
+    }
+
+    .text-primary-custom {
+        color: #007bff;
+    }
+</style>
+
 <div class="page-header">
-        @if (User.IsInRole("Admin"))
-        {
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>
-            <i class="bi bi-book-half"></i> Course Management
-        </h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>
+                <i class="bi bi-book-half"></i> Course Management
+            </h2>
             <a asp-controller="Course" asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Create New Course
             </a>
-    </div>
-        }
+        </div>
+    }
 </div>
 
 @if (TempData["Error"] != null)
@@ -38,22 +78,22 @@ else
         @foreach (var course in Model)
         {
             <div class="col-md-6 col-lg-4">
-                <div class="card course-card">
+                <div class="card course-card h-100 d-flex flex-column">
                     @if (!string.IsNullOrEmpty(course.ThumbnailPath))
                     {
                         <img src="@course.ThumbnailPath" class="card-img-top" alt="@course.Name">
                     }
-                    <div class="card-header">
-                        <h5 class="mb-0">@course.Name</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="course-description">
-                            @(string.IsNullOrEmpty(course.Description)
-                                ? "No description available"
-                                : (course.Description.Length > 120
-                                ? course.Description.Substring(0, 120) + "..."
-                                : course.Description))
-                        </p>
+                <div class="card-header">
+                    <h5 class="mb-0">@course.Name</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="course-description">
+                        @(string.IsNullOrEmpty(course.Description)
+                                            ? "No description available"
+                                            : (course.Description.Length > 120
+                                            ? course.Description.Substring(0, 120) + "..."
+                                            : course.Description))
+                </p>
 
                         <div class="course-meta mb-3">
                             <div class="mb-2">
@@ -69,11 +109,21 @@ else
                                 <strong>End:</strong> @course.EndDate.ToString("MMM dd, yyyy")
                             </div>
 
-                            @if (course.Credits > 0)
+                    @if (course.Credits > 0)
                             {
                                 <div class="mb-2">
                                     <i class="bi bi-award text-primary-custom"></i>
                                     <strong>Credits:</strong> @course.Credits
+                                </div>
+                            }
+
+                            <!-- 🆕 Open Enrollment badge -->
+                            @if (course.EveryStuCouldEnroll)
+                            {
+                                <div class="mb-2">
+                                    <span class="badge badge-open-enrollment">
+                                        <i class="bi bi-people"></i> Open Enrollment
+                                    </span>
                                 </div>
                             }
                         </div>
@@ -93,7 +143,7 @@ else
                             }
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer bg-light border-top mt-auto">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="@Url.Action("Details", new { id = course.Id })" class="btn btn-primary btn-sm">
                                 <i class="bi bi-eye"></i> Details
@@ -107,7 +157,6 @@ else
                                         onclick="deleteCourse('@course.Id', '@course.Name')">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
-
                             }
                         </div>
                     </div>
@@ -119,11 +168,6 @@ else
 
 @section Scripts {
     <script>
-        function confirmDelete(courseId, courseName) {
-            if (confirm(`Are you sure you want to delete "${courseName}"?`)) {
-                alert('Delete functionality to be implemented');
-            }
-        }
         async function deleteCourse(courseId, courseName) {
             if (!confirm(`Are you sure you want to delete "${courseName}"?`)) return;
 
@@ -134,8 +178,12 @@ else
                         'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                     }
                 });
-                location.reload();
-               
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to delete course.');
+                }
             } catch (err) {
                 console.error(err);
                 alert('Error deleting course.');

@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LMS.BusinessLogic.DTOs.Lecture
 {
@@ -17,15 +12,14 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         [MaxLength(1000)]
         public string? Description { get; set; }
 
-        public string? ZoomLink { get; set; }
-
+        
         public DateTime LectureDate { get; set; }
         public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+
+        public TimeSpan? EndTime { get; set; }// calculated from the duration of the lecture in the course
 
         [Required]
         public string CourseId { get; set; }
-        public int LectureNumber { get; set; }
         [Required]
         public string InstructorId { get; set; }
         public string? AssignedInstructorId { get; set; }

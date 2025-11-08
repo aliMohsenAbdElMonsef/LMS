@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.DaySchedule;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.MVC.Models.ViewModels.Course
 {
@@ -21,7 +22,7 @@ namespace LMS.MVC.Models.ViewModels.Course
         public decimal Price { get; set; }
         public bool IsFree { get; set; }
         public string? ThumbnailPath { get; set; }
-
+        public bool EveryStuCouldEnroll { get; set; }
         public string AdminId { get; set; }
         public string AdminName { get; set; }
         public string CategoryId { get; set; }

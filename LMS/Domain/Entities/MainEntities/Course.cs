@@ -34,6 +34,9 @@ namespace Domain.Entities.MainEntities
         [MaxLength(50)]
         public string? Language { get; set; }
 
+        [Required(ErrorMessage = "Missing 'Every Student Could Enroll' value")]
+        public bool EveryStuCouldEnroll { get; set; }
+
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 

@@ -12,6 +12,8 @@ namespace LMS.DataAccess.Contracts
         Task<TEntity?> FindByIdAsync(TId id);
 
         Task CreateAsync(TEntity entity);
+        IQueryable<TEntity> GetQueryable();
+
 
         Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate);

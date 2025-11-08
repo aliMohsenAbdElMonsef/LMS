@@ -13,7 +13,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
             public string? Description { get; set; }
             public string? RecordingPath { get; set; }
             public string? ZoomLink { get; set; }
-
+            
             public DateTime CreatedAt { get; set; }
             public DateTime? LastUpdatedAt { get; set; }
             public DateTime? LastRecordingUploadDate { get; set; }

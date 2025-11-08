@@ -8,11 +8,9 @@ namespace LMS.BusinessLogic.DTOs.Course
 {
     public class UpdateCourseDTO: IValidatableObject
     {
-        // ================= COURSE ID =================
         [Required(ErrorMessage = "Course ID is required")]
         public string Id { get; set; } = string.Empty;
 
-        // ================= BASIC COURSE INFO =================
         [Required(ErrorMessage = "Course name is required")]
         [MaxLength(200)]
         [Display(Name = "Course Name")]
@@ -25,6 +23,9 @@ namespace LMS.BusinessLogic.DTOs.Course
         [MaxLength(100)]
         [Display(Name = "Course Code")]
         public string? CourseCode { get; set; }
+
+        [Required]
+        public bool EveryStuCouldEnroll { get; set; }
 
         [Required]
         [Range(0, 300)]

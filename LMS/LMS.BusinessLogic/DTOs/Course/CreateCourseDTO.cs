@@ -29,6 +29,9 @@ namespace LMS.BusinessLogic.DTOs.Course
         public int Credits { get; set; }
 
         [Required]
+        public bool EveryStuCouldEnroll { get; set; }
+
+        [Required]
         [Display(Name = "Level")]
         public Level Level { get; set; } = Level.Beginner;
 

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.BusinessLogic.DTOs.Course
+namespace LMS.BusinessLogic.DTOs.Enrollment
 {
-    public class StudentUnenrollfromCourseDTO
+    public class UserUnenrollfromCourseDTO
     {
-        public string StudentId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public string CourseId { get; set; } = string.Empty;
     }
 }

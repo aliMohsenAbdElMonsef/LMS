@@ -97,7 +97,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Instructor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateLecture([FromBody] CreateLectureDTO dto)
         {
             if (!ModelState.IsValid)
@@ -111,7 +111,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpPut("{lectureId}")]
-        [Authorize(Roles = "Admin,Instructor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateLecture(string lectureId, [FromBody] UpdateLectureDTO dto)
         {
             if (lectureId != dto.Id)
@@ -128,7 +128,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpDelete("{lectureId}")]
-        [Authorize(Roles = "Admin,Instructor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteLecture(string lectureId)
         {
             try

@@ -15,5 +15,6 @@ namespace LMS.DataAccess.Contracts.Repositories
         Task<List<InstructorEnrolltoCourse>> GetByCourseIdAsync(string courseId);
         Task<InstructorEnrolltoCourse> GetByInstructorAndCourseAsync(string userId, string courseId);
         Task AddRangeAsync(List<InstructorEnrolltoCourse> instructorEnrollments);
+        Task<bool> ExistsAsync(string instructorId, string courseId);
     }
 }

@@ -45,17 +45,25 @@
                 <p><strong>Credits:</strong> @Model.Credits</p>
                 <p><strong>Delivery Mode:</strong> @Model.DeliveryMode</p>
                 <p><strong>Status:</strong> @Model.Status</p>
-                <p><strong>Start Date:</strong> @Model.StartDate| <strong>End Date:</strong> @Model.EndDate | <strong>Duration:</strong> @Model.DurationWeeks weeks</p>
+                <p>
+                    <strong>Start Date:</strong> @Model.StartDate |
+                    <strong>End Date:</strong> @Model.EndDate |
+                    <strong>Duration:</strong> @Model.DurationWeeks weeks
+                </p>
                 <p><strong>Price:</strong> @(Model.IsFree ? "Free" : $"${Model.Price:F2}")</p>
+
+                <p><strong>Every Student Can Enroll:</strong> @(Model.EveryStuCouldEnroll ? "Yes" : "No")</p>
                 <p><strong>Auto-Issue Certificates:</strong> @(Model.AutoIssueCertificates ? "Yes" : "No")</p>
-                <p><strong>Min Attendance %:</strong> @Model.MinAttendancePercentage | <strong>Min Performance Score:</strong> @Model.MinPerformanceScore</p>
+                <p>
+                    <strong>Min Attendance %:</strong> @Model.MinAttendancePercentage |
+                    <strong>Min Performance Score:</strong> @Model.MinPerformanceScore
+                </p>
                 @if (!string.IsNullOrEmpty(Model.CertificateTemplateTitle))
                 {
                     <p><strong>Certificate Template:</strong> @Model.CertificateTemplateTitle</p>
                 }
 
                 <hr />
-
                 <h6>Course Schedule</h6>
                 @if (Model.Schedule.Any())
                 {
@@ -103,9 +111,31 @@
                 }
 
                 <div class="mt-4 d-flex gap-2">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                        <i class="bi bi-pencil-square"></i> Edit Course
-                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil-square"></i> Edit Course
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Student") || User.IsInRole("Instructor"))
+                    {
+                        <button id="enroll-btn"
+                                class="btn @(ViewBag.IsEnrolled ? "btn-danger" : "btn-success")"
+                                data-course-id="@Model.Id"
+                                data-is-enrolled="@ViewBag.IsEnrolled.ToString().ToLower()">
+                            @if (ViewBag.IsEnrolled)
+                            {
+                                @:<i class="bi bi-x-circle"></i> Unenroll
+                            }
+                            else
+                            {
+                                @:<i class="bi bi-check-circle"></i> Enroll
+                            }
+                        </button>
+                    }
+
+
                     <a asp-action="Index" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to Courses
                     </a>
@@ -114,3 +144,63 @@
         </div>
     </div>
 </div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const enrollBtn = document.getElementById("enroll-btn");
+            if (!enrollBtn) return;
+
+            enrollBtn.addEventListener("click", async function () {
+                const courseId = this.dataset.courseId;
+                const isEnrolled = this.dataset.isEnrolled === "true";
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                this.disabled = true;
+                this.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processing...`;
+
+                try {
+                    const response = await fetch(`/Course/Enroll?courseId=${courseId}`, {
+                        method: "POST",
+                        headers: {
+                            "RequestVerificationToken": token
+                        }
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || "Something went wrong.");
+
+                    if (result.success && !result.unenrolled) {
+                        this.dataset.isEnrolled = "true";
+                        this.classList.remove("btn-success");
+                        this.classList.add("btn-danger");
+                        this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
+
+                        if (result.canEnrollImmediately !== false) {
+                            alert("✅ You have been enrolled successfully!");
+                        } else {
+                            this.disabled = true;
+                            this.innerHTML = `<i class="bi bi-hourglass"></i> Pending Approval`;
+                            alert("⏳ Your enrollment request has been sent for approval.");
+                        }
+                    }
+                    else if (result.success && result.unenrolled) {
+                        this.dataset.isEnrolled = "false";
+                        this.classList.remove("btn-danger");
+                        this.classList.add("btn-success");
+                        this.innerHTML = `<i class="bi bi-check-circle"></i> Enroll`;
+                        alert("❌ You have been unenrolled.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("⚠️ Error: " + err.message);
+                    this.innerHTML = isEnrolled ? `<i class="bi bi-x-circle"></i> Unenroll` : `<i class="bi bi-check-circle"></i> Enroll`;
+                } finally {
+                    this.disabled = false;
+                }
+            });
+        });
+    </script>
+}

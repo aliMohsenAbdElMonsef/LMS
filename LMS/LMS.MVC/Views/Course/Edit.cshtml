@@ -174,15 +174,25 @@
             </div>
 
             <!-- Is Free -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-check mt-4">
                     <input asp-for="IsFree" class="form-check-input" type="checkbox" id="isFreeCheckbox" />
                     <label asp-for="IsFree" class="form-check-label"><i class="bi bi-gift"></i> Free Course</label>
                 </div>
             </div>
 
+            <!-- ✅ Every Student Could Enroll -->
+            <div class="col-md-4">
+                <div class="form-check mt-4">
+                    <input asp-for="EveryStuCouldEnroll" class="form-check-input" type="checkbox" />
+                    <label asp-for="EveryStuCouldEnroll" class="form-check-label">
+                        <i class="bi bi-people"></i> Every Student Can Enroll
+                    </label>
+                </div>
+            </div>
+
             <!-- Auto Certificates -->
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-check mt-4">
                     <input asp-for="AutoIssueCertificates" class="form-check-input" type="checkbox" />
                     <label asp-for="AutoIssueCertificates" class="form-check-label">
@@ -230,7 +240,10 @@
             if (isFreeCheckbox) {
                 isFreeCheckbox.addEventListener('change', updatePriceField);
             }
-            const categories = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AvailableCategories ?? new List<LMS.MVC.Models.ViewModels.Course.CategoryOption>()));const searchBox = document.getElementById('categorySearch');
+
+            // Category search
+            const categories = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AvailableCategories ?? new List<LMS.MVC.Models.ViewModels.Course.CategoryOption>()));
+            const searchBox = document.getElementById('categorySearch');
             const suggestionsList = document.getElementById('categorySuggestions');
             const selectedContainer = document.getElementById('selectedCategories');
             const hiddenInputs = document.getElementById('hiddenCategoryInputs');

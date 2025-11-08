@@ -1,5 +1,7 @@
 ﻿using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.DTOs.Course;
+using LMS.BusinessLogic.DTOs.Enrollment;
+using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -18,8 +20,8 @@ namespace LMS.API.Controllers
             _unitOfServices = unitOfServices;
         }
 
-        private string? GetCurrentUserId() =>
-            User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        private string? GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        private string? GetCurrentUserRole() => User.FindFirst(ClaimTypes.Role)?.Value;
 
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
@@ -137,5 +139,31 @@ namespace LMS.API.Controllers
 
             return Ok(new { success = true, message = "Course deleted successfully" });
         }
+        [HttpGet("isenrolled")]
+        [Authorize(Roles = "Instructor,Student")]
+        public async Task<IActionResult> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
+        {
+            var Role = GetCurrentUserRole();
+            if (Role == null)
+            {
+                return BadRequest(new ServiceResponseDTO<bool>
+                {
+                    Success = false,
+                    Message = "Couldn't find user role."
+                });
+            }
+            if(Role == "Instructor")
+            {
+                var result = await _unitOfServices.InstructorEnrollIntoCourse.IsEnrolledIn(dto);
+                return result.Success ? Ok(result) : BadRequest(result);
+            }
+            else
+            {
+                var result = await _unitOfServices.StudentEnrollIntoCourse.IsEnrolledIn(dto);
+                return result.Success ? Ok(result) : BadRequest(result);
+
+            }
+        }
+        
     }
 }

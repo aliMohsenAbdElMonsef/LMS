@@ -16,11 +16,12 @@ namespace LMS.BusinessLogic.Services
         public ISkillServices Skills { get; }
         public IUserServices Users { get; }
         public ICourseDayScheduleServices DaySchedules { get; }
-        public IStudentEnrollIntoCourseServices StudentEnrollIntoCourse { get; }
-
+        public IStudentEnrollment StudentEnrollIntoCourse { get; }
+        public IInstructorEnrollIntoCourse InstructorEnrollIntoCourse { get; }
+        public IEnrollmentManagement EnrollmentManagement { get; }
         public IFileService FileService { get; }
 
-        public UnitOfServices(IAssignmentServices assignments, IFileService fileSerivce, ICategoryServices categories, ICertificateTemplateServices certificateTemplates, ICourseServices courses, ILectureServices lectures, IUserServices users, IStudentEnrollIntoCourseServices studentEnrollIntoCourse)
+        public UnitOfServices(IAssignmentServices assignments, IFileService fileSerivce, IEnrollmentManagement enrollmentManagement,ICategoryServices categories, ICertificateTemplateServices certificateTemplates, ICourseServices courses, ILectureServices lectures, IUserServices users, IStudentEnrollment studentEnrollIntoCourse, IInstructorEnrollIntoCourse instructorEnrollIntoCourse)
         {
             Assignments = assignments;
             Categories = categories;
@@ -28,12 +29,10 @@ namespace LMS.BusinessLogic.Services
             Courses = courses;
             Lectures = lectures;
             FileService = fileSerivce;
-            //Questions = questions;
-            //Quizzes = quizzes;
-            //Skills = skills;
             Users = users;
-            //DaySchedules = daySchedules;
             StudentEnrollIntoCourse = studentEnrollIntoCourse;
+            InstructorEnrollIntoCourse = instructorEnrollIntoCourse;
+            EnrollmentManagement = enrollmentManagement;
         }
     }
 }
