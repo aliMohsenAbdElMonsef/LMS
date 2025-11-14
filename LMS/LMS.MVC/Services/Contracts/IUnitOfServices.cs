@@ -5,6 +5,7 @@ namespace LMS.MVC.Services.Contracts
     public interface IUnitOfServices
     {
         IAccountService AccountService { get; }
+        IAssignmentService AssignmentService { get; }
         IUserService UserService { get; }
         ICourseService CourseService { get; }
 

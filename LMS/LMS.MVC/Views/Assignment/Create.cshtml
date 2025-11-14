@@ -1,0 +1,61 @@
+﻿@model LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult
+@{
+    ViewData["Title"] = "Create Assignment";
+}
+
+<h2 class="mb-4">Create New Assignment</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+    @TempData.Remove("SuccessMessage")
+    ;
+}
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<form asp-action="Create" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+    <input type="hidden" asp-for="CourseId" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Assignment Title</label>
+        <input asp-for="Title" class="form-control" placeholder="Enter assignment title" required />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" placeholder="Enter assignment description" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DueDate" class="form-label">Due Date</label>
+        <input asp-for="DueDate" type="datetime-local" class="form-control" required />
+        <span asp-validation-for="DueDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="assignmentFile" class="form-label">Assignment File</label>
+        <input type="file" class="form-control" id="assignmentFile" name="assignmentFile" accept=".pdf,.doc,.docx,.txt" required />
+        <small class="form-text text-muted">Allowed formats: PDF, Word, Text files</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Assignment</button>
+    <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dueDateInput = document.querySelector('input[name="DueDate"]'); 
+            var today = new Date().toISOString().slice(0, 16);
+            if (dueDateInput) {
+                dueDateInput.min = today;
+            }
+        });
+    </script>
+}

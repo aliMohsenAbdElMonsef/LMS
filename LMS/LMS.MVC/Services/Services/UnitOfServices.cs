@@ -19,6 +19,7 @@ namespace LMS.MVC.Services.Services
         private readonly Lazy<ICourseService> _courseService;
         private readonly Lazy<ICategoryService> _categoryService;
         private readonly Lazy<IEnrollmentService> _enrollmentService;
+        private readonly Lazy<IAssignmentService> _assignmentService;
 
         public UnitOfServices(HttpClient client, IHttpContextAccessor httpContextAccessor, ITokenService tokenService,ILoggerFactory loggerFactory, IMapper mapper)
         {
@@ -32,11 +33,13 @@ namespace LMS.MVC.Services.Services
             _courseService = new Lazy<ICourseService>(() => new CourseService(_client, _httpContextAccessor));
             _categoryService = new Lazy<ICategoryService>(() => new CategoryService(_client,_httpContextAccessor,_mapper,_tokenService));
             _enrollmentService = new Lazy<IEnrollmentService>(()=> new EnrollmentService(_client,_httpContextAccessor,_tokenService));
+            _assignmentService = new Lazy<IAssignmentService>(()=> new AssignmentService(_client,_httpContextAccessor,_tokenService, _mapper));
 
 
         }
 
         public IAccountService AccountService => _accountService.Value;
+        public IAssignmentService AssignmentService => _assignmentService.Value;
         public IUserService UserService => _userService.Value;
         public ICourseService CourseService => _courseService.Value;
         public ICategoryService CategoryService => _categoryService.Value;

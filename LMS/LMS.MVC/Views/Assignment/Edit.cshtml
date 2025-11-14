@@ -1,0 +1,92 @@
+﻿@model LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult
+@{
+    ViewData["Title"] = "Edit Assignment";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>Edit Assignment
+                </h4>
+                <small>Course: @Model.CourseName</small>
+            </div>
+
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CourseId" />
+                    <input type="hidden" asp-for="InstructorId" />
+                    <input type="hidden" asp-for="CourseName" />
+                    <input type="hidden" asp-for="InstructorName" />
+                    <input type="hidden" asp-for="FilePath" />
+                    <input type="hidden" asp-for="UploadDate" />
+                    <input type="hidden" asp-for="SubmissionsCount" />
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Assignment Title</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DueDate" class="form-label fw-bold">Due Date & Time</label>
+                        <input asp-for="DueDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="DueDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">Assignment Information</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Course:</strong> @Model.CourseName
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Instructor:</strong> @Model.InstructorName
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Upload Date:</strong> @Model.UploadDate.ToString("MMM dd, yyyy")
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Submissions:</strong> @Model.SubmissionsCount
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 pt-3 border-top">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save me-1"></i>Update Assignment
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

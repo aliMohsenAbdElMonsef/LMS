@@ -1,0 +1,33 @@
+﻿using System.ComponentModel.DataAnnotations;
+namespace LMS.MVC.Models.ViewModels.Assignment
+{
+    public class StudentAssignmentResult
+    {
+        public string Id { get; set; }
+
+        [Required]
+        public string StudentId { get; set; }
+        public string StudentName { get; set; }
+
+        [Required]
+        public string AssignmentId { get; set; }
+
+        public string? FilePath { get; set; }
+
+        [Range(0, 100)]
+        public double? Grade { get; set; }
+
+        public DateTime SubmittedAt { get; set; }
+        public DateTime? GradedAt { get; set; }
+
+        public string Status { get; set; }
+
+        public string? Feedback { get; set; }
+
+        public string StudentAssignmentId { get; set; }
+
+        public bool IsSubmitted => !string.IsNullOrEmpty(FilePath);
+        public bool IsGraded => Grade.HasValue;
+        public bool IsPending => IsSubmitted && !IsGraded;
+    }
+}

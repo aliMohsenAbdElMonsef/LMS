@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace LMS.BusinessLogic.DTOs.Assignment
+namespace LMS.MVC.Models.ViewModels.Assignment
 {
-    public class ReadAssignmentDTO
+    public class AssignmentDetailsResult
     {
+        [Required]
         public string Id { get; set; }
 
         [Required]
@@ -30,5 +26,6 @@ namespace LMS.BusinessLogic.DTOs.Assignment
         public string InstructorName { get; set; }
 
         public int SubmissionsCount { get; set; }
+        public List<StudentAssignmentResult> StudentSubmissions { get; set; } = new List<StudentAssignmentResult>();
     }
 }

@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Server=.\\AliMohsen;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=.;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -77,7 +77,7 @@ namespace DataAccess.Context
             builder.Entity<Lecture>().HasQueryFilter(l => !l.IsDeleted);
             builder.Entity<Quiz>().HasQueryFilter(q => !q.IsDeleted);
             builder.Entity<Question>().HasQueryFilter(q => !q.IsDeleted);
-            builder.Entity<Assignment>().HasQueryFilter(a => !a.IsDeleted);
+            builder.Entity<Assignment>().HasQueryFilter(a => !a.IsDeleted);       
             builder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
             builder.Entity<Skills>().HasQueryFilter(s => !s.IsDeleted);
             builder.Entity<CertificateTemplate>().HasQueryFilter(ct => !ct.IsDeleted);
@@ -523,12 +523,21 @@ namespace DataAccess.Context
         private void HandleSoftDeleteForAssignments()
         {
             var entities = ChangeTracker.Entries<Assignment>()
-                .Where(e => e.State == EntityState.Deleted && e.Entity is SoftDeletion);
+        .Where(e => e.State == EntityState.Deleted && e.Entity is SoftDeletion);
+
             foreach (var entry in entities)
             {
                 entry.State = EntityState.Modified;
                 ((SoftDeletion)entry.Entity).IsDeleted = true;
                 ((SoftDeletion)entry.Entity).DeletedAt = DateTime.UtcNow;
+
+                // Also soft delete related student assignments
+                var assignment = entry.Entity;
+                foreach (var studentAssignment in assignment.Students)
+                {
+                    studentAssignment.IsDeleted = true;
+                    studentAssignment.DeletedAt = DateTime.UtcNow;
+                }
             }
         }
         private void HandleSoftDeleteForLectures()

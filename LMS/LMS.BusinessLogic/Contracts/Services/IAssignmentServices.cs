@@ -1,13 +1,20 @@
 ﻿using LMS.BusinessLogic.DTOs.Assignment;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LMS.BusinessLogic.DTOs.Responses;
+using LMS.Entity.Enums;
 
 namespace LMS.BusinessLogic.Contracts.Services
 {
-    public interface IAssignmentServices: IBaseService<ReadAssignmentDTO, CreateAssignmentDTO, UpdateAssignmentDTO>
+    public interface IAssignmentServices : IBaseService<ReadAssignmentDTO, CreateAssignmentDTO, UpdateAssignmentDTO>
     {
+        Task<ServiceResponseDTO<AssignmentDetailsDTO>> GetAssignmentWithDetailsAsync(string id);
+        Task<ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>> GetAssignmentsByCourseAsync(string courseId);
+
+        Task<ServiceResponseDTO<StudentAssignmentDTO>> SubmitAssignmentAsync(SubmitAssignmentDTO submission);
+        Task<ServiceResponseDTO<StudentAssignmentDTO>> GradeAssignmentAsync(GradeAssignmentDTO grade);
+        Task<ServiceResponseDTO<StudentAssignmentDTO>> GetStudentAssignmentAsync(string assignmentId, string studentId);
+        Task<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>> GetAssignmentSubmissionsAsync(string assignmentId);
+        Task<ServiceResponseDTO<StudentAssignmentDTO>> GetStudentAssignmentByIdAsync(string studentAssignmentId);
+
+        Task<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>> GetSubmissionsByStatusAsync(string assignmentId, AssignmentStatus status);
     }
 }
