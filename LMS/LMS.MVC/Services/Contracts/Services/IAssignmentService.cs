@@ -18,6 +18,6 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<StudentAssignmentResult> GradeAssignment(StudentAssignmentResult model);
         Task<IEnumerable<StudentAssignmentResult>> GetSubmissionsByStatus(string assignmentId, string status);
         Task<StudentAssignmentResult> GetStudentAssignmentById(string studentAssignmentId);
-        //Task<bool> DeleteAssignment(string id);
+        Task<bool> DeleteAssignment(string id);
     }
 }

@@ -14,6 +14,15 @@
             </div>
 
             <div class="card-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
                 @if (TempData["ErrorMessage"] != null)
                 {
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -25,7 +34,7 @@
 
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                <form asp-action="Edit" method="post">
+                <form asp-action="Edit" method="post" class="needs-validation" novalidate>
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="CourseId" />
                     <input type="hidden" asp-for="InstructorId" />
@@ -36,41 +45,57 @@
                     <input type="hidden" asp-for="SubmissionsCount" />
 
                     <div class="mb-3">
-                        <label asp-for="Title" class="form-label fw-bold">Assignment Title</label>
-                        <input asp-for="Title" class="form-control" />
+                        <label asp-for="Title" class="form-label fw-bold">Assignment Title *</label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter assignment title" required />
                         <span asp-validation-for="Title" class="text-danger small"></span>
+                        <div class="invalid-feedback">Please provide an assignment title.</div>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="Description" class="form-label fw-bold">Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter assignment description"></textarea>
                         <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="DueDate" class="form-label fw-bold">Due Date & Time</label>
-                        <input asp-for="DueDate" type="datetime-local" class="form-control" />
+                        <label asp-for="DueDate" class="form-label fw-bold">Due Date & Time *</label>
+                        <input asp-for="DueDate" type="datetime-local" class="form-control" required />
                         <span asp-validation-for="DueDate" class="text-danger small"></span>
+                        <div class="invalid-feedback">Please select a due date and time.</div>
                     </div>
 
                     <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h6 class="card-title">Assignment Information</h6>
+                            <h6 class="card-title">
+                                <i class="fas fa-info-circle me-2"></i>Assignment Information
+                            </h6>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-2">
                                     <strong>Course:</strong> @Model.CourseName
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-2">
                                     <strong>Instructor:</strong> @Model.InstructorName
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-2">
                                     <strong>Upload Date:</strong> @Model.UploadDate.ToString("MMM dd, yyyy")
                                 </div>
-                                <div class="col-md-6">
-                                    <strong>Submissions:</strong> @Model.SubmissionsCount
+                                <div class="col-md-6 mb-2">
+                                    <strong>Submissions:</strong>
+                                    <span class="badge bg-primary">@Model.SubmissionsCount</span>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <strong>Current File:</strong>
+                                    <a href="@Model.FilePath" target="_blank" class="ms-2">
+                                        <i class="fas fa-download me-1"></i>Download Assignment File
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Note:</strong> You cannot change the assignment file. To update the file, please delete and recreate the assignment.
                     </div>
 
                     <div class="d-flex gap-2 pt-3 border-top">
@@ -89,4 +114,24 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Client-side validation for due date
+        document.addEventListener('DOMContentLoaded', function() {
+            var dueDateInput = document.querySelector('input[asp-for="DueDate"]');
+            var today = new Date().toISOString().slice(0, 16);
+            dueDateInput.min = today;
+
+            // Bootstrap validation
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
 }

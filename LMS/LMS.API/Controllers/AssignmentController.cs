@@ -31,16 +31,14 @@ namespace LMS.API.Controllers
         {
             var instructorId = GetCurrentUserId() ?? "";
             assignment.InstructorId = instructorId;
-
             var result = await AssignmentService.CreateAsync(assignment);
             if (!result.Success)
                 return BadRequest(result);
 
             return Ok(result);
         }
-
         [HttpPut("update")]
-        [Authorize(Roles = "Instructor,Admin")]
+        [Authorize(Roles = "Instructor")]
         public async Task<ActionResult<ServiceResponseDTO<ReadAssignmentDTO>>> UpdateAssignment(UpdateAssignmentDTO assignment)
         {
             var result = await AssignmentService.UpdateAsync(assignment);
@@ -140,28 +138,15 @@ namespace LMS.API.Controllers
             var result = await AssignmentService.GetSubmissionsByStatusAsync(assignmentId, status);
             return Ok(result);
         }
-
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         [Authorize(Roles = "Instructor")]
         public async Task<ActionResult<ServiceResponseDTO<bool>>> DeleteAssignment(string id)
         {
-            try
-            {
-                var result = await AssignmentService.DeleteAsync(id);
-                if (!result.Success)
-                    return BadRequest(result);
+            var result = await AssignmentService.DeleteAssignmentAsync(id);
+            if (!result.Success)
+                return BadRequest(result);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ServiceResponseDTO<bool>
-                {
-                    Success = false,
-                    Message = $"Error deleting assignment: {ex.Message}"
-                });
-            }
+            return Ok(result);
         }
-
     }
 }

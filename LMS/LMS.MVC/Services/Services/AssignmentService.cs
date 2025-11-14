@@ -138,19 +138,20 @@ namespace LMS.MVC.Services.Services
             );
             return _mapper.Map<ReadAssignmentResult>(response.Data);
         }
-        //public async Task<bool> DeleteAssignment(string id)
-        //{
-        //    try
-        //    {
-        //        var response = await DeleteAsync<ServiceResponseDTO<bool>>($"api/assignment/{id}");
-        //        return response?.Success == true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error deleting assignment in service: " + ex.Message);
-        //        return false;
-        //    }
-        //}
+        public async Task<bool> DeleteAssignment(string id)
+        {
+            try
+            {
+                var response = await DeleteAsync<ServiceResponseDTO<bool>>($"api/assignment/delete/{id}");
+                return response?.Success == true && response.Data;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting assignment: {ex.Message}");
+                return false;
+            }
+        }
+
 
         public async Task<StudentAssignmentResult> SubmitAssignment(StudentAssignmentResult model)
         {

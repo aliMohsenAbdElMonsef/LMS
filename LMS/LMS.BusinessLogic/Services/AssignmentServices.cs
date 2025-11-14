@@ -283,6 +283,54 @@ namespace LMS.BusinessLogic.Services
 
             return existingEntity;
         }
+        public override async Task<ServiceResponseDTO<ReadAssignmentDTO>> DeleteAsync(string id)
+        {
+            try
+            {
+                var assignment = await _unitOfWork.Assignments.FindByIdAsync(id);
+                if (assignment == null)
+                {
+                    return new ServiceResponseDTO<ReadAssignmentDTO>
+                    {
+                        Success = false,
+                        Message = "Assignment not found."
+                    };
+                }
+
+                // Check if assignment can be deleted (due date not passed or admin)
+                // Note: You might want to get current user from context in a real scenario
+                if (assignment.DueDate < DateTime.UtcNow)
+                {
+                    // For instructors, they can only delete before due date
+                    // Admins can delete anytime - you would check user roles here
+                    // For now, we'll allow deletion but you can add role checking later
+                    Console.WriteLine($"Warning: Deleting assignment after due date: {assignment.Title}");
+                }
+
+                // Use the base delete functionality which handles soft delete
+                return await base.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<ReadAssignmentDTO>
+                {
+                    Success = false,
+                    Message = $"Error deleting assignment: {ex.Message}"
+                };
+            }
+        }
+
+        // ADD THIS METHOD - for the bool return type used by MVC
+        public async Task<ServiceResponseDTO<bool>> DeleteAssignmentAsync(string id)
+        {
+            var result = await base.DeleteAsync(id);
+            return new ServiceResponseDTO<bool>
+            {
+                Success = result.Success,
+                Message = result.Message,
+                Data = result.Success
+            };
+        }
 
 
     }

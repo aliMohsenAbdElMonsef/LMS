@@ -73,25 +73,15 @@ namespace LMS.MVC.Controllers
             ViewBag.CurrentStudentId = _tokenService.GetUserId();
             return View("Details", assignment);
         }
+
+
         [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(string id)
         {
-            try
-            {
-                var assignment = await _services.AssignmentService.GetEditModel(id);
-                if (assignment == null)
-                {
-                    TempData["ErrorMessage"] = "Assignment not found or you don't have permission to edit it.";
-                    return RedirectToAction("Details", new { id = id });
-                }
-                return View("Edit", assignment);
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Error loading assignment for editing.";
-                return RedirectToAction("Details", new { id = id });
-            }
+            var assignment = await _services.AssignmentService.GetEditModel(id);
+            if (assignment == null) return NotFound();
+            return View("Edit", assignment);
         }
 
         [HttpPost]
@@ -130,8 +120,6 @@ namespace LMS.MVC.Controllers
                 return View("Edit", model);
             }
         }
-
-
 
         [HttpGet]
         [Authorize(Roles = "Student")]
@@ -250,31 +238,34 @@ namespace LMS.MVC.Controllers
             return View("MySubmissions");
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "Instructor")]
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    try
-        //    {
-        //        var result = await _services.AssignmentService.DeleteAssignment(id);
+        [HttpPost]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var assignment = await _services.AssignmentService.GetAssignmentById(id);
+                if (assignment == null)
+                {
+                    TempData["ErrorMessage"] = "Assignment not found.";
+                    return RedirectToAction("Index", "Course");
+                }
 
-        //        if (result)
-        //        {
-        //            TempData["SuccessMessage"] = "Assignment deleted successfully!";
-        //            return RedirectToAction("Index", "Course"); // Redirect to courses list or wherever appropriate
-        //        }
-        //        else
-        //        {
-        //            TempData["ErrorMessage"] = "Failed to delete assignment. Please try again.";
-        //            return RedirectToAction("Details", new { id });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error deleting assignment: " + ex.Message);
-        //        TempData["ErrorMessage"] = "An error occurred while deleting the assignment.";
-        //        return RedirectToAction("Details", new { id });
-        //    }
-        //}
+                var result = await _services.AssignmentService.DeleteAssignment(id);
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Assignment deleted successfully!";
+                    return RedirectToAction("Details", "Course", new { id = assignment.CourseId });
+                }
+
+                TempData["ErrorMessage"] = "Failed to delete assignment. Please try again.";
+                return RedirectToAction("Details", new { id });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error while deleting assignment: {ex.Message}";
+                return RedirectToAction("Details", new { id });
+            }
+        }
     }
 }
