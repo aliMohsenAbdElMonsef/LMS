@@ -11,10 +11,9 @@
 }
 
 <div class="row">
-
     <div class="col-md-8">
         <h2>@Model.Title</h2>
-        
+
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success">
@@ -60,10 +59,13 @@
                     </div>
                 }
 
+                <!-- ✅ FIXED: Download Assignment Link -->
                 <div class="mb-3">
                     <strong>Assignment File:</strong>
                     <div class="mt-2">
-                        <a href="@Model.FilePath" class="btn btn-outline-primary btn-sm" target="_blank">
+                        <a asp-action="DownloadAssignment"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-download"></i> Download Assignment
                         </a>
                     </div>
@@ -86,7 +88,6 @@
                         <a asp-action="Submissions" asp-route-id="@Model.Id" class="btn btn-info">
                             <i class="fas fa-list"></i> View Submissions (@Model.SubmissionsCount)
                         </a>
-
                     }
 
                     <!-- Student Actions -->
@@ -124,8 +125,6 @@
                 <div class="text-center mb-4">
                     <h3 class="text-primary">@Model.SubmissionsCount</h3>
                     <p class="text-muted">Total Submissions</p>
-
-                   
                 </div>
 
                 <!-- Student Personal Status -->
@@ -154,10 +153,13 @@
                             <span>@studentSubmission.SubmittedAt.ToString("MMM dd, yyyy hh:mm tt")</span>
                         </div>
 
+                        <!-- ✅ FIXED: Download Submission Link -->
                         @if (!string.IsNullOrEmpty(studentSubmission.FilePath))
                         {
                             <div class="mt-2">
-                                <a href="@studentSubmission.FilePath" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <a asp-action="DownloadSubmission"
+                                   asp-route-studentAssignmentId="@studentSubmission.Id"
+                                   class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-download"></i> Your Submission
                                 </a>
                             </div>
@@ -184,7 +186,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-                   
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

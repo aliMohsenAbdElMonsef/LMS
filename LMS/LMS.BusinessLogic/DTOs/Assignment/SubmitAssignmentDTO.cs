@@ -15,7 +15,7 @@ namespace LMS.BusinessLogic.DTOs.Assignment
         [Required]
         public string StudentId { get; set; }
 
-        [Required]
-        public string FilePath { get; set; }
+        
+        public string? FilePath { get; set; }
     }
 }

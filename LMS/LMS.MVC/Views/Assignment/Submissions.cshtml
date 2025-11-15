@@ -4,7 +4,6 @@
     var assignmentId = ViewBag.AssignmentId;
     var status = ViewBag.Status as string;
 }
-
 <h2 class="mb-4">Assignment Submissions</h2>
 
 <!-- Status Filter Buttons -->
@@ -98,16 +97,23 @@
                                         <span class="text-muted">-</span>
                                     }
                                 </td>
+                                
                                 <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="d-flex gap-2">
                                         @if (submission.IsSubmitted)
                                         {
-                                            <a href="@submission.FilePath" class="btn btn-outline-primary" target="_blank" title="Download Submission">
-                                                <i class="fas fa-download"></i>
+                                            <a asp-action="DownloadSubmission"
+                                               asp-route-studentAssignmentId="@submission.Id"
+                                               class="btn btn-sm btn-primary border "
+                                               title="Download Submission">
+                                                <i class="fas fa-download">Download Submission</i>
                                             </a>
                                         }
-                                        <a asp-action="Grade" asp-route-id="@submission.Id" class="btn btn-outline-warning" title="Grade Assignment">
-                                            <i class="fas fa-edit"></i>
+                                        <a asp-action="Grade"
+                                           asp-route-id="@submission.Id"
+                                           class="btn btn-sm btn-primary border "
+                                           title="Grade Assignment">
+                                            <i class="fas fa-edit">Grade Assignment</i>
                                         </a>
                                     </div>
                                 </td>

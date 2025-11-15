@@ -21,6 +21,7 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<IInstructorEnrollIntoCourse, InstructorEnrollIntoCourseService>();
             services.AddScoped<ICertificateTemplateServices, CertificateTemplateServices>();
             services.AddScoped<IFileService, FileService>();
+            // Add this to your service registration
             services.AddScoped<IEnrollmentManagement, EnrollmentManagementService>();
 
             //services.AddScoped<IQuestionServices, QuestionServices>();

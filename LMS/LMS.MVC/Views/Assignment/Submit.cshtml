@@ -32,7 +32,10 @@
             {
                 <div class="alert alert-info">
                     <strong>Current Submission:</strong>
-                    <a href="@Model.FilePath" target="_blank" class="ms-2">View Current File</a>
+                    <!-- ✅ FIXED: Use DownloadSubmission action -->
+                    <a asp-action="DownloadSubmission"
+                       asp-route-studentAssignmentId="@Model.Id"
+                       class="ms-2">View Current File</a>
                 </div>
             }
 

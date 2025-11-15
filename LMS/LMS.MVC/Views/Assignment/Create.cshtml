@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Create Assignment";
 }
-
+@* /Assignment/Create?courseId=0108F54D-900D-4727-BA97-DD78E0BF60C7 *@
 <h2 class="mb-4">Create New Assignment</h2>
 
 @if (TempData["SuccessMessage"] != null)
@@ -18,7 +18,7 @@
 
 <form asp-action="Create" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
     <input type="hidden" asp-for="CourseId" />
-
+    <input type="hidden" asp-for="FilePath" value="" />
     <div class="mb-3">
         <label asp-for="Title" class="form-label">Assignment Title</label>
         <input asp-for="Title" class="form-control" placeholder="Enter assignment title" required />
@@ -38,9 +38,11 @@
     </div>
 
     <div class="mb-3">
-        <label for="assignmentFile" class="form-label">Assignment File</label>
-        <input type="file" class="form-control" id="assignmentFile" name="assignmentFile" accept=".pdf,.doc,.docx,.txt" required />
-        <small class="form-text text-muted">Allowed formats: PDF, Word, Text files</small>
+        <label for="assignmentFile" class="form-label">Assignment File *</label>
+        <input type="file" class="form-control" id="assignmentFile" name="assignmentFile"
+               accept=".pdf,.doc,.docx,.txt" required />
+        <small class="form-text text-muted">Allowed formats: PDF, Word, Text files (Max: 10MB)</small>
+        <span class="text-danger" id="fileValidation"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Create Assignment</button>
@@ -50,12 +52,25 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        // Client-side validation for due date and file
         document.addEventListener('DOMContentLoaded', function() {
-            var dueDateInput = document.querySelector('input[name="DueDate"]'); 
+            var dueDateInput = document.querySelector('input[asp-for="DueDate"]');
             var today = new Date().toISOString().slice(0, 16);
-            if (dueDateInput) {
-                dueDateInput.min = today;
-            }
+            dueDateInput.min = today;
+
+            // File size validation
+            var fileInput = document.getElementById('assignmentFile');
+            fileInput.addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                var fileValidation = document.getElementById('fileValidation');
+
+                if (file && file.size > 10 * 1024 * 1024) { // 10MB
+                    fileValidation.textContent = 'File size must be less than 10MB';
+                    e.target.value = '';
+                } else {
+                    fileValidation.textContent = '';
+                }
+            });
         });
     </script>
 }

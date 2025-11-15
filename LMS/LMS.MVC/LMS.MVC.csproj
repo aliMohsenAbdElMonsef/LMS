@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Uploads\assignments\**" />
+    <Compile Remove="wwwroot\Uploads\submissions\**" />
+    <Content Remove="wwwroot\Uploads\assignments\**" />
+    <Content Remove="wwwroot\Uploads\submissions\**" />
+    <EmbeddedResource Remove="wwwroot\Uploads\assignments\**" />
+    <EmbeddedResource Remove="wwwroot\Uploads\submissions\**" />
+    <None Remove="wwwroot\Uploads\assignments\**" />
+    <None Remove="wwwroot\Uploads\submissions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
@@ -14,6 +25,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LMS.API\LMS.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
 </Project>

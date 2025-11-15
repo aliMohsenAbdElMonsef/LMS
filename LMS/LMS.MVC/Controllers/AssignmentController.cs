@@ -1,9 +1,10 @@
-﻿using LMS.MVC.Models.ViewModels.Assignment;
+﻿using LMS.Entity.Enums;
+using LMS.MVC.Models.ViewModels.Assignment;
 using LMS.MVC.Services.Contracts;
 using LMS.MVC.Services.Contracts.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LMS.Entity.Enums;
+
 namespace LMS.MVC.Controllers
 {
     public class AssignmentController : Controller
@@ -28,52 +29,73 @@ namespace LMS.MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Create(ReadAssignmentResult model)
+        public async Task<IActionResult> Create(ReadAssignmentResult model, IFormFile assignmentFile)
         {
+            Console.WriteLine("=== CREATE ASSIGNMENT POST ===");
+            Console.WriteLine($"Title: {model.Title}");
+            Console.WriteLine($"CourseId: {model.CourseId}");
+            Console.WriteLine($"File: {assignmentFile?.FileName ?? "NULL"}");
+            Console.WriteLine($"File Size: {assignmentFile?.Length ?? 0} bytes");
+            ModelState.Remove("FilePath");
+            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
+
             if (!ModelState.IsValid)
             {
-                foreach (var entry in ModelState)
+                Console.WriteLine("❌ ModelState Errors:");
+                foreach (var state in ModelState)
                 {
-                    var key = entry.Key;
-                    var errors = entry.Value.Errors;
-                    foreach (var error in errors)
+                    foreach (var error in state.Value.Errors)
                     {
-                        Console.WriteLine($"Property: {key}, Error: {error.ErrorMessage}");
+                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
                     }
                 }
                 return View("Create", model);
             }
 
+            if (assignmentFile == null || assignmentFile.Length == 0)
+            {
+                Console.WriteLine("❌ No file uploaded");
+                ModelState.AddModelError("", "Please select an assignment file.");
+                return View("Create", model);
+            }
+
             try
             {
-                var createdAssignment = await _services.AssignmentService.CreateAssignment(model);
+                Console.WriteLine("✅ Calling CreateAssignmentWithFile...");
+
+                var createdAssignment = await _services.AssignmentService.CreateAssignmentWithFile(
+                    model, assignmentFile);
+
+                Console.WriteLine($"✅ Assignment created with ID: {createdAssignment?.Id}");
+
                 if (createdAssignment != null && !string.IsNullOrEmpty(createdAssignment.Id))
                 {
                     TempData["SuccessMessage"] = "Assignment created successfully!";
                     return RedirectToAction("Details", new { id = createdAssignment.Id });
                 }
 
+                Console.WriteLine("❌ Creation failed - returned null or empty ID");
                 ModelState.AddModelError("", "Failed to create assignment. Please try again.");
                 return View("Create", model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error while creating assignment: {ex.Message}");
+                Console.WriteLine($"❌ Exception: {ex.Message}");
+                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Create", model);
             }
         }
-
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
             var assignment = await _services.AssignmentService.GetAssignmentById(id);
             if (assignment == null)
                 return NotFound();
-            // ADD THIS LINE - Set the current student ID
+
             ViewBag.CurrentStudentId = _tokenService.GetUserId();
             return View("Details", assignment);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Instructor")]
@@ -90,33 +112,25 @@ namespace LMS.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                foreach (var entry in ModelState)
-                {
-                    var key = entry.Key;
-                    var errors = entry.Value.Errors;
-                    foreach (var error in errors)
-                    {
-                        Console.WriteLine($"Property: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
                 return View("Edit", model);
             }
 
             try
             {
                 var updatedAssignment = await _services.AssignmentService.EditAssignment(model);
-                if (updatedAssignment != null && !string.IsNullOrEmpty(updatedAssignment.Id))
+                if (updatedAssignment != null)
                 {
                     TempData["SuccessMessage"] = "Assignment updated successfully!";
                     return RedirectToAction("Details", new { id = updatedAssignment.Id });
                 }
 
-                ModelState.AddModelError("", "Failed to update assignment. Please try again.");
+                ModelState.AddModelError("", "Failed to update assignment.");
                 return View("Edit", model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error while updating assignment: {ex.Message}");
+                Console.WriteLine($"❌ Error updating assignment: {ex.Message}");
+                ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Edit", model);
             }
         }
@@ -142,32 +156,74 @@ namespace LMS.MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> Submit(StudentAssignmentResult model)
+        public async Task<IActionResult> Submit(StudentAssignmentResult model, IFormFile submissionFile)
         {
+            Console.WriteLine("=== SUBMIT ASSIGNMENT POST ===");
+            Console.WriteLine($"AssignmentId: {model.AssignmentId}");
+            Console.WriteLine($"StudentId: {model.StudentId}");
+            Console.WriteLine($"File: {submissionFile?.FileName ?? "NULL"}");
+            Console.WriteLine($"File Size: {submissionFile?.Length ?? 0} bytes");
+
+            // ✅ ADD ALL THESE LINES
+            ModelState.Remove("FilePath");
+            ModelState.Remove("Status");
+            ModelState.Remove("StudentName");
+            ModelState.Remove("StudentAssignmentId");
+            ModelState.Remove("Id");
+            ModelState.Remove("Grade");
+            ModelState.Remove("GradedAt");
+            ModelState.Remove("SubmittedAt");
+            ModelState.Remove("Feedback");
+
+            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
+
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("❌ ModelState Errors:");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
+                    }
+                }
+                return View("Submit", model);
+            }
+
+            if (submissionFile == null || submissionFile.Length == 0)
+            {
+                Console.WriteLine("❌ No file selected");
+                ModelState.AddModelError("", "Please select a submission file.");
                 return View("Submit", model);
             }
 
             try
             {
-                var result = await _services.AssignmentService.SubmitAssignment(model);
-                if (result != null && !string.IsNullOrEmpty(result.Id))
+                Console.WriteLine("✅ Calling SubmitAssignmentWithFile...");
+
+                var result = await _services.AssignmentService.SubmitAssignmentWithFile(
+                    model.AssignmentId, model.StudentId, submissionFile);
+
+                Console.WriteLine($"✅ Result: {(result != null ? "Success" : "NULL")}");
+
+                if (result != null)
                 {
                     TempData["SuccessMessage"] = "Assignment submitted successfully!";
                     return RedirectToAction("Details", new { id = model.AssignmentId });
                 }
 
-                ModelState.AddModelError("", "Failed to submit assignment. Please try again.");
+                Console.WriteLine("❌ Result was null");
+                ModelState.AddModelError("", "Failed to submit assignment.");
                 return View("Submit", model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error while submitting assignment: {ex.Message}");
+                Console.WriteLine($"❌ Exception: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Submit", model);
             }
         }
-
         [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Submissions(string id)
@@ -177,7 +233,6 @@ namespace LMS.MVC.Controllers
             return View("Submissions", submissions);
         }
 
-        // NEW: Action for filtering submissions by status
         [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> SubmissionsByStatus(string id, string status)
@@ -188,6 +243,67 @@ namespace LMS.MVC.Controllers
             return View("Submissions", submissions);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DownloadAssignment(string id)
+        {
+            try
+            {
+                var assignment = await _services.AssignmentService.GetAssignmentById(id);
+                if (assignment == null || string.IsNullOrEmpty(assignment.FilePath))
+                {
+                    TempData["ErrorMessage"] = "File not found.";
+                    return RedirectToAction("Details", new { id });
+                }
+
+                // Download from API
+                var fileResult = await _services.AssignmentService.DownloadFileFromApi(assignment.FilePath);
+                if (fileResult == null)
+                {
+                    TempData["ErrorMessage"] = "File not accessible.";
+                    return RedirectToAction("Details", new { id });
+                }
+
+                return fileResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error downloading file: {ex.Message}");
+                TempData["ErrorMessage"] = "Error downloading file.";
+                return RedirectToAction("Details", new { id });
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DownloadSubmission(string studentAssignmentId)
+        {
+            try
+            {
+                var submission = await _services.AssignmentService.GetStudentAssignmentById(studentAssignmentId);
+                if (submission == null || string.IsNullOrEmpty(submission.FilePath))
+                {
+                    TempData["ErrorMessage"] = "File not found.";
+                    return RedirectToAction("Index", "Course");
+                }
+
+                // Download from API
+                var fileResult = await _services.AssignmentService.DownloadFileFromApi(submission.FilePath);
+                if (fileResult == null)
+                {
+                    TempData["ErrorMessage"] = "File not accessible.";
+                    return RedirectToAction("Index", "Course");
+                }
+
+                return fileResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error downloading file: {ex.Message}");
+                TempData["ErrorMessage"] = "Error downloading file.";
+                return RedirectToAction("Index", "Course");
+            }
+        }
 
         [HttpGet]
         [Authorize(Roles = "Instructor")]
@@ -212,30 +328,21 @@ namespace LMS.MVC.Controllers
             try
             {
                 var result = await _services.AssignmentService.GradeAssignment(model);
-                if (result != null && !string.IsNullOrEmpty(result.Id))
+                if (result != null)
                 {
                     TempData["SuccessMessage"] = "Assignment graded successfully!";
                     return RedirectToAction("Submissions", new { id = result.AssignmentId });
                 }
 
-                ModelState.AddModelError("", "Failed to grade assignment. Please try again.");
+                ModelState.AddModelError("", "Failed to grade assignment.");
                 return View("Grade", model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error while grading assignment: {ex.Message}");
+                Console.WriteLine($"❌ Error grading assignment: {ex.Message}");
+                ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Grade", model);
             }
-        }
-
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> MySubmissions()
-        {
-            var studentId = _tokenService.GetUserId();
-            // This would need a new method in service to get all student submissions
-            // For now, return view - implementation depends on your requirements
-            return View("MySubmissions");
         }
 
         [HttpPost]
@@ -251,6 +358,7 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Index", "Course");
                 }
 
+                // API will handle file deletion
                 var result = await _services.AssignmentService.DeleteAssignment(id);
                 if (result)
                 {
@@ -258,12 +366,13 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", "Course", new { id = assignment.CourseId });
                 }
 
-                TempData["ErrorMessage"] = "Failed to delete assignment. Please try again.";
+                TempData["ErrorMessage"] = "Failed to delete assignment.";
                 return RedirectToAction("Details", new { id });
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error while deleting assignment: {ex.Message}";
+                Console.WriteLine($"❌ Error deleting assignment: {ex.Message}");
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
                 return RedirectToAction("Details", new { id });
             }
         }

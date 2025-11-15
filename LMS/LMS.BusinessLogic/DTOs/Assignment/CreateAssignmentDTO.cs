@@ -15,8 +15,8 @@ namespace LMS.BusinessLogic.DTOs.Assignment
 
         public string? Description { get; set; }
 
-        [Required]
-        public string FilePath { get; set; }
+        
+        public string? FilePath { get; set; }
 
         [Required]
         public DateTime DueDate { get; set; }

@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
-
+using Microsoft.Extensions.FileProviders;
+using LMS.API.Services;
 namespace LMS.API
 {
     public class Program
@@ -23,7 +24,8 @@ namespace LMS.API
             builder.Services.AddDataAcessServices(builder.Configuration).AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
-
+            // [ADDED] Register Upload Service
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>(); // [ADDED]
             // ---------------------- CORS ----------------------
             builder.Services.AddCors(options =>
             {
@@ -154,6 +156,18 @@ namespace LMS.API
                 var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 await IdentitySeeding.SeedAdminAsync(userManager, roleManager);
+                // [ADDED] Create uploads directory
+                var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>(); // [ADDED]
+                var uploadsPath = Path.Combine(webHostEnvironment.WebRootPath, "uploads"); // [ADDED]
+
+
+                if (!Directory.Exists(uploadsPath)) // [ADDED]
+                {
+                    Directory.CreateDirectory(uploadsPath); // [ADDED]
+                    Directory.CreateDirectory(Path.Combine(uploadsPath, "assignments")); // [ADDED]
+                    Directory.CreateDirectory(Path.Combine(uploadsPath, "submissions")); // [ADDED]
+                    Console.WriteLine("✅ API Uploads directories created successfully"); // [ADDED]
+                }
             }
 
             if (app.Environment.IsDevelopment())
@@ -167,6 +181,19 @@ namespace LMS.API
 
             app.UseCors("AllowMvc");
             app.UseStaticFiles();
+
+
+            // [ADDED] Serve static uploads directory
+            app.UseStaticFiles(new StaticFileOptions // [ADDED]
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "uploads")),
+                RequestPath = "/uploads",
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=3600");
+                }
+            });
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
