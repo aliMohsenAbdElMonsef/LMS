@@ -10,170 +10,225 @@
     var canResubmit = isStudent && Model.DueDate > DateTime.Now && studentSubmission != null && !studentSubmission.Grade.HasValue;
 }
 
-<div class="row">
-    <div class="col-md-8">
-        <h2>@Model.Title</h2>
+<div class="container-fluid">
+    <h2 class="mb-4">@Model.Title</h2>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-            TempData.Remove("SuccessMessage");
-        }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        TempData.Remove("SuccessMessage");
+    }
 
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Assignment Information</h5>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Course:</strong> @Model.CourseName
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Instructor:</strong> @Model.InstructorName
-                    </div>
+    <div class="row">
+        <!-- Main Content - Left Side -->
+        <div class="col-lg-8">
+            <!-- Assignment Information Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Assignment Information
+                    </h5>
                 </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Upload Date:</strong> @Model.UploadDate.ToString("MMM dd, yyyy")
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-book me-2"></i>Course:</strong> @Model.CourseName
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-user-tie me-2"></i>Instructor:</strong> @Model.InstructorName
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <strong>Due Date:</strong>
-                        <span class="@(Model.DueDate < DateTime.Now ? "text-danger" : "text-success")">
-                            @Model.DueDate.ToString("MMM dd, yyyy hh:mm tt")
-                        </span>
-                        @if (Model.DueDate < DateTime.Now)
-                        {
-                            <span class="badge bg-danger ms-1">Expired</span>
-                        }
-                    </div>
-                </div>
 
-                @if (!string.IsNullOrEmpty(Model.Description))
-                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-calendar-plus me-2"></i>Upload Date:</strong>
+                            @Model.UploadDate.ToString("MMM dd, yyyy")
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-calendar-check me-2"></i>Due Date:</strong>
+                            <span class="@(Model.DueDate < DateTime.Now ? "text-danger" : "text-success")">
+                                @Model.DueDate.ToString("MMM dd, yyyy hh:mm tt")
+                            </span>
+                            @if (Model.DueDate < DateTime.Now)
+                            {
+                                <span class="badge bg-danger ms-1">Expired</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-3">
+                            <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
+                            <p class="mt-2 p-3 bg-light rounded">@Model.Description</p>
+                        </div>
+                    }
+
                     <div class="mb-3">
-                        <strong>Description:</strong>
-                        <p class="mt-2">@Model.Description</p>
-                    </div>
-                }
-
-                <!-- ✅ FIXED: Download Assignment Link -->
-                <div class="mb-3">
-                    <strong>Assignment File:</strong>
-                    <div class="mt-2">
+                        <strong><i class="fas fa-file-download me-2"></i>Assignment File:</strong>
                         <a asp-action="DownloadAssignment"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-download"></i> Download Assignment
+                           class="text-primary text-decoration-none ms-2">
+                            <i class="fas fa-download me-1"></i>Download Assignment
+                        </a>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap mt-4 pt-3 border-top">
+                        @if (isInstructor || isAdmin)
+                        {
+                            @if (canEditDelete || isAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </button>
+                            }
+
+                            <a asp-action="Submissions" asp-route-id="@Model.Id" class="btn btn-info">
+                                <i class="fas fa-list me-1"></i> View Submissions (@Model.SubmissionsCount)
+                            </a>
+                        }
+
+                        @if (isStudent)
+                        {
+                            @if (canSubmit)
+                            {
+                                <a asp-action="Submit" asp-route-id="@Model.Id" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-1"></i> Submit Assignment
+                                </a>
+                            }
+                            else if (canResubmit)
+                            {
+                                <a asp-action="Submit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                    <i class="fas fa-redo me-1"></i> Resubmit Assignment
+                                </a>
+                            }
+                            <!-- ✅ NEW: Back to Assignments for Students -->
+                            <a  asp-action="MyAssignments" class="btn btn-outline-primary">
+                                <i class="fas fa-list me-1"></i> My Assignments
+                            </a>
+                            
+
+                        }
+
+                        <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Course
                         </a>
                     </div>
                 </div>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    <!-- Instructor/Admin Actions -->
-                    @if (isInstructor || isAdmin)
-                    {
-                        @if (canEditDelete || isAdmin)
-                        {
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        }
-
-                        <a asp-action="Submissions" asp-route-id="@Model.Id" class="btn btn-info">
-                            <i class="fas fa-list"></i> View Submissions (@Model.SubmissionsCount)
-                        </a>
-                    }
-
-                    <!-- Student Actions -->
-                    @if (isStudent)
-                    {
-                        @if (canSubmit)
-                        {
-                            <a asp-action="Submit" asp-route-id="@Model.Id" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i> Submit Assignment
-                            </a>
-                        }
-                        else if (canResubmit)
-                        {
-                            <a asp-action="Submit" asp-route-id="@Model.Id" class="btn btn-warning">
-                                <i class="fas fa-redo"></i> Resubmit Assignment
-                            </a>
-                        }
-                    }
-
-                    <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseId" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Course
-                    </a>
-                </div>
             </div>
+
+            <!-- Student Feedback Card (Only for students with graded submissions) -->
+            @if (isStudent && studentSubmission != null && !string.IsNullOrEmpty(studentSubmission.Feedback))
+            {
+                <div class="card mb-4 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-comment-dots me-2"></i>Instructor Feedback
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="feedback-content">
+                            @studentSubmission.Feedback
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Submission Statistics</h5>
-            </div>
-            <div class="card-body">
-                <!-- Overall Statistics -->
-                <div class="text-center mb-4">
-                    <h3 class="text-primary">@Model.SubmissionsCount</h3>
-                    <p class="text-muted">Total Submissions</p>
+        <!-- Sidebar - Right Side -->
+        <div class="col-lg-4">
+            @if (isInstructor || isAdmin)
+            {
+                <!-- Submission Statistics Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Submission Statistics
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <h2 class="text-primary mb-2">@Model.SubmissionsCount</h2>
+                        <p class="text-muted mb-0">Total Submissions</p>
+                    </div>
                 </div>
+            }
 
-                <!-- Student Personal Status -->
-                @if (isStudent)
-                {
-                    <hr>
-                    <h6>Your Submission</h6>
-
-                    if (studentSubmission != null)
-                    {
-                        <div class="mt-2">
-                            <strong>Status:</strong>
-                            <span class="badge @GetStatusBadgeClass(studentSubmission.Status)">@studentSubmission.Status</span>
-                        </div>
-
-                        if (studentSubmission.Grade.HasValue)
+            @if (isStudent)
+            {
+                <!-- Student Submission Status Card -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-user-check me-2"></i>Your Submission
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (studentSubmission != null)
                         {
-                            <div class="mt-2">
-                                <strong>Grade:</strong>
-                                <span class="fw-bold text-success">@studentSubmission.Grade.Value/100</span>
+                            <!-- Status Badge -->
+                            <div class="mb-3">
+                                <strong>Status:</strong>
+                                <span class="badge @GetStatusBadgeClass(studentSubmission.Status) ms-2">
+                                    @studentSubmission.Status
+                                </span>
+                            </div>
+
+                            <!-- Submitted Date -->
+                            <div class="mb-3">
+                                <strong><i class="fas fa-calendar me-2"></i>Submitted:</strong>
+                                <span class="text-muted">
+                                    @studentSubmission.SubmittedAt.ToString("MMM dd, yyyy hh:mm tt")
+                                </span>
+                            </div>
+
+                            <!-- Grade (if graded) -->
+                            @if (studentSubmission.Grade.HasValue)
+                            {
+                                <div class="mb-3">
+                                    <div class="p-3 bg-success bg-opacity-10 border border-success rounded text-center">
+                                        <strong class="d-block mb-2">Your Grade</strong>
+                                        <h3 class="text-success mb-0">
+                                            @studentSubmission.Grade.Value<span class="fs-5">/100</span>
+                                        </h3>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Download Button -->
+                            @if (!string.IsNullOrEmpty(studentSubmission.FilePath))
+                            {
+                                <div class="d-grid">
+                                    <a asp-action="DownloadSubmission"
+                                       asp-route-studentAssignmentId="@studentSubmission.Id"
+                                       class="btn btn-outline-primary">
+                                        <i class="fas fa-download me-2"></i>Download Your Submission
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <!-- Not Submitted State -->
+                            <div class="text-center py-3">
+                                <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
+                                <div class="mb-3">
+                                    <strong>Status:</strong>
+                                    <span class="badge bg-warning text-dark ms-2">Not Submitted</span>
+                                </div>
+                               
                             </div>
                         }
-
-                        <div class="mt-2">
-                            <strong>Submitted:</strong>
-                            <span>@studentSubmission.SubmittedAt.ToString("MMM dd, yyyy hh:mm tt")</span>
-                        </div>
-
-                        <!-- ✅ FIXED: Download Submission Link -->
-                        @if (!string.IsNullOrEmpty(studentSubmission.FilePath))
-                        {
-                            <div class="mt-2">
-                                <a asp-action="DownloadSubmission"
-                                   asp-route-studentAssignmentId="@studentSubmission.Id"
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-download"></i> Your Submission
-                                </a>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="mt-2">
-                            <span class="badge bg-warning">Not Submitted</span>
-                        </div>
-                        <small class="text-muted">Due: @Model.DueDate.ToString("MMM dd, yyyy hh:mm tt")</small>
-                    }
-                }
-            </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -192,17 +247,19 @@
                     Are you sure you want to delete the assignment "@Model.Title"?
                     @if (Model.SubmissionsCount > 0)
                     {
-                        <div class="alert alert-warning mt-2">
-                            <i class="fas fa-exclamation-triangle"></i>
+                        <div class="alert alert-warning mt-3 mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
                             This assignment has @Model.SubmissionsCount submission(s). Deleting it will also remove all submissions.
                         </div>
                     }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger">Delete Assignment</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete Assignment
+                        </button>
                     </form>
                 </div>
             </div>
@@ -216,10 +273,21 @@
         return status switch
         {
             "Graded" => "bg-success",
-            "Submitted" => "bg-primary",
-            "Pending Grading" => "bg-warning",
-            "Not Submitted" => "bg-secondary",
+            "Pending Grading" => "bg-secondary",
+            "Not Submitted" => "bg-warning",
+            "overdue" => "btn-danger",
             _ => "bg-secondary"
         };
     }
 }
+
+<style>
+    .feedback-content {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+</style>
+
+

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace LMS.MVC.Models.ViewModels.Assignment
 {
     public class StudentAssignmentResult
@@ -7,7 +8,8 @@ namespace LMS.MVC.Models.ViewModels.Assignment
 
         [Required]
         public string StudentId { get; set; }
-        public string StudentName { get; set; }
+
+        public string? StudentName { get; set; }
 
         [Required]
         public string AssignmentId { get; set; }
@@ -18,13 +20,19 @@ namespace LMS.MVC.Models.ViewModels.Assignment
         public double? Grade { get; set; }
 
         public DateTime SubmittedAt { get; set; }
+
         public DateTime? GradedAt { get; set; }
 
         public string Status { get; set; }
 
         public string? Feedback { get; set; }
 
-        public string StudentAssignmentId { get; set; }
+        // ✅ Added properties that the view needs
+        public string? AssignmentTitle { get; set; }
+        public string? CourseName { get; set; }
+        public DateTime DueDate { get; set; }
+
+        public string? StudentAssignmentId { get; set; }
 
         public bool IsSubmitted => !string.IsNullOrEmpty(FilePath);
         public bool IsGraded => Grade.HasValue;

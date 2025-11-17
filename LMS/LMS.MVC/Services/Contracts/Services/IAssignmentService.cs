@@ -113,5 +113,10 @@ namespace LMS.MVC.Services.Contracts.Services
         /// </summary>
         [Obsolete("Use DownloadFileFromApi instead")]
         Task<FileResult> DownloadSubmissionFileAsync(string filePath, string fileName);
+        Task<IEnumerable<StudentAssignmentResult>> GetStudentSubmissions(string studentId);
+        /// <summary>
+        /// Gets all assignments for a student (submitted and not submitted)
+        /// </summary>
+        Task<List<StudentAssignmentItemResult>> GetStudentAllAssignments(string studentId);
     }
 }

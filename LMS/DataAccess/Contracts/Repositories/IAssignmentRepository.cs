@@ -15,6 +15,7 @@ namespace LMS.DataAccess.Contracts.Repositories
         Task UpdateStudentAssignmentAsync(StudentAssignment studentAssignment);
         Task<IEnumerable<StudentAssignment>> GetSubmissionsByStatusAsync(string assignmentId, AssignmentStatus status);
         Task<int> GetSubmissionsCountByStatusAsync(string assignmentId, AssignmentStatus status);
+        Task<IEnumerable<StudentAssignment>> GetStudentSubmissionsAsync(string studentId);
 
     }
 }

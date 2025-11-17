@@ -28,9 +28,17 @@ namespace LMS.BusinessLogic.Mappings
 
             // StudentAssignment to StudentAssignmentDTO (UPDATED with enum)
             CreateMap<StudentAssignment, StudentAssignmentDTO>()
-                .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Student.UserName))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status)) // NEW: Map enum directly
-                .ForMember(dest => dest.StatusDisplay, opt => opt.Ignore()); // Ignore as it's computed
+               .ForMember(dest => dest.StudentName,
+                   opt => opt.MapFrom(src => src.Student != null ? src.Student.UserName : string.Empty))
+               .ForMember(dest => dest.AssignmentTitle,
+                   opt => opt.MapFrom(src => src.Assignment != null ? src.Assignment.Title : string.Empty))
+               .ForMember(dest => dest.CourseName,
+                   opt => opt.MapFrom(src => src.Assignment != null && src.Assignment.Course != null
+                       ? src.Assignment.Course.Name : string.Empty))
+               .ForMember(dest => dest.DueDate,
+                   opt => opt.MapFrom(src => src.Assignment != null ? src.Assignment.DueDate : DateTime.MinValue))
+               .ForMember(dest => dest.Status,
+                   opt => opt.MapFrom(src => src.Status));
 
             // DTO to Entity Mappings
 
@@ -60,6 +68,11 @@ namespace LMS.BusinessLogic.Mappings
                 .ForMember(dest => dest.Student, opt => opt.Ignore())
                 .ForMember(dest => dest.Assignment, opt => opt.Ignore());
 
+            CreateMap<StudentAssignmentDTO, StudentAssignment>()
+                .ForMember(dest => dest.Student, opt => opt.Ignore())
+                .ForMember(dest => dest.Assignment, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.DeletedAt, opt => opt.Ignore());
             CreateMap<GradeAssignmentDTO, StudentAssignment>()
     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StudentAssignmentId))
     .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => AssignmentStatus.Graded))

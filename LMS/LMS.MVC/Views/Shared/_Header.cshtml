@@ -24,7 +24,7 @@
                         </a>
                     </li>
                    
-
+                   
                     <!-- Authentication Section -->
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -43,6 +43,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Dashboard" asp-action="CourseEnrollments">
                                     <i class="bi bi-people"></i> Enrollment Dashboard
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("MyAssignments", "Assignment")">
+                                    <i class="bi bi-people"></i> My Assignments
                                 </a>
                             </li>
                         }

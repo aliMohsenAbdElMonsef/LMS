@@ -41,6 +41,12 @@ namespace LMS.DataAccess.Repositories
                 .AnyAsync(e => e.StudentId == studentId && e.CourseId == courseId);
         }
 
-
+        public async Task<bool> IsStudentEnrolledInCourseAsync(string studentId, string courseId)
+        {
+            return await _set
+                .AnyAsync(e => e.StudentId == studentId
+                    && e.CourseId == courseId
+                    && !e.IsDeleted);
+        }
     }
 }

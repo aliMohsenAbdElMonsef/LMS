@@ -412,5 +412,51 @@ namespace LMS.MVC.Services.Services
             return await DownloadFileFromApi(filePath)
                 ?? throw new Exception("Failed to download file");
         }
+        public async Task<IEnumerable<StudentAssignmentResult>> GetStudentSubmissions(string studentId)
+        {
+            try
+            {
+                var response = await GetAsync<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>>(
+                    $"api/assignment/student/{studentId}/submissions");
+
+                var submissions = response?.Data ?? Enumerable.Empty<StudentAssignmentDTO>();
+                return _mapper.Map<IEnumerable<StudentAssignmentResult>>(submissions);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error getting student submissions: {ex.Message}");
+                return Enumerable.Empty<StudentAssignmentResult>();
+            }
+        }
+        public async Task<List<StudentAssignmentItemResult>> GetStudentAllAssignments(string studentId)
+        {
+            try
+            {
+                var response = await GetAsync<ServiceResponseDTO<IEnumerable<StudentAllAssignmentsDTO>>>(
+                    $"api/assignment/student/{studentId}/all-assignments");
+
+                var assignments = response?.Data ?? Enumerable.Empty<StudentAllAssignmentsDTO>();
+
+                return assignments.Select(a => new StudentAssignmentItemResult
+                {
+                    AssignmentId = a.AssignmentId,
+                    AssignmentTitle = a.AssignmentTitle,
+                    CourseName = a.CourseName,
+                    DueDate = a.DueDate,
+                    IsSubmitted = a.IsSubmitted,
+                    Status = a.Status,
+                    StatusDisplay = a.StatusDisplay,
+                    Grade = a.Grade,
+                    FilePath = a.FilePath,
+                    SubmissionId = a.SubmissionId,
+                    SubmittedAt = a.SubmittedAt
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error getting student assignments: {ex.Message}");
+                return new List<StudentAssignmentItemResult>();
+            }
+        }
     }
 }

@@ -26,6 +26,96 @@ namespace LMS.BusinessLogic.Services
         }
 
 
+        public async Task<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>> GetStudentSubmissionsAsync(string studentId)
+        {
+            try
+            {
+                var submissions = await _unitOfWork.Assignments.GetStudentSubmissionsAsync(studentId);
+                var dtos = _mapper.Map<List<StudentAssignmentDTO>>(submissions);
+
+                return new ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>
+                {
+                    Success = true,
+                    Message = "Student submissions retrieved successfully",
+                    Data = dtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving submissions: {ex.Message}"
+                };
+            }
+        }
+        public async Task<ServiceResponseDTO<IEnumerable<StudentAllAssignmentsDTO>>> GetStudentAllAssignmentsAsync(string studentId)
+        {
+            try
+            {
+                // Get all assignments from all courses
+                var allCourseAssignments = await _unitOfWork.Assignments.GetAllAsync();
+                var allAssignments = new List<StudentAllAssignmentsDTO>();
+
+                foreach (var assignment in allCourseAssignments)
+                {
+                    // Check if student is enrolled in this course
+                    var isEnrolled = await _unitOfWork.StudentEnrollments
+                        .IsStudentEnrolledInCourseAsync(studentId, assignment.CourseId);
+
+                    if (!isEnrolled)
+                        continue;
+
+                    // Get course info
+                    var course = await _unitOfWork.Courses.FindByIdAsync(assignment.CourseId);
+
+                    // Get submission if exists
+                    var submission = await _unitOfWork.Assignments
+                        .GetStudentAssignmentAsync(assignment.Id, studentId);
+
+                    allAssignments.Add(new StudentAllAssignmentsDTO
+                    {
+                        AssignmentId = assignment.Id,
+                        AssignmentTitle = assignment.Title,
+                        CourseName = course?.Name ?? "Unknown",
+                        DueDate = assignment.DueDate,
+                        IsSubmitted = submission != null,
+                        Status = submission?.Status.ToString(),
+                        StatusDisplay = submission != null ? GetStatusDisplay(submission.Status) : "Not Submitted",
+                        Grade = submission?.Grade,
+                        FilePath = submission?.FilePath,
+                        SubmissionId = submission?.Id,
+                        SubmittedAt = submission?.SubmittedAt
+                    });
+                }
+
+                return new ServiceResponseDTO<IEnumerable<StudentAllAssignmentsDTO>>
+                {
+                    Success = true,
+                    Message = "Assignments retrieved successfully",
+                    Data = allAssignments
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<StudentAllAssignmentsDTO>>
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
+
+        private string GetStatusDisplay(AssignmentStatus status)
+        {
+            return status switch
+            {
+                AssignmentStatus.NotSubmitted => "Not Submitted",
+                AssignmentStatus.PendingGrading => "Pending Grading",
+                AssignmentStatus.Graded => "Graded",
+                _ => "Unknown"
+            };
+        }
         public async Task<ServiceResponseDTO<AssignmentDetailsDTO>> GetAssignmentWithDetailsAsync(string id)
         {
             var assignment = await _unitOfWork.Assignments.FindByIdAsync(id);

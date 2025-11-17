@@ -31,7 +31,16 @@ namespace LMS.DataAccess.Repositories
                 .Where(a => a.CourseId == courseId && !a.IsDeleted)
                 .ToListAsync();
         }
-
+        public async Task<IEnumerable<StudentAssignment>> GetStudentSubmissionsAsync(string studentId)
+        {
+            return await _db.StudentAssignments
+                .Include(s => s.Student)
+                .Include(s => s.Assignment)
+                    .ThenInclude(a => a.Course)
+                .Where(s => s.StudentId == studentId && !s.IsDeleted)
+                .OrderByDescending(s => s.SubmittedAt)
+                .ToListAsync();
+        }
         public async Task<IEnumerable<StudentAssignment>> GetAssignmentSubmissionsAsync(string assignmentId)
         {
             return await _db.StudentAssignments
@@ -94,5 +103,6 @@ namespace LMS.DataAccess.Repositories
                                  sa.Status == status &&
                                  !sa.IsDeleted);
         }
+
     }
 }

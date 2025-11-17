@@ -26,7 +26,7 @@ namespace Domain.Entities.RelationTables
         public string? FilePath { get; set; }
 
         public double? Grade { get; set; }
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime SubmittedAt { get; set; } = DateTime.Now.ToLocalTime();
         public DateTime? GradedAt { get; set; }
 
         // NEW: Added AssignmentStatus Enum

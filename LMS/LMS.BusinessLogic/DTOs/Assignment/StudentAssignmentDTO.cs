@@ -10,7 +10,8 @@ namespace LMS.BusinessLogic.DTOs.Assignment
 
         [Required]
         public string StudentId { get; set; }
-        public string StudentName { get; set; }
+
+        public string? StudentName { get; set; }
 
         [Required]
         public string AssignmentId { get; set; }
@@ -21,18 +22,23 @@ namespace LMS.BusinessLogic.DTOs.Assignment
         public double? Grade { get; set; }
 
         public DateTime SubmittedAt { get; set; }
+
         public DateTime? GradedAt { get; set; }
 
-        // NEW: Added Status property with enum
         public AssignmentStatus Status { get; set; }
 
-        // NEW: Added helper property for display
-        public string StatusDisplay => GetStatusDisplay(Status);
-
-        // NEW: Added feedback from instructor
         public string? Feedback { get; set; }
 
-        // Helper method to get display text
+        // ✅ Properties needed for MySubmissions page
+        public string? AssignmentTitle { get; set; }
+        public string? CourseName { get; set; }
+        public DateTime DueDate { get; set; }
+
+        public bool IsSubmitted => SubmittedAt != default(DateTime);
+
+        // Helper property for display
+        public string StatusDisplay => GetStatusDisplay(Status);
+
         private string GetStatusDisplay(AssignmentStatus status)
         {
             return status switch

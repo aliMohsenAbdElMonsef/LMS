@@ -321,5 +321,32 @@ namespace LMS.API.Controllers
 
             return Ok(result);
         }
+        [HttpGet("student/{studentId}/submissions")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<List<StudentAssignmentDTO>>>> GetStudentSubmissions(string studentId)
+        {
+            // Verify the requesting user is the same as studentId
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId != studentId)
+            {
+                return Forbid();
+            }
+
+            var result = await AssignmentService.GetStudentSubmissionsAsync(studentId);
+            return Ok(result);
+        }
+        [HttpGet("student/{studentId}/all-assignments")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<List<StudentAllAssignmentsDTO>>>> GetStudentAllAssignments(string studentId)
+        {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId != studentId)
+            {
+                return Forbid();
+            }
+
+            var result = await AssignmentService.GetStudentAllAssignmentsAsync(studentId);
+            return Ok(result);
+        }
     }
 }
