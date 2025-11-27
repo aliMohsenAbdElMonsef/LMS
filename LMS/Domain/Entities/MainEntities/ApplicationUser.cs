@@ -19,6 +19,10 @@ namespace Domain.Entities.MainEntities
         public string? UserImage { get; set; }
         public UserType ApplyAs { get; set; }
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
+        
+        public string? Bio { get; set; }
+        public string? Country { get; set; }
+        public string? City { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 

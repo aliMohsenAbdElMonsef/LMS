@@ -14,6 +14,10 @@ namespace Application.DTOs.User
         public string? UserImage { get; set; }
         public UserType ApplyAs { get; set; }
         public ApplicationStatus Status { get; set; }
+        public string? Bio { get; set; }
+        public string? Country { get; set; }
+        public string? City { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 

@@ -1,0 +1,188 @@
+@model LMS.MVC.Models.ViewModels.Quiz.QuizResultViewModel
+@{
+    ViewData["Title"] = "Quiz Results";
+    var percentage = Model.Score;
+    var isPassed = Model.Passed;
+    var strokeDashoffset = 565 - (565 * percentage / 100);
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Results Header -->
+            <div class="card results-card mb-4 animate-fade-in-up">
+                <div class="card-body text-center py-5">
+                    <div class="result-icon mb-4">
+                        <i class="bi bi-trophy-fill text-warning" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="mb-3">Quiz Completed!</h2>
+                    <div class="score-display mb-4">
+                        <div class="score-circle">
+                            <svg width="200" height="200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12"/>
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gradient)" stroke-width="12" 
+                                        stroke-dasharray="565" stroke-dashoffset="@strokeDashoffset" stroke-linecap="round"
+                                        transform="rotate(-90 100 100)"/>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="score-text">
+                                <h1 class="mb-0">@percentage%</h1>
+                                <p class="text-muted mb-0">Score</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-status mb-4">
+                        <span class="badge @(isPassed ? "bg-success" : "bg-danger")" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                            <i class="bi @(isPassed ? "bi-check-circle" : "bi-x-circle")"></i> @(isPassed ? "Passed" : "Failed")
+                        </span>
+                    </div>
+                    <p class="text-muted">@Model.Title</p>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4 animate-fade-in-up">
+                    <div class="card stat-card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                            <h3 class="mt-2 mb-0">@Model.CorrectAnswers</h3>
+                            <small class="text-muted">Correct</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-in-up animate-delay-100">
+                    <div class="card stat-card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-x-circle text-danger" style="font-size: 2rem;"></i>
+                            <h3 class="mt-2 mb-0">@(Model.TotalQuestions - Model.CorrectAnswers)</h3>
+                            <small class="text-muted">Incorrect</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-fade-in-up animate-delay-200">
+                    <div class="card stat-card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-award text-warning" style="font-size: 2rem;"></i>
+                            <h3 class="mt-2 mb-0">@percentage%</h3>
+                            <small class="text-muted">Grade</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Review -->
+            @if (Model.Details != null && Model.Details.Any())
+            {
+                <div class="card mb-4 animate-fade-in-up">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-list-check"></i> Question Review</h5>
+                    </div>
+                    <div class="card-body">
+                        @{
+                            var questionIndex = 0;
+                        }
+                        @foreach (var detail in Model.Details)
+                        {
+                            questionIndex++;
+                            <div class="review-item @(detail.IsCorrect ? "correct" : "incorrect") mb-3">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="review-icon">
+                                        <i class="bi @(detail.IsCorrect ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger")"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-2"><strong>Question @questionIndex:</strong> @detail.QuestionText</p>
+                                        <p class="mb-1 @(detail.IsCorrect ? "text-success" : "text-danger")">
+                                            <i class="bi @(detail.IsCorrect ? "bi-check" : "bi-x")"></i> Your answer: @detail.SelectedAnswer
+                                        </p>
+                                        @if (!detail.IsCorrect)
+                                        {
+                                            <p class="mb-0 text-success"><i class="bi bi-check"></i> Correct answer: @detail.CorrectAnswer</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="mb-0 text-muted small">Correct! +@detail.Points point(s)</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Actions -->
+            <div class="text-center animate-fade-in-up">
+                <a href="@Url.Action("Index", "Quiz")" class="btn btn-primary me-2">
+                    <i class="bi bi-arrow-left"></i> Back to Quizzes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.results-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.score-circle {
+    position: relative;
+    display: inline-block;
+}
+
+.score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.review-item {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid transparent;
+}
+
+.review-item.correct {
+    background: #f0fdf4;
+    border-left-color: #10b981;
+}
+
+.review-item.incorrect {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+.review-icon {
+    font-size: 1.5rem;
+}
+</style>

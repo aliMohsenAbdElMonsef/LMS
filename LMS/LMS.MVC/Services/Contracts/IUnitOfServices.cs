@@ -11,5 +11,7 @@ namespace LMS.MVC.Services.Contracts
 
         ICategoryService CategoryService { get; }
         IEnrollmentService EnrollmentService {  get; }
+        ILectureService LectureService { get; }
+        IProfileService ProfileService { get; }
     }
 }

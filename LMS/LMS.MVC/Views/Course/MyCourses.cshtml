@@ -1,0 +1,147 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Course.ReadCourseResult>
+
+@{
+    ViewData["Title"] = "My Courses";
+    var userRole = ViewBag.UserRole as string;
+}
+
+<style>
+    .course-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress {
+        height: 25px;
+    }
+
+    .progress-bar {
+        font-size: 14px;
+        line-height: 25px;
+    }
+</style>
+
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>
+            <i class="bi bi-mortarboard"></i>
+            @(userRole == "Instructor" ? "Courses I Teach" : "My Enrolled Courses")
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="bi bi-search"></i> Browse All Courses
+        </a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info text-center" role="alert">
+        <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+        <h4>No Courses Yet</h4>
+        <p>You are not enrolled in any courses yet.</p>
+        <a asp-action="Index" class="btn btn-primary mt-2">
+            <i class="bi bi-search"></i> Browse Available Courses
+        </a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card course-card h-100 d-flex flex-column">
+                    @if (!string.IsNullOrEmpty(course.ThumbnailPath))
+                    {
+                        <img src="@course.ThumbnailPath" class="card-img-top" alt="@course.Name" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="bi bi-book fs-1 text-white"></i>
+                        </div>
+                    }
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">@course.Name</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="text-muted mb-3">
+                            @(string.IsNullOrEmpty(course.Description)
+                                ? "No description available"
+                                : (course.Description.Length > 100
+                                ? course.Description.Substring(0, 100) + "..."
+                                : course.Description))
+                        </p>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-event"></i>
+                                @course.StartDate.ToString("MMM dd, yyyy") - @course.EndDate.ToString("MMM dd, yyyy")
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Course Progress</label>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: 0%" 
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    0%
+                                </div>
+                            </div>
+                            <small class="text-muted">Progress tracking coming soon</small>
+                        </div>
+
+                        <div class="mt-auto">
+                            <a href="@Url.Action("Details", new { id = course.Id })" 
+                               class="btn btn-primary w-100">
+                                <i class="bi bi-eye"></i> View Course Content
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info">
+                                <i class="bi bi-people"></i> Enrolled
+                            </span>
+                            @if (course.IsFree)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="bi bi-gift"></i> FREE
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary">
+                                    <i class="bi bi-currency-dollar"></i>@course.Price.ToString("N2")
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

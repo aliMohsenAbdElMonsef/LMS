@@ -51,7 +51,7 @@ namespace LMS.BusinessLogic.Services
                 CourseId = entity.CourseId,
                 CourseName = entity.Course?.Name ?? string.Empty,
                 Status = entity.Status.ToString(),
-                CourseCode = entity.Course.CourseCode ?? string.Empty,
+                CourseCode = entity.Course?.CourseCode ?? string.Empty,
                 Progress = entity.progress,
                 CreatedAt = entity.CreatedAt
             };
@@ -100,7 +100,7 @@ namespace LMS.BusinessLogic.Services
             {
                 entity.Status = ApplicationStatus.Approved;
             }
-            await _repo.CreateAsync(entity);
+            await _studentEnrollRepo.CreateAsync(entity);
             await _unitOfWork.SaveChangesAsync();
 
             return new BasicResponseDTO
@@ -272,18 +272,20 @@ namespace LMS.BusinessLogic.Services
             return Task.FromResult(responseDTO);
         }
 
-        public override async Task<ServiceResponseDTO<bool>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
+        public override async Task<ServiceResponseDTO<string>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
         {
             var userId = dto.UserId;
             var courseId = dto.CourseId;
-            bool result = await _studentEnrollRepo.ExistsAsync(userId, courseId);
-            ServiceResponseDTO<bool> response = new ServiceResponseDTO<bool>
+            var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(userId, courseId);
+            
+            string status = enrollment?.Status.ToString() ?? "None";
+
+            return new ServiceResponseDTO<string>
             {
                 Success = true,
-                Data = result,
-                Message = "Check user enrolled sucessfully passed"
+                Data = status,
+                Message = "Enrollment status retrieved."
             };
-            return response;
         }
 
 

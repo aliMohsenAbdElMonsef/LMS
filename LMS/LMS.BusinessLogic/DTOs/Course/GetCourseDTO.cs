@@ -44,5 +44,6 @@ namespace LMS.BusinessLogic.DTOs.Course
 
         public List<CreateDayScheduleDTO> Schedule { get; set; } = new List<CreateDayScheduleDTO>();
         public List<InstructorInformationDTO> Instructors { get; set; } = new List<InstructorInformationDTO>();
+        public List<LMS.BusinessLogic.DTOs.Assignment.ReadAssignmentDTO> Assignments { get; set; } = new List<LMS.BusinessLogic.DTOs.Assignment.ReadAssignmentDTO>();
     }
 }

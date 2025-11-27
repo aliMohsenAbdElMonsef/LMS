@@ -1,6 +1,8 @@
-﻿using LMS.BusinessLogic.Contracts.Services;
+﻿using Application.DTOs.User;
+using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Auth;
 using LMS.BusinessLogic.DTOs.Responses;
+using LMS.BusinessLogic.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -109,6 +111,83 @@ namespace LMS.API.Controllers
             }
             return BadRequest(response);
             
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO dto)
+        {
+            var response = await _userServices.ForgotPasswordAsync(dto);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDTO dto)
+        {
+            var response = await _userServices.ResetPasswordAsync(dto);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpGet("profile/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile(string userId)
+        {
+            var response = await _userServices.FindByIdAsync(userId);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPut("profile/update/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile(string userId, [FromForm] UpdateUserDTO dto)
+        {
+            if (userId != dto.Id)
+            {
+                return BadRequest("User ID mismatch");
+            }
+
+            var response = await _userServices.UpdateProfileAsync(userId, dto);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+        {
+            var response = await _userServices.ChangePasswordAsync(dto.UserId, dto.CurrentPassword, dto.NewPassword);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpGet("stats/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserStats(string userId)
+        {
+            var response = await _userServices.GetUserStatsAsync(userId);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response);
         }
     }
 }

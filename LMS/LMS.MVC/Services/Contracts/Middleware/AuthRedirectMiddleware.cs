@@ -18,6 +18,8 @@
             {
                 "/account/login",
                 "/account/signup",
+                "/account/forgotpassword",
+                "/account/resetpassword",
                 "/css",
                 "/js",
                 "/images",

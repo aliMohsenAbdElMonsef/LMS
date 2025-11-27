@@ -1,0 +1,232 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Watch Lecture";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-9">
+            <!-- Video Player -->
+            <div class="card mb-4 animate-fade-in-up">
+                <div class="card-body p-0">
+                    <div class="video-container">
+                        <video id="lectureVideo" class="w-100" controls>
+                            <source src="~/videos/lecture-1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lecture Info -->
+            <div class="card mb-4 animate-fade-in-up">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h3 class="mb-2">Introduction to HTML</h3>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-person"></i> Instructor: John Smith | 
+                                <i class="bi bi-clock"></i> Duration: 45:30 | 
+                                <i class="bi bi-eye"></i> 234 views
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm me-2">
+                                <i class="bi bi-bookmark"></i> Save
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-share"></i> Share
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <small class="text-muted">Your Progress</small>
+                            <small class="text-muted">75% Complete</small>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-gradient-primary" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#description">
+                                <i class="bi bi-info-circle"></i> Description
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#notes">
+                                <i class="bi bi-journal-text"></i> Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#resources">
+                                <i class="bi bi-file-earmark"></i> Resources
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="description">
+                            <p>Learn the fundamentals of HTML including structure, tags, elements, and attributes. This lecture covers:</p>
+                            <ul>
+                                <li>HTML document structure</li>
+                                <li>Common HTML tags</li>
+                                <li>Semantic HTML</li>
+                                <li>Forms and inputs</li>
+                                <li>Best practices</li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="notes">
+                            <div class="notes-editor">
+                                <textarea class="form-control" rows="6" placeholder="Take notes while watching..."></textarea>
+                                <button class="btn btn-primary btn-sm mt-2">
+                                    <i class="bi bi-save"></i> Save Notes
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="resources">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <i class="bi bi-file-pdf"></i> HTML Cheat Sheet.pdf
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <i class="bi bi-file-code"></i> Sample Code.html
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <i class="bi bi-link-45deg"></i> MDN HTML Reference
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="card animate-fade-in-up">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-list-ol"></i> Course Content</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action active">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-play-circle-fill me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="small fw-bold">1. Introduction to HTML</div>
+                                    <small class="text-muted">45:30</small>
+                                </div>
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-play-circle me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="small">2. CSS Fundamentals</div>
+                                    <small class="text-muted">52:15</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-play-circle me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="small">3. JavaScript Basics</div>
+                                    <small class="text-muted">38:45</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action disabled">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-lock me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="small">4. Advanced JavaScript</div>
+                                    <small class="text-muted">60:00</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="card mt-4 animate-fade-in-up">
+                <div class="card-body">
+                    <a href="#" class="btn btn-outline-secondary w-100 mb-2">
+                        <i class="bi bi-arrow-left"></i> Previous Lecture
+                    </a>
+                    <a href="#" class="btn btn-primary w-100">
+                        Next Lecture <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const video = document.getElementById('lectureVideo');
+        
+        // Track video progress
+        video.addEventListener('timeupdate', function() {
+            const progress = (video.currentTime / video.duration) * 100;
+            // Save progress to backend
+            console.log('Progress:', progress);
+        });
+
+        // Auto-save notes
+        const notesTextarea = document.querySelector('.notes-editor textarea');
+        if (notesTextarea) {
+            let saveTimeout;
+            notesTextarea.addEventListener('input', function() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    // Save notes to backend
+                    console.log('Saving notes...');
+                }, 2000);
+            });
+        }
+    </script>
+}
+
+<style>
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6b7280;
+}
+
+.nav-tabs .nav-link.active {
+    color: #667eea;
+    border-bottom: 2px solid #667eea;
+    background: none;
+}
+</style>

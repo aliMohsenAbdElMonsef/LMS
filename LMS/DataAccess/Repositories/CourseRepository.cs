@@ -28,6 +28,11 @@ namespace LMS.DataAccess.Repositories
             return await _set
                 .Include(c => c.Admin)
                 .Include(c => c.Category)
+                .Include(c => c.Students)
+                .Include(c => c.Assignments)
+                    .ThenInclude(a => a.Instructor)
+                .Include(c => c.InstructorEnrollments)
+                    .ThenInclude(ie => ie.Instructor)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

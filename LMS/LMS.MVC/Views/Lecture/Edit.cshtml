@@ -1,0 +1,75 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Edit Lecture";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card animate-fade-in-up">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Lecture</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="LectureId" value="@ViewBag.LectureId" />
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Lecture Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="Title" value="Introduction to HTML" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="Description" rows="4">Learn the fundamentals of HTML...</textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Order/Sequence</label>
+                                <input type="number" class="form-control" name="OrderIndex" value="1" min="1">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Duration (minutes)</label>
+                                <input type="number" class="form-control" name="DurationMinutes" value="45">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Replace Video (Optional)</label>
+                                <input type="file" class="form-control" name="VideoFile" accept="video/*">
+                                <small class="text-muted">Leave empty to keep current video</small>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="IsActive" id="isActive" checked>
+                                    <label class="form-check-label" for="isActive">
+                                        Lecture is active and visible to students
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Changes
+                            </button>
+                            <a href="@Url.Action("Index", "Lecture")" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="button" class="btn btn-danger ms-auto" onclick="if(confirm('Delete this lecture?')) { document.getElementById('deleteForm').submit(); }">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </form>
+
+                    <form id="deleteForm" method="post" asp-action="Delete" asp-route-id="@ViewBag.LectureId" class="d-none">
+                        @Html.AntiForgeryToken()
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

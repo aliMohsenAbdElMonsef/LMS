@@ -1,0 +1,108 @@
+using LMS.MVC.Services.Contracts.Services;
+using LMS.MVC.Services.Response;
+using LMS.MVC.Models.ViewModels.Notification;
+using System.Net.Http.Json;
+
+namespace LMS.MVC.Services.Services
+{
+    internal class NotificationService : BaseMVCServices, INotificationService
+    {
+        public NotificationService(HttpClient client, IHttpContextAccessor httpContextAccessor) : base(client, httpContextAccessor)
+        {
+        }
+
+        private async Task<SuccessServiceResult<T>> ExecuteApiCallAsync<T>(Func<Task<SuccessServiceResult<T>>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (Exception ex)
+            {
+                return new SuccessServiceResult<T>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<NotificationViewModel>>> GetUserNotificationsAsync(string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var notifications = await GetAsync<IEnumerable<NotificationViewModel>>($"api/notifications/user/{userId}");
+                return new SuccessServiceResult<IEnumerable<NotificationViewModel>>
+                {
+                    Success = true,
+                    Data = notifications ?? Enumerable.Empty<NotificationViewModel>()
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<NotificationViewModel>>> GetUnreadNotificationsAsync(string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var notifications = await GetAsync<IEnumerable<NotificationViewModel>>($"api/notifications/unread/{userId}");
+                return new SuccessServiceResult<IEnumerable<NotificationViewModel>>
+                {
+                    Success = true,
+                    Data = notifications ?? Enumerable.Empty<NotificationViewModel>()
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<int>> GetUnreadCountAsync(string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var count = await GetAsync<int>($"api/notifications/unread-count/{userId}");
+                return new SuccessServiceResult<int>
+                {
+                    Success = true,
+                    Data = count
+                };
+            });
+        }
+
+        public async Task<bool> MarkAsReadAsync(string notificationId)
+        {
+            try
+            {
+                await PutAsync<object>($"api/notifications/mark-read/{notificationId}", null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> MarkAllAsReadAsync(string userId)
+        {
+            try
+            {
+                await PutAsync<object>($"api/notifications/mark-all-read/{userId}", null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteNotificationAsync(string notificationId)
+        {
+            try
+            {
+                await DeleteAsync<object>($"api/notifications/delete/{notificationId}");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}

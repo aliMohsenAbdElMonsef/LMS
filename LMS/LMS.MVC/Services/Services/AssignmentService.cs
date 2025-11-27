@@ -458,5 +458,39 @@ namespace LMS.MVC.Services.Services
                 return new List<StudentAssignmentItemResult>();
             }
         }
+        public async Task<ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>> GetAssignmentsByInstructorAsync(string instructorId)
+        {
+            try
+            {
+                var response = await GetAsync<ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>>(
+                    $"api/assignment/instructor/{instructorId}");
+
+                if (response?.Success == true && response.Data != null)
+                {
+                    var mappedData = _mapper.Map<IEnumerable<ReadAssignmentResult>>(response.Data);
+                    return new ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>
+                    {
+                        Success = true,
+                        Data = mappedData,
+                        Message = response.Message
+                    };
+                }
+
+                return new ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>
+                {
+                    Success = false,
+                    Message = response?.Message ?? "Failed to retrieve assignments."
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error getting instructor assignments: {ex.Message}");
+                return new ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>
+                {
+                    Success = false,
+                    Message = $"Error: {ex.Message}"
+                };
+            }
+        }
     }
 }

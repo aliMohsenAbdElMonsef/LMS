@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
 using LMS.API.Services;
+
 namespace LMS.API
 {
     public class Program
@@ -24,8 +25,15 @@ namespace LMS.API
             builder.Services.AddDataAcessServices(builder.Configuration).AddBusinessLogicServices();
 
             builder.Services.AddEndpointsApiExplorer();
+            
             // [ADDED] Register Upload Service
-            builder.Services.AddScoped<IFileUploadService, FileUploadService>(); // [ADDED]
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
+            // [ADDED] Register Email Settings
+            var emailSettings = new LMS.BusinessLogic.DTOs.Email.EmailSettings();
+            builder.Configuration.GetSection("EmailSettings").Bind(emailSettings);
+            builder.Services.AddSingleton(emailSettings);
+
             // ---------------------- CORS ----------------------
             builder.Services.AddCors(options =>
             {
@@ -40,7 +48,7 @@ namespace LMS.API
                     .AllowAnyHeader()
                     .AllowCredentials()
                     .WithExposedHeaders("*"));
-        });
+            });
 
             // ---------------------- Swagger ----------------------
             builder.Services.AddSwaggerGen(c =>
@@ -156,17 +164,17 @@ namespace LMS.API
                 var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 await IdentitySeeding.SeedAdminAsync(userManager, roleManager);
+                
                 // [ADDED] Create uploads directory
-                var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>(); // [ADDED]
-                var uploadsPath = Path.Combine(webHostEnvironment.WebRootPath, "uploads"); // [ADDED]
+                var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>();
+                var uploadsPath = Path.Combine(webHostEnvironment.WebRootPath, "uploads");
 
-
-                if (!Directory.Exists(uploadsPath)) // [ADDED]
+                if (!Directory.Exists(uploadsPath))
                 {
-                    Directory.CreateDirectory(uploadsPath); // [ADDED]
-                    Directory.CreateDirectory(Path.Combine(uploadsPath, "assignments")); // [ADDED]
-                    Directory.CreateDirectory(Path.Combine(uploadsPath, "submissions")); // [ADDED]
-                    Console.WriteLine("✅ API Uploads directories created successfully"); // [ADDED]
+                    Directory.CreateDirectory(uploadsPath);
+                    Directory.CreateDirectory(Path.Combine(uploadsPath, "assignments"));
+                    Directory.CreateDirectory(Path.Combine(uploadsPath, "submissions"));
+                    Console.WriteLine("✅ API Uploads directories created successfully");
                 }
             }
 
@@ -180,11 +188,9 @@ namespace LMS.API
             app.UseHttpsRedirection();
 
             app.UseCors("AllowMvc");
-            app.UseStaticFiles();
-
-
+            
             // [ADDED] Serve static uploads directory
-            app.UseStaticFiles(new StaticFileOptions // [ADDED]
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "uploads")),
                 RequestPath = "/uploads",
@@ -194,6 +200,7 @@ namespace LMS.API
                     ctx.Context.Response.Headers.Append("Cache-Control", "public, max-age=3600");
                 }
             });
+            
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

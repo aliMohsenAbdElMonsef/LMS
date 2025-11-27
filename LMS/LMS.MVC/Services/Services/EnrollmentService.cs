@@ -16,15 +16,18 @@ namespace LMS.MVC.Services.Services
     {
         protected readonly HttpClient _client;
         protected readonly IHttpContextAccessor _contextAccessor;
-        private string _baseApiUrl = "api/enrollment";
+        private string _baseApiUrl = "api/enrollment/";
+        private string _rootUrl;
         private readonly ITokenService _tokenService;
 
-        public EnrollmentService(HttpClient client, IHttpContextAccessor accessor, ITokenService tokenservice)
+        public EnrollmentService(HttpClient client, IHttpContextAccessor accessor, ITokenService tokenservice, string baseUrl)
             : base(client, accessor)
         {
             _client = client;
             _contextAccessor = accessor;
             _tokenService = tokenservice;
+            _rootUrl = baseUrl.TrimEnd('/');
+            _baseApiUrl = $"{_rootUrl}/api/enrollment/";
         }
 
         private async Task<string?> GetValidTokenAsync()
@@ -43,12 +46,13 @@ namespace LMS.MVC.Services.Services
 
             try
             {
-                var response = await _client.GetAsync($"api/user/{userId}/role");
+                var response = await _client.GetAsync($"{_rootUrl}/api/user/{userId}/role");
                 if (!response.IsSuccessStatusCode)
                     return "";
 
                 var content = await response.Content.ReadAsStringAsync();
-                return content.Trim('"');
+                var result = JsonSerializer.Deserialize<ServiceResponseDTO<string>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result?.Data ?? "";
             }
             catch
             {
@@ -83,8 +87,9 @@ namespace LMS.MVC.Services.Services
 
             try
             {
+                var role = CurrentUserRole?.ToLower() ?? "student";
                 return await SendRequestAsync<BasicServiceResult>(() =>
-                    _client.PostAsync($"{_baseApiUrl}enroll", content));
+                    _client.PostAsync($"{_baseApiUrl}{role}/enroll", content));
             }
             catch (Exception ex)
             {
@@ -109,8 +114,9 @@ namespace LMS.MVC.Services.Services
 
             var content = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
 
+            var role = CurrentUserRole?.ToLower() ?? "student";
             return await SendRequestAsync<BasicServiceResult>(() =>
-                _client.PutAsync($"{_baseApiUrl}unenroll", content));
+                _client.PutAsync($"{_baseApiUrl}{role}/unenroll", content));
         }
 
         public async Task<BasicServiceResult> ApproveEnrollmentAsync(ApproveStudentEnrollment vm)
@@ -122,7 +128,7 @@ namespace LMS.MVC.Services.Services
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
 
-            var dto = new ApproveStudentEnrollment
+            var dto = new UpdateStudentEnrollmentDTO
             {
                 UserId = vm.UserId,
                 CourseId = vm.CourseId
@@ -174,7 +180,7 @@ namespace LMS.MVC.Services.Services
         private async Task<string> GetUrl(string userId)
         {
             var role = await GetUserRoleAsync(userId);
-            return role == "Instructor" ? "api/enrollment/instructor/" : "api/enrollment/student/";
+            return role == "Instructor" ? $"{_rootUrl}/api/enrollment/instructor/" : $"{_rootUrl}/api/enrollment/student/";
         }
 
         public async Task<ServiceResponseDTO<List<ReadEnrollmentViewModel>>> GetEnrollmentsAsync(EnrollmentManagementRequest model)
@@ -200,7 +206,7 @@ namespace LMS.MVC.Services.Services
             if (!string.IsNullOrEmpty(model.Role))
                 query["role"] = model.Role;
 
-            string url = $"api/enrollment/all-filtered?{query}";
+            string url = $"{_rootUrl}/api/enrollment/all-filtered?{query}";
             var response = await _client.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)

@@ -12,7 +12,7 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<EditCourseViewModel>> GetCourseForEdit(Guid id);
 
         Task<SuccessServiceResult<ReadCourseResult>> UpdateCourse(Guid id, EditCourseViewModel model);
-        Task<bool> IsUserEnrollIntoCourse(string id, string courseId);
+        Task<string> IsUserEnrollIntoCourse(string id, string courseId);
         Task<bool> DeleteCourse(Guid id);
         Task<SuccessServiceResult<ReadCourseViewModel>> GetCourseDetails(Guid id);
     }

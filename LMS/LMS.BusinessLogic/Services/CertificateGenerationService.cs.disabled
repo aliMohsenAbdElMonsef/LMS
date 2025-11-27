@@ -1,0 +1,365 @@
+using Domain.Entities.MainEntities;
+using Domain.Entities.RelationTables;
+using LMS.BusinessLogic.Contracts.Services;
+using LMS.BusinessLogic.DTOs.Certificate;
+using LMS.BusinessLogic.DTOs.Responses;
+using LMS.DataAccess.Contracts;
+using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace LMS.BusinessLogic.Services
+{
+    internal class CertificateGenerationService : ICertificateGenerationService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
+
+        public CertificateGenerationService(IUnitOfWork unitOfWork, IEmailService emailService)
+        {
+            _unitOfWork = unitOfWork;
+            _emailService = emailService;
+            QuestPDF.Settings.License = LicenseType.Community;
+        }
+
+        public async Task<ServiceResponseDTO<ReadStudentCertificateDTO>> GenerateCertificateAsync(GenerateCertificateDTO dto)
+        {
+            try
+            {
+                // 1. Validate Enrollment and Completion
+                var enrollment = await _unitOfWork.StudentEnrollments.GetQueryable()
+                    .Include(e => e.Student)
+                    .Include(e => e.Course)
+                    .ThenInclude(c => c.InstructorEnrollments)
+                    .ThenInclude(ie => ie.Instructor)
+                    .FirstOrDefaultAsync(e => e.StudentId == dto.StudentId && e.CourseId == dto.CourseId && !e.IsDeleted);
+
+                if (enrollment == null)
+                {
+                    return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                    {
+                        Success = false,
+                        Message = "Student is not enrolled in this course."
+                    };
+                }
+
+                if (enrollment.progress < 100)
+                {
+                    return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                    {
+                        Success = false,
+                        Message = "Course is not 100% completed yet."
+                    };
+                }
+
+                // 2. Check if certificate already exists
+                var existing = await _unitOfWork.GetQueryable<StudentCertificate>()
+                    .FirstOrDefaultAsync(c => c.StudentId == dto.StudentId &&
+                                             c.CertificateTemplate.CourseId == dto.CourseId &&
+                                             !c.IsDeleted);
+                if (existing != null)
+                {
+                    return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                    {
+                        Success = false,
+                        Message = "Certificate already generated for this course."
+                    };
+                }
+
+                // 3. Get Certificate Template
+                var template = await _unitOfWork.CertificateTemplates.GetQueryable()
+                    .FirstOrDefaultAsync(t => t.CourseId == dto.CourseId && !t.IsDeleted);
+
+                if (template == null)
+                {
+                    // Fallback or Error? Let's error for now, admin must create a template.
+                    return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                    {
+                        Success = false,
+                        Message = "No certificate template found for this course. Please contact the administrator."
+                    };
+                }
+
+                // 4. Generate PDF
+                var certificateId = Guid.NewGuid().ToString();
+                var issueDate = DateTime.UtcNow;
+                var studentName = $"{enrollment.Student.FirstName} {enrollment.Student.LastName}";
+                var courseName = enrollment.Course.Name;
+                var instructorName = enrollment.Course.InstructorEnrollments?.FirstOrDefault()?.Instructor != null 
+                    ? $"{enrollment.Course.InstructorEnrollments.FirstOrDefault().Instructor.FirstName} {enrollment.Course.InstructorEnrollments.FirstOrDefault().Instructor.LastName}" 
+                    : "Instructor";
+
+                var pdfBytes = GeneratePdfBytes(template, studentName, courseName, instructorName, issueDate);
+
+                // 5. Save PDF to Disk
+                var fileName = $"certificate_{certificateId}.pdf";
+                var relativePath = Path.Combine("certificates", fileName);
+                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+                var dir = Path.GetDirectoryName(absolutePath);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                await File.WriteAllBytesAsync(absolutePath, pdfBytes);
+
+                // 6. Save Record to DB
+                var certificate = new StudentCertificate
+                {
+                    Id = certificateId,
+                    StudentId = dto.StudentId,
+                    certificateTamplateId = template.Id,
+                    GeneratedPath = relativePath,
+                    IssuedDate = issueDate
+                };
+
+                // Add to DbSet and save
+                var dbSet = _unitOfWork.GetQueryable<StudentCertificate>() as DbSet<StudentCertificate>;
+                if (dbSet != null)
+                {
+                    await dbSet.AddAsync(certificate);
+                }
+                else
+                {
+                    throw new Exception("Cannot save certificate: StudentCertificate DbSet not found.");
+                }
+                
+                await _unitOfWork.SaveChangesAsync();
+
+                // 7. Send Email
+                var emailBody = template.MessageBody
+                    .Replace("{StudentName}", studentName)
+                    .Replace("{CourseName}", courseName);
+                
+                await _emailService.SendEmailWithAttachmentAsync(
+                    enrollment.Student.Email,
+                    $"Your Certificate for {courseName}",
+                    emailBody,
+                    pdfBytes,
+                    fileName
+                );
+
+                return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                {
+                    Data = new ReadStudentCertificateDTO
+                    {
+                        Id = certificate.Id,
+                        StudentId = certificate.StudentId,
+                        StudentName = studentName,
+                        CourseId = dto.CourseId,
+                        CourseName = courseName,
+                        CertificateTemplateId = certificate.certificateTamplateId,
+                        GeneratedPath = certificate.GeneratedPath,
+                        IssuedDate = certificate.IssuedDate
+                    },
+                    Success = true,
+                    Message = "Certificate generated and sent successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                // Log exception
+                return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                {
+                    Success = false,
+                    Message = $"Error generating certificate: {ex.Message}"
+                };
+            }
+        }
+
+        private byte[] GeneratePdfBytes(CertificateTemplate template, string studentName, string courseName, string instructorName, DateTime date)
+        {
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4.Landscape());
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(20));
+
+                    page.Content()
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(x =>
+                        {
+                            x.Spacing(20);
+
+                            x.Item().AlignCenter().Text(template.Title).SemiBold().FontSize(40).FontColor(Colors.Blue.Medium);
+                            
+                            x.Item().AlignCenter().Text("This is to certify that").FontSize(20).FontColor(Colors.Grey.Darken2);
+                            
+                            x.Item().AlignCenter().Text(studentName).Bold().FontSize(30).Underline();
+                            
+                            x.Item().AlignCenter().Text("Has successfully completed the course").FontSize(20).FontColor(Colors.Grey.Darken2);
+                            
+                            x.Item().AlignCenter().Text(courseName).Bold().FontSize(25);
+                            
+                            x.Item().AlignCenter().Text(template.Description ?? "").FontSize(16).Italic();
+
+                            x.Item().PaddingTop(30).Row(row =>
+                            {
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().AlignCenter().Text(date.ToString("MMMM dd, yyyy")).FontSize(18);
+                                    c.Item().AlignCenter().LineHorizontal(1);
+                                    c.Item().AlignCenter().Text("Date").FontSize(14).FontColor(Colors.Grey.Medium);
+                                });
+
+                                row.ConstantItem(50);
+
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().AlignCenter().Text(instructorName).FontSize(18);
+                                    c.Item().AlignCenter().LineHorizontal(1);
+                                    c.Item().AlignCenter().Text("Instructor").FontSize(14).FontColor(Colors.Grey.Medium);
+                                });
+                            });
+                        });
+                    
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Certificate ID: ");
+                            x.Span(Guid.NewGuid().ToString()).FontColor(Colors.Grey.Medium);
+                        });
+                });
+            })
+            .GeneratePdf();
+        }
+
+        public async Task<ServiceResponseDTO<IEnumerable<ReadStudentCertificateDTO>>> GetStudentCertificatesAsync(string studentId)
+        {
+            try
+            {
+                var certificates = await _unitOfWork.GetQueryable<StudentCertificate>()
+                    .Include(c => c.Student)
+                    .Include(c => c.CertificateTemplate)
+                    .ThenInclude(t => t.Course)
+                    .Where(c => c.StudentId == studentId && !c.IsDeleted)
+                    .ToListAsync();
+
+                var dtos = certificates.Select(c => new ReadStudentCertificateDTO
+                {
+                    Id = c.Id,
+                    StudentId = c.StudentId,
+                    StudentName = $"{c.Student.FirstName} {c.Student.LastName}",
+                    CourseId = c.CertificateTemplate.CourseId,
+                    CourseName = c.CertificateTemplate.Course.Name,
+                    CertificateTemplateId = c.certificateTamplateId,
+                    GeneratedPath = c.GeneratedPath,
+                    IssuedDate = c.IssuedDate
+                });
+
+                return new ServiceResponseDTO<IEnumerable<ReadStudentCertificateDTO>>
+                {
+                    Data = dtos,
+                    Success = true,
+                    Message = "Certificates retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadStudentCertificateDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving certificates: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<byte[]>> DownloadCertificateAsync(string certificateId)
+        {
+            try
+            {
+                var certificate = await _unitOfWork.GetQueryable<StudentCertificate>()
+                    .FirstOrDefaultAsync(c => c.Id == certificateId && !c.IsDeleted);
+
+                if (certificate == null)
+                {
+                    return new ServiceResponseDTO<byte[]>
+                    {
+                        Success = false,
+                        Message = "Certificate not found."
+                    };
+                }
+
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", certificate.GeneratedPath);
+                if (!File.Exists(filePath))
+                {
+                    return new ServiceResponseDTO<byte[]>
+                    {
+                        Success = false,
+                        Message = "Certificate file not found."
+                    };
+                }
+
+                var bytes = await File.ReadAllBytesAsync(filePath);
+                return new ServiceResponseDTO<byte[]>
+                {
+                    Data = bytes,
+                    Success = true,
+                    Message = "Certificate downloaded successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<byte[]>
+                {
+                    Success = false,
+                    Message = $"Error downloading certificate: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<ReadStudentCertificateDTO>> GetCertificateByIdAsync(string certificateId)
+        {
+            try
+            {
+                var certificate = await _unitOfWork.GetQueryable<StudentCertificate>()
+                    .Include(c => c.Student)
+                    .Include(c => c.CertificateTemplate)
+                    .ThenInclude(t => t.Course)
+                    .FirstOrDefaultAsync(c => c.Id == certificateId && !c.IsDeleted);
+
+                if (certificate == null)
+                {
+                    return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                    {
+                        Success = false,
+                        Message = "Certificate not found."
+                    };
+                }
+
+                return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                {
+                    Data = new ReadStudentCertificateDTO
+                    {
+                        Id = certificate.Id,
+                        StudentId = certificate.StudentId,
+                        StudentName = $"{certificate.Student.FirstName} {certificate.Student.LastName}",
+                        CourseId = certificate.CertificateTemplate.CourseId,
+                        CourseName = certificate.CertificateTemplate.Course.Name,
+                        CertificateTemplateId = certificate.certificateTamplateId,
+                        GeneratedPath = certificate.GeneratedPath,
+                        IssuedDate = certificate.IssuedDate
+                    },
+                    Success = true,
+                    Message = "Certificate retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<ReadStudentCertificateDTO>
+                {
+                    Success = false,
+                    Message = $"Error retrieving certificate: {ex.Message}"
+                };
+            }
+        }
+    }
+}

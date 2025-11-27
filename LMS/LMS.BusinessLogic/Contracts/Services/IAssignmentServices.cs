@@ -18,5 +18,6 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>> GetSubmissionsByStatusAsync(string assignmentId, AssignmentStatus status);
         Task<ServiceResponseDTO<IEnumerable<StudentAssignmentDTO>>> GetStudentSubmissionsAsync(string studentId);
         Task<ServiceResponseDTO<IEnumerable<StudentAllAssignmentsDTO>>> GetStudentAllAssignmentsAsync(string studentId);
+        Task<ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>> GetAssignmentsByInstructorAsync(string instructorId);
     }
 }

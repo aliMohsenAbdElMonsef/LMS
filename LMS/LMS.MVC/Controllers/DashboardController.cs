@@ -14,7 +14,9 @@ namespace LMS.MVC.Controllers
         {
             _services = services;
         }
+
         private ICategoryService CategoryService => _services.CategoryService;
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UserManagement()
         {
@@ -28,6 +30,20 @@ namespace LMS.MVC.Controllers
                 TempData["Error"] = $"Error loading users: {ex.Message}";
                 return View("Admin/UserManagement", new List<object>());
             }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+            var result = await _services.UserService.GetUserById(id);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("UserManagement");
+            }
+            return View("Admin/UserDetails", result.Data);
         }
 
         [Authorize(Roles = "Admin")]
@@ -148,8 +164,6 @@ namespace LMS.MVC.Controllers
         {
             try
             {
-              
-
                 var result = await _services.EnrollmentService.ApproveEnrollmentAsync(model);
 
                 if (result.Success)
@@ -175,7 +189,6 @@ namespace LMS.MVC.Controllers
         {
             try
             {
-                
                 var result = await _services.EnrollmentService.DenyEnrollmentAsync(model);
 
                 if (result.Success)
@@ -194,8 +207,5 @@ namespace LMS.MVC.Controllers
 
             return RedirectToAction("CourseEnrollments");
         }
-
-
-
     }
 }

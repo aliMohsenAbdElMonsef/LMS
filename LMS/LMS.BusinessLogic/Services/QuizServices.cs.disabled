@@ -1,0 +1,436 @@
+using Domain.Entities.MainEntities;
+using Domain.Entities.RelationTables;
+using Domain.Enums;
+using LMS.BusinessLogic.Contracts.Services;
+using LMS.BusinessLogic.DTOs.Question;
+using LMS.BusinessLogic.DTOs.Quiz;
+using LMS.BusinessLogic.DTOs.Responses;
+using LMS.BusinessLogic.DTOs.Notification;
+using LMS.DataAccess.Contracts;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LMS.BusinessLogic.Services
+{
+    internal class QuizServices : BaseServices<Quiz, ReadQuizDTO, CreateQuizDTO, UpdateQuizDTO>, IQuizServices
+    {
+        private readonly INotificationService _notificationService;
+
+        public QuizServices(IUnitOfWork unitOfWork, INotificationService notificationService) : base(unitOfWork)
+        {
+            _notificationService = notificationService;
+        }
+
+        protected override string GetIdFromUpdateDTO(UpdateQuizDTO dto) => dto.Id;
+
+        protected override IBaseRepository<Quiz, string> GetRepo() => _unitOfWork.Quizzes;
+
+        protected override Quiz MapToEntity(CreateQuizDTO dto)
+        {
+            var quizId = Guid.NewGuid().ToString();
+            var quiz = new Quiz
+            {
+                Id = quizId,
+                Title = dto.Title,
+                Description = dto.Description,
+                DurationMinutes = dto.DurationMinutes,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                CourseId = dto.CourseId,
+                InstructorId = dto.InstructorId,
+                NumberOfQuestions = dto.Questions.Count
+            };
+
+            if (dto.Questions != null)
+            {
+                foreach (var qDto in dto.Questions)
+                {
+                    quiz.Questions.Add(new Question
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        QuizId = quizId,
+                        Text = qDto.Text,
+                        OptionA = qDto.OptionA,
+                        OptionB = qDto.OptionB,
+                        OptionC = qDto.OptionC,
+                        OptionD = qDto.OptionD,
+                        CorrectAnswer = qDto.CorrectAnswer,
+                        Points = qDto.Points
+                    });
+                }
+            }
+
+            return quiz;
+        }
+
+        protected override ReadQuizDTO MapToReadDTO(Quiz entity)
+        {
+            return new ReadQuizDTO
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                Description = entity.Description,
+                DurationMinutes = entity.DurationMinutes,
+                StartDate = entity.StartDate,
+                EndDate = entity.EndDate,
+                NumberOfQuestions = entity.Questions?.Count ?? entity.NumberOfQuestions,
+                CourseId = entity.CourseId,
+                CourseName = entity.Course?.Name ?? "",
+                InstructorId = entity.InstructorId,
+                InstructorName = entity.Instructor != null ? $"{entity.Instructor.FirstName} {entity.Instructor.LastName}" : "",
+                Questions = entity.Questions?.Select(q => new ReadQuestionDTO
+                {
+                    Id = q.Id,
+                    QuizId = q.QuizId,
+                    Text = q.Text,
+                    OptionA = q.OptionA,
+                    OptionB = q.OptionB,
+                    OptionC = q.OptionC,
+                    OptionD = q.OptionD,
+                    CorrectAnswer = q.CorrectAnswer.ToString(),
+                    Points = q.Points
+                }).ToList() ?? new List<ReadQuestionDTO>()
+            };
+        }
+
+        protected override Quiz UpdateToEntity(UpdateQuizDTO dto, Quiz existingEntity)
+        {
+            existingEntity.Title = dto.Title ?? existingEntity.Title;
+            existingEntity.Description = dto.Description ?? existingEntity.Description;
+            existingEntity.DurationMinutes = dto.DurationMinutes ?? existingEntity.DurationMinutes;
+            existingEntity.StartDate = dto.StartDate ?? existingEntity.StartDate;
+            existingEntity.EndDate = dto.EndDate ?? existingEntity.EndDate;
+            existingEntity.InstructorId = dto.InstructorId ?? existingEntity.InstructorId;
+
+            // Note: Updating questions via UpdateQuizDTO is complex. 
+            // Usually, we update questions individually via QuestionServices.
+            // But if we want to replace all questions, we would need to handle that here.
+            // For now, we'll assume questions are managed separately or this DTO doesn't update them fully.
+            
+            return existingEntity;
+        }
+
+        public override async Task<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetAllAsync()
+        {
+            try
+            {
+                var entities = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .ToListAsync();
+
+                ServiceResponseDTO<IEnumerable<ReadQuizDTO>> response = new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Data = entities.Select(e => MapToReadDTO(e)).ToList(),
+                    Success = true,
+                    Message = "Quizzes retrieved successfully."
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving quizzes: {ex.Message}", ex);
+            }
+        }
+
+        public override async Task<ServiceResponseDTO<ReadQuizDTO>> GetByIdAsync(string id)
+        {
+            try
+            {
+                var entity = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .FirstOrDefaultAsync(q => q.Id == id);
+
+                if (entity == null)
+                {
+                    return new ServiceResponseDTO<ReadQuizDTO>
+                    {
+                        Success = false,
+                        Message = "Quiz Not Found."
+                    };
+                }
+
+                return new ServiceResponseDTO<ReadQuizDTO>
+                {
+                    Data = MapToReadDTO(entity),
+                    Success = true,
+                    Message = "Quiz retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving quiz with id '{id}': {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ServiceResponseDTO<bool>> StartQuizAsync(string quizId, string studentId)
+        {
+            try
+            {
+                var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
+                var existingRecord = await studentQuizSet
+                    .FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId);
+
+                if (existingRecord == null)
+                {
+                    var newRecord = new StudentQuiz
+                    {
+                        StudentId = studentId,
+                        QuizId = quizId,
+                        StartTime = DateTime.UtcNow,
+                        Status = QuizStatus.InProgress
+                    };
+                    await studentQuizSet.AddAsync(newRecord);
+                }
+                else if (existingRecord.Status == QuizStatus.NotStarted)
+                {
+                    existingRecord.StartTime = DateTime.UtcNow;
+                    existingRecord.Status = QuizStatus.InProgress;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return new ServiceResponseDTO<bool>
+                {
+                    Data = true,
+                    Success = true,
+                    Message = "Quiz started successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<bool>
+                {
+                    Success = false,
+                    Message = $"Error starting quiz: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<QuizAttemptDTO>> GetQuizForTakingAsync(string quizId, string studentId)
+        {
+            try
+            {
+                var quiz = await GetRepo().GetQueryable()
+                    .Include(q => q.Questions)
+                    .Include(q => q.Course)
+                    .FirstOrDefaultAsync(q => q.Id == quizId);
+
+                if (quiz == null)
+                    return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "Quiz not found." };
+
+                // Check availability
+                if (DateTime.UtcNow < quiz.StartDate || DateTime.UtcNow > quiz.EndDate)
+                    return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "Quiz is not currently available." };
+
+                var studentQuizSet = _unitOfWork.GetQueryable<StudentQuiz>();
+                var attempt = await studentQuizSet.FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId);
+
+                if (attempt != null && (attempt.Status == QuizStatus.Completed || attempt.Status == QuizStatus.Graded))
+                    return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "You have already completed this quiz." };
+
+                int timeRemaining = quiz.DurationMinutes * 60;
+                DateTime startTime = DateTime.UtcNow;
+
+                // Check timer
+                if (attempt != null && attempt.Status == QuizStatus.InProgress)
+                {
+                    startTime = attempt.StartTime;
+                    var timeElapsed = DateTime.UtcNow - attempt.StartTime;
+                    timeRemaining = (int)((quiz.DurationMinutes * 60) - timeElapsed.TotalSeconds);
+                    
+                    if (timeRemaining <= 0)
+                    {
+                        // Auto-submit logic could be triggered here or handled by frontend
+                        return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "Time expired." };
+                    }
+                }
+
+                var attemptDto = new QuizAttemptDTO
+                {
+                    Id = quiz.Id,
+                    Title = quiz.Title,
+                    Description = quiz.Description,
+                    DurationMinutes = quiz.DurationMinutes,
+                    TimeRemainingSeconds = timeRemaining,
+                    StartTime = startTime,
+                    Questions = quiz.Questions?.Select(q => new ReadQuestionDTO
+                    {
+                        Id = q.Id,
+                        QuizId = q.QuizId,
+                        Text = q.Text,
+                        OptionA = q.OptionA,
+                        OptionB = q.OptionB,
+                        OptionC = q.OptionC,
+                        OptionD = q.OptionD,
+                        CorrectAnswer = "", // Don't send correct answer to client!
+                        Points = q.Points
+                    }).ToList() ?? new List<ReadQuestionDTO>()
+                };
+
+                return new ServiceResponseDTO<QuizAttemptDTO>
+                {
+                    Data = attemptDto,
+                    Success = true,
+                    Message = "Quiz retrieved."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<QuizResultDTO>> SubmitQuizAsync(SubmitQuizDTO dto)
+        {
+            try
+            {
+                // Get quiz with questions
+                var quiz = await GetRepo().GetQueryable()
+                    .Include(q => q.Questions)
+                    .Include(q => q.Course)
+                    .FirstOrDefaultAsync(q => q.Id == dto.QuizId);
+
+                if (quiz == null)
+                {
+                    return new ServiceResponseDTO<QuizResultDTO>
+                    {
+                        Success = false,
+                        Message = "Quiz not found."
+                    };
+                }
+
+                var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
+                var attempt = await studentQuizSet.FirstOrDefaultAsync(sq => sq.StudentId == dto.StudentId && sq.QuizId == dto.QuizId);
+
+                if (attempt == null)
+                {
+                    // Should have started first, but create if missing
+                    attempt = new StudentQuiz
+                    {
+                        StudentId = dto.StudentId,
+                        QuizId = dto.QuizId,
+                        StartTime = DateTime.UtcNow,
+                        Status = QuizStatus.InProgress
+                    };
+                    await studentQuizSet.AddAsync(attempt);
+                }
+
+                if (attempt.Status == QuizStatus.Completed || attempt.Status == QuizStatus.Graded)
+                {
+                     return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz already submitted." };
+                }
+
+                // Auto-grade the quiz
+                int correctAnswers = 0;
+                int totalPoints = 0;
+                int earnedPoints = 0;
+                var questionResults = new List<QuestionResultDTO>();
+
+                foreach (var question in quiz.Questions)
+                {
+                    totalPoints += question.Points;
+                    
+                    var studentAnswer = dto.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+                    bool isCorrect = studentAnswer != null && studentAnswer.SelectedAnswer == question.CorrectAnswer;
+                    
+                    if (isCorrect)
+                    {
+                        correctAnswers++;
+                        earnedPoints += question.Points;
+                    }
+
+                    questionResults.Add(new QuestionResultDTO
+                    {
+                        QuestionId = question.Id,
+                        QuestionText = question.Text,
+                        SelectedAnswer = studentAnswer?.SelectedAnswer.ToString() ?? "Not Answered",
+                        CorrectAnswer = question.CorrectAnswer.ToString(),
+                        IsCorrect = isCorrect,
+                        Points = isCorrect ? question.Points : 0
+                    });
+
+                    // Save student answer
+                    var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
+                    var existingAnswer = await answerSet.FirstOrDefaultAsync(a => a.StudentId == dto.StudentId && a.QuestionId == question.Id);
+                    
+                    if (existingAnswer != null)
+                    {
+                        existingAnswer.Answer = studentAnswer?.SelectedAnswer ?? Options.OptionA; // Default if null, but logic handles null check
+                        existingAnswer.IsCorrect = isCorrect;
+                    }
+                    else
+                    {
+                         await answerSet.AddAsync(new StudentAnswerQuestion
+                        {
+                            StudentId = dto.StudentId,
+                            QuestionId = question.Id,
+                            Answer = studentAnswer?.SelectedAnswer ?? Options.OptionA,
+                            IsCorrect = isCorrect
+                        });
+                    }
+                }
+
+                // Calculate grade (out of 100)
+                double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
+                int grade = (int)Math.Round(percentage);
+
+                // Update attempt
+                attempt.EndTime = DateTime.UtcNow;
+                attempt.Grade = grade;
+                attempt.Status = QuizStatus.Completed;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                // Send notification to student about quiz result
+                try
+                {
+                    await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
+                    {
+                        UserId = dto.StudentId,
+                        Title = "Quiz Completed",
+                        Message = $"You scored {grade}% on '{quiz.Title}'. You got {correctAnswers} out of {quiz.Questions.Count} questions correct.",
+                        Type = NotificationType.QuizResult
+                    });
+                }
+                catch
+                {
+                    // Notification failure shouldn't fail the quiz submission
+                }
+
+                var result = new QuizResultDTO
+                {
+                    QuizId = quiz.Id,
+                    QuizTitle = quiz.Title,
+                    StudentId = dto.StudentId,
+                    TotalQuestions = quiz.Questions.Count,
+                    CorrectAnswers = correctAnswers,
+                    TotalPoints = totalPoints,
+                    EarnedPoints = earnedPoints,
+                    Percentage = percentage,
+                    Grade = grade,
+                    QuestionResults = questionResults
+                };
+
+                return new ServiceResponseDTO<QuizResultDTO>
+                {
+                    Data = result,
+                    Success = true,
+                    Message = "Quiz submitted successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error submitting quiz: {ex.Message}", ex);
+            }
+        }
+    }
+}

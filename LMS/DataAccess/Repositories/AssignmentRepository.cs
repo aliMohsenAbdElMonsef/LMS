@@ -104,5 +104,16 @@ namespace LMS.DataAccess.Repositories
                                  !sa.IsDeleted);
         }
 
+        public async Task<IEnumerable<Assignment>> GetAssignmentsByInstructorAsync(string instructorId)
+        {
+            return await _set
+                .Include(a => a.Course)
+                .Include(a => a.Instructor)
+                .Include(a => a.Students) // Optional: if we want to show submission counts immediately
+                .Where(a => a.InstructorId == instructorId && !a.IsDeleted)
+                .OrderByDescending(a => a.UploadDate)
+                .ToListAsync();
+        }
+
     }
 }

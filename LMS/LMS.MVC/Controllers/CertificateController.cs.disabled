@@ -1,0 +1,115 @@
+using LMS.MVC.Services.Contracts;
+using LMS.MVC.Models.ViewModels.Certificate;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LMS.MVC.Controllers
+{
+    [Authorize]
+    public class CertificateController : Controller
+    {
+        private readonly IUnitOfServices _services;
+
+        public CertificateController(IUnitOfServices services)
+        {
+            _services = services;
+        }
+
+        // GET: Certificate/Index
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var result = await _services.CertificateService.GetUserCertificatesAsync(userId);
+                
+                if (!result.Success)
+                {
+                    TempData["Error"] = $"Error loading certificates: {result.Message}";
+                    return View(new List<CertificateViewModel>());
+                }
+
+                return View(result.Data);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading certificates: {ex.Message}";
+                return View(new List<CertificateViewModel>());
+            }
+        }
+
+        // GET: Certificate/View/5
+        [HttpGet]
+        public async Task<IActionResult> View(string id)
+        {
+            try
+            {
+                var result = await _services.CertificateService.GetCertificateByIdAsync(id);
+                if (!result.Success || result.Data == null)
+                {
+                    TempData["Error"] = result.Message ?? "Certificate not found.";
+                    return RedirectToAction("Index");
+                }
+                return View(result.Data);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading certificate: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        // GET: Certificate/Download/5
+        [HttpGet]
+        public async Task<IActionResult> Download(string id)
+        {
+            try
+            {
+                var result = await _services.CertificateService.DownloadCertificateAsync(id);
+                if (result.Success && result.Data != null)
+                {
+                    return File(result.Data, "application/pdf", $"Certificate_{id}.pdf");
+                }
+                
+                TempData["Error"] = result.Message ?? "Error downloading certificate.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error downloading certificate: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        // POST: Certificate/Generate
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> Generate(string courseId)
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var result = await _services.CertificateService.GenerateCertificateAsync(courseId, userId);
+                
+                if (result.Success)
+                {
+                    TempData["Success"] = "Certificate generated successfully!";
+                    // Assuming result.Data is the certificate ID or URL. If it's ID, redirect to View.
+                    // The service returns string (ID or message). Let's assume ID.
+                    return RedirectToAction("View", new { id = result.Data });
+                }
+                
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error generating certificate: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+    }
+}

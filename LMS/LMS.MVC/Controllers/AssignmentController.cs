@@ -1,4 +1,5 @@
-﻿using LMS.Entity.Enums;
+﻿
+using LMS.Entity.Enums;
 using LMS.MVC.Models.ViewModels.Assignment;
 using LMS.MVC.Services.Contracts;
 using LMS.MVC.Services.Contracts.Services;
@@ -98,17 +99,18 @@ namespace LMS.MVC.Controllers
             if (assignment == null)
                 return NotFound();
 
-            ViewBag.CurrentStudentId = _tokenService.GetUserId();
-            return View("Details", assignment);
+            return View(assignment);
         }
 
         [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(string id)
         {
-            var assignment = await _services.AssignmentService.GetEditModel(id);
-            if (assignment == null) return NotFound();
-            return View("Edit", assignment);
+            var assignment = await _services.AssignmentService.GetAssignmentById(id);
+            if (assignment == null)
+                return NotFound();
+
+            return View(assignment);
         }
 
         [HttpPost]
@@ -116,28 +118,26 @@ namespace LMS.MVC.Controllers
         public async Task<IActionResult> Edit(ReadAssignmentResult model)
         {
             if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _services.AssignmentService.EditAssignment(model);
+            if (result != null)
             {
-                return View("Edit", model);
+                TempData["SuccessMessage"] = "Assignment updated successfully!";
+                return RedirectToAction("Details", new { id = model.Id });
             }
 
-            try
-            {
-                var updatedAssignment = await _services.AssignmentService.EditAssignment(model);
-                if (updatedAssignment != null)
-                {
-                    TempData["SuccessMessage"] = "Assignment updated successfully!";
-                    return RedirectToAction("Details", new { id = updatedAssignment.Id });
-                }
+            ModelState.AddModelError("", "Failed to update assignment.");
+            return View(model);
+        }
 
-                ModelState.AddModelError("", "Failed to update assignment.");
-                return View("Edit", model);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error updating assignment: {ex.Message}");
-                ModelState.AddModelError("", $"Error: {ex.Message}");
-                return View("Edit", model);
-            }
+        [HttpGet]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> Submissions(string id)
+        {
+            var submissions = await _services.AssignmentService.GetAssignmentSubmissions(id);
+            ViewBag.AssignmentId = id;
+            return View(submissions);
         }
 
         [HttpGet]
@@ -145,112 +145,64 @@ namespace LMS.MVC.Controllers
         public async Task<IActionResult> Submit(string id)
         {
             var studentId = _tokenService.GetUserId();
-            var studentAssignment = await _services.AssignmentService.GetStudentAssignment(id, studentId);
+            var submission = await _services.AssignmentService.GetStudentAssignment(id, studentId);
 
-            if (studentAssignment == null)
+            if (submission != null && submission.IsSubmitted)
             {
-                studentAssignment = new StudentAssignmentResult
-                {
-                    AssignmentId = id,
-                    StudentId = studentId
-                };
+                TempData["InfoMessage"] = "You have already submitted this assignment.";
+                return RedirectToAction("Details", new { id });
             }
 
-            return View("Submit", studentAssignment);
+            var assignment = await _services.AssignmentService.GetAssignmentById(id);
+            if (assignment != null && assignment.DueDate < DateTime.Now)
+            {
+                TempData["ErrorMessage"] = "This assignment is overdue and cannot be submitted.";
+                return RedirectToAction("Details", new { id });
+            }
+
+            return View(new StudentAssignmentResult { AssignmentId = id });
         }
 
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Submit(StudentAssignmentResult model, IFormFile submissionFile)
         {
-            Console.WriteLine("=== SUBMIT ASSIGNMENT POST ===");
-            Console.WriteLine($"AssignmentId: {model.AssignmentId}");
-            Console.WriteLine($"StudentId: {model.StudentId}");
-            Console.WriteLine($"File: {submissionFile?.FileName ?? "NULL"}");
-            Console.WriteLine($"File Size: {submissionFile?.Length ?? 0} bytes");
-
-            // ✅ ADD ALL THESE LINES
-            ModelState.Remove("FilePath");
-            ModelState.Remove("Status");
-            ModelState.Remove("StudentName");
-            ModelState.Remove("StudentAssignmentId");
-            ModelState.Remove("Id");
-            ModelState.Remove("Grade");
-            ModelState.Remove("GradedAt");
-            ModelState.Remove("SubmittedAt");
-            ModelState.Remove("Feedback");
-
-            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
-
-            if (!ModelState.IsValid)
-            {
-                Console.WriteLine("❌ ModelState Errors:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
-                    }
-                }
-                return View("Submit", model);
-            }
-
             if (submissionFile == null || submissionFile.Length == 0)
             {
-                Console.WriteLine("❌ No file selected");
-                ModelState.AddModelError("", "Please select a submission file.");
-                return View("Submit", model);
+                ModelState.AddModelError("", "Please select a file to upload.");
+                return View(model);
+            }
+
+            var assignment = await _services.AssignmentService.GetAssignmentById(model.AssignmentId);
+            if (assignment != null && assignment.DueDate < DateTime.Now)
+            {
+                TempData["ErrorMessage"] = "This assignment is overdue and cannot be submitted.";
+                return RedirectToAction("Details", new { id = model.AssignmentId });
             }
 
             try
             {
-                Console.WriteLine("✅ Calling SubmitAssignmentWithFile...");
-
-                var result = await _services.AssignmentService.SubmitAssignmentWithFile(
-                    model.AssignmentId, model.StudentId, submissionFile);
-
-                Console.WriteLine($"✅ Result: {(result != null ? "Success" : "NULL")}");
-
+                var studentId = _tokenService.GetUserId();
+                var result = await _services.AssignmentService.SubmitAssignmentWithFile(model.AssignmentId, studentId, submissionFile);
                 if (result != null)
                 {
                     TempData["SuccessMessage"] = "Assignment submitted successfully!";
                     return RedirectToAction("Details", new { id = model.AssignmentId });
                 }
 
-                Console.WriteLine("❌ Result was null");
                 ModelState.AddModelError("", "Failed to submit assignment.");
-                return View("Submit", model);
+                return View(model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Error: {ex.Message}");
-                return View("Submit", model);
+                return View(model);
             }
-        }
-        [HttpGet]
-        [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Submissions(string id)
-        {
-            var submissions = await _services.AssignmentService.GetAssignmentSubmissions(id);
-            ViewBag.AssignmentId = id;
-            return View("Submissions", submissions);
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> SubmissionsByStatus(string id, string status)
-        {
-            var submissions = await _services.AssignmentService.GetSubmissionsByStatus(id, status);
-            ViewBag.AssignmentId = id;
-            ViewBag.Status = status;
-            return View("Submissions", submissions);
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> DownloadAssignment(string id)
+        public async Task<IActionResult> DownloadFile(string id)
         {
             try
             {
@@ -261,7 +213,6 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id });
                 }
 
-                // Download from API
                 var fileResult = await _services.AssignmentService.DownloadFileFromApi(assignment.FilePath);
                 if (fileResult == null)
                 {
@@ -292,7 +243,6 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Index", "Course");
                 }
 
-                // Download from API
                 var fileResult = await _services.AssignmentService.DownloadFileFromApi(submission.FilePath);
                 if (fileResult == null)
                 {
@@ -330,7 +280,6 @@ namespace LMS.MVC.Controllers
             Console.WriteLine($"Grade: {model.Grade}");
             Console.WriteLine($"Feedback: {model.Feedback}");
 
-            // ✅ Remove fields that aren't needed for grading
             ModelState.Remove("FilePath");
             ModelState.Remove("Status");
             ModelState.Remove("StudentName");
@@ -381,6 +330,7 @@ namespace LMS.MVC.Controllers
                 return View("Grade", model);
             }
         }
+
         [HttpPost]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Delete(string id)
@@ -394,7 +344,6 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Index", "Course");
                 }
 
-                // API will handle file deletion
                 var result = await _services.AssignmentService.DeleteAssignment(id);
                 if (result)
                 {
@@ -421,6 +370,7 @@ namespace LMS.MVC.Controllers
             var submissions = await _services.AssignmentService.GetStudentSubmissions(studentId);
             return View("MySubmissions", submissions);
         }
+
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyAssignments(string filter = "all")
@@ -428,7 +378,6 @@ namespace LMS.MVC.Controllers
             var studentId = _tokenService.GetUserId();
             var allAssignments = await _services.AssignmentService.GetStudentAllAssignments(studentId);
 
-            // Apply filter
             IEnumerable<StudentAssignmentItemResult> filteredAssignments = filter switch
             {
                 "notsubmitted" => allAssignments.Where(a => !a.IsSubmitted),
@@ -438,30 +387,21 @@ namespace LMS.MVC.Controllers
                 _ => allAssignments
             };
 
-            // Sort by priority: Overdue → Urgent → Upcoming → Completed
-            // Sort by priority: Not Submitted (by due date) → Pending Grading → Overdue → Graded
             var sortedAssignments = filteredAssignments
                 .OrderBy(a => {
-                    // Priority levels:
-                    // 0 = Not Submitted (not overdue)
-                    // 1 = Pending Grading (submitted but not graded)
-                    // 2 = Overdue (not submitted and past due date)
-                    // 3 = Graded (completed)
-
-                    if (a.Grade.HasValue) return 3; // Graded - lowest priority
+                    if (a.Grade.HasValue) return 3; 
 
                     if (!a.IsSubmitted)
                     {
-                        // Not submitted
                         if (a.DueDate < DateTime.Now)
-                            return 2; // Overdue
+                            return 2; 
                         else
-                            return 0; // Not submitted (upcoming)
+                            return 0; 
                     }
 
-                    return 1; // Pending Grading (submitted but not graded)
+                    return 1; 
                 })
-                .ThenBy(a => a.DueDate) // Then sort by due date within each priority
+                .ThenBy(a => a.DueDate) 
                 .ToList();
 
             var viewModel = new MyAssignmentsViewModel
@@ -471,6 +411,21 @@ namespace LMS.MVC.Controllers
 
             ViewBag.Filter = filter;
             return View("MyAssignments", viewModel);
+        }
+
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> InstructorAssignments()
+        {
+            var instructorId = _tokenService.GetUserId();
+            var response = await _services.AssignmentService.GetAssignmentsByInstructorAsync(instructorId);
+
+            if (!response.Success)
+            {
+                TempData["Error"] = response.Message;
+                return RedirectToAction("Index", "Course");
+            }
+
+            return View(response.Data);
         }
     }
 }

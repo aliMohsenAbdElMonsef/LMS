@@ -19,10 +19,12 @@ namespace LMS.BusinessLogic.Services
     internal class AssignmentServices : BaseServices<Assignment, ReadAssignmentDTO, CreateAssignmentDTO, UpdateAssignmentDTO>, IAssignmentServices
     {
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
 
-        public AssignmentServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork)
+        public AssignmentServices(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService) : base(unitOfWork)
         {
             _mapper = mapper;
+            _emailService = emailService;
         }
 
 
@@ -231,6 +233,16 @@ namespace LMS.BusinessLogic.Services
                 };
             }
 
+            // Check if the assignment deadline has passed
+            if (assignment.DueDate < DateTime.UtcNow)
+            {
+                return new ServiceResponseDTO<StudentAssignmentDTO>
+                {
+                    Success = false,
+                    Message = "This assignment is past its due date and can no longer be submitted."
+                };
+            }
+
             var student = await _unitOfWork.Users.FindByIdAsync(submission.StudentId);
             if (student == null)
             {
@@ -303,6 +315,28 @@ namespace LMS.BusinessLogic.Services
 
             await _unitOfWork.Assignments.UpdateStudentAssignmentAsync(studentAssignment);
             await _unitOfWork.SaveChangesAsync();
+
+            // Send email notification to student
+            if (studentAssignment.Student != null && !string.IsNullOrEmpty(studentAssignment.Student.Email))
+            {
+                var subject = $"Assignment Graded: {studentAssignment.Assignment?.Title}";
+                var body = $@"
+                    <h1>Assignment Graded</h1>
+                    <p>Your assignment <strong>{studentAssignment.Assignment?.Title}</strong> has been graded.</p>
+                    <p><strong>Grade:</strong> {grade.Grade}</p>
+                    <p><strong>Feedback:</strong> {grade.Feedback}</p>
+                    <p>Please log in to the LMS to view more details.</p>";
+
+                try
+                {
+                    await _emailService.SendEmailAsync(studentAssignment.Student.Email, subject, body);
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't fail the request
+                    Console.WriteLine($"Failed to send grade notification email: {ex.Message}");
+                }
+            }
 
             var resultDto = _mapper.Map<StudentAssignmentDTO>(studentAssignment);
 
@@ -422,8 +456,29 @@ namespace LMS.BusinessLogic.Services
             };
         }
 
+        public async Task<ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>> GetAssignmentsByInstructorAsync(string instructorId)
+        {
+            try
+            {
+                var assignments = await _unitOfWork.Assignments.GetAssignmentsByInstructorAsync(instructorId);
+                var dtos = _mapper.Map<List<ReadAssignmentDTO>>(assignments);
+
+                return new ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>
+                {
+                    Success = true,
+                    Message = "Assignments retrieved successfully",
+                    Data = dtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving assignments: {ex.Message}"
+                };
+            }
+        }
 
     }
 }
-
-

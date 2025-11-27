@@ -1,0 +1,108 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult>
+
+@{
+    ViewData["Title"] = "Course Assignments";
+    var courseId = ViewBag.CourseId as string;
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-journal-text text-primary"></i> Course Assignments
+            </h2>
+            <p class="text-muted mb-0">View and manage assignments for this course</p>
+        </div>
+        @if (User.IsInRole("Instructor"))
+        {
+            <a asp-action="Create" asp-route-courseId="@courseId" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Create Assignment
+            </a>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <div class="empty-state">
+                    <i class="bi bi-journal-x display-1 text-muted mb-3"></i>
+                    <h4 class="text-muted">No Assignments Yet</h4>
+                    <p class="text-muted mb-4">There are no assignments created for this course yet.</p>
+                    @if (User.IsInRole("Instructor"))
+                    {
+                        <a asp-action="Create" asp-route-courseId="@courseId" class="btn btn-primary">
+                            <i class="bi bi-plus-lg"></i> Create First Assignment
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var assignment in Model.OrderByDescending(a => a.DueDate))
+            {
+                var isOverdue = assignment.DueDate < DateTime.Now;
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm hover-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0 text-truncate" title="@assignment.Title">
+                                    @assignment.Title
+                                </h5>
+                                @if (isOverdue)
+                                {
+                                    <span class="badge bg-danger">Closed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                            </div>
+                            
+                            <p class="card-text text-muted small mb-3 line-clamp-3">
+                                @assignment.Description
+                            </p>
+
+                            <div class="d-flex align-items-center text-muted small mb-3">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                <span>Due: @assignment.DueDate.ToString("MMM dd, yyyy HH:mm")</span>
+                            </div>
+
+                            <div class="d-grid">
+                                <a asp-action="Details" asp-route-id="@assignment.Id" class="btn btn-outline-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    
+    <div class="mt-4">
+        <a asp-controller="Course" asp-action="Details" asp-route-id="@courseId" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Course
+        </a>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

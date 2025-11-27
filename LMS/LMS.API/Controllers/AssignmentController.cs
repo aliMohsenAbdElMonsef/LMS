@@ -102,6 +102,7 @@ namespace LMS.API.Controllers
                 });
             }
         }
+
         [HttpPost("submit-with-file")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<StudentAssignmentDTO>>> SubmitAssignmentWithFile(
@@ -161,7 +162,7 @@ namespace LMS.API.Controllers
                 return BadRequest(new { message = $"Error downloading file: {ex.Message}" });
             }
         }
-
+        
         // ============== ORIGINAL ENDPOINTS ==============
 
         [HttpPost("create")]
@@ -321,6 +322,7 @@ namespace LMS.API.Controllers
 
             return Ok(result);
         }
+
         [HttpGet("student/{studentId}/submissions")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<List<StudentAssignmentDTO>>>> GetStudentSubmissions(string studentId)
@@ -335,6 +337,7 @@ namespace LMS.API.Controllers
             var result = await AssignmentService.GetStudentSubmissionsAsync(studentId);
             return Ok(result);
         }
+
         [HttpGet("student/{studentId}/all-assignments")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<List<StudentAllAssignmentsDTO>>>> GetStudentAllAssignments(string studentId)
@@ -346,6 +349,20 @@ namespace LMS.API.Controllers
             }
 
             var result = await AssignmentService.GetStudentAllAssignmentsAsync(studentId);
+            return Ok(result);
+        }
+
+        [HttpGet("instructor/{instructorId}")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<ActionResult<ServiceResponseDTO<List<ReadAssignmentDTO>>>> GetAssignmentsByInstructor(string instructorId)
+        {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId != instructorId)
+            {
+                return Forbid();
+            }
+
+            var result = await AssignmentService.GetAssignmentsByInstructorAsync(instructorId);
             return Ok(result);
         }
     }

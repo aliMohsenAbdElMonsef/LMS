@@ -1,0 +1,43 @@
+﻿        async function deleteCourse(courseId, courseName) {
+            if (!confirm(`Are you sure you want to delete "{courseName}"?`)) return;
+
+            try {
+                const response = await fetch(`/Course/Delete/{courseId}`, {
+                    method: 'DELETE'
+                });
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const result = await response.json();
+                    if (result.success || response.ok) {
+                        // Remove the course card from DOM
+                        const courseCard = document.querySelector(`[onclick*="deleteCourse('{courseId}')"]`).closest('.col-md-6');
+                        if (courseCard) {
+                            courseCard.remove();
+                        }
+                        alert('Course deleted successfully!');
+                    } else {
+                        alert('Failed to delete course: ' + (result.message || 'Unknown error'));
+                    }
+                } else {
+                    // If it's a redirect (302), it means success
+                    if (response.ok || response.redirected || response.status === 302) {
+                        // Remove the course card from DOM
+                        const courseCard = document.querySelector(`button[onclick*="deleteCourse('{courseId}')"]`).closest('.col-md-6');
+                        if (courseCard) {
+                            courseCard.style.transition = 'opacity 0.3s';
+                            courseCard.style.opacity = '0';
+                            setTimeout(() => courseCard.remove(), 300);
+                        }
+                        // Show success message from TempData if available, or default
+                        alert('Course deleted successfully!');
+                    } else {
+                        alert('Failed to delete course.');
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error deleting course: ' + err.message);
+            }
+        }

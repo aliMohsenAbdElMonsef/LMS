@@ -1,4 +1,4 @@
-﻿using LMS.BusinessLogic.DTOs.Course;
+using LMS.BusinessLogic.DTOs.Course;
 using LMS.MVC.Models.ViewModels.Course;
 using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Response;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using LMS.MVC.Models.ViewModels.Assignment;
 
 namespace LMS.MVC.Services.Services
 {
@@ -277,7 +278,7 @@ namespace LMS.MVC.Services.Services
             {
                 var fileContent = new StreamContent(vm.ThumbnailFile.OpenReadStream());
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(vm.ThumbnailFile.ContentType);
-                formData.Add(fileContent, "Thumbnail", vm.ThumbnailFile.FileName);
+                formData.Add(fileContent, "ThumbnailFile", vm.ThumbnailFile.FileName);
             }
 
             var wrapper = await SendAndReadAsync<ReadCourseResult>(
@@ -341,7 +342,18 @@ namespace LMS.MVC.Services.Services
                 DaysPerWeek = data.DaysPerWeek,
                 Schedule = data.Schedule,
                 Instructors = data.Instructors,
-                ThumbnailPath = ConvertThumbnail(data.ThumbnailPath)
+                ThumbnailPath = ConvertThumbnail(data.ThumbnailPath),
+                Assignments = data.Assignments?.Select(a => new ReadAssignmentResult
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    DueDate = a.DueDate,
+                    CourseId = a.CourseId,
+                    CourseName = a.CourseName,
+                    InstructorId = a.InstructorId,
+                    InstructorName = a.InstructorName
+                }).ToList() ?? new List<ReadAssignmentResult>()
             };
 
             return new SuccessServiceResult<ReadCourseViewModel>
@@ -350,6 +362,8 @@ namespace LMS.MVC.Services.Services
                 Data = vm
             };
         }
+
+
 
         public async Task<bool> DeleteCourse(Guid id)
         {
@@ -360,27 +374,24 @@ namespace LMS.MVC.Services.Services
             return wrapper?.Success == true;
         }
 
-        public async Task<bool> IsUserEnrollIntoCourse(string id, string courseId)
+        public async Task<string> IsUserEnrollIntoCourse(string id, string courseId)
         {
             AttachTokenFromCookie();
-
             var model = new
             {
                 UserId = id,
                 CourseId = courseId
             };
-
             var jsonContent = new StringContent(
                 JsonSerializer.Serialize(model),
                 System.Text.Encoding.UTF8,
                 "application/json"
             );
-
-            var wrapper = await SendAndReadAsync<bool>(
+            var wrapper = await SendAndReadAsync<string>(
                 () => _httpClient.PostAsync($"{ApiBase}/api/courses/isenrolled", jsonContent)
             );
-
-            return wrapper != null && wrapper.Success && wrapper.Data;
+            
+            return wrapper != null && wrapper.Success ? wrapper.Data : "None";
         }
 
     }

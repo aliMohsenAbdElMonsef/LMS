@@ -1,6 +1,7 @@
 ﻿@model LMS.MVC.Models.ViewModels.Assignment.MyAssignmentsViewModel
 @{
     ViewData["Title"] = "My Assignments";
+    var isInstructor = User.IsInRole("Instructor");
 }
 
 <div class="container-fluid">
@@ -21,22 +22,36 @@
                    class="btn @(ViewBag.Filter == "all" || string.IsNullOrEmpty(ViewBag.Filter) ? "btn-primary" : "btn-outline-primary")">
                     <i class="fas fa-list me-1"></i> All
                 </a>
-                <a asp-action="MyAssignments" asp-route-filter="notsubmitted"
-                   class="btn @(ViewBag.Filter == "notsubmitted" ? "btn-warning" : "btn-outline-warning")">
-                    <i class="fas fa-times-circle me-1"></i> Not Submitted
-                </a>
-                <a asp-action="MyAssignments" asp-route-filter="pending"
-                   class="btn @(ViewBag.Filter == "pending" ? "btn-secondary" : "btn-outline-secondary")">
-                    <i class="fas fa-clock me-1"></i> Pending Grading
-                </a>
-                <a asp-action="MyAssignments" asp-route-filter="graded"
-                   class="btn @(ViewBag.Filter == "graded" ? "btn-success" : "btn-outline-success")">
-                    <i class="fas fa-check-circle me-1"></i> Graded
-                </a>
-                <a asp-action="MyAssignments" asp-route-filter="overdue"
-                   class="btn @(ViewBag.Filter == "overdue" ? "btn-danger" : "btn-outline-danger")">
-                    <i class="fas fa-exclamation-triangle me-1"></i> Overdue
-                </a>
+                @if (!isInstructor)
+                {
+                    <a asp-action="MyAssignments" asp-route-filter="notsubmitted"
+                       class="btn @(ViewBag.Filter == "notsubmitted" ? "btn-warning" : "btn-outline-warning")">
+                        <i class="fas fa-times-circle me-1"></i> Not Submitted
+                    </a>
+                    <a asp-action="MyAssignments" asp-route-filter="pending"
+                       class="btn @(ViewBag.Filter == "pending" ? "btn-secondary" : "btn-outline-secondary")">
+                        <i class="fas fa-clock me-1"></i> Pending Grading
+                    </a>
+                    <a asp-action="MyAssignments" asp-route-filter="graded"
+                       class="btn @(ViewBag.Filter == "graded" ? "btn-success" : "btn-outline-success")">
+                        <i class="fas fa-check-circle me-1"></i> Graded
+                    </a>
+                    <a asp-action="MyAssignments" asp-route-filter="overdue"
+                       class="btn @(ViewBag.Filter == "overdue" ? "btn-danger" : "btn-outline-danger")">
+                        <i class="fas fa-exclamation-triangle me-1"></i> Overdue
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="MyAssignments" asp-route-filter="active"
+                       class="btn @(ViewBag.Filter == "active" ? "btn-success" : "btn-outline-success")">
+                        <i class="fas fa-check-circle me-1"></i> Active
+                    </a>
+                    <a asp-action="MyAssignments" asp-route-filter="closed"
+                       class="btn @(ViewBag.Filter == "closed" ? "btn-secondary" : "btn-outline-secondary")">
+                        <i class="fas fa-archive me-1"></i> Closed
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -46,26 +61,13 @@
         <div class="card-header bg-primary text-white">
             <h5 class="card-title mb-0">
                 <i class="fas fa-list me-2"></i>
-                @if (ViewBag.Filter == "notsubmitted")
-                {
-                    <text>Not Submitted Assignments</text>
-                }
-                else if (ViewBag.Filter == "pending")
-                {
-                    <text>Pending Grading Assignments</text>
-                }
-                else if (ViewBag.Filter == "graded")
-                {
-                    <text>Graded Assignments</text>
-                }
-                else if (ViewBag.Filter == "overdue")
-                {
-                    <text>Overdue Assignments</text>
-                }
-                else
-                {
-                    <text>All Assignments</text>
-                }
+                @if (ViewBag.Filter == "notsubmitted") { <text>Not Submitted Assignments</text> }
+                else if (ViewBag.Filter == "pending") { <text>Pending Grading Assignments</text> }
+                else if (ViewBag.Filter == "graded") { <text>Graded Assignments</text> }
+                else if (ViewBag.Filter == "overdue") { <text>Overdue Assignments</text> }
+                else if (ViewBag.Filter == "active") { <text>Active Assignments</text> }
+                else if (ViewBag.Filter == "closed") { <text>Closed Assignments</text> }
+                else { <text>All Assignments</text> }
             </h5>
         </div>
         <div class="card-body">
@@ -75,25 +77,13 @@
                     <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
                     <h4 class="text-muted">No Assignments Found</h4>
                     <p class="text-muted">
-                        @if (ViewBag.Filter == "notsubmitted")
+                        @if (isInstructor)
                         {
-                            <text>You don't have any assignments to submit.</text>
-                        }
-                        else if (ViewBag.Filter == "pending")
-                        {
-                            <text>You don't have any assignments pending grading.</text>
-                        }
-                        else if (ViewBag.Filter == "graded")
-                        {
-                            <text>You don't have any graded assignments yet.</text>
-                        }
-                        else if (ViewBag.Filter == "overdue")
-                        {
-                            <text>You don't have any overdue assignments.</text>
+                            <text>You haven't created any assignments matching this filter.</text>
                         }
                         else
                         {
-                            <text>You don't have any assignments.</text>
+                            <text>You don't have any assignments matching this filter.</text>
                         }
                     </p>
                 </div>
@@ -108,7 +98,10 @@
                                 <th>Assignment</th>
                                 <th>Due Date</th>
                                 <th>Status</th>
-                                <th>Grade</th>
+                                @if (!isInstructor)
+                                {
+                                    <th>Grade</th>
+                                }
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -116,10 +109,10 @@
                             @foreach (var assignment in Model.Assignments)
                             {
                                 var isOverdue = assignment.DueDate < DateTime.Now && !assignment.IsSubmitted;
-                                var isUrgent = assignment.DueDate < DateTime.Now.AddDays(2) && assignment.DueDate > DateTime.Now && !assignment.IsSubmitted;
-                                var canResubmit = assignment.IsSubmitted && !assignment.Grade.HasValue && assignment.DueDate > DateTime.Now;
+                                var isUrgent = !isInstructor && assignment.DueDate < DateTime.Now.AddDays(2) && assignment.DueDate > DateTime.Now && !assignment.IsSubmitted;
+                                var canResubmit = !isInstructor && assignment.IsSubmitted && !assignment.Grade.HasValue && assignment.DueDate > DateTime.Now;
 
-                                <tr class="@(isOverdue ? "table-danger" : isUrgent ? "table-warning" : "")">
+                                <tr class="@(isOverdue && !isInstructor ? "table-danger" : isUrgent ? "table-warning" : "")">
                                     <td>
                                         <strong>@assignment.CourseName</strong>
                                     </td>
@@ -128,7 +121,7 @@
                                            class="text-decoration-none fw-bold">
                                             @assignment.AssignmentTitle
                                         </a>
-                                        @if (isOverdue)
+                                        @if (isOverdue && !isInstructor)
                                         {
                                             <span class="badge bg-danger ms-2">
                                                 <i class="fas fa-exclamation-circle"></i> OVERDUE
@@ -142,62 +135,87 @@
                                         }
                                     </td>
                                     <td>
-                                        <small class="@(isOverdue ? "text-danger fw-bold" : "text-muted")">
+                                        <small class="@(isOverdue && !isInstructor ? "text-danger fw-bold" : "text-muted")">
                                             <i class="fas fa-calendar-alt me-1"></i>
                                             @assignment.DueDate.ToString("MMM dd, yyyy hh:mm tt")
                                         </small>
                                     </td>
                                     <td>
-                                        @if (assignment.IsSubmitted)
+                                        @if (isInstructor)
                                         {
-                                            <span class="badge @GetStatusBadgeClass(assignment.Status)">
-                                                @assignment.StatusDisplay
+                                            <span class="badge @(assignment.Status == "Active" ? "bg-success" : "bg-secondary")">
+                                                @assignment.Status
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning text-dark">
-                                                Not Submitted
-                                            </span>
+                                            @if (assignment.IsSubmitted)
+                                            {
+                                                <span class="badge @GetStatusBadgeClass(assignment.Status)">
+                                                    @assignment.StatusDisplay
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">
+                                                    Not Submitted
+                                                </span>
+                                            }
                                         }
                                     </td>
-                                    <td>
-                                        @if (assignment.Grade.HasValue)
-                                        {
-                                            <span class="fw-bold @(assignment.Grade.Value >= 50 ? "text-success" : "text-danger")">
-                                                @assignment.Grade.Value/100
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">-</span>
-                                        }
-                                    </td>
+                                    @if (!isInstructor)
+                                    {
+                                        <td>
+                                            @if (assignment.Grade.HasValue)
+                                            {
+                                                <span class="fw-bold @(assignment.Grade.Value >= 50 ? "text-success" : "text-danger")">
+                                                    @assignment.Grade.Value/100
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                    }
                                     <td>
                                         <div class="d-flex gap-1">
-                                           
+                                            <a asp-action="Details" asp-route-id="@assignment.AssignmentId"
+                                               class="btn btn-sm btn-info text-white" title="View Details">
+                                                <i class="fas fa-eye me-1"></i> View
+                                            </a>
 
-                                            @* Submit Button - Show if not submitted and not overdue *@
-                                            @if (!assignment.IsSubmitted && assignment.DueDate > DateTime.Now)
+                                            @if (isInstructor)
                                             {
-                                                <a asp-action="Submit" asp-route-id="@assignment.AssignmentId"
-                                                   class="btn btn-sm btn-primary"
-                                                   title="Submit Assignment">
-                                                    <i class="fas fa-paper-plane me-1"></i> Submit
+                                                <a asp-action="Edit" asp-route-id="@assignment.AssignmentId"
+                                                   class="btn btn-sm btn-warning" title="Edit Assignment">
+                                                    <i class="fas fa-edit me-1"></i> Edit
+                                                </a>
+                                                <a asp-action="Submissions" asp-route-id="@assignment.AssignmentId"
+                                                   class="btn btn-sm btn-primary" title="View Submissions">
+                                                    <i class="fas fa-users me-1"></i> Submissions
                                                 </a>
                                             }
-
-                                            @* Resubmit Button - Show if submitted but not graded and not overdue *@
-                                            @if (canResubmit)
+                                            else
                                             {
-                                                <a asp-action="Submit" asp-route-id="@assignment.AssignmentId"
-                                                   class="btn btn-sm btn-primary"
-                                                   title="Resubmit Assignment">
-                                                    <i class="fas fa-redo me-1"></i> Resubmit
-                                                </a>
-                                            }
+                                                @if (!assignment.IsSubmitted && assignment.DueDate > DateTime.Now)
+                                                {
+                                                    <a asp-action="Submit" asp-route-id="@assignment.AssignmentId"
+                                                       class="btn btn-sm btn-primary"
+                                                       title="Submit Assignment">
+                                                        <i class="fas fa-paper-plane me-1"></i> Submit
+                                                    </a>
+                                                }
 
-                                            
+                                                @if (canResubmit)
+                                                {
+                                                    <a asp-action="Submit" asp-route-id="@assignment.AssignmentId"
+                                                       class="btn btn-sm btn-primary"
+                                                       title="Resubmit Assignment">
+                                                        <i class="fas fa-redo me-1"></i> Resubmit
+                                                    </a>
+                                                }
+                                            }
                                         </div>
                                     </td>
                                 </tr>

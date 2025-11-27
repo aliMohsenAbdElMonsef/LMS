@@ -52,7 +52,7 @@ namespace LMS.BusinessLogic.Services
         public abstract Task<bool> IsUserEnrolledAsync(RequestEnrollIntoCourseDTO dto);
         public abstract Task<int> GetCourseEnrollmentCountAsync(string courseId);
 
-        public abstract Task<ServiceResponseDTO<bool>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto);
+        public abstract Task<ServiceResponseDTO<string>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto);
 
 
         #endregion

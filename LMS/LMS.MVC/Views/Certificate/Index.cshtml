@@ -1,0 +1,150 @@
+@model dynamic
+@{
+    ViewData["Title"] = "My Certificates";
+}
+
+<div class="container py-5">
+    <div class="page-header mb-4 animate-fade-in-up">
+        <h2><i class="bi bi-award"></i> My Certificates</h2>
+        <p class="text-secondary">View and download your earned certificates</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Certificate Card 1 -->
+        <div class="col-lg-4 col-md-6 animate-fade-in-up">
+            <div class="card certificate-card h-100">
+                <div class="certificate-badge">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <div class="card-body text-center">
+                    <div class="certificate-icon mb-3">
+                        <i class="bi bi-patch-check-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="card-title">Web Development Bootcamp</h5>
+                    <p class="text-muted small mb-3">Completed on: January 15, 2024</p>
+                    <div class="certificate-details mb-3">
+                        <p class="mb-1"><strong>Score:</strong> 95%</p>
+                        <p class="mb-1"><strong>Grade:</strong> A+</p>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="@Url.Action("View", "Certificate", new { id = "1" })" class="btn btn-primary btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="@Url.Action("Download", "Certificate", new { id = "1" })" class="btn btn-success btn-sm">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Card 2 -->
+        <div class="col-lg-4 col-md-6 animate-fade-in-up animate-delay-100">
+            <div class="card certificate-card h-100">
+                <div class="certificate-badge">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <div class="card-body text-center">
+                    <div class="certificate-icon mb-3">
+                        <i class="bi bi-patch-check-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="card-title">Python for Data Science</h5>
+                    <p class="text-muted small mb-3">Completed on: February 20, 2024</p>
+                    <div class="certificate-details mb-3">
+                        <p class="mb-1"><strong>Score:</strong> 88%</p>
+                        <p class="mb-1"><strong>Grade:</strong> A</p>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="@Url.Action("View", "Certificate", new { id = "2" })" class="btn btn-primary btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="@Url.Action("Download", "Certificate", new { id = "2" })" class="btn btn-success btn-sm">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Card 3 -->
+        <div class="col-lg-4 col-md-6 animate-fade-in-up animate-delay-200">
+            <div class="card certificate-card h-100">
+                <div class="certificate-badge">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <div class="card-body text-center">
+                    <div class="certificate-icon mb-3">
+                        <i class="bi bi-patch-check-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="card-title">UI/UX Design Masterclass</h5>
+                    <p class="text-muted small mb-3">Completed on: March 10, 2024</p>
+                    <div class="certificate-details mb-3">
+                        <p class="mb-1"><strong>Score:</strong> 92%</p>
+                        <p class="mb-1"><strong>Grade:</strong> A+</p>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="@Url.Action("View", "Certificate", new { id = "3" })" class="btn btn-primary btn-sm">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="@Url.Action("Download", "Certificate", new { id = "3" })" class="btn btn-success btn-sm">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (if no certificates) -->
+        @* Uncomment if no certificates
+        <div class="col-12">
+            <div class="card text-center py-5">
+                <div class="card-body">
+                    <i class="bi bi-award" style="font-size: 5rem; color: #d1d5db;"></i>
+                    <h4 class="mt-3">No Certificates Yet</h4>
+                    <p class="text-muted">Complete courses to earn certificates!</p>
+                    <a href="@Url.Action("Index", "Course")" class="btn btn-primary mt-3">
+                        <i class="bi bi-book"></i> Browse Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+        *@
+    </div>
+</div>
+
+<style>
+.certificate-card {
+    position: relative;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.certificate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.certificate-details {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+</style>

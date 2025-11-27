@@ -1,0 +1,110 @@
+using LMS.MVC.Models.ViewModels.CourseReview;
+using LMS.MVC.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LMS.MVC.Controllers
+{
+    [Authorize]
+    public class CourseReviewController : Controller
+    {
+        private readonly IUnitOfServices _services;
+
+        public CourseReviewController(IUnitOfServices services)
+        {
+            _services = services;
+        }
+
+        // GET: CourseReview/Index
+        [HttpGet]
+        public async Task<IActionResult> Index(string courseId)
+        {
+            try
+            {
+                var result = await _services.CourseReviewService.GetCourseReviewsAsync(courseId);
+                if (!result.Success)
+                {
+                    TempData["Error"] = $"Error loading reviews: {result.Message}";
+                    return RedirectToAction("Details", "Course", new { id = courseId });
+                }
+
+                ViewBag.CourseId = courseId;
+                return View(result.Data);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading reviews: {ex.Message}";
+                return RedirectToAction("Details", "Course", new { id = courseId });
+            }
+        }
+
+        // GET: CourseReview/Create
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public IActionResult Create(string courseId)
+        {
+            ViewBag.CourseId = courseId;
+            return View();
+        }
+
+        // POST: CourseReview/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> Create(CreateCourseReviewViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                model.UserId = userId;
+                
+                var result = await _services.CourseReviewService.CreateReviewAsync(model);
+                
+                if (result.Success)
+                {
+                    TempData["Success"] = "Review submitted successfully!";
+                    return RedirectToAction("Details", "Course", new { id = model.CourseId });
+                }
+                
+                TempData["Error"] = result.Message;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error submitting review: {ex.Message}";
+                return View(model);
+            }
+        }
+
+        // POST: CourseReview/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id, string courseId)
+        {
+            try
+            {
+                var result = await _services.CourseReviewService.DeleteReviewAsync(id);
+                
+                if (result)
+                {
+                    TempData["Success"] = "Review deleted successfully!";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to delete review.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting review: {ex.Message}";
+            }
+            
+            return RedirectToAction("Details", "Course", new { id = courseId });
+        }
+    }
+}

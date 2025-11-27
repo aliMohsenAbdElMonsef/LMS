@@ -4,115 +4,277 @@
     ViewData["Title"] = "Enrollment Management";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Enrollment Management</h2>
-
-    <form method="post" asp-action="CourseEnrollments" class="card p-3 mb-4">
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="col-md-4">
-                <label>Status</label>
-                <select class="form-control" name="Request.SelectedStatus">
-                    <option value="">All</option>
-                    @if (Model.Request?.StatusList != null)
-                    {
-                        foreach (var status in Model.Request.StatusList)
-                        {
-                            <option value="@status.Value" selected="@(status.Value == Model.Request.SelectedStatus)">
-                                @status.DisplayName
-                            </option>
-                        }
-                    }
-                </select>
-            </div>
-
-            <div class="col-md-4">
-                <label>Email / Username</label>
-                <input type="text" class="form-control" name="Request.UserSearch"
-                       value="@Model.Request.UserSearch"
-                       placeholder="Search by user email or username" />
-            </div>
-
-            <div class="col-md-4">
-                <label>Course (Name / Code)</label>
-                <input type="text" class="form-control" name="Request.CourseSearch"
-                       value="@Model.Request.CourseSearch"
-                       placeholder="Search by course name or code" />
-            </div>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-people-fill text-primary"></i> Enrollment Management
+            </h2>
+            <p class="text-muted mb-0">Manage student course enrollments and approvals</p>
         </div>
-
-        <div class="mt-3 text-end">
-            <button class="btn btn-primary" type="submit">
-                <i class="bi bi-search"></i> Search
-            </button>
-            <a class="btn btn-secondary" asp-action="CourseEnrollments">
-                Reset
-            </a>
+        <div class="text-muted">
+            <i class="bi bi-list-check"></i> Total: <strong>@(Model.Enrollments?.Count ?? 0)</strong> enrollments
         </div>
-    </form>
+    </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>User</th>
-                    <th>Course</th>
-                    <th>Status</th>
-                    <th>Enrollment Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Enrollments != null && Model.Enrollments.Any())
-                {
-                    int count = 1;
-                    foreach (var item in Model.Enrollments)
-                    {
-                        <tr>
-                            <td>@count</td>
-                            <td>@item.UserEmail (@item.UserName)</td>
-                            <td>@item.CourseName (@item.CourseCode)</td>
-                            <td>
-                                <span class="badge
-                                                    @(item.Status == "Pending" ? "bg-warning text-dark" :
-                                                                                                                  item.Status == "Approved" ? "bg-success" :
-                                                                                                                  item.Status == "Rejected" ? "bg-danger" : "bg-secondary")">
-                            @item.Status
-                        </span>
-                    </td>
-                    <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
-                    <td>
-                        @if (item.Status == "Pending")
+    <!-- Search & Filter Card -->
+    <div class="card shadow-sm mb-4 animate-fade-in-up">
+        <div class="card-header bg-white border-bottom">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel"></i> Search & Filter
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-action="CourseEnrollments">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-flag"></i> Status
+                        </label>
+                        <select class="form-select" name="Request.SelectedStatus">
+                            <option value="">All Statuses</option>
+                            @if (Model.Request?.StatusList != null)
+                            {
+                                foreach (var status in Model.Request.StatusList)
                                 {
-                                    <form method="post" asp-action="ApproveEnrollment">
-                                        <input type="hidden" name="UserId" value="@item.UserId" />
-                                        <input type="hidden" name="CourseId" value="@item.CourseId" />
-                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                                    </form>
-
-
-                                    <form method="post" asp-action="RejectEnrollment">
-                                        <input type="hidden" name="UserId" value="@item.UserId" />
-                                        <input type="hidden" name="CourseId" value="@item.CourseId" />
-                                        <button type="submit" class="btn btn-success btn-sm">Deny</button>
-                                    </form>
-
+                                    <option value="@status.Value" selected="@(status.Value == Model.Request.SelectedStatus)">
+                                        @status.DisplayName
+                                    </option>
                                 }
-                            </td>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person"></i> User
+                        </label>
+                        <input type="text" class="form-control" name="Request.UserSearch"
+                               value="@Model.Request.UserSearch"
+                               placeholder="Search by email or username" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-book"></i> Course
+                        </label>
+                        <input type="text" class="form-control" name="Request.CourseSearch"
+                               value="@Model.Request.CourseSearch"
+                               placeholder="Search by name or code" />
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    <a class="btn btn-outline-secondary" asp-action="CourseEnrollments">
+                        <i class="bi bi-arrow-clockwise"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    <!-- Enrollments Table -->
+    <div class="card shadow-sm animate-fade-in-up animate-delay-100">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 60px;">#</th>
+                            <th><i class="bi bi-person-badge"></i> Student</th>
+                            <th><i class="bi bi-book-half"></i> Course</th>
+                            <th class="text-center"><i class="bi bi-flag"></i> Status</th>
+                            <th class="text-center"><i class="bi bi-calendar"></i> Enrolled</th>
+                            <th class="text-center" style="width: 200px;">Actions</th>
                         </tr>
-                        count++;
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="6" class="text-muted text-center p-3">
-                            No enrollments found for the applied filters.
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        @if (Model.Enrollments != null && Model.Enrollments.Any())
+                        {
+                            int count = 1;
+                            foreach (var item in Model.Enrollments)
+                            {
+                                <tr class="enrollment-row">
+                                    <td class="text-center text-muted fw-semibold">@count</td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <a href="@Url.Action("Details", "Dashboard", new { id = item.UserId })" 
+                                               class="text-decoration-none fw-semibold text-primary user-link">
+                                                <i class="bi bi-person-circle"></i> @item.UserName
+                                            </a>
+                                            <small class="text-muted">@item.UserEmail</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-semibold">@item.CourseName</span>
+                                            <small class="text-muted">Code: @item.CourseCode</small>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Pending
+                                            </span>
+                                        }
+                                        else if (item.Status == "Approved")
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Approved
+                                            </span>
+                                        }
+                                        else if (item.Status == "Rejected")
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle"></i> Rejected
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@item.Status</span>
+                                        }
+                                    </td>
+                                    <td class="text-center text-muted">
+                                        @item.CreatedAt.ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Status == "Pending")
+                                        {
+                                            <div class="btn-group" role="group">
+                                                <form method="post" asp-action="ApproveEnrollment" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="UserId" value="@item.UserId" />
+                                                    <input type="hidden" name="CourseId" value="@item.CourseId" />
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Approve Enrollment">
+                                                        <i class="bi bi-check-lg"></i> Approve
+                                                    </button>
+                                                </form>
+
+                                                <form method="post" asp-action="RejectEnrollment" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="UserId" value="@item.UserId" />
+                                                    <input type="hidden" name="CourseId" value="@item.CourseId" />
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Reject Enrollment">
+                                                        <i class="bi bi-x-lg"></i> Deny
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                <i class="bi bi-dash-circle"></i> No actions
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="empty-state">
+                                        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                                        <h5 class="text-muted">No Enrollments Found</h5>
+                                        <p class="text-muted mb-0">
+                                            @if (!string.IsNullOrEmpty(Model.Request?.UserSearch) || 
+                                                 !string.IsNullOrEmpty(Model.Request?.CourseSearch) || 
+                                                 !string.IsNullOrEmpty(Model.Request?.SelectedStatus))
+                                            {
+                                                <span>Try adjusting your search filters</span>
+                                            }
+                                            else
+                                            {
+                                                <span>No enrollment requests at the moment</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    .enrollment-row {
+        transition: all 0.2s ease;
+    }
+
+    .enrollment-row:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+
+    .user-link {
+        transition: all 0.2s ease;
+    }
+
+    .user-link:hover {
+        color: #0056b3 !important;
+        text-decoration: underline !important;
+    }
+
+    .btn-group .btn {
+        transition: all 0.2s ease;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .empty-state i {
+        opacity: 0.3;
+    }
+
+    .card {
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .card-header {
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .form-select:focus,
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .animate-delay-100 {
+        animation-delay: 0.1s;
+        opacity: 0;
+        animation-fill-mode: forwards;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

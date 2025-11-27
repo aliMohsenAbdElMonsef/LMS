@@ -54,7 +54,7 @@
     <script>
         // Client-side validation for due date and file
         document.addEventListener('DOMContentLoaded', function() {
-            var dueDateInput = document.querySelector('input[asp-for="DueDate"]');
+            var dueDateInput = document.getElementById('DueDate');
             var today = new Date().toISOString().slice(0, 16);
             dueDateInput.min = today;
 

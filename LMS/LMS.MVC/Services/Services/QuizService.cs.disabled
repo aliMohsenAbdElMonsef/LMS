@@ -1,0 +1,151 @@
+using LMS.MVC.Services.Contracts.Services;
+using LMS.MVC.Services.Response;
+using LMS.MVC.Models.ViewModels.Quiz;
+using System.Net.Http.Json;
+
+namespace LMS.MVC.Services.Services
+{
+    internal class QuizService : BaseMVCServices, IQuizService
+    {
+        public QuizService(HttpClient client, IHttpContextAccessor httpContextAccessor) : base(client, httpContextAccessor)
+        {
+        }
+
+        private async Task<SuccessServiceResult<T>> ExecuteApiCallAsync<T>(Func<Task<SuccessServiceResult<T>>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (Exception ex)
+            {
+                return new SuccessServiceResult<T>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetQuizzesByCourseAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var quizzes = await GetAsync<IEnumerable<QuizItemViewModel>>($"api/quizzes/course/{courseId}");
+                return new SuccessServiceResult<IEnumerable<QuizItemViewModel>>
+                {
+                    Success = true,
+                    Data = quizzes ?? Enumerable.Empty<QuizItemViewModel>()
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<QuizItemViewModel>> GetQuizByIdAsync(string id)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var quiz = await GetAsync<QuizItemViewModel>($"api/quizzes/{id}");
+                return new SuccessServiceResult<QuizItemViewModel>
+                {
+                    Success = true,
+                    Data = quiz
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<TakeQuizViewModel>> GetQuizForTakingAsync(string id)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var quiz = await GetAsync<TakeQuizViewModel>($"api/quizzes/take/{id}");
+                return new SuccessServiceResult<TakeQuizViewModel>
+                {
+                    Success = true,
+                    Data = quiz
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<bool>> StartQuizAsync(string id)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await PostAsync<bool>($"api/quizzes/start/{id}", null);
+                return new SuccessServiceResult<bool>
+                {
+                    Success = true,
+                    Data = result,
+                    Message = "Quiz started"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<QuizItemViewModel>> CreateQuizAsync(CreateQuizViewModel model)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var quiz = await PostAsync<QuizItemViewModel>($"api/quizzes/create", JsonContent.Create(model));
+                return new SuccessServiceResult<QuizItemViewModel>
+                {
+                    Success = true,
+                    Data = quiz,
+                    Message = "Quiz created successfully"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<QuizItemViewModel>> UpdateQuizAsync(string id, UpdateQuizViewModel model)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var quiz = await PutAsync<QuizItemViewModel>($"api/quizzes/update/{id}", JsonContent.Create(model));
+                return new SuccessServiceResult<QuizItemViewModel>
+                {
+                    Success = true,
+                    Data = quiz,
+                    Message = "Quiz updated successfully"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<QuizResultViewModel>> SubmitQuizAsync(SubmitQuizViewModel model)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await PostAsync<QuizResultViewModel>($"api/quizzes/submit", JsonContent.Create(model));
+                return new SuccessServiceResult<QuizResultViewModel>
+                {
+                    Success = true,
+                    Data = result,
+                    Message = "Quiz submitted successfully"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<QuizResultViewModel>> GetQuizResultsAsync(string quizId, string username)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var results = await GetAsync<QuizResultViewModel>($"api/quizzes/results/{quizId}?username={username}");
+                return new SuccessServiceResult<QuizResultViewModel>
+                {
+                    Success = true,
+                    Data = results
+                };
+            });
+        }
+
+        public async Task<bool> DeleteQuizAsync(string id)
+        {
+            try
+            {
+                await DeleteAsync<object>($"api/quizzes/delete/{id}");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}

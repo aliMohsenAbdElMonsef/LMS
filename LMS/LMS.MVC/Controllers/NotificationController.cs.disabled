@@ -1,0 +1,133 @@
+using LMS.MVC.Services.Contracts;
+using LMS.MVC.Models.ViewModels.Notification;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LMS.MVC.Controllers
+{
+    [Authorize]
+    public class NotificationController : Controller
+    {
+        private readonly IUnitOfServices _services;
+
+        public NotificationController(IUnitOfServices services)
+        {
+            _services = services;
+        }
+
+        // GET: Notification/Index
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var result = await _services.NotificationService.GetUserNotificationsAsync(userId);
+                
+                if (!result.Success)
+                {
+                    TempData["Error"] = $"Error loading notifications: {result.Message}";
+                    return View(new List<NotificationViewModel>());
+                }
+
+                return View(result.Data);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading notifications: {ex.Message}";
+                return View(new List<NotificationViewModel>());
+            }
+        }
+
+        // GET: Notification/Unread
+        [HttpGet]
+        public async Task<IActionResult> Unread()
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var result = await _services.NotificationService.GetUnreadNotificationsAsync(userId);
+                
+                if (!result.Success)
+                {
+                    return PartialView("_NotificationList", new List<NotificationViewModel>());
+                }
+
+                return PartialView("_NotificationList", result.Data);
+            }
+            catch (Exception ex)
+            {
+                return PartialView("_NotificationList", new List<NotificationViewModel>());
+            }
+        }
+
+        // POST: Notification/MarkAsRead/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsRead(string id)
+        {
+            try
+            {
+                var result = await _services.NotificationService.MarkAsReadAsync(id);
+                return Json(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: Notification/MarkAllAsRead
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAllAsRead()
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var result = await _services.NotificationService.MarkAllAsReadAsync(userId);
+                
+                if (result)
+                {
+                    TempData["Success"] = "All notifications marked as read.";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to mark all as read.";
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        // POST: Notification/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var result = await _services.NotificationService.DeleteNotificationAsync(id);
+                
+                if (result)
+                {
+                    TempData["Success"] = "Notification deleted.";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to delete notification.";
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+    }
+}

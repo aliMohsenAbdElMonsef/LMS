@@ -1,0 +1,125 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult>
+
+@{
+    ViewData["Title"] = "My Assignments";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">My Assignments</h1>
+            <p class="text-muted small mb-0">Manage assignments you have created</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-clipboard-x display-1 text-muted"></i>
+            </div>
+            <h3 class="h5 text-muted">No assignments created yet</h3>
+            <p class="text-muted">Assignments you create will appear here.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 ps-4">Title</th>
+                                <th class="border-0">Course</th>
+                                <th class="border-0">Due Date</th>
+                                <th class="border-0 text-center">Submissions</th>
+                                <th class="border-0 text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-dark">@item.Title</div>
+                                        @if (!string.IsNullOrEmpty(item.Description))
+                                        {
+                                            <small class="text-muted d-block text-truncate" style="max-width: 300px;">
+                                                @item.Description
+                                            </small>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">
+                                            @item.CourseName
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="@(item.DueDate < DateTime.Now ? "text-danger" : "text-dark")">
+                                                @item.DueDate.ToString("MMM dd, yyyy")
+                                            </span>
+                                            <small class="text-muted">@item.DueDate.ToString("h:mm tt")</small>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info text-white rounded-pill px-3">
+                                            @item.SubmissionsCount
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <a asp-action="Submissions" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="View Submissions">
+                                                <i class="bi bi-people"></i> Submissions
+                                            </a>
+                                            <a asp-controller="Assignment" asp-action="Edit" asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               title="Edit Assignment">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteModal-@item.Id"
+                                                    title="Delete Assignment">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header border-0">
+                                                        <h5 class="modal-title">Delete Assignment</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <p>Are you sure you want to delete <strong>@item.Title</strong>?</p>
+                                                        <p class="text-danger small mb-0">
+                                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                                            This action cannot be undone. All student submissions and grades for this assignment will also be deleted.
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer border-0">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-danger">Delete Assignment</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

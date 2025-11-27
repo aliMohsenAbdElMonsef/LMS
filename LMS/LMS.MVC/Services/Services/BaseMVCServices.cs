@@ -91,5 +91,8 @@ namespace LMS.MVC.Services.Services
 
         public Task<T> DeleteAsync<T>(string url) =>
             SendRequestAsync<T>(() => _client.DeleteAsync(url));
+
+        public Task<T> PutAsync<T>(string url, HttpContent content) =>
+            SendRequestAsync<T>(() => _client.PutAsync(url, content));
     }
 }

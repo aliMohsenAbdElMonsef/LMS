@@ -1,0 +1,121 @@
+using LMS.MVC.Models.ViewModels.CertificateTemplate;
+using LMS.MVC.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+namespace LMS.MVC.Controllers
+{
+    [Authorize(Roles = "Admin,Instructor")]
+    public class CertificateTemplateController : Controller
+    {
+        private readonly IUnitOfServices _services;
+
+        public CertificateTemplateController(IUnitOfServices services)
+        {
+            _services = services;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var result = await _services.CertificateTemplateService.GetAllAsync();
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return View(new List<CertificateTemplateViewModel>());
+            }
+            return View(result.Data);
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            var result = await _services.CertificateTemplateService.GetByIdAsync(id);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            return View(result.Data);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCertificateTemplateViewModel model)
+        {
+            // Set AdminId from current user
+            model.AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            if (!ModelState.IsValid) return View(model);
+
+            var result = await _services.CertificateTemplateService.CreateAsync(model);
+            if (result.Success)
+            {
+                TempData["Success"] = "Template created successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            TempData["Error"] = result.Message;
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            var result = await _services.CertificateTemplateService.GetByIdAsync(id);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            
+            var updateModel = new UpdateCertificateTemplateViewModel
+            {
+                Id = result.Data.Id,
+                Title = result.Data.Title,
+                Description = result.Data.Description,
+                MessageBody = result.Data.MessageBody
+            };
+            
+            return View(updateModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UpdateCertificateTemplateViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var result = await _services.CertificateTemplateService.UpdateAsync(model);
+            if (result.Success)
+            {
+                TempData["Success"] = "Template updated successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            TempData["Error"] = result.Message;
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _services.CertificateTemplateService.DeleteAsync(id);
+            if (result)
+            {
+                TempData["Success"] = "Template deleted successfully.";
+            }
+            else
+            {
+                TempData["Error"] = "Error deleting template.";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

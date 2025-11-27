@@ -1,0 +1,97 @@
+using LMS.MVC.Services.Contracts.Services;
+using LMS.MVC.Services.Response;
+using LMS.MVC.Models.ViewModels.CourseReview;
+using System.Net.Http.Json;
+
+namespace LMS.MVC.Services.Services
+{
+    internal class CourseReviewService : BaseMVCServices, ICourseReviewService
+    {
+        public CourseReviewService(HttpClient client, IHttpContextAccessor httpContextAccessor) : base(client, httpContextAccessor)
+        {
+        }
+
+        private async Task<SuccessServiceResult<T>> ExecuteApiCallAsync<T>(Func<Task<SuccessServiceResult<T>>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (Exception ex)
+            {
+                return new SuccessServiceResult<T>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<CourseReviewViewModel>>> GetCourseReviewsAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var reviews = await GetAsync<IEnumerable<CourseReviewViewModel>>($"api/reviews/course/{courseId}");
+                return new SuccessServiceResult<IEnumerable<CourseReviewViewModel>>
+                {
+                    Success = true,
+                    Data = reviews ?? Enumerable.Empty<CourseReviewViewModel>()
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<CourseReviewViewModel>> CreateReviewAsync(CreateCourseReviewViewModel model)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var review = await PostAsync<CourseReviewViewModel>($"api/reviews/create", JsonContent.Create(model));
+                return new SuccessServiceResult<CourseReviewViewModel>
+                {
+                    Success = true,
+                    Data = review,
+                    Message = "Review created successfully"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<CourseReviewViewModel>> UpdateReviewAsync(string id, CreateCourseReviewViewModel model)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var review = await PutAsync<CourseReviewViewModel>($"api/reviews/update/{id}", JsonContent.Create(model));
+                return new SuccessServiceResult<CourseReviewViewModel>
+                {
+                    Success = true,
+                    Data = review,
+                    Message = "Review updated successfully"
+                };
+            });
+        }
+
+        public async Task<bool> DeleteReviewAsync(string id)
+        {
+            try
+            {
+                await DeleteAsync<object>($"api/reviews/delete/{id}");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<SuccessServiceResult<double>> GetCourseRatingAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var rating = await GetAsync<double>($"api/reviews/rating/{courseId}");
+                return new SuccessServiceResult<double>
+                {
+                    Success = true,
+                    Data = rating
+                };
+            });
+        }
+    }
+}

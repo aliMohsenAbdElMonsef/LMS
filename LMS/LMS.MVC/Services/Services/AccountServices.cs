@@ -225,5 +225,36 @@ namespace LMS.MVC.Services.Services
         }
 
 
+
+        public async Task<BasicServiceResult> ForgotPasswordAsync(string email)
+        {
+            try
+            {
+                var response = await _client.PostAsJsonAsync("api/user/forgot-password", new { Email = email });
+                return await response.Content.ReadFromJsonAsync<BasicServiceResult>()
+                       ?? new BasicServiceResult { Success = false, Message = "Unknown error" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error requesting password reset");
+                return new BasicServiceResult { Success = false, Message = "Error requesting password reset" };
+            }
+        }
+
+        public async Task<BasicServiceResult> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            try
+            {
+                var model = new { Email = email, Token = token, NewPassword = newPassword };
+                var response = await _client.PostAsJsonAsync("api/user/reset-password", model);
+                return await response.Content.ReadFromJsonAsync<BasicServiceResult>()
+                       ?? new BasicServiceResult { Success = false, Message = "Unknown error" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error resetting password");
+                return new BasicServiceResult { Success = false, Message = "Error resetting password" };
+            }
+        }
     }
 }

@@ -21,5 +21,6 @@ namespace LMS.MVC.Models.ViewModels.Course
         public List<CreateDayScheduleDTO> Schedule { get; set; } = new(); // need update
         public List<InstructorInformationDTO> Instructors { get; set; } = new();// need update
         public DateTime? LastUpdate { get; set; }
+        public List<LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult> Assignments { get; set; } = new();
     }
 }

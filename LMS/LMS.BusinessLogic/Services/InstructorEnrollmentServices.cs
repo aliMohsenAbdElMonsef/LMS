@@ -181,18 +181,20 @@ namespace LMS.BusinessLogic.Services
             return enrollments.Count;
         }
 
-        public override async Task<ServiceResponseDTO<bool>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
+        public override async Task<ServiceResponseDTO<string>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
         {
             var userId = dto.UserId;
             var courseId = dto.CourseId;
-            bool result = await _instructorEnrollRepo.ExistsAsync(userId, courseId);
-            ServiceResponseDTO<bool> response = new ServiceResponseDTO<bool> 
-                                                { 
-                                                  Success = true , 
-                                                  Data = result,
-                                                  Message = "Check user enrolled sucessfully passed"
-                                                };
-            return response;
+            var enrollment = await _instructorEnrollRepo.GetByInstructorAndCourseAsync(userId, courseId);
+            
+            string status = enrollment?.Status.ToString() ?? "None";
+
+            return new ServiceResponseDTO<string> 
+            { 
+                Success = true, 
+                Data = status,
+                Message = "Enrollment status retrieved."
+            };
         }
         #endregion
     }

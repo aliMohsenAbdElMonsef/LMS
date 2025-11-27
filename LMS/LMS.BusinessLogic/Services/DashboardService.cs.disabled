@@ -1,0 +1,271 @@
+using Domain.Entities.RelationTables;
+using Domain.Enums;
+using LMS.BusinessLogic.Contracts.Services;
+using LMS.BusinessLogic.DTOs.Dashboard;
+using LMS.BusinessLogic.DTOs.Responses;
+using LMS.DataAccess.Contracts;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace LMS.BusinessLogic.Services
+{
+    internal class DashboardService : IDashboardService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DashboardService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<ServiceResponseDTO<AdminDashboardDTO>> GetAdminDashboardAsync()
+        {
+            try
+            {
+                var users = await _unitOfWork.Users.GetAllAsync();
+                var courses = await _unitOfWork.Courses.GetAllAsync();
+                var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
+                var quizzes = await _unitOfWork.Quizzes.GetAllAsync();
+                var assignments = await _unitOfWork.Assignments.GetAllAsync();
+
+                var dashboard = new AdminDashboardDTO
+                {
+                    TotalUsers = users.Count(),
+                    TotalStudents = users.Count(u => u.ApplyAs == UserType.Student),
+                    TotalInstructors = users.Count(u => u.ApplyAs == UserType.Instructor),
+                    PendingUsers = users.Count(u => u.Status == ApplicationStatus.Pending),
+                    TotalCourses = courses.Count(),
+                    ActiveCourses = courses.Count(c => !c.IsDeleted),
+                    TotalEnrollments = enrollments.Count(),
+                    TotalQuizzes = quizzes.Count(),
+                    TotalAssignments = assignments.Count(),
+                    AverageStudentProgress = enrollments.Any() ? enrollments.Average(e => e.progress) : 0
+                };
+
+                // Get top 5 courses by enrollment
+                var topCourses = courses
+                    .Select(c => new CourseStatsDTO
+                    {
+                        CourseId = c.Id,
+                        CourseName = c.Name,
+                        EnrolledStudents = enrollments.Count(e => e.CourseId == c.Id),
+                        CompletedStudents = enrollments.Count(e => e.CourseId == c.Id && e.progress >= 100),
+                        AverageProgress = enrollments.Where(e => e.CourseId == c.Id).Any() 
+                            ? enrollments.Where(e => e.CourseId == c.Id).Average(e => e.progress) 
+                            : 0
+                    })
+                    .OrderByDescending(c => c.EnrolledStudents)
+                    .Take(5)
+                    .ToList();
+
+                dashboard.TopCourses = topCourses;
+
+                return new ServiceResponseDTO<AdminDashboardDTO>
+                {
+                    Data = dashboard,
+                    Success = true,
+                    Message = "Admin dashboard retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving admin dashboard: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ServiceResponseDTO<InstructorDashboardDTO>> GetInstructorDashboardAsync(string instructorId)
+        {
+            try
+            {
+                var instructor = await _unitOfWork.Users.FindByIdAsync(instructorId);
+                if (instructor == null)
+                {
+                    return new ServiceResponseDTO<InstructorDashboardDTO>
+                    {
+                        Success = false,
+                        Message = "Instructor not found."
+                    };
+                }
+
+                var instructorEnrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
+                var myCourseIds = instructorEnrollments
+                    .Where(ie => ie.InstructorId == instructorId && ie.Status == ApplicationStatus.Approved)
+                    .Select(ie => ie.CourseId)
+                    .ToList();
+
+                var studentEnrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
+                var quizzes = await _unitOfWork.Quizzes.GetAllAsync();
+                var assignments = await _unitOfWork.Assignments.GetAllAsync();
+                var courses = await _unitOfWork.Courses.GetAllAsync();
+
+                var myStudents = studentEnrollments.Where(se => myCourseIds.Contains(se.CourseId)).ToList();
+
+                var dashboard = new InstructorDashboardDTO
+                {
+                    InstructorId = instructorId,
+                    InstructorName = $"{instructor.FirstName} {instructor.LastName}",
+                    TotalCourses = myCourseIds.Count,
+                    TotalStudents = myStudents.Select(s => s.StudentId).Distinct().Count(),
+                    TotalQuizzes = quizzes.Count(q => q.InstructorId == instructorId),
+                    TotalAssignments = assignments.Count(a => a.InstructorId == instructorId),
+                    AverageStudentPerformance = myStudents.Any() ? myStudents.Average(s => s.progress) : 0
+                };
+
+                // Get course stats
+                var myCourseStats = courses
+                    .Where(c => myCourseIds.Contains(c.Id))
+                    .Select(c => new CourseStatsDTO
+                    {
+                        CourseId = c.Id,
+                        CourseName = c.Name,
+                        EnrolledStudents = studentEnrollments.Count(e => e.CourseId == c.Id),
+                        CompletedStudents = studentEnrollments.Count(e => e.CourseId == c.Id && e.progress >= 100),
+                        AverageProgress = studentEnrollments.Where(e => e.CourseId == c.Id).Any()
+                            ? studentEnrollments.Where(e => e.CourseId == c.Id).Average(e => e.progress)
+                            : 0
+                    })
+                    .ToList();
+
+                dashboard.MyCourses = myCourseStats;
+
+                return new ServiceResponseDTO<InstructorDashboardDTO>
+                {
+                    Data = dashboard,
+                    Success = true,
+                    Message = "Instructor dashboard retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving instructor dashboard: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ServiceResponseDTO<StudentDashboardDTO>> GetStudentDashboardAsync(string studentId)
+        {
+            try
+            {
+                var student = await _unitOfWork.Users.FindByIdAsync(studentId);
+                if (student == null)
+                {
+                    return new ServiceResponseDTO<StudentDashboardDTO>
+                    {
+                        Success = false,
+                        Message = "Student not found."
+                    };
+                }
+
+                var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
+                var myEnrollments = enrollments.Where(e => e.StudentId == studentId).ToList();
+
+                var studentQuizzes = await _unitOfWork.GetQueryable<StudentQuiz>()
+                    .Where(sq => sq.StudentId == studentId)
+                    .ToListAsync();
+
+                var studentAssignments = await _unitOfWork.GetQueryable<StudentAssignment>()
+                    .Where(sa => sa.StudentId == studentId)
+                    .ToListAsync();
+
+                var dashboard = new StudentDashboardDTO
+                {
+                    StudentId = studentId,
+                    StudentName = $"{student.FirstName} {student.LastName}",
+                    EnrolledCourses = myEnrollments.Count,
+                    CompletedCourses = myEnrollments.Count(e => e.progress >= 100),
+                    TotalQuizzesTaken = studentQuizzes.Count,
+                    TotalAssignmentsSubmitted = studentAssignments.Count,
+                    AverageQuizScore = studentQuizzes.Any() && studentQuizzes.Any(sq => sq.Grade.HasValue)
+                        ? studentQuizzes.Where(sq => sq.Grade.HasValue).Average(sq => sq.Grade.Value)
+                        : 0,
+                    AverageAssignmentScore = studentAssignments.Any() && studentAssignments.Any(sa => sa.Grade.HasValue)
+                        ? studentAssignments.Where(sa => sa.Grade.HasValue).Average(sa => sa.Grade.Value)
+                        : 0,
+                    OverallProgress = myEnrollments.Any() ? myEnrollments.Average(e => e.progress) : 0
+                };
+
+                // Get course progress
+                var courses = await _unitOfWork.Courses.GetAllAsync();
+                var courseProgress = myEnrollments.Select(e =>
+                {
+                    var course = courses.FirstOrDefault(c => c.Id == e.CourseId);
+                    var courseQuizzes = studentQuizzes.Where(sq => courses.Any(c => c.Id == e.CourseId)).ToList();
+                    var courseAssignments = studentAssignments.Where(sa => courses.Any(c => c.Id == e.CourseId)).ToList();
+
+                    return new CourseProgressDTO
+                    {
+                        CourseId = e.CourseId,
+                        CourseName = course?.Name ?? "",
+                        Progress = e.progress,
+                        QuizzesTaken = courseQuizzes.Count,
+                        AssignmentsSubmitted = courseAssignments.Count,
+                        AverageScore = (courseQuizzes.Any() || courseAssignments.Any())
+                            ? ((courseQuizzes.Where(q => q.Grade.HasValue).Sum(q => q.Grade.Value) +
+                                courseAssignments.Where(a => a.Grade.HasValue).Sum(a => a.Grade.Value)) /
+                               (courseQuizzes.Count(q => q.Grade.HasValue) + courseAssignments.Count(a => a.Grade.HasValue)))
+                            : 0
+                    };
+                }).ToList();
+
+                dashboard.CourseProgress = courseProgress;
+
+                return new ServiceResponseDTO<StudentDashboardDTO>
+                {
+                    Data = dashboard,
+                    Success = true,
+                    Message = "Student dashboard retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving student dashboard: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ServiceResponseDTO<CourseStatsDTO>> GetCourseStatsAsync(string courseId)
+        {
+            try
+            {
+                var course = await _unitOfWork.Courses.FindByIdAsync(courseId);
+                if (course == null)
+                {
+                    return new ServiceResponseDTO<CourseStatsDTO>
+                    {
+                        Success = false,
+                        Message = "Course not found."
+                    };
+                }
+
+                var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
+                var courseEnrollments = enrollments.Where(e => e.CourseId == courseId).ToList();
+
+                var reviews = await _unitOfWork.GetQueryable<CourseReview>()
+                    .Where(r => r.CourseId == courseId && !r.IsDeleted)
+                    .ToListAsync();
+
+                var stats = new CourseStatsDTO
+                {
+                    CourseId = courseId,
+                    CourseName = course.Name,
+                    EnrolledStudents = courseEnrollments.Count,
+                    CompletedStudents = courseEnrollments.Count(e => e.progress >= 100),
+                    AverageProgress = courseEnrollments.Any() ? courseEnrollments.Average(e => e.progress) : 0,
+                    AverageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0,
+                    TotalReviews = reviews.Count
+                };
+
+                return new ServiceResponseDTO<CourseStatsDTO>
+                {
+                    Data = stats,
+                    Success = true,
+                    Message = "Course stats retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving course stats: {ex.Message}", ex);
+            }
+        }
+    }
+}

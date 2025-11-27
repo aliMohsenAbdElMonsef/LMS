@@ -21,22 +21,6 @@ namespace LMS.MVC.Controllers
             var model = new SignUpViewModel();
             return View(model);
         }
-        [HttpPost]
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-
-            try
-            {
-                await _services.AccountService.LogoutUserAsync();
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(string.Empty, $"Logout failed: {ex.Message}");
-            }
-
-            return RedirectToAction("Login", "Account");
-        }
 
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
@@ -67,6 +51,22 @@ namespace LMS.MVC.Controllers
 
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+
+            try
+            {
+                await _services.AccountService.LogoutUserAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Logout failed: {ex.Message}");
+            }
+
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
@@ -120,6 +120,7 @@ namespace LMS.MVC.Controllers
                 Count = cookies.Count
             });
         }
+
         [HttpPost("ApproveUser/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveUser(string id)
@@ -132,6 +133,7 @@ namespace LMS.MVC.Controllers
             TempData["Error"] = result.Message;
             return RedirectToAction("UserManagement", "Dashboard");
         }
+
         [HttpPost("DenyUser/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DenyUser(string id)
@@ -142,6 +144,62 @@ namespace LMS.MVC.Controllers
 
             TempData["Error"] = result.Message;
             return RedirectToAction("UserManagement", "Dashboard");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Email is required.");
+                return View();
+            }
+
+            var result = await _services.AccountService.ForgotPasswordAsync(email);
+            if (result.Success)
+            {
+                TempData["Success"] = result.Message;
+                return RedirectToAction("Login");
+            }
+
+            ModelState.AddModelError("", result.Message ?? "Error sending reset link.");
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                TempData["Error"] = "Invalid password reset token.";
+                return RedirectToAction("Login");
+            }
+            return View(new ResetPasswordViewModel { Token = token, Email = email });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _services.AccountService.ResetPasswordAsync(model.Email, model.Token, model.NewPassword);
+            if (result.Success)
+            {
+                TempData["Success"] = "Password reset successfully. Please login.";
+                return RedirectToAction("Login");
+            }
+
+            ModelState.AddModelError("", result.Message ?? "Error resetting password.");
+            return View(model);
         }
     }
 }

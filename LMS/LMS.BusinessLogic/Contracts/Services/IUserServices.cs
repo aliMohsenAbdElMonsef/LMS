@@ -2,6 +2,7 @@
 using Domain.Entities.MainEntities;
 using LMS.BusinessLogic.DTOs.Auth;
 using LMS.BusinessLogic.DTOs.Responses;
+using LMS.BusinessLogic.DTOs.User;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,15 @@ namespace LMS.BusinessLogic.Contracts.Services
 
         Task<BasicResponseDTO> LogoutUser(string token, string userId);
 
+        Task<BasicResponseDTO> ForgotPasswordAsync(ForgotPasswordDTO dto);
+
+        Task<BasicResponseDTO> ResetPasswordAsync(ResetPasswordDTO dto);
+
+        Task<ServiceResponseDTO<ReadUserDTO>> UpdateProfileAsync(string userId, UpdateUserDTO dto);
+
+        Task<BasicResponseDTO> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+
+        Task<ServiceResponseDTO<UserStatsDTO>> GetUserStatsAsync(string userId);
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using LMS.BusinessLogic.Contracts;
+using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.Enrollment;
 using LMS.BusinessLogic.DTOs.Responses;
@@ -98,7 +98,7 @@ namespace LMS.API.Controllers
 
             
 
-            var result = await _unitOfServices.Courses.UpdateAsync(dto);
+            var result = await _unitOfServices.Courses.UpdateCourseWithThumbnail(dto, dto.ThumbnailFile);
 
             if (!result.Success)
                 return BadRequest(new { success = false, message = result.Message });
@@ -139,19 +139,12 @@ namespace LMS.API.Controllers
 
             return Ok(new { success = true, message = "Course deleted successfully" });
         }
-        [HttpGet("isenrolled")]
+
+        [HttpPost("isenrolled")]
         [Authorize(Roles = "Instructor,Student")]
         public async Task<IActionResult> IsEnrolledIn(RequestEnrollIntoCourseDTO dto)
         {
             var Role = GetCurrentUserRole();
-            if (Role == null)
-            {
-                return BadRequest(new ServiceResponseDTO<bool>
-                {
-                    Success = false,
-                    Message = "Couldn't find user role."
-                });
-            }
             if(Role == "Instructor")
             {
                 var result = await _unitOfServices.InstructorEnrollIntoCourse.IsEnrolledIn(dto);
@@ -161,7 +154,6 @@ namespace LMS.API.Controllers
             {
                 var result = await _unitOfServices.StudentEnrollIntoCourse.IsEnrolledIn(dto);
                 return result.Success ? Ok(result) : BadRequest(result);
-
             }
         }
         

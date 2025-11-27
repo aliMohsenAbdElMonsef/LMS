@@ -19,6 +19,7 @@ namespace LMS.API.Controllers
             _unitOfServices = unitOfServices;
 
         }
+        private string? GetCurrentUserId() => User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         private IStudentEnrollment StudentEnrollIntoCourseServices => _unitOfServices.StudentEnrollIntoCourse;
 
         private IInstructorEnrollIntoCourse InstructorEnrollIntoCourse => _unitOfServices.InstructorEnrollIntoCourse;
@@ -38,6 +39,7 @@ namespace LMS.API.Controllers
                 });
             try
             {
+                dto.UserId = GetCurrentUserId() ?? string.Empty;
                 var result = await StudentEnrollIntoCourseServices.EnrollAsync(dto);
                 return result.Success ? Ok(result) : BadRequest(result);
             }
@@ -265,6 +267,7 @@ namespace LMS.API.Controllers
 
             try
             {
+                dto.UserId = GetCurrentUserId() ?? string.Empty;
                 var result = await InstructorEnrollIntoCourse.EnrollAsync(dto);
                 return result.Success ? Ok(result) : BadRequest(result);
             }

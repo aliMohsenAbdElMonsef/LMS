@@ -1,4 +1,5 @@
-﻿using LMS.MVC.Models.ViewModels.Assignment;
+﻿using LMS.BusinessLogic.DTOs.Responses;
+using LMS.MVC.Models.ViewModels.Assignment;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -118,5 +119,10 @@ namespace LMS.MVC.Services.Contracts.Services
         /// Gets all assignments for a student (submitted and not submitted)
         /// </summary>
         Task<List<StudentAssignmentItemResult>> GetStudentAllAssignments(string studentId);
+        
+        /// <summary>
+        /// Gets all assignments created by a specific instructor
+        /// </summary>
+        Task<ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>> GetAssignmentsByInstructorAsync(string instructorId);
     }
 }

@@ -1,0 +1,236 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Create Quiz";
+    var courseId = ViewBag.CourseId;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card animate-fade-in-up">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Quiz</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="Create">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="CourseId" value="@courseId" />
+
+                        <!-- Quiz Details -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                <label class="form-label">Quiz Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="Title" placeholder="e.g., Module 1 Quiz" required>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="Description" rows="3" placeholder="Brief description of the quiz..."></textarea>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Duration (minutes) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="DurationMinutes" value="30" min="1" required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Passing Score (%) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="PassingScore" value="70" min="0" max="100" required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Max Attempts</label>
+                                <input type="number" class="form-control" name="MaxAttempts" value="3" min="1">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Available From</label>
+                                <input type="datetime-local" class="form-control" name="AvailableFrom">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Available Until</label>
+                                <input type="datetime-local" class="form-control" name="AvailableUntil">
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ShuffleQuestions" id="shuffleQuestions">
+                                    <label class="form-check-label" for="shuffleQuestions">
+                                        Shuffle questions for each student
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Questions Section -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5><i class="bi bi-list-ol"></i> Questions</h5>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addQuestion()">
+                                    <i class="bi bi-plus"></i> Add Question
+                                </button>
+                            </div>
+
+                            <div id="questionsContainer">
+                                <!-- Questions will be added here dynamically -->
+                                <div class="question-item card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <h6>Question 1</h6>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeQuestion(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Question Text <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" name="Questions[0].Text" rows="2" required></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Question Type</label>
+                                            <select class="form-select" name="Questions[0].Type">
+                                                <option value="MultipleChoice">Multiple Choice</option>
+                                                <option value="TrueFalse">True/False</option>
+                                                <option value="ShortAnswer">Short Answer</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Points <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" name="Questions[0].Points" value="1" min="1" required>
+                                        </div>
+
+                                        <div class="options-container">
+                                            <label class="form-label">Answer Options</label>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-text">
+                                                    <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="0" required>
+                                                </div>
+                                                <input type="text" class="form-control" name="Questions[0].Options[0]" placeholder="Option A">
+                                            </div>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-text">
+                                                    <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="1">
+                                                </div>
+                                                <input type="text" class="form-control" name="Questions[0].Options[1]" placeholder="Option B">
+                                            </div>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-text">
+                                                    <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="2">
+                                                </div>
+                                                <input type="text" class="form-control" name="Questions[0].Options[2]" placeholder="Option C">
+                                            </div>
+                                            <div class="input-group mb-2">
+                                                <div class="input-group-text">
+                                                    <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="3">
+                                                </div>
+                                                <input type="text" class="form-control" name="Questions[0].Options[3]" placeholder="Option D">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Quiz
+                            </button>
+                            <a href="@Url.Action("Index", "Quiz", new { courseId })" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let questionCount = 1;
+
+        function addQuestion() {
+            const container = document.getElementById('questionsContainer');
+            const questionHtml = `
+                <div class="question-item card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h6>Question ${questionCount + 1}</h6>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removeQuestion(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Question Text <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="Questions[${questionCount}].Text" rows="2" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Question Type</label>
+                            <select class="form-select" name="Questions[${questionCount}].Type">
+                                <option value="MultipleChoice">Multiple Choice</option>
+                                <option value="TrueFalse">True/False</option>
+                                <option value="ShortAnswer">Short Answer</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Points <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="Questions[${questionCount}].Points" value="1" min="1" required>
+                        </div>
+
+                        <div class="options-container">
+                            <label class="form-label">Answer Options</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="0" required>
+                                </div>
+                                <input type="text" class="form-control" name="Questions[${questionCount}].Options[0]" placeholder="Option A">
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="1">
+                                </div>
+                                <input type="text" class="form-control" name="Questions[${questionCount}].Options[1]" placeholder="Option B">
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="2">
+                                </div>
+                                <input type="text" class="form-control" name="Questions[${questionCount}].Options[2]" placeholder="Option C">
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="3">
+                                </div>
+                                <input type="text" class="form-control" name="Questions[${questionCount}].Options[3]" placeholder="Option D">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', questionHtml);
+            questionCount++;
+        }
+
+        function removeQuestion(button) {
+            button.closest('.question-item').remove();
+        }
+    </script>
+}
+
+<style>
+.question-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.question-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+</style>

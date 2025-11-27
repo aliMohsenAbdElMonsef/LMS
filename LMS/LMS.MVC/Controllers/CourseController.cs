@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using LMS.MVC.Models.ViewModels.Course;
 using LMS.MVC.Models.ViewModels.Enrollment;
 using LMS.MVC.Services.Contracts;
@@ -21,7 +21,7 @@ namespace LMS.MVC.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm, string category)
         {
             try
             {
@@ -31,7 +31,27 @@ namespace LMS.MVC.Controllers
                     return View(Enumerable.Empty<ReadCourseResult>());
                 }
 
-                return View(courses.Data);
+                var filteredCourses = courses.Data.AsEnumerable();
+
+                // Apply search filter
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    filteredCourses = filteredCourses.Where(c =>
+                        c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                        (c.Description != null && c.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                // Apply category filter
+                if (!string.IsNullOrWhiteSpace(category))
+                {
+                    filteredCourses = filteredCourses.Where(c => c.CategoryName == category);
+                }
+
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.SelectedCategory = category;
+                ViewBag.Categories = courses.Data.Select(c => c.CategoryName).Distinct().OrderBy(c => c).ToList();
+
+                return View(filteredCourses);
             }
             catch (Exception ex)
             {
@@ -96,7 +116,7 @@ namespace LMS.MVC.Controllers
                     return View(model);
                 }
 
-                TempData["Success"] = "✅ Course created successfully!";
+                TempData["Success"] = "? Course created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -150,7 +170,7 @@ namespace LMS.MVC.Controllers
                 return View(model);
             }
 
-            TempData["Success"] = "✅ Course updated successfully!";
+            TempData["Success"] = "? Course updated successfully!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -167,19 +187,18 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var course = result.Data;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)?.ToString();
             var userRole = User.IsInRole("Instructor") ? "Instructor" :
                            User.IsInRole("Student") ? "Student" : "None";
 
-            var enrolledin = false;
+            var enrollmentStatus = "None";
             if (userRole != "None" && !string.IsNullOrEmpty(userId))
             {
-                enrolledin = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
+                enrollmentStatus = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
             }
 
-            ViewBag.UserRole = userRole;
-            ViewBag.IsEnrolled = enrolledin;
+            ViewBag.EnrollmentStatus = enrollmentStatus;
+            ViewBag.IsEnrolled = enrollmentStatus == "Approved";
 
             return View(result.Data);
         }
@@ -188,15 +207,14 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
-            if (string.IsNullOrEmpty(id)) return BadRequest();
-
+            if (string.IsNullOrEmpty(id)) 
+                return Json(new { success = false, message = "Invalid course ID" });
             var success = await _services.CourseService.DeleteCourse(Guid.Parse(id));
-            if (success)
-                TempData["Success"] = "✅ Course deleted successfully!";
-            else
-                TempData["Error"] = "Failed to delete course.";
-
-            return RedirectToAction(nameof(Index));
+            
+            return Json(new { 
+                success = success, 
+                message = success ? "Course deleted successfully!" : "Failed to delete course." 
+            });
         }
 
         [HttpPost]
@@ -219,10 +237,12 @@ namespace LMS.MVC.Controllers
 
                 if (result.Success)
                 {
+                    bool isPending = User.IsInRole("Instructor");
                     return Json(new
                     {
                         success = true,
-                        message = result.Message
+                        message = result.Message,
+                        canEnrollImmediately = !isPending
                     });
                 }
                 else
@@ -289,10 +309,45 @@ namespace LMS.MVC.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Student,Instructor")]
+        public async Task<IActionResult> MyCourses()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
 
-        
+                // Get all courses first
+                var allCoursesResult = await _services.CourseService.GetAllCoursesAsync();
+                if (!allCoursesResult.Success)
+                {
+                    TempData["Error"] = "Failed to load courses.";
+                    return View(new List<ReadCourseResult>());
+                }
 
+                // Filter courses where user is enrolled
+                var myCourses = new List<ReadCourseResult>();
+
+                foreach (var course in allCoursesResult.Data)
+                {
+                    var enrollmentStatus = await _services.CourseService.IsUserEnrollIntoCourse(userId, course.Id);
+                    if (enrollmentStatus == "Approved")
+                    {
+                        myCourses.Add(course);
+                    }
+                }
+
+                ViewBag.UserRole = User.IsInRole("Instructor") ? "Instructor" : "Student";
+
+                return View(myCourses);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading your courses: {ex.Message}";
+                return View(new List<ReadCourseResult>());
+            }
+        }
     }
-
-   
 }

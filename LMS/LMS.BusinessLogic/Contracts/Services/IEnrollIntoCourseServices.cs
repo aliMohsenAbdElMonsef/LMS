@@ -10,7 +10,7 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task<BasicResponseDTO> UnenrollFromCourseAsync(TCreate dto);
         Task<BasicResponseDTO> ApproveEnrollment(TUpdate dto);
         Task<BasicResponseDTO> DenyEnrollment(TUpdate dto);
-        Task<ServiceResponseDTO<bool>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto);
+        Task<ServiceResponseDTO<string>> IsEnrolledIn(RequestEnrollIntoCourseDTO dto);
         #endregion
 
         #region Retrieval Methods

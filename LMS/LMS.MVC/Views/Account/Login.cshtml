@@ -28,17 +28,21 @@
                 <input asp-for="Password" type="password" placeholder="Password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
 
-                <div class="form-check mb-3">
+                <div class="form-check mb-3 mt-3">
                     <input asp-for="rememberMe" class="form-check-input" type="checkbox" id="RememberMe" />
                     <label class="form-check-label" for="RememberMe">Remember Me</label>
                 </div>
 
                 <button type="submit" class="btn-signup">Login</button>
-
-                <div class="login-link mt-3">
-                    Don't have an account? <a asp-action="SignUp" asp-controller="Account">Sign up here</a>
-                </div>
             </form>
+
+            <div class="login-link mt-3 text-center">
+                <a asp-action="ForgotPassword" asp-controller="Account">Forgot your password?</a>
+            </div>
+
+            <div class="login-link mt-2 text-center">
+                Don't have an account? <a asp-action="SignUp" asp-controller="Account">Sign up here</a>
+            </div>
         </div>
     </div>
 </body>

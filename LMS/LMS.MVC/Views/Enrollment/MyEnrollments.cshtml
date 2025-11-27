@@ -1,0 +1,158 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Enrollment.ReadEnrollmentViewModel>
+@{
+    ViewData["Title"] = "My Enrollments";
+    var activeEnrollments = Model?.Where(e => e.Status == "Approved") ?? Enumerable.Empty<LMS.MVC.Models.ViewModels.Enrollment.ReadEnrollmentViewModel>();
+    var pendingEnrollments = Model?.Where(e => e.Status == "Pending") ?? Enumerable.Empty<LMS.MVC.Models.ViewModels.Enrollment.ReadEnrollmentViewModel>();
+}
+
+<div class="container py-5">
+    <div class="page-header mb-4 animate-fade-in-up">
+        <h2><i class="bi bi-clipboard-check"></i> My Enrollments</h2>
+        <p class="text-secondary">Manage your course enrollments</p>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#active">
+                <i class="bi bi-play-circle"></i> Active Courses
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#pending">
+                <i class="bi bi-hourglass-split"></i> Pending Approval
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Active Courses Tab -->
+        <div class="tab-pane fade show active" id="active">
+            <div class="row g-4">
+                @if (activeEnrollments.Any())
+                {
+                    @foreach (var enrollment in activeEnrollments)
+                    {
+                        <div class="col-lg-4 col-md-6 animate-fade-in-up">
+                            <div class="card enrollment-card h-100">
+                                <div class="enrollment-status bg-success">
+                                    <i class="bi bi-check-circle"></i> Active
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@enrollment.CourseName</h5>
+                                    <p class="text-muted small mb-3">
+                                        <strong>Code:</strong> @enrollment.CourseCode
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <a href="@Url.Action("Details", "Course", new { id = enrollment.CourseId })" class="btn btn-primary btn-sm flex-fill">
+                                            <i class="bi bi-book"></i> Continue
+                                        </a>
+                                        <form method="post" asp-action="Unenroll" class="flex-fill">
+                                            <input type="hidden" name="enrollmentId" value="@enrollment.CourseId" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100" onclick="return confirm('Are you sure you want to unenroll?')">
+                                                <i class="bi bi-x-circle"></i> Unenroll
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            You have no active course enrollments. <a asp-controller="Course" asp-action="Index">Browse Courses</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Pending Courses Tab -->
+        <div class="tab-pane fade" id="pending">
+            <div class="row g-4">
+                @if (pendingEnrollments.Any())
+                {
+                    @foreach (var enrollment in pendingEnrollments)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card enrollment-card h-100">
+                                <div class="enrollment-status bg-warning">
+                                    <i class="bi bi-hourglass-split"></i> Pending
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@enrollment.CourseName</h5>
+                                    <p class="text-muted small mb-3">
+                                        <strong>Code:</strong> @enrollment.CourseCode
+                                    </p>
+                                    <div class="alert alert-warning small mb-3">
+                                        <i class="bi bi-info-circle"></i> Waiting for instructor approval
+                                    </div>
+                                    <p class="small text-muted">
+                                        Requested on: @enrollment.CreatedAt.ToString("MMM dd, yyyy")
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-light text-center">
+                            No pending enrollment requests.
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.enrollment-card {
+    position: relative;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.enrollment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.enrollment-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 2rem;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #667eea;
+    border-bottom: 2px solid #667eea;
+    background: none;
+}
+</style>

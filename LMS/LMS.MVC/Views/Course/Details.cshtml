@@ -110,6 +110,31 @@
                     <p>No instructors assigned.</p>
                 }
 
+                <hr />
+                <h6>Assignments</h6>
+                @if (Model.Assignments != null && Model.Assignments.Any())
+                {
+                    <div class="list-group list-group-flush mb-3">
+                        @foreach (var assignment in Model.Assignments)
+                        {
+                            <a asp-controller="Assignment" asp-action="Details" asp-route-id="@assignment.Id" 
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">@assignment.Title</h6>
+                                    <small class="text-muted">Due: @assignment.DueDate.ToString("MMM dd, yyyy")</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="bi bi-chevron-right"></i>
+                                </span>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No assignments available.</p>
+                }
+
                 <div class="mt-4 d-flex gap-2 flex-wrap">
                     @if (User.IsInRole("Admin"))
                     {
@@ -119,7 +144,7 @@
                     }
 
                     <!-- Assignment Upload Button for Instructors who are enrolled -->
-                    @if (User.IsInRole("Instructor") && ViewBag.IsEnrolled == true)
+                    @if (User.IsInRole("Instructor") && ViewBag.EnrollmentStatus == "Approved")
                     {
                         <a asp-controller="Assignment" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-info">
                             <i class="bi bi-upload"></i> Upload Assignment
@@ -129,12 +154,17 @@
                     @if (User.IsInRole("Student") || User.IsInRole("Instructor"))
                     {
                         <button id="enroll-btn"
-                                class="btn @(ViewBag.IsEnrolled ? "btn-danger" : "btn-success")"
+                                class="btn @(ViewBag.EnrollmentStatus == "Approved" ? "btn-danger" : ViewBag.EnrollmentStatus == "Pending" ? "btn-secondary" : "btn-success")"
                                 data-course-id="@Model.Id"
-                                data-is-enrolled="@ViewBag.IsEnrolled.ToString().ToLower()">
-                            @if (ViewBag.IsEnrolled)
+                                data-enrollment-status="@ViewBag.EnrollmentStatus"
+                                @(ViewBag.EnrollmentStatus == "Pending" ? "disabled" : "")>
+                            @if (ViewBag.EnrollmentStatus == "Approved")
                             {
                                 @:<i class="bi bi-x-circle"></i> Unenroll
+                            }
+                            else if (ViewBag.EnrollmentStatus == "Pending")
+                            {
+                                @:<i class="bi bi-hourglass"></i> Pending Approval
                             }
                             else
                             {
@@ -162,14 +192,18 @@
 
             enrollBtn.addEventListener("click", async function () {
                 const courseId = this.dataset.courseId;
-                const isEnrolled = this.dataset.isEnrolled === "true";
+                const currentStatus = this.dataset.enrollmentStatus;
                 const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                if (currentStatus === "Pending") return;
 
                 this.disabled = true;
                 this.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processing...`;
 
                 try {
-                    const response = await fetch(`/Course/Enroll?courseId=${courseId}`, {
+                    const isEnrolled = currentStatus === "Approved";
+                    const endpoint = isEnrolled ? `/Course/Unenroll?courseId=${courseId}` : `/Course/Enroll?courseId=${courseId}`;
+                    const response = await fetch(endpoint, {
                         method: "POST",
                         headers: {
                             "RequestVerificationToken": token
@@ -180,42 +214,57 @@
                     if (!response.ok) throw new Error(result.message || "Something went wrong.");
 
                     if (result.success && !result.unenrolled) {
-                        this.dataset.isEnrolled = "true";
-                        this.classList.remove("btn-success");
-                        this.classList.add("btn-danger");
-                        this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
-
+                        // Enrolled successfully
                         if (result.canEnrollImmediately !== false) {
+                             // Approved immediately (e.g. Student)
+                            this.dataset.enrollmentStatus = "Approved";
+                            this.classList.remove("btn-success");
+                            this.classList.add("btn-danger");
+                            this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
                             alert("✅ You have been enrolled successfully!");
-
-                            // Reload the page to show the assignment upload button for instructors
-                            if (@(User.IsInRole("Instructor").ToString().ToLower())) {
+                            
+                            // Reload for instructors to see upload button
+                             if (@(User.IsInRole("Instructor").ToString().ToLower())) {
                                 location.reload();
                             }
                         } else {
-                            this.disabled = true;
+                            // Pending approval (e.g. Instructor)
+                            this.dataset.enrollmentStatus = "Pending";
+                            this.classList.remove("btn-success");
+                            this.classList.add("btn-secondary");
                             this.innerHTML = `<i class="bi bi-hourglass"></i> Pending Approval`;
+                            this.disabled = true;
                             alert("⏳ Your enrollment request has been sent for approval.");
                         }
                     }
                     else if (result.success && result.unenrolled) {
-                        this.dataset.isEnrolled = "false";
+                        // Unenrolled successfully
+                        this.dataset.enrollmentStatus = "None";
                         this.classList.remove("btn-danger");
                         this.classList.add("btn-success");
                         this.innerHTML = `<i class="bi bi-check-circle"></i> Enroll`;
                         alert("❌ You have been unenrolled.");
 
-                        // Reload the page to hide the assignment upload button for instructors
-                        if (@(User.IsInRole("Instructor").ToString().ToLower())) {
+                        // Reload for instructors to hide upload button
+                         if (@(User.IsInRole("Instructor").ToString().ToLower())) {
                             location.reload();
                         }
+                    } else {
+                        throw new Error(result.message || "Operation failed.");
                     }
                 } catch (err) {
                     console.error(err);
                     alert("⚠️ Error: " + err.message);
-                    this.innerHTML = isEnrolled ? `<i class="bi bi-x-circle"></i> Unenroll` : `<i class="bi bi-check-circle"></i> Enroll`;
+                    // Reset button state on error
+                    if (currentStatus === "Approved") {
+                         this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
+                    } else {
+                         this.innerHTML = `<i class="bi bi-check-circle"></i> Enroll`;
+                    }
                 } finally {
-                    this.disabled = false;
+                    if (this.dataset.enrollmentStatus !== "Pending") {
+                        this.disabled = false;
+                    }
                 }
             });
         });

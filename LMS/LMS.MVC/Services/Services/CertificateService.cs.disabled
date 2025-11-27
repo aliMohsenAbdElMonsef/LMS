@@ -1,0 +1,124 @@
+using LMS.MVC.Services.Contracts.Services;
+using LMS.MVC.Services.Response;
+using LMS.MVC.Models.ViewModels.Certificate;
+using System.Net.Http.Json;
+
+namespace LMS.MVC.Services.Services
+{
+    internal class CertificateService : BaseMVCServices, ICertificateService
+    {
+        public CertificateService(HttpClient client, IHttpContextAccessor httpContextAccessor) : base(client, httpContextAccessor)
+        {
+        }
+
+        private async Task<SuccessServiceResult<T>> ExecuteApiCallAsync<T>(Func<Task<SuccessServiceResult<T>>> apiCall)
+        {
+            try
+            {
+                return await apiCall();
+            }
+            catch (Exception ex)
+            {
+                return new SuccessServiceResult<T>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<CertificateViewModel>>> GetUserCertificatesAsync(string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                // API returns ServiceResponseDTO wrapper
+                var response = await GetAsync<ApiResponse<IEnumerable<CertificateViewModel>>>("api/certificates/my-certificates");
+                
+                if (response?.Success == true && response.Data != null)
+                {
+                    return new SuccessServiceResult<IEnumerable<CertificateViewModel>>
+                    {
+                        Success = true,
+                        Data = response.Data
+                    };
+                }
+                
+                return new SuccessServiceResult<IEnumerable<CertificateViewModel>>
+                {
+                    Success = false,
+                    Message = response?.Message ?? "Failed to retrieve certificates",
+                    Data = Enumerable.Empty<CertificateViewModel>()
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<CertificateViewModel>> GetCertificateByIdAsync(string id)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var response = await GetAsync<ApiResponse<CertificateViewModel>>($"api/certificates/{id}");
+                
+                if (response?.Success == true)
+                {
+                    return new SuccessServiceResult<CertificateViewModel>
+                    {
+                        Success = true,
+                        Data = response.Data
+                    };
+                }
+                
+                return new SuccessServiceResult<CertificateViewModel>
+                {
+                    Success = false,
+                    Message = response?.Message ?? "Certificate not found"
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<byte[]>> DownloadCertificateAsync(string id)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var data = await GetByteArrayAsync($"api/certificates/download/{id}");
+                return new SuccessServiceResult<byte[]>
+                {
+                    Success = true,
+                    Data = data
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<string>> GenerateCertificateAsync(string courseId, string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var model = new { CourseId = courseId, StudentId = userId };
+                var response = await PostAsync<ApiResponse<object>>($"api/certificates/generate", JsonContent.Create(model));
+                
+                if (response?.Success == true)
+                {
+                    return new SuccessServiceResult<string>
+                    {
+                        Success = true,
+                        Data = response.Data?.ToString() ?? "",
+                        Message = "Certificate generated successfully"
+                    };
+                }
+                
+                return new SuccessServiceResult<string>
+                {
+                    Success = false,
+                    Message = response?.Message ?? "Failed to generate certificate"
+                };
+            });
+        }
+
+        // Helper class to deserialize API responses
+        private class ApiResponse<T>
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+            public T Data { get; set; }
+        }
+    }
+}

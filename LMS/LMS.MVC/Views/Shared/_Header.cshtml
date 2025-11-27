@@ -46,20 +46,62 @@
                                 </a>
                             </li>
                         }
-                        @if (User.IsInRole("Student"))
+
+                        @if (User.IsInRole("Student") || User.IsInRole("Instructor"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("MyAssignments", "Assignment")">
-                                    <i class="bi bi-people"></i> My Assignments
+                                <a class="nav-link" asp-controller="Course" asp-action="MyCourses">
+                                    <i class="bi bi-mortarboard"></i> My Courses
                                 </a>
                             </li>
                         }
-                        <li class="nav-item">
-                            <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
-                                <button type="submit" class="btn btn-link nav-link">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
+
+                        @if (User.IsInRole("Instructor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Assignment" && ViewContext.RouteData.Values["Action"]?.ToString() == "InstructorAssignments" ? "active" : "")" 
+                                   asp-controller="Assignment" asp-action="InstructorAssignments">
+                                    <i class="bi bi-clipboard-check me-1"></i> My Assignments
+                                </a>
+                            </li>
+                        }
+                        
+                        @if (User.IsInRole("Student"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Assignment" && ViewContext.RouteData.Values["Action"]?.ToString() == "MyAssignments" ? "active" : "")" 
+                                   asp-controller="Assignment" asp-action="MyAssignments">
+                                    <i class="bi bi-clipboard-check me-1"></i> My Assignments
+                                </a>
+                            </li>
+                        }
+                        
+                        <!-- User Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="User" asp-action="Profile">
+                                        <i class="bi bi-person"></i> My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="User" asp-action="EditProfile">
+                                        <i class="bi bi-pencil-square"></i> Edit Profile
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" asp-controller="Account" asp-action="Logout">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     }
                     else

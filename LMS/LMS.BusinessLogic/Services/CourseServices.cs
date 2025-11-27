@@ -17,7 +17,7 @@ namespace LMS.BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
 
-        public CourseServices(IUnitOfWork unitOfWork, IMapper mapper,IFileService fileService) : base(unitOfWork)
+        public CourseServices(IUnitOfWork unitOfWork, IMapper mapper, IFileService fileService) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -40,6 +40,40 @@ namespace LMS.BusinessLogic.Services
                 dto.ThumbnailPath = $"{dto.ThumbnailPath}";
             }
 
+            dto.EnrolledStudentsCount = entity.Students?.Count ?? 0;
+
+            if (entity.InstructorEnrollments != null)
+            {
+                dto.Instructors = entity.InstructorEnrollments
+                    .Where(ie => ie.Status == ApplicationStatus.Approved)
+                    .Select(ie => new InstructorInformationDTO
+                    {
+                        Id = ie.InstructorId,
+                        Name = ie.Instructor?.UserName ?? $"{ie.Instructor?.FirstName} {ie.Instructor?.LastName}",
+                        Email = ie.Instructor?.Email ?? "",
+                        AssignedDays = new List<string>()
+                    })
+                    .ToList();
+            }
+
+            if (entity.Assignments != null)
+            {
+                dto.Assignments = entity.Assignments.Select(a => new LMS.BusinessLogic.DTOs.Assignment.ReadAssignmentDTO
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    FilePath = a.FilePath,
+                    UploadDate = a.UploadDate,
+                    DueDate = a.DueDate,
+                    CourseId = a.CourseId,
+                    CourseName = entity.Name,
+                    InstructorId = a.InstructorId,
+                    InstructorName = a.Instructor?.UserName ?? $"{a.Instructor?.FirstName} {a.Instructor?.LastName}",
+                    SubmissionsCount = a.Students?.Count ?? 0
+                }).ToList();
+            }
+
             return dto;
         }
 
@@ -56,7 +90,7 @@ namespace LMS.BusinessLogic.Services
             existingEntity.Language = dto.Language;
             existingEntity.DeliveryMode = dto.DeliveryMode;
 
-            if (dto.IsFree!=null && dto.IsFree == true)
+            if (dto.IsFree != null && dto.IsFree == true)
             {
                 existingEntity.Price = 0;
             }
@@ -173,8 +207,6 @@ namespace LMS.BusinessLogic.Services
                     course.ThumbnailPath = uploadResult.FileName;
                 }
 
-
-
                 await _unitOfWork.Courses.CreateAsync(course);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -231,8 +263,6 @@ namespace LMS.BusinessLogic.Services
                     existingCourse.ThumbnailPath = uploadResult.FileName;
                 }
 
-
-
                 await _unitOfWork.Courses.UpdateAsync(existingCourse);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -252,6 +282,7 @@ namespace LMS.BusinessLogic.Services
 
             return response;
         }
+
         public async Task<ServiceResponseDTO<GetCourseDTO>> UpdateThumbnailAsync(string courseId, IFormFile thumbnailFile)
         {
             var response = new ServiceResponseDTO<GetCourseDTO>();
@@ -283,6 +314,5 @@ namespace LMS.BusinessLogic.Services
             response.Data = MapToReadDTO(course);
             return response;
         }
-
     }
 }
