@@ -15,5 +15,8 @@ namespace Domain.Entities.RelationTables
         public Quiz Quiz { get; set; }
 
         public int? Grade { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public Domain.Enums.QuizStatus Status { get; set; } = Domain.Enums.QuizStatus.NotStarted;
     }
 }

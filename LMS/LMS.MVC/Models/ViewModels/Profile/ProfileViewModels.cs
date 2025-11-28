@@ -30,6 +30,7 @@ namespace LMS.MVC.Models.ViewModels.Profile
         public string Country { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public IFormFile? ProfilePicture { get; set; }
+        public string? ExistingUserImage { get; set; }
     }
 
     public class ChangePasswordViewModel

@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Submit Assignment";
     var isResubmission = !string.IsNullOrEmpty(Model.Id) && Model.Id != Guid.Empty.ToString();
-
 }
 
 <h2 class="mb-4">Submit Assignment</h2>
@@ -13,7 +12,6 @@
         @TempData["SuccessMessage"]
     </div>
     @TempData.Remove("SuccessMessage")
-    ;
 }
 
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -32,7 +30,6 @@
             {
                 <div class="alert alert-info">
                     <strong>Current Submission:</strong>
-                    <!-- ✅ FIXED: Use DownloadSubmission action -->
                     <a asp-action="DownloadSubmission"
                        asp-route-studentAssignmentId="@Model.Id"
                        class="ms-2">View Current File</a>
@@ -42,8 +39,8 @@
             <div class="mb-3">
                 <label for="submissionFile" class="form-label">Upload Your Solution</label>
                 <input type="file" class="form-control" id="submissionFile" name="submissionFile"
-                       accept=".pdf,.doc,.docx,.txt" required />
-                <small class="form-text text-muted">Allowed formats: PDF, Word, Text files (Max: 10MB)</small>
+                       accept=".pdf,.doc,.docx,.txt,.zip,.rar" required />
+                <small class="form-text text-muted">Allowed formats: PDF, Word, Text, ZIP, RAR files (Max: 10MB)</small>
                 <span asp-validation-for="FilePath" class="text-danger"></span>
             </div>
 

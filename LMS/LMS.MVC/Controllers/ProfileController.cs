@@ -88,7 +88,8 @@ namespace LMS.MVC.Controllers
                     PhoneNumber = result.Data.PhoneNumber,
                     Bio = result.Data.Bio,
                     Country = result.Data.Country,
-                    City = result.Data.City
+                    City = result.Data.City,
+                    ExistingUserImage = result.Data.UserImage
                 };
                 
                 return View(updateModel);

@@ -9,5 +9,10 @@ namespace LMS.BusinessLogic.Contracts.Services
 {
     public interface IQuizServices: IBaseService<ReadQuizDTO, CreateQuizDTO, UpdateQuizDTO>
     {
+        Task<DTOs.Responses.ServiceResponseDTO<bool>> StartQuizAsync(string quizId, string studentId);
+        Task<DTOs.Responses.ServiceResponseDTO<QuizAttemptDTO>> GetQuizForTakingAsync(string quizId, string studentId);
+        Task<DTOs.Responses.ServiceResponseDTO<QuizResultDTO>> SubmitQuizAsync(SubmitQuizDTO dto);
+        Task<DTOs.Responses.ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByCourseAsync(string courseId);
+        Task<DTOs.Responses.ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByInstructorAsync(string instructorId);
     }
 }

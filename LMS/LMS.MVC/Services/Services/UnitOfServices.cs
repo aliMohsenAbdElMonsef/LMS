@@ -22,6 +22,7 @@ namespace LMS.MVC.Services.Services
         private readonly Lazy<IAssignmentService> _assignmentService;
         private readonly Lazy<ILectureService> _lectureService;
         private readonly Lazy<IProfileService> _profileService;
+        private readonly Lazy<IQuizService> _quizService;
 
         private readonly IConfiguration _configuration;
 
@@ -44,6 +45,7 @@ namespace LMS.MVC.Services.Services
             _assignmentService = new Lazy<IAssignmentService>(()=> new AssignmentService(_client,_httpContextAccessor,_tokenService, _mapper));
             _lectureService = new Lazy<ILectureService>(() => new LectureService(_client, _httpContextAccessor));
             _profileService = new Lazy<IProfileService>(() => new ProfileService(_client, _httpContextAccessor));
+            _quizService = new Lazy<IQuizService>(() => new QuizService(_client, _httpContextAccessor));
         }
 
         public IAccountService AccountService => _accountService.Value;
@@ -54,5 +56,6 @@ namespace LMS.MVC.Services.Services
         public IEnrollmentService EnrollmentService => _enrollmentService.Value;
         public ILectureService LectureService => _lectureService.Value;
         public IProfileService ProfileService => _profileService.Value;
+        public IQuizService QuizService => _quizService.Value;
     }
 }

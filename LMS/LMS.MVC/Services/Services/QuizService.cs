@@ -31,12 +31,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var quizzes = await GetAsync<IEnumerable<QuizItemViewModel>>($"api/quizzes/course/{courseId}");
-                return new SuccessServiceResult<IEnumerable<QuizItemViewModel>>
-                {
-                    Success = true,
-                    Data = quizzes ?? Enumerable.Empty<QuizItemViewModel>()
-                };
+                var result = await GetAsync<SuccessServiceResult<IEnumerable<QuizItemViewModel>>>($"api/quizzes/course/{courseId}");
+                return result;
             });
         }
 
@@ -44,12 +40,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var quiz = await GetAsync<QuizItemViewModel>($"api/quizzes/{id}");
-                return new SuccessServiceResult<QuizItemViewModel>
-                {
-                    Success = true,
-                    Data = quiz
-                };
+                var result = await GetAsync<SuccessServiceResult<QuizItemViewModel>>($"api/quizzes/{id}");
+                return result;
             });
         }
 
@@ -57,12 +49,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var quiz = await GetAsync<TakeQuizViewModel>($"api/quizzes/take/{id}");
-                return new SuccessServiceResult<TakeQuizViewModel>
-                {
-                    Success = true,
-                    Data = quiz
-                };
+                var result = await GetAsync<SuccessServiceResult<TakeQuizViewModel>>($"api/quizzes/take/{id}");
+                return result;
             });
         }
 
@@ -70,13 +58,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var result = await PostAsync<bool>($"api/quizzes/start/{id}", null);
-                return new SuccessServiceResult<bool>
-                {
-                    Success = true,
-                    Data = result,
-                    Message = "Quiz started"
-                };
+                var result = await PostAsync<SuccessServiceResult<bool>>($"api/quizzes/start/{id}", null);
+                return result;
             });
         }
 
@@ -84,13 +67,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var quiz = await PostAsync<QuizItemViewModel>($"api/quizzes/create", JsonContent.Create(model));
-                return new SuccessServiceResult<QuizItemViewModel>
-                {
-                    Success = true,
-                    Data = quiz,
-                    Message = "Quiz created successfully"
-                };
+                var result = await PostAsync<SuccessServiceResult<QuizItemViewModel>>($"api/quizzes/create", JsonContent.Create(model));
+                return result;
             });
         }
 
@@ -98,13 +76,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var quiz = await PutAsync<QuizItemViewModel>($"api/quizzes/update/{id}", JsonContent.Create(model));
-                return new SuccessServiceResult<QuizItemViewModel>
-                {
-                    Success = true,
-                    Data = quiz,
-                    Message = "Quiz updated successfully"
-                };
+                var result = await PutAsync<SuccessServiceResult<QuizItemViewModel>>($"api/quizzes/update/{id}", JsonContent.Create(model));
+                return result;
             });
         }
 
@@ -112,13 +85,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var result = await PostAsync<QuizResultViewModel>($"api/quizzes/submit", JsonContent.Create(model));
-                return new SuccessServiceResult<QuizResultViewModel>
-                {
-                    Success = true,
-                    Data = result,
-                    Message = "Quiz submitted successfully"
-                };
+                var result = await PostAsync<SuccessServiceResult<QuizResultViewModel>>($"api/quizzes/submit", JsonContent.Create(model));
+                return result;
             });
         }
 
@@ -126,12 +94,8 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var results = await GetAsync<QuizResultViewModel>($"api/quizzes/results/{quizId}?username={username}");
-                return new SuccessServiceResult<QuizResultViewModel>
-                {
-                    Success = true,
-                    Data = results
-                };
+                var result = await GetAsync<SuccessServiceResult<QuizResultViewModel>>($"api/quizzes/results/{quizId}?username={username}");
+                return result;
             });
         }
 
@@ -146,6 +110,15 @@ namespace LMS.MVC.Services.Services
             {
                 return false;
             }
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetQuizzesByInstructorAsync(string instructorId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await GetAsync<SuccessServiceResult<IEnumerable<QuizItemViewModel>>>($"api/quizzes/instructor/{instructorId}");
+                return result;
+            });
         }
     }
 }

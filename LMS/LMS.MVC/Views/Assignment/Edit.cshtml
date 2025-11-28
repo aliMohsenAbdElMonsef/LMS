@@ -58,8 +58,9 @@
                     </div>
 
                     <div class="mb-4">
-                        <label asp-for="DueDate" class="form-label fw-bold">Due Date & Time *</label>
-                        <input asp-for="DueDate" type="datetime-local" class="form-control" required />
+                        <label asp-for="DueDate" class="form-label fw-bold">Due Date &amp; Time *</label>
+                        <input asp-for="DueDate" type="datetime-local" class="form-control" 
+                               value="@Model.DueDate.ToString("yyyy-MM-ddTHH:mm")" required />
                         <span asp-validation-for="DueDate" class="text-danger small"></span>
                         <div class="invalid-feedback">Please select a due date and time.</div>
                     </div>
@@ -84,9 +85,9 @@
                                     <span class="badge bg-primary">@Model.SubmissionsCount</span>
                                 </div>
                                 <div class="col-12 mt-2">
-                                    <a asp-action="DownloadAssignment"
+                                    <a asp-action="DownloadFile"
                                        asp-route-id="@Model.Id"
-                                       class="ms-2">
+                                       class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-download me-1"></i>Download Assignment File
                                     </a>
                                 </div>

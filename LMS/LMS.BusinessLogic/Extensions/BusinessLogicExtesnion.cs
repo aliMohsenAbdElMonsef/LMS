@@ -22,11 +22,12 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<ICertificateTemplateServices, CertificateTemplateServices>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<INotificationService, NotificationService>();
             // Add this to your service registration
             services.AddScoped<IEnrollmentManagement, EnrollmentManagementService>();
 
             //services.AddScoped<IQuestionServices, QuestionServices>();
-            //services.AddScoped<IQuizServices, QuizServices>();
+            services.AddScoped<IQuizServices, QuizServices>();
             //services.AddScoped<ISkillServices, SkillServices>();
             //services.AddScoped<ICourseDayScheduleServices, CourseDayScheduleServices>();
             services.AddScoped<IUnitOfServices, UnitOfServices>();

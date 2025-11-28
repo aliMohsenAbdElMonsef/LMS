@@ -47,7 +47,7 @@ namespace LMS.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("❌ ModelState Errors:");
+                Console.WriteLine("? ModelState Errors:");
                 foreach (var state in ModelState)
                 {
                     foreach (var error in state.Value.Errors)
@@ -60,19 +60,19 @@ namespace LMS.MVC.Controllers
 
             if (assignmentFile == null || assignmentFile.Length == 0)
             {
-                Console.WriteLine("❌ No file uploaded");
+                Console.WriteLine("? No file uploaded");
                 ModelState.AddModelError("", "Please select an assignment file.");
                 return View("Create", model);
             }
 
             try
             {
-                Console.WriteLine("✅ Calling CreateAssignmentWithFile...");
+                Console.WriteLine("? Calling CreateAssignmentWithFile...");
 
                 var createdAssignment = await _services.AssignmentService.CreateAssignmentWithFile(
                     model, assignmentFile);
 
-                Console.WriteLine($"✅ Assignment created with ID: {createdAssignment?.Id}");
+                Console.WriteLine($"? Assignment created with ID: {createdAssignment?.Id}");
 
                 if (createdAssignment != null && !string.IsNullOrEmpty(createdAssignment.Id))
                 {
@@ -80,14 +80,14 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id = createdAssignment.Id });
                 }
 
-                Console.WriteLine("❌ Creation failed - returned null or empty ID");
+                Console.WriteLine("? Creation failed - returned null or empty ID");
                 ModelState.AddModelError("", "Failed to create assignment. Please try again.");
                 return View("Create", model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"? Exception: {ex.Message}");
+                Console.WriteLine($"? Stack Trace: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Create", model);
             }
@@ -102,11 +102,11 @@ namespace LMS.MVC.Controllers
             return View(assignment);
         }
 
-        [HttpGet]
+                [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(string id)
         {
-            var assignment = await _services.AssignmentService.GetAssignmentById(id);
+            var assignment = await _services.AssignmentService.GetEditModel(id);
             if (assignment == null)
                 return NotFound();
 
@@ -117,8 +117,35 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(ReadAssignmentResult model)
         {
+            Console.WriteLine("=== EDIT ASSIGNMENT POST ===");
+            Console.WriteLine($"Id: {model.Id}");
+            Console.WriteLine($"Title: {model.Title}");
+            Console.WriteLine($"DueDate: {model.DueDate}");
+            Console.WriteLine($"CourseId: {model.CourseId}");
+            Console.WriteLine($"FilePath: {model.FilePath}");
+            
+            // Remove validation for fields that are not editable
+            ModelState.Remove("FilePath");
+            ModelState.Remove("UploadDate");
+            ModelState.Remove("SubmissionsCount");
+            ModelState.Remove("CourseName");
+            ModelState.Remove("InstructorName");
+            ModelState.Remove("InstructorId");
+            
+            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
+            
             if (!ModelState.IsValid)
+            {
+                Console.WriteLine("❌ ModelState Errors:");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
+                    }
+                }
                 return View(model);
+            }
 
             var result = await _services.AssignmentService.EditAssignment(model);
             if (result != null)
@@ -224,7 +251,7 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error downloading file: {ex.Message}");
+                Console.WriteLine($"? Error downloading file: {ex.Message}");
                 TempData["ErrorMessage"] = "Error downloading file.";
                 return RedirectToAction("Details", new { id });
             }
@@ -254,7 +281,7 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error downloading file: {ex.Message}");
+                Console.WriteLine($"? Error downloading file: {ex.Message}");
                 TempData["ErrorMessage"] = "Error downloading file.";
                 return RedirectToAction("Index", "Course");
             }
@@ -293,7 +320,7 @@ namespace LMS.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("❌ ModelState Errors:");
+                Console.WriteLine("? ModelState Errors:");
                 foreach (var state in ModelState)
                 {
                     foreach (var error in state.Value.Errors)
@@ -306,11 +333,11 @@ namespace LMS.MVC.Controllers
 
             try
             {
-                Console.WriteLine("✅ Calling GradeAssignment...");
+                Console.WriteLine("? Calling GradeAssignment...");
 
                 var result = await _services.AssignmentService.GradeAssignment(model);
 
-                Console.WriteLine($"✅ Result: {(result != null ? "Success" : "NULL")}");
+                Console.WriteLine($"? Result: {(result != null ? "Success" : "NULL")}");
 
                 if (result != null)
                 {
@@ -318,14 +345,14 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Submissions", new { id = result.AssignmentId });
                 }
 
-                Console.WriteLine("❌ Result was null");
+                Console.WriteLine("? Result was null");
                 ModelState.AddModelError("", "Failed to grade assignment. Please try again.");
                 return View("Grade", model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error grading assignment: {ex.Message}");
-                Console.WriteLine($"❌ Stack: {ex.StackTrace}");
+                Console.WriteLine($"? Error grading assignment: {ex.Message}");
+                Console.WriteLine($"? Stack: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Error while grading assignment: {ex.Message}");
                 return View("Grade", model);
             }
@@ -341,24 +368,32 @@ namespace LMS.MVC.Controllers
                 if (assignment == null)
                 {
                     TempData["ErrorMessage"] = "Assignment not found.";
-                    return RedirectToAction("Index", "Course");
+                    return RedirectToAction("InstructorAssignments");
                 }
 
                 var result = await _services.AssignmentService.DeleteAssignment(id);
                 if (result)
                 {
                     TempData["SuccessMessage"] = "Assignment deleted successfully!";
+                    
+                    // Check if the request came from InstructorAssignments page
+                    var referer = Request.Headers["Referer"].ToString();
+                    if (referer.Contains("InstructorAssignments", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RedirectToAction("InstructorAssignments");
+                    }
+                    
                     return RedirectToAction("Details", "Course", new { id = assignment.CourseId });
                 }
 
                 TempData["ErrorMessage"] = "Failed to delete assignment.";
-                return RedirectToAction("Details", new { id });
+                return RedirectToAction("InstructorAssignments");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error deleting assignment: {ex.Message}");
                 TempData["ErrorMessage"] = $"Error: {ex.Message}";
-                return RedirectToAction("Details", new { id });
+                return RedirectToAction("InstructorAssignments");
             }
         }
 

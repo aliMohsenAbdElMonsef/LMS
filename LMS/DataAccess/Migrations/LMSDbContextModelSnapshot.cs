@@ -60,8 +60,17 @@ namespace LMS.DataAccess.Migrations
                     b.Property<int>("ApplyAs")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -73,6 +82,12 @@ namespace LMS.DataAccess.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -101,6 +116,12 @@ namespace LMS.DataAccess.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
@@ -181,7 +202,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Assignments");
+                    b.ToTable("Assignments", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Category", b =>
@@ -217,7 +238,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("AdminId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.CertificateTemplate", b =>
@@ -263,7 +284,7 @@ namespace LMS.DataAccess.Migrations
                     b.HasIndex("CourseId")
                         .IsUnique();
 
-                    b.ToTable("CertificateTemplates");
+                    b.ToTable("CertificateTemplates", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Course", b =>
@@ -368,7 +389,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Lecture", b =>
@@ -448,7 +469,48 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("LectureScheduleId");
 
-                    b.ToTable("Lectures");
+                    b.ToTable("Lectures", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.MainEntities.Notification", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notification", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Question", b =>
@@ -496,7 +558,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Quiz", b =>
@@ -544,7 +606,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Skills", b =>
@@ -580,7 +642,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("AdminId");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.CourseReview", b =>
@@ -618,7 +680,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("CourseReviews");
+                    b.ToTable("CourseReviews", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.CourseSkill", b =>
@@ -639,7 +701,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.ToTable("CourseSkills");
+                    b.ToTable("CourseSkills", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentAnswerQuestion", b =>
@@ -666,7 +728,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("StudentAnswers");
+                    b.ToTable("StudentAnswers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentAssignment", b =>
@@ -710,7 +772,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("AssignmentId");
 
-                    b.ToTable("StudentAssignments");
+                    b.ToTable("StudentAssignments", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentCertificate", b =>
@@ -742,7 +804,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("certificateTamplateId");
 
-                    b.ToTable("StudentCertificates");
+                    b.ToTable("StudentCertificates", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentEnrollIntoCourse", b =>
@@ -772,7 +834,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudentEnrollments");
+                    b.ToTable("StudentEnrollments", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentLecture", b =>
@@ -799,7 +861,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("LectureId");
 
-                    b.ToTable("StudentLectures");
+                    b.ToTable("StudentLectures", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.RelationTables.StudentQuiz", b =>
@@ -813,17 +875,26 @@ namespace LMS.DataAccess.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("Grade")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("StudentId", "QuizId");
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("StudentQuizzes");
+                    b.ToTable("StudentQuizzes", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.MainEntities.BlackListedTokens", b =>
@@ -850,7 +921,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlackListedTokens");
+                    b.ToTable("BlackListedTokens", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.MainEntities.CourseDaySchedule", b =>
@@ -887,7 +958,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("CourseDaySchedule");
+                    b.ToTable("CourseDaySchedule", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.MainEntities.LectureSchedule", b =>
@@ -918,7 +989,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("LectureSchedules");
+                    b.ToTable("LectureSchedules", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.RelationTables.InstructorEnrolltoCourse", b =>
@@ -963,7 +1034,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("InstructorId", "CourseId", "Status");
 
-                    b.ToTable("InstructorEnrollments");
+                    b.ToTable("InstructorEnrollments", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1178,6 +1249,17 @@ namespace LMS.DataAccess.Migrations
                     b.Navigation("LastUploadedByInstructor");
 
                     b.Navigation("LectureSchedule");
+                });
+
+            modelBuilder.Entity("Domain.Entities.MainEntities.Notification", b =>
+                {
+                    b.HasOne("Domain.Entities.MainEntities.ApplicationUser", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.MainEntities.Question", b =>
@@ -1500,6 +1582,8 @@ namespace LMS.DataAccess.Migrations
                     b.Navigation("LecturesAttended");
 
                     b.Navigation("LecturesLastUploaded");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("QuizzesAttended");
 

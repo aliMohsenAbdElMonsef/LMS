@@ -432,5 +432,61 @@ namespace LMS.BusinessLogic.Services
                 throw new Exception($"Error submitting quiz: {ex.Message}", ex);
             }
         }
+
+        public async Task<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByCourseAsync(string courseId)
+        {
+            try
+            {
+                var quizzes = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .Where(q => q.CourseId == courseId)
+                    .ToListAsync();
+
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Data = quizzes.Select(q => MapToReadDTO(q)).ToList(),
+                    Success = true,
+                    Message = "Quizzes retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving quizzes: {ex.Message}"
+                };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByInstructorAsync(string instructorId)
+        {
+            try
+            {
+                var quizzes = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .Where(q => q.InstructorId == instructorId)
+                    .ToListAsync();
+
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Data = quizzes.Select(q => MapToReadDTO(q)).ToList(),
+                    Success = true,
+                    Message = "Quizzes retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving quizzes: {ex.Message}"
+                };
+            }
+        }
     }
 }

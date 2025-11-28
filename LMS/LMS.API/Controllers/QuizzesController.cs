@@ -22,6 +22,8 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<ActionResult<ServiceResponseDTO<ReadQuizDTO>>> CreateQuiz(CreateQuizDTO quiz)
         {
+            var instructorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            quiz.InstructorId = instructorId;
             var result = await _unitOfServices.Quizzes.CreateAsync(quiz);
             if (!result.Success)
                 return BadRequest(result);
@@ -74,6 +76,8 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<QuizResultDTO>>> SubmitQuiz(SubmitQuizDTO dto)
         {
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            dto.StudentId = studentId;
             var result = await _unitOfServices.Quizzes.SubmitQuizAsync(dto);
             if (!result.Success)
                 return BadRequest(result);
@@ -102,6 +106,25 @@ namespace LMS.API.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
+            return Ok(result);
+        }
+
+        [HttpGet("course/{courseId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>>> GetQuizzesByCourse(string courseId)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizzesByCourseAsync(courseId);
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("instructor/{instructorId}")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>>> GetQuizzesByInstructor(string instructorId)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizzesByInstructorAsync(instructorId);
             return Ok(result);
         }
     }

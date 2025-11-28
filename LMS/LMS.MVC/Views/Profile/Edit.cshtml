@@ -33,7 +33,14 @@
                         
                         <div class="text-center mb-4">
                             <div class="profile-avatar-edit">
-                                <img src="~/images/default-avatar.png" alt="Profile Picture" class="rounded-circle" id="profilePreview" style="width: 120px; height: 120px; object-fit: cover;">
+                                @if (!string.IsNullOrEmpty(Model.ExistingUserImage))
+                                {
+                                    <img src="@Model.ExistingUserImage" alt="Profile Picture" class="rounded-circle" id="profilePreview" style="width: 120px; height: 120px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-avatar.png" alt="Profile Picture" class="rounded-circle" id="profilePreview" style="width: 120px; height: 120px; object-fit: cover;">
+                                }
                             </div>
                             <div class="mt-3">
                                 <label for="profileImage" class="btn btn-sm btn-primary">

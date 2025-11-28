@@ -481,6 +481,7 @@ namespace LMS.BusinessLogic.Services
         {
             var user = await _userManager.Users
                 .Include(u => u.Enrollment)
+                .Include(u => u.Courses)
                 .Include(u => u.EarnedCertificates)
                 .Include(u => u.UploadedAssignemnts)
                 .Include(u => u.QuizzesAttended)
@@ -494,9 +495,13 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<UserStatsDTO> { Success = false, Message = "User not found." };
             }
 
+            Console.WriteLine($"🔍 GetUserStatsAsync - UserId: {userId}");
+            Console.WriteLine($"🔍 Student Enrollments: {user.Enrollment.Count}");
+            Console.WriteLine($"🔍 Instructor Enrollments: {user.Courses.Count}");
+
             var stats = new UserStatsDTO
             {
-                EnrolledCoursesCount = user.Enrollment.Count,
+                EnrolledCoursesCount = user.Enrollment.Count + user.Courses.Count,
                 CompletedCoursesCount = user.Enrollment.Count(e => e.progress >= 100),
                 CertificatesCount = user.EarnedCertificates.Count,
                 AssignmentsSubmitted = user.UploadedAssignemnts.Count,

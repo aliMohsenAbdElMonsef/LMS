@@ -353,7 +353,17 @@ namespace LMS.MVC.Services.Services
                     CourseName = a.CourseName,
                     InstructorId = a.InstructorId,
                     InstructorName = a.InstructorName
-                }).ToList() ?? new List<ReadAssignmentResult>()
+                }).ToList() ?? new List<ReadAssignmentResult>(),
+                Quizzes = data.Quizzes?.Select(q => new LMS.MVC.Models.ViewModels.Quiz.QuizItemViewModel
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    QuestionsCount = q.NumberOfQuestions,
+                    DurationMinutes = q.DurationMinutes,
+                    PassingScore = 0,
+                    IsCompleted = false // Logic for this would be complex, defaulting to false for now
+                }).ToList() ?? new List<LMS.MVC.Models.ViewModels.Quiz.QuizItemViewModel>()
             };
 
             return new SuccessServiceResult<ReadCourseViewModel>

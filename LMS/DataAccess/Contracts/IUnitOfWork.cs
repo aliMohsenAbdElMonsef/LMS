@@ -36,5 +36,7 @@ namespace LMS.DataAccess.Contracts
         Task<IDbContextTransaction> BeginTransactionAsync();
 
         Task<int> SaveChangesAsync();
+        
+        Microsoft.EntityFrameworkCore.DbSet<T> GetQueryable<T>() where T : class;
     }
 }

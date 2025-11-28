@@ -27,6 +27,19 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public int QuestionsCount { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
+        public List<CreateQuestionViewModel> Questions { get; set; } = new List<CreateQuestionViewModel>();
+    }
+
+    public class CreateQuestionViewModel
+    {
+        public string Text { get; set; } = string.Empty;
+        public string OptionA { get; set; } = string.Empty;
+        public string OptionB { get; set; } = string.Empty;
+        public string OptionC { get; set; } = string.Empty;
+        public string OptionD { get; set; } = string.Empty;
+        public Domain.Enums.Options CorrectAnswer { get; set; }
+        public int Points { get; set; } = 1;
+        public string Type { get; set; } = "MultipleChoice";
     }
 
     public class UpdateQuizViewModel : CreateQuizViewModel

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Domain.Entities.MainEntities;
 using Domain.Enums;
 using LMS.BusinessLogic.Contracts.Services;
@@ -72,6 +72,19 @@ namespace LMS.BusinessLogic.Services
                     InstructorName = a.Instructor?.UserName ?? $"{a.Instructor?.FirstName} {a.Instructor?.LastName}",
                     SubmissionsCount = a.Students?.Count ?? 0
                 }).ToList();
+            if (entity.Quizzes != null)
+            {
+                dto.Quizzes = entity.Quizzes.Select(q => new LMS.BusinessLogic.DTOs.Quiz.ReadQuizDTO
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    Description = q.Description,
+                    NumberOfQuestions = q.NumberOfQuestions,
+                    DurationMinutes = q.DurationMinutes,
+                    CourseId = q.CourseId,
+                    InstructorId = q.InstructorId
+                }).ToList();
+            }
             }
 
             return dto;

@@ -274,7 +274,37 @@ namespace LMS.MVC.Controllers
                 TempData["Error"] = $"Error deleting quiz: {ex.Message}";
             }
             
-            return RedirectToAction("Index");
+            return RedirectToAction("InstructorQuizzes");
+        }
+
+        // GET: Quiz/InstructorQuizzes
+        [HttpGet]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> InstructorQuizzes()
+        {
+            try
+            {
+                var instructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(instructorId))
+                {
+                    TempData["Error"] = "Unable to identify instructor.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var result = await _services.QuizService.GetQuizzesByInstructorAsync(instructorId);
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.Message ?? "Error loading quizzes.";
+                    return View(new List<QuizItemViewModel>());
+                }
+
+                return View(result.Data ?? new List<QuizItemViewModel>());
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading quizzes: {ex.Message}";
+                return View(new List<QuizItemViewModel>());
+            }
         }
     }
 }

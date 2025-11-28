@@ -71,6 +71,10 @@ namespace LMS.DataAccess.Repositories
             return await _db.SaveChangesAsync();
         }
 
+        public DbSet<T> GetQueryable<T>() where T : class
+        {
+            return _db.Set<T>();
+        }
 
     }
 }

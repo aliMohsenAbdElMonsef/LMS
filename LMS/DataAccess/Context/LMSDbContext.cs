@@ -261,7 +261,7 @@ namespace DataAccess.Context
                 entity.HasKey(e => e.Id);
 
                 entity.HasOne(e => e.Instructor)
-                    .WithMany()
+                    .WithMany(u => u.Courses)
                     .HasForeignKey(e => e.InstructorId)
                     .OnDelete(DeleteBehavior.Restrict);
 
