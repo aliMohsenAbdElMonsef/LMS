@@ -3,14 +3,16 @@ namespace LMS.MVC.Models.ViewModels.Quiz
     public class QuizItemViewModel
     {
         public string Id { get; set; } = string.Empty;
+        public string CourseId { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int QuestionsCount { get; set; }
+        public int NumberOfQuestions { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
         public bool IsCompleted { get; set; }
         public int AchievedScore { get; set; }
         public bool IsLocked { get; set; }
+        public List<LMS.BusinessLogic.DTOs.Question.ReadQuestionDTO>? Questions { get; set; }
     }
 
     public class QuizListViewModel
@@ -24,14 +26,16 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public string CourseId { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int QuestionsCount { get; set; }
+        public int NumberOfQuestions { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
+        public string? InstructorId { get; set; }
         public List<CreateQuestionViewModel> Questions { get; set; } = new List<CreateQuestionViewModel>();
     }
 
     public class CreateQuestionViewModel
     {
+        public string? Id { get; set; }  // For updates
         public string Text { get; set; } = string.Empty;
         public string OptionA { get; set; } = string.Empty;
         public string OptionB { get; set; } = string.Empty;
@@ -40,6 +44,7 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public Domain.Enums.Options CorrectAnswer { get; set; }
         public int Points { get; set; } = 1;
         public string Type { get; set; } = "MultipleChoice";
+        public string? QuizId { get; set; }
     }
 
     public class UpdateQuizViewModel : CreateQuizViewModel

@@ -16,19 +16,14 @@ namespace LMS.BusinessLogic.DTOs.Question
         [Required]
         public string Text { get; set; }
 
-        [Required]
-        public string OptionA { get; set; }
+        public string? OptionA { get; set; }
 
-        [Required]
-        public string OptionB { get; set; }
+        public string? OptionB { get; set; }
 
-        [Required]
-        public string OptionC { get; set; }
+        public string? OptionC { get; set; }
 
-        [Required]
-        public string OptionD { get; set; }
+        public string? OptionD { get; set; }
 
-        [Required]
         public Options CorrectAnswer { get; set; } 
 
         public int Points { get; set; } = 1;

@@ -11,8 +11,7 @@ namespace LMS.BusinessLogic.DTOs.Question
     // check if the quiz end or not 
     public class UpdateQuestionDTO
     {
-        [Required]
-        public string Id { get; set; }
+        public string? Id { get; set; }  // Optional - null for new questions
         [Required]
         public string QuizId { get; set; }
         public string? Text { get; set; }

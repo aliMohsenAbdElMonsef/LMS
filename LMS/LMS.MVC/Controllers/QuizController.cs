@@ -79,8 +79,67 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Create(CreateQuizViewModel model)
         {
+            // Set InstructorId from current user
+            var instructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            model.InstructorId = instructorId;
+
+            // Set temporary QuizId for questions to satisfy backend validation if needed
+            // The backend service should overwrite this with the real ID
+            foreach (var question in model.Questions)
+            {
+                question.QuizId = "TEMP";
+            }
+
+            // Remove validation errors for these fields since we just set them
+            ModelState.Remove("InstructorId");
+            foreach (var key in ModelState.Keys.Where(k => k.StartsWith("Questions") && k.EndsWith("QuizId")).ToList())
+            {
+                ModelState.Remove(key);
+            }
+
+            // Remove validation for question type-specific fields
+            for (int i = 0; i < model.Questions.Count; i++)
+            {
+                var question = model.Questions[i];
+                
+                // For True/False questions, remove validation for options C and D
+                if (question.Type == "TrueFalse")
+                {
+                    ModelState.Remove($"Questions[{i}].OptionC");
+                    ModelState.Remove($"Questions[{i}].OptionD");
+                    
+                    // Set empty values for C and D to satisfy DTO if needed
+                    question.OptionC = "";
+                    question.OptionD = "";
+                }
+                
+                // For Short Answer questions, remove validation for all options
+                if (question.Type == "ShortAnswer")
+                {
+                    ModelState.Remove($"Questions[{i}].OptionA");
+                    ModelState.Remove($"Questions[{i}].OptionB");
+                    ModelState.Remove($"Questions[{i}].OptionC");
+                    ModelState.Remove($"Questions[{i}].OptionD");
+                    ModelState.Remove($"Questions[{i}].CorrectAnswer");
+                    
+                    // Set empty values for all options
+                    question.OptionA = "";
+                    question.OptionB = "";
+                    question.OptionC = "";
+                    question.OptionD = "";
+                }
+            }
+
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("❌ Quiz Creation ModelState Invalid:");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"  - Field: {state.Key}, Error: {error.ErrorMessage}, Exception: {error.Exception?.Message}");
+                    }
+                }
                 return View(model);
             }
 
@@ -116,7 +175,34 @@ namespace LMS.MVC.Controllers
                     TempData["Error"] = result.Message ?? "Quiz not found.";
                     return RedirectToAction("Index");
                 }
-                return View(result.Data);
+
+                // Map QuizItemViewModel to UpdateQuizViewModel
+                var updateModel = new UpdateQuizViewModel
+                {
+                    Id = result.Data.Id,
+                    CourseId = result.Data.CourseId,
+                    Title = result.Data.Title,
+                    Description = result.Data.Description,
+                    DurationMinutes = result.Data.DurationMinutes,
+                    PassingScore = result.Data.PassingScore,
+                    NumberOfQuestions = result.Data.NumberOfQuestions,
+                    InstructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+                    Questions = result.Data.Questions?.Select(q => new CreateQuestionViewModel
+                    {
+                        Id = q.Id,  // Include question ID for updates
+                        Text = q.Text,
+                        OptionA = q.OptionA ?? "",
+                        OptionB = q.OptionB ?? "",
+                        OptionC = q.OptionC ?? "",
+                        OptionD = q.OptionD ?? "",
+                        CorrectAnswer = ParseCorrectAnswer(q.CorrectAnswer),
+                        Points = q.Points,
+                        Type = DetermineQuestionType(q),
+                        QuizId = q.QuizId
+                    }).ToList() ?? new List<CreateQuestionViewModel>()
+                };
+
+                return View(updateModel);
             }
             catch (Exception ex)
             {
@@ -125,14 +211,81 @@ namespace LMS.MVC.Controllers
             }
         }
 
+        private Domain.Enums.Options ParseCorrectAnswer(string correctAnswer)
+        {
+            return correctAnswer switch
+            {
+                "OptionA" => Domain.Enums.Options.OptionA,
+                "OptionB" => Domain.Enums.Options.OptionB,
+                "OptionC" => Domain.Enums.Options.OptionC,
+                "OptionD" => Domain.Enums.Options.OptionD,
+                _ => Domain.Enums.Options.OptionA
+            };
+        }
+
+        private string DetermineQuestionType(LMS.BusinessLogic.DTOs.Question.ReadQuestionDTO question)
+        {
+            // Check for Short Answer FIRST (no options at all)
+            if (string.IsNullOrEmpty(question.OptionA) && string.IsNullOrEmpty(question.OptionB) &&
+                string.IsNullOrEmpty(question.OptionC) && string.IsNullOrEmpty(question.OptionD))
+            {
+                return "ShortAnswer";
+            }
+            // If no options C and D but has A and B, it's True/False
+            if (string.IsNullOrEmpty(question.OptionC) && string.IsNullOrEmpty(question.OptionD))
+            {
+                return "TrueFalse";
+            }
+            // Otherwise it's Multiple Choice
+            return "MultipleChoice";
+        }
+
         // POST: Quiz/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Edit(string id, UpdateQuizViewModel model)
         {
+            // Remove validation for question type-specific fields (same as Create)
+            for (int i = 0; i < model.Questions.Count; i++)
+            {
+                var question = model.Questions[i];
+                
+                // For True/False questions, remove validation for options C and D
+                if (question.Type == "TrueFalse")
+                {
+                    ModelState.Remove($"Questions[{i}].OptionC");
+                    ModelState.Remove($"Questions[{i}].OptionD");
+                    question.OptionC = "";
+                    question.OptionD = "";
+                }
+                
+                // For Short Answer questions, remove validation for all options
+                if (question.Type == "ShortAnswer")
+                {
+                    ModelState.Remove($"Questions[{i}].OptionA");
+                    ModelState.Remove($"Questions[{i}].OptionB");
+                    ModelState.Remove($"Questions[{i}].OptionC");
+                    ModelState.Remove($"Questions[{i}].OptionD");
+                    ModelState.Remove($"Questions[{i}].CorrectAnswer");
+                    
+                    question.OptionA = "";
+                    question.OptionB = "";
+                    question.OptionC = "";
+                    question.OptionD = "";
+                }
+            }
+
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("❌ Quiz Edit ModelState Invalid:");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"  - Field: {state.Key}, Error: {error.ErrorMessage}, Exception: {error.Exception?.Message}");
+                    }
+                }
                 return View(model);
             }
 
@@ -145,12 +298,25 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id });
                 }
                 
-                TempData["Error"] = result.Message;
+                Console.WriteLine($"❌ Quiz Update Failed: {result.Message}");
+                TempData["Error"] = $"Failed to update quiz: {result.Message}";
                 return View(model);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"❌ Quiz Update Exception: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                    Console.WriteLine($"Inner Stack Trace: {ex.InnerException.StackTrace}");
+                }
+                
                 TempData["Error"] = $"Error updating quiz: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    TempData["Error"] += $" | Inner: {ex.InnerException.Message}";
+                }
                 return View(model);
             }
         }

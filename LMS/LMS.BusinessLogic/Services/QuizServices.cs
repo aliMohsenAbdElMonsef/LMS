@@ -40,6 +40,7 @@ namespace LMS.BusinessLogic.Services
                 DurationMinutes = dto.DurationMinutes,
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
+                PassingScore = dto.PassingScore,
                 CourseId = dto.CourseId,
                 InstructorId = dto.InstructorId,
                 NumberOfQuestions = dto.Questions.Count
@@ -69,6 +70,16 @@ namespace LMS.BusinessLogic.Services
 
         protected override ReadQuizDTO MapToReadDTO(Quiz entity)
         {
+            var totalQuestions = entity.Questions?.Count ?? 0;
+            var nonDeletedQuestions = entity.Questions?.Count(q => !q.IsDeleted) ?? 0;
+            var deletedQuestions = entity.Questions?.Count(q => q.IsDeleted) ?? 0;
+            
+            Console.WriteLine($"📊 MapToReadDTO for Quiz {entity.Id}:");
+            Console.WriteLine($"   Total questions in collection: {totalQuestions}");
+            Console.WriteLine($"   Non-deleted questions: {nonDeletedQuestions}");
+            Console.WriteLine($"   Deleted questions: {deletedQuestions}");
+            Console.WriteLine($"   Database NumberOfQuestions: {entity.NumberOfQuestions}");
+            
             return new ReadQuizDTO
             {
                 Id = entity.Id,
@@ -77,39 +88,113 @@ namespace LMS.BusinessLogic.Services
                 DurationMinutes = entity.DurationMinutes,
                 StartDate = entity.StartDate,
                 EndDate = entity.EndDate,
-                NumberOfQuestions = entity.Questions?.Count ?? entity.NumberOfQuestions,
+                NumberOfQuestions = entity.Questions?.Count(q => !q.IsDeleted) ?? entity.NumberOfQuestions,
+                PassingScore = entity.PassingScore,
                 CourseId = entity.CourseId,
                 CourseName = entity.Course?.Name ?? "",
                 InstructorId = entity.InstructorId,
                 InstructorName = entity.Instructor != null ? $"{entity.Instructor.FirstName} {entity.Instructor.LastName}" : "",
-                Questions = entity.Questions?.Select(q => new ReadQuestionDTO
-                {
-                    Id = q.Id,
-                    QuizId = q.QuizId,
-                    Text = q.Text,
-                    OptionA = q.OptionA,
-                    OptionB = q.OptionB,
-                    OptionC = q.OptionC,
-                    OptionD = q.OptionD,
-                    CorrectAnswer = q.CorrectAnswer.ToString(),
-                    Points = q.Points
-                }).ToList() ?? new List<ReadQuestionDTO>()
+                Questions = entity.Questions?
+                    .Where(q => !q.IsDeleted)  // Filter out deleted questions
+                    .Select(q => new ReadQuestionDTO
+                    {
+                        Id = q.Id,
+                        QuizId = q.QuizId,
+                        Text = q.Text,
+                        OptionA = q.OptionA,
+                        OptionB = q.OptionB,
+                        OptionC = q.OptionC,
+                        OptionD = q.OptionD,
+                        CorrectAnswer = q.CorrectAnswer.ToString(),
+                        Points = q.Points
+                    }).ToList() ?? new List<ReadQuestionDTO>()
             };
         }
 
         protected override Quiz UpdateToEntity(UpdateQuizDTO dto, Quiz existingEntity)
         {
+            Console.WriteLine($"🔄 UpdateToEntity called for quiz {existingEntity.Id}");
+            Console.WriteLine($"Existing questions count: {existingEntity.Questions.Count}");
+            Console.WriteLine($"DTO questions count: {dto.Questions?.Count ?? 0}");
+            
             existingEntity.Title = dto.Title ?? existingEntity.Title;
             existingEntity.Description = dto.Description ?? existingEntity.Description;
             existingEntity.DurationMinutes = dto.DurationMinutes ?? existingEntity.DurationMinutes;
             existingEntity.StartDate = dto.StartDate ?? existingEntity.StartDate;
             existingEntity.EndDate = dto.EndDate ?? existingEntity.EndDate;
+            existingEntity.PassingScore = dto.PassingScore ?? existingEntity.PassingScore;
             existingEntity.InstructorId = dto.InstructorId ?? existingEntity.InstructorId;
 
-            // Note: Updating questions via UpdateQuizDTO is complex. 
-            // Usually, we update questions individually via QuestionServices.
-            // But if we want to replace all questions, we would need to handle that here.
-            // For now, we'll assume questions are managed separately or this DTO doesn't update them fully.
+            // Update questions
+            if (dto.Questions != null && dto.Questions.Any())
+            {
+                // Get the list of question IDs from the DTO
+                var dtoQuestionIds = dto.Questions
+                    .Where(q => !string.IsNullOrEmpty(q.Id))
+                    .Select(q => q.Id)
+                    .ToHashSet();
+
+                Console.WriteLine($"DTO Question IDs: {string.Join(", ", dtoQuestionIds)}");
+
+                // Mark questions for deletion if they're not in the DTO
+                foreach (var existingQuestion in existingEntity.Questions.Where(q => !q.IsDeleted).ToList())
+                {
+                    if (!dtoQuestionIds.Contains(existingQuestion.Id))
+                    {
+                        Console.WriteLine($"Marking question {existingQuestion.Id} as deleted");
+                        existingQuestion.IsDeleted = true;
+                        existingQuestion.DeletedAt = DateTime.UtcNow;
+                    }
+                }
+
+                // Update existing questions and add new ones
+                foreach (var qDto in dto.Questions)
+                {
+                    if (!string.IsNullOrEmpty(qDto.Id))
+                    {
+                        // Update existing question
+                        var existingQuestion = existingEntity.Questions.FirstOrDefault(q => q.Id == qDto.Id && !q.IsDeleted);
+                        if (existingQuestion != null)
+                        {
+                            Console.WriteLine($"Updating existing question {existingQuestion.Id}");
+                            existingQuestion.Text = qDto.Text ?? existingQuestion.Text;
+                            existingQuestion.OptionA = qDto.OptionA;
+                            existingQuestion.OptionB = qDto.OptionB;
+                            existingQuestion.OptionC = qDto.OptionC;
+                            existingQuestion.OptionD = qDto.OptionD;
+                            existingQuestion.CorrectAnswer = qDto.CorrectAnswer ?? existingQuestion.CorrectAnswer;
+                            existingQuestion.Points = qDto.Points ?? existingQuestion.Points;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"⚠️ Question {qDto.Id} not found in existing questions!");
+                        }
+                    }
+                    else
+                    {
+                        // Add new question (only if it doesn't already exist)
+                        var newQuestionId = Guid.NewGuid().ToString();
+                        Console.WriteLine($"Adding new question {newQuestionId}");
+                        var newQuestion = new Question
+                        {
+                            Id = newQuestionId,
+                            QuizId = existingEntity.Id,
+                            Text = qDto.Text,
+                            OptionA = qDto.OptionA,
+                            OptionB = qDto.OptionB,
+                            OptionC = qDto.OptionC,
+                            OptionD = qDto.OptionD,
+                            CorrectAnswer = qDto.CorrectAnswer ?? Options.OptionA,
+                            Points = qDto.Points ?? 1
+                        };
+                        existingEntity.Questions.Add(newQuestion);
+                    }
+                }
+
+                // Update question count (only count non-deleted questions)
+                existingEntity.NumberOfQuestions = existingEntity.Questions.Count(q => !q.IsDeleted);
+                Console.WriteLine($"Final question count: {existingEntity.NumberOfQuestions}");
+            }
             
             return existingEntity;
         }
@@ -136,6 +221,43 @@ namespace LMS.BusinessLogic.Services
             catch (Exception ex)
             {
                 throw new Exception($"Error retrieving quizzes: {ex.Message}", ex);
+            }
+        }
+
+        public override async Task<ServiceResponseDTO<ReadQuizDTO>> UpdateAsync(UpdateQuizDTO dto)
+        {
+            try
+            {
+                var id = dto.Id;
+
+                // Eager load questions to ensure we can update them properly
+                var existingEntity = await GetRepo().GetQueryable()
+                    .Include(q => q.Questions)
+                    .FirstOrDefaultAsync(q => q.Id == id);
+
+                if (existingEntity == null)
+                    throw new Exception($"Quiz with id '{id}' not found.");
+
+                Console.WriteLine($"📝 UpdateAsync: Found quiz with {existingEntity.Questions.Count} existing questions");
+
+                var updatedEntity = UpdateToEntity(dto, existingEntity);
+                await GetRepo().UpdateAsync(updatedEntity);
+                await _unitOfWork.SaveChangesAsync();
+                
+                var ReadEntity = MapToReadDTO(updatedEntity);
+                ServiceResponseDTO<ReadQuizDTO> response = new ServiceResponseDTO<ReadQuizDTO>
+                {
+                    Data = ReadEntity,
+                    Success = true,
+                    Message = "Quiz updated successfully."
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ UpdateAsync Exception: {ex.Message}");
+                throw new Exception($"Error updating quiz: {ex.Message}", ex);
             }
         }
 

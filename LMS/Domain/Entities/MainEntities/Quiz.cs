@@ -27,6 +27,9 @@ namespace Domain.Entities.MainEntities
         public DateTime EndDate { get; set; }
 
         public int NumberOfQuestions { get; set; }
+        
+        public int PassingScore { get; set; }  // Minimum score percentage required to pass
+        
         // relations
         // question
         public ICollection<Question> Questions { get; set; } = new List<Question>();

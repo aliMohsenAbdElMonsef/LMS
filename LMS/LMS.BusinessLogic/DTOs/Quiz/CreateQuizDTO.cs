@@ -26,6 +26,10 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public DateTime EndDate { get; set; }
 
         [Required]
+        [Range(0, 100)]
+        public int PassingScore { get; set; }
+
+        [Required]
         public string CourseId { get; set; }
 
         [Required]

@@ -17,15 +17,15 @@
                class="btn @(string.IsNullOrEmpty(status) ? "btn-primary" : "btn-outline-primary")">
                 All Submissions
             </a>
-            <a asp-action="SubmissionsByStatus" asp-route-id="@assignmentId" asp-route-status="PendingGrading"
+            <a asp-action="Submissions" asp-route-id="@assignmentId" asp-route-status="PendingGrading"
                class="btn @(status == "PendingGrading" ? "btn-warning" : "btn-outline-warning")">
                 Pending Grading
             </a>
-            <a asp-action="SubmissionsByStatus" asp-route-id="@assignmentId" asp-route-status="Graded"
+            <a asp-action="Submissions" asp-route-id="@assignmentId" asp-route-status="Graded"
                class="btn @(status == "Graded" ? "btn-success" : "btn-outline-success")">
                 Graded
             </a>
-            <a asp-action="SubmissionsByStatus" asp-route-id="@assignmentId" asp-route-status="NotSubmitted"
+            <a asp-action="Submissions" asp-route-id="@assignmentId" asp-route-status="NotSubmitted"
                class="btn @(status == "NotSubmitted" ? "btn-secondary" : "btn-outline-secondary")">
                 Not Submitted
             </a>

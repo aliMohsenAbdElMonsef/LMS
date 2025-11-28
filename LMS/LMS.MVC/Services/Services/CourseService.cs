@@ -359,7 +359,7 @@ namespace LMS.MVC.Services.Services
                     Id = q.Id,
                     Title = q.Title,
                     Description = q.Description,
-                    QuestionsCount = q.NumberOfQuestions,
+                    NumberOfQuestions = q.NumberOfQuestions,
                     DurationMinutes = q.DurationMinutes,
                     PassingScore = 0,
                     IsCompleted = false // Logic for this would be complex, defaulting to false for now

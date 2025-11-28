@@ -160,10 +160,23 @@ namespace LMS.MVC.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Submissions(string id)
+        public async Task<IActionResult> Submissions(string id, string status = null)
         {
             var submissions = await _services.AssignmentService.GetAssignmentSubmissions(id);
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                submissions = status switch
+                {
+                    "PendingGrading" => submissions.Where(s => s.IsPending),
+                    "Graded" => submissions.Where(s => s.IsGraded),
+                    "NotSubmitted" => submissions.Where(s => !s.IsSubmitted),
+                    _ => submissions
+                };
+            }
+
             ViewBag.AssignmentId = id;
+            ViewBag.Status = status;
             return View(submissions);
         }
 

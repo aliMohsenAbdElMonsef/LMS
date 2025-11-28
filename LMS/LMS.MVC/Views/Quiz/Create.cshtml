@@ -73,8 +73,8 @@
                             </div>
 
                             <div id="questionsContainer">
-                                <!-- Questions will be added here dynamically -->
-                                <div class="question-item card mb-3">
+                                <!-- Initial Question -->
+                                <div class="question-item card mb-3" id="question-0">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between mb-3">
                                             <h6>Question 1</h6>
@@ -88,46 +88,67 @@
                                             <textarea class="form-control" name="Questions[0].Text" rows="2" required></textarea>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Question Type</label>
-                                            <select class="form-select" name="Questions[0].Type">
-                                                <option value="MultipleChoice">Multiple Choice</option>
-                                                <option value="TrueFalse">True/False</option>
-                                                <option value="ShortAnswer">Short Answer</option>
-                                            </select>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Question Type</label>
+                                                <select class="form-select question-type" name="Questions[0].Type" onchange="handleTypeChange(this, 0)">
+                                                    <option value="MultipleChoice">Multiple Choice</option>
+                                                    <option value="TrueFalse">True/False</option>
+                                                    <option value="ShortAnswer">Short Answer</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Points <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" name="Questions[0].Points" value="1" min="1" required>
+                                            </div>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Points <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" name="Questions[0].Points" value="1" min="1" required>
-                                        </div>
-
-                                        <div class="options-container">
+                                        <div class="options-section" id="options-section-0">
                                             <label class="form-label">Answer Options</label>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-text">
+                                            
+                                            <!-- Option A -->
+                                            <div class="input-group mb-2 option-group">
+                                                <span class="input-group-text fw-bold">A</span>
+                                                <input type="text" class="form-control option-input" name="Questions[0].OptionA" placeholder="Option A text" required>
+                                                <div class="input-group-text bg-light">
                                                     <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="0" required>
+                                                    <span class="ms-2 small">Correct</span>
                                                 </div>
-                                                <input type="text" class="form-control" name="Questions[0].OptionA" placeholder="Option A" required>
                                             </div>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-text">
+
+                                            <!-- Option B -->
+                                            <div class="input-group mb-2 option-group">
+                                                <span class="input-group-text fw-bold">B</span>
+                                                <input type="text" class="form-control option-input" name="Questions[0].OptionB" placeholder="Option B text" required>
+                                                <div class="input-group-text bg-light">
                                                     <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="1">
+                                                    <span class="ms-2 small">Correct</span>
                                                 </div>
-                                                <input type="text" class="form-control" name="Questions[0].OptionB" placeholder="Option B" required>
                                             </div>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-text">
+
+                                            <!-- Option C -->
+                                            <div class="input-group mb-2 option-group option-c-d">
+                                                <span class="input-group-text fw-bold">C</span>
+                                                <input type="text" class="form-control option-input" name="Questions[0].OptionC" placeholder="Option C text" required>
+                                                <div class="input-group-text bg-light">
                                                     <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="2">
+                                                    <span class="ms-2 small">Correct</span>
                                                 </div>
-                                                <input type="text" class="form-control" name="Questions[0].OptionC" placeholder="Option C" required>
                                             </div>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-text">
+
+                                            <!-- Option D -->
+                                            <div class="input-group mb-2 option-group option-c-d">
+                                                <span class="input-group-text fw-bold">D</span>
+                                                <input type="text" class="form-control option-input" name="Questions[0].OptionD" placeholder="Option D text" required>
+                                                <div class="input-group-text bg-light">
                                                     <input class="form-check-input mt-0" type="radio" name="Questions[0].CorrectAnswer" value="3">
+                                                    <span class="ms-2 small">Correct</span>
                                                 </div>
-                                                <input type="text" class="form-control" name="Questions[0].OptionD" placeholder="Option D" required>
                                             </div>
+                                        </div>
+                                        
+                                        <div class="short-answer-note text-muted small d-none" id="short-answer-note-0">
+                                            <i class="bi bi-info-circle"></i> Short answer questions are graded manually.
                                         </div>
                                     </div>
                                 </div>
@@ -155,11 +176,13 @@
 
         function addQuestion() {
             const container = document.getElementById('questionsContainer');
+            const index = questionCount;
+            
             const questionHtml = `
-                <div class="question-item card mb-3">
+                <div class="question-item card mb-3" id="question-${index}">
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3">
-                            <h6>Question ${questionCount + 1}</h6>
+                            <h6>Question ${index + 1}</h6>
                             <button type="button" class="btn btn-sm btn-danger" onclick="removeQuestion(this)">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -167,49 +190,66 @@
                         
                         <div class="mb-3">
                             <label class="form-label">Question Text <span class="text-danger">*</span></label>
-                            <textarea class="form-control" name="Questions[${questionCount}].Text" rows="2" required></textarea>
+                            <textarea class="form-control" name="Questions[${index}].Text" rows="2" required></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Question Type</label>
-                            <select class="form-select" name="Questions[${questionCount}].Type">
-                                <option value="MultipleChoice">Multiple Choice</option>
-                                <option value="TrueFalse">True/False</option>
-                                <option value="ShortAnswer">Short Answer</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Question Type</label>
+                                <select class="form-select question-type" name="Questions[${index}].Type" onchange="handleTypeChange(this, ${index})">
+                                    <option value="MultipleChoice">Multiple Choice</option>
+                                    <option value="TrueFalse">True/False</option>
+                                    <option value="ShortAnswer">Short Answer</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Points <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="Questions[${index}].Points" value="1" min="1" required>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Points <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" name="Questions[${questionCount}].Points" value="1" min="1" required>
-                        </div>
-
-                        <div class="options-container">
+                        <div class="options-section" id="options-section-${index}">
                             <label class="form-label">Answer Options</label>
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="0" required>
+                            
+                            <div class="input-group mb-2 option-group">
+                                <span class="input-group-text fw-bold">A</span>
+                                <input type="text" class="form-control option-input" name="Questions[${index}].OptionA" placeholder="Option A text" required>
+                                <div class="input-group-text bg-light">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${index}].CorrectAnswer" value="0" required>
+                                    <span class="ms-2 small">Correct</span>
                                 </div>
-                                <input type="text" class="form-control" name="Questions[${questionCount}].OptionA" placeholder="Option A" required>
                             </div>
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="1">
+
+                            <div class="input-group mb-2 option-group">
+                                <span class="input-group-text fw-bold">B</span>
+                                <input type="text" class="form-control option-input" name="Questions[${index}].OptionB" placeholder="Option B text" required>
+                                <div class="input-group-text bg-light">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${index}].CorrectAnswer" value="1">
+                                    <span class="ms-2 small">Correct</span>
                                 </div>
-                                <input type="text" class="form-control" name="Questions[${questionCount}].OptionB" placeholder="Option B" required>
                             </div>
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="2">
+
+                            <div class="input-group mb-2 option-group option-c-d">
+                                <span class="input-group-text fw-bold">C</span>
+                                <input type="text" class="form-control option-input" name="Questions[${index}].OptionC" placeholder="Option C text" required>
+                                <div class="input-group-text bg-light">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${index}].CorrectAnswer" value="2">
+                                    <span class="ms-2 small">Correct</span>
                                 </div>
-                                <input type="text" class="form-control" name="Questions[${questionCount}].OptionC" placeholder="Option C" required>
                             </div>
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" name="Questions[${questionCount}].CorrectAnswer" value="3">
+
+                            <div class="input-group mb-2 option-group option-c-d">
+                                <span class="input-group-text fw-bold">D</span>
+                                <input type="text" class="form-control option-input" name="Questions[${index}].OptionD" placeholder="Option D text" required>
+                                <div class="input-group-text bg-light">
+                                    <input class="form-check-input mt-0" type="radio" name="Questions[${index}].CorrectAnswer" value="3">
+                                    <span class="ms-2 small">Correct</span>
                                 </div>
-                                <input type="text" class="form-control" name="Questions[${questionCount}].OptionD" placeholder="Option D" required>
                             </div>
+                        </div>
+                        
+                        <div class="short-answer-note text-muted small d-none" id="short-answer-note-${index}">
+                            <i class="bi bi-info-circle"></i> Short answer questions are graded manually.
                         </div>
                     </div>
                 </div>
@@ -220,6 +260,54 @@
 
         function removeQuestion(button) {
             button.closest('.question-item').remove();
+        }
+
+        function handleTypeChange(select, index) {
+            const type = select.value;
+            const optionsSection = document.getElementById(`options-section-${index}`);
+            const shortAnswerNote = document.getElementById(`short-answer-note-${index}`);
+            const inputs = optionsSection.querySelectorAll('input');
+            const optionCD = optionsSection.querySelectorAll('.option-c-d');
+            
+            // Reset visibility
+            optionsSection.classList.remove('d-none');
+            shortAnswerNote.classList.add('d-none');
+            optionCD.forEach(el => el.classList.remove('d-none'));
+            
+            // Reset required and enabled
+            inputs.forEach(input => {
+                input.required = true;
+                input.disabled = false;
+                if (input.type === 'radio') input.required = false; // Radio group handles required
+            });
+            
+            // Ensure at least one radio is required per group
+            const radios = optionsSection.querySelectorAll('input[type="radio"]');
+            if(radios.length > 0) radios[0].required = true;
+
+            if (type === 'TrueFalse') {
+                // Hide C and D
+                optionCD.forEach(el => el.classList.add('d-none'));
+                
+                // Remove required from C and D inputs
+                optionCD.forEach(el => {
+                    el.querySelectorAll('input').forEach(i => i.required = false);
+                });
+
+                // Pre-fill A and B
+                const inputA = optionsSection.querySelector(`input[name="Questions[${index}].OptionA"]`);
+                const inputB = optionsSection.querySelector(`input[name="Questions[${index}].OptionB"]`);
+                if (inputA) inputA.value = "True";
+                if (inputB) inputB.value = "False";
+            } 
+            else if (type === 'ShortAnswer') {
+                // Hide options section entirely
+                optionsSection.classList.add('d-none');
+                shortAnswerNote.classList.remove('d-none');
+                
+                // Remove all required attributes in options
+                inputs.forEach(input => input.required = false);
+            }
         }
     </script>
 }

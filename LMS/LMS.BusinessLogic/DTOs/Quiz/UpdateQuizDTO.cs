@@ -23,6 +23,9 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
+        [Range(0, 100)]
+        public int? PassingScore { get; set; }
+
         public string? InstructorId { get; set; }
 
         public ICollection<UpdateQuestionDTO> Questions { get; set; } = new List<UpdateQuestionDTO>();

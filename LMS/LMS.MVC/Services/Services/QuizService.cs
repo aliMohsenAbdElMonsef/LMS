@@ -74,11 +74,64 @@ namespace LMS.MVC.Services.Services
 
         public async Task<SuccessServiceResult<QuizItemViewModel>> UpdateQuizAsync(string id, UpdateQuizViewModel model)
         {
-            return await ExecuteApiCallAsync(async () =>
+            try
             {
-                var result = await PutAsync<SuccessServiceResult<QuizItemViewModel>>($"api/quizzes/update/{id}", JsonContent.Create(model));
-                return result;
-            });
+                Console.WriteLine($"🔄 Updating quiz {id}...");
+                Console.WriteLine($"Quiz Data: Title={model.Title}, Questions={model.Questions.Count}");
+                
+                // Log each question being sent
+                for (int i = 0; i < model.Questions.Count; i++)
+                {
+                    var q = model.Questions[i];
+                    var textPreview = string.IsNullOrEmpty(q.Text) ? "" : q.Text.Substring(0, Math.Min(30, q.Text.Length));
+                    Console.WriteLine($"  Question {i}: Id={q.Id ?? "NULL"}, Type={q.Type}, Text={textPreview}...");
+                }
+                
+                // API expects PUT /api/quizzes/update with ID in the body, not in the URL
+                var response = await _client.PutAsJsonAsync($"api/quizzes/update", model);
+                
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"❌ API Error Response: {errorContent}");
+                    
+                    // Try to parse as JSON to get more details
+                    try
+                    {
+                        var errorJson = System.Text.Json.JsonDocument.Parse(errorContent);
+                        Console.WriteLine($"Parsed error: {errorJson.RootElement}");
+                    }
+                    catch { }
+                    
+                    return new SuccessServiceResult<QuizItemViewModel>
+                    {
+                        Success = false,
+                        Message = $"API Error ({response.StatusCode}): {errorContent}"
+                    };
+                }
+                
+                var result = await response.Content.ReadFromJsonAsync<SuccessServiceResult<QuizItemViewModel>>();
+                Console.WriteLine($"✅ Update successful: {result?.Success}");
+                
+                return result ?? new SuccessServiceResult<QuizItemViewModel>
+                {
+                    Success = false,
+                    Message = "Empty response from API"
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Exception in UpdateQuizAsync: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                
+                return new SuccessServiceResult<QuizItemViewModel>
+                {
+                    Success = false,
+                    Message = $"Exception: {ex.Message}"
+                };
+            }
         }
 
         public async Task<SuccessServiceResult<QuizResultViewModel>> SubmitQuizAsync(SubmitQuizViewModel model)
