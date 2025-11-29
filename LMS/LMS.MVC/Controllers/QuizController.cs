@@ -306,5 +306,34 @@ namespace LMS.MVC.Controllers
                 return View(new List<QuizItemViewModel>());
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> MyQuizzes()
+        {
+            try
+            {
+                var studentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(studentId))
+                {
+                    TempData["Error"] = "Unable to identify student.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var result = await _services.QuizService.GetQuizzesByStudentAsync(studentId);
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.Message ?? "Error loading quizzes.";
+                    return View(new List<QuizItemViewModel>());
+                }
+
+                return View(result.Data ?? new List<QuizItemViewModel>());
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading quizzes: {ex.Message}";
+                return View(new List<QuizItemViewModel>());
+            }
+        }
     }
 }

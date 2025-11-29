@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfServices _services;
@@ -18,23 +19,45 @@ namespace LMS.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            var category = await _services.CategoryService.GetCategoryById(id);
-            if (category == null)
-                return NotFound();
+            try
+            {
+                var result = await _services.CategoryService.GetCategoryById(id);
+                if (result == null)
+                {
+                    TempData["Error"] = "Category not found.";
+                    return RedirectToAction("CategoryManagement", "Dashboard");
+                }
 
-            return View("Details", category);
+                return View("Details", result);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading category: {ex.Message}";
+                return RedirectToAction("CategoryManagement", "Dashboard");
+            }
         }
+
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id) 
         {
-           var category = await _services.CategoryService.GetEditModel(id);
-            if (category == null) return NotFound();
-            return View("Edit", category);
+            try
+            {
+                var category = await _services.CategoryService.GetEditModel(id);
+                if (category == null)
+                {
+                    TempData["Error"] = "Category not found.";
+                    return RedirectToAction("CategoryManagement", "Dashboard");
+                }
+                return View("Edit", category);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading category for edit: {ex.Message}";
+                return RedirectToAction("CategoryManagement", "Dashboard");
+            }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ReadCategoryResult model)
         {
             if (!ModelState.IsValid)
@@ -58,7 +81,7 @@ namespace LMS.MVC.Controllers
                 if (updatedCategory != null && !string.IsNullOrEmpty(updatedCategory.Id))
                 {
                     TempData["SuccessMessage"] = "Category updated successfully!";
-                    return RedirectToAction("Details", new { id = updatedCategory.Id });
+                    return RedirectToAction("CategoryManagement", "Dashboard");
                 }
 
                 ModelState.AddModelError("", "Failed to update category. Please try again.");
@@ -70,8 +93,8 @@ namespace LMS.MVC.Controllers
                 return View("Edit", model);
             }
         }
+
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var model = _services.CategoryService.GetCreateModel();
@@ -80,7 +103,6 @@ namespace LMS.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ReadCategoryResult model)
         {
             if (!ModelState.IsValid)
@@ -94,25 +116,25 @@ namespace LMS.MVC.Controllers
                         Console.WriteLine($"Property: {key}, Error: {error.ErrorMessage}");
                     }
                 }
-                return View("Create");
+                return View("Create", model);
             }
 
             try
             {
-                var CreatedCategory = await _services.CategoryService.CreateCategory(model);
-                if (CreatedCategory != null && !string.IsNullOrEmpty(CreatedCategory.Id))
+                var createdCategory = await _services.CategoryService.CreateCategory(model);
+                if (createdCategory != null && !string.IsNullOrEmpty(createdCategory.Id))
                 {
                     TempData["SuccessMessage"] = "Category created successfully!";
-                    return RedirectToAction("Details", new { id = CreatedCategory.Id });
+                    return RedirectToAction("CategoryManagement", "Dashboard");
                 }
 
-                ModelState.AddModelError("", "Failed to update category. Please try again.");
-                return View("Edit", model);
+                ModelState.AddModelError("", "Failed to create category. Please try again.");
+                return View("Create", model);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error while updating category: {ex.Message}");
-                return View("Edit", model);
+                ModelState.AddModelError("", $"Error while creating category: {ex.Message}");
+                return View("Create", model);
             }
         }
     }

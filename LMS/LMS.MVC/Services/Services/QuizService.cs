@@ -120,5 +120,14 @@ namespace LMS.MVC.Services.Services
                 return result;
             });
         }
+
+        public async Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetQuizzesByStudentAsync(string studentId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await GetAsync<SuccessServiceResult<IEnumerable<QuizItemViewModel>>>($"api/quizzes/student/{studentId}");
+                return result;
+            });
+        }
     }
 }

@@ -113,8 +113,9 @@ namespace LMS.BusinessLogic.DTOs.Course
             if (EndDate <= StartDate)
                 yield return new ValidationResult("End date must be after start date.", new[] { nameof(EndDate) });
 
-            if (StartDate < DateTime.Today)
-                yield return new ValidationResult("Start date cannot be in the past.", new[] { nameof(StartDate) });
+            // Allow past start dates for existing courses being updated
+            // if (StartDate < DateTime.Today)
+            //     yield return new ValidationResult("Start date cannot be in the past.", new[] { nameof(StartDate) });
 
             if (DurationWeeks < 1)
                 yield return new ValidationResult("Course duration must be at least 1 week.", new[] { nameof(EndDate) });

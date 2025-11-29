@@ -12,5 +12,6 @@ namespace LMS.BusinessLogic.Contracts.Services
     {
         Task<ServiceResponseDTO<CategoryDetailsDTO>> GetCategoryWithCourseDetails(string Id);
         Task<ServiceResponseDTO<ReadCategoryDTO>> GetCategoryAsync(string Id);
+        Task<ServiceResponseDTO<List<ReadCategoryDTO>>> GetTopCategoriesAsync(int count);
     }
 }

@@ -1,0 +1,114 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Quiz.QuizItemViewModel>
+@{
+    ViewData["Title"] = "My Quizzes";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in-up">
+        <div>
+            <h2><i class="bi bi-journal-check"></i> My Quizzes</h2>
+            <p class="text-secondary mb-0">View and take your assigned quizzes</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var quiz in Model)
+            {
+                <div class="col-lg-4 col-md-6 animate-fade-in-up">
+                    <div class="card quiz-card h-100">
+                        <div class="quiz-badge bg-primary">
+                            <i class="bi bi-journal-text"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@quiz.Title</h5>
+                            <p class="text-muted small mb-3">@quiz.Description</p>
+                            
+                            <div class="quiz-info mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small"><i class="bi bi-question-circle"></i> Questions:</span>
+                                    <span class="fw-bold">@quiz.QuestionsCount</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small"><i class="bi bi-clock"></i> Duration:</span>
+                                    <span class="fw-bold">@quiz.DurationMinutes min</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="@Url.Action("Take", "Quiz", new { id = quiz.Id })" class="btn btn-primary w-100">
+                                    <i class="bi bi-play-circle"></i> Take Quiz
+                                </a>
+                                <a href="@Url.Action("Results", "Quiz", new { id = quiz.Id })" class="btn btn-outline-secondary w-100">
+                                    <i class="bi bi-bar-chart"></i> Results
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-journal-x display-1 text-muted"></i>
+            <p class="text-muted mt-3">No quizzes found for your enrolled courses.</p>
+            <a href="@Url.Action("Index", "Course")" class="btn btn-primary">
+                <i class="bi bi-search"></i> Browse Courses
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+.quiz-card {
+    position: relative;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.quiz-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.quiz-info {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+</style>

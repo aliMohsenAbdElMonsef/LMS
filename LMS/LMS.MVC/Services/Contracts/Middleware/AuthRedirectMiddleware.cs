@@ -16,6 +16,9 @@
 
             var allowPaths = new[]
             {
+                "/",
+                "/home",
+                "/course",
                 "/account/login",
                 "/account/signup",
                 "/account/forgotpassword",
@@ -23,7 +26,8 @@
                 "/css",
                 "/js",
                 "/images",
-                "/lib"
+                "/lib",
+                "/uploads"
             };
 
             bool isAllowedPath = allowPaths.Any(p => path.StartsWith(p));
@@ -42,7 +46,5 @@
 
             await _next(context);
         }
-
     }
-
 }

@@ -43,7 +43,11 @@ namespace LMS.MVC
             var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7033/";
 
             // ---------------- Token & Auth ----------------
-            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddHttpClient<ITokenService, TokenService>(client =>
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(300);
+            });
             builder.Services.AddTransient<AuthHeaderHandler>();
 
             // ---------------- HttpClients ----------------
@@ -141,7 +145,8 @@ namespace LMS.MVC
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<AuthRedirectMiddleware>();
+            // Disabled AuthRedirectMiddleware - using standard [Authorize]/[AllowAnonymous] attributes instead
+            // app.UseMiddleware<AuthRedirectMiddleware>();
 
             app.MapControllerRoute(
                 name: "default",

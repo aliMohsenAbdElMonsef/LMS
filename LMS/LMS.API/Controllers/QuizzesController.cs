@@ -127,5 +127,13 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Quizzes.GetQuizzesByInstructorAsync(instructorId);
             return Ok(result);
         }
+
+        [HttpGet("student/{studentId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>>> GetQuizzesByStudent(string studentId)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizzesByStudentAsync(studentId);
+            return Ok(result);
+        }
     }
 }

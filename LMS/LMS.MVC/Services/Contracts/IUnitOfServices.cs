@@ -14,5 +14,7 @@ namespace LMS.MVC.Services.Contracts
         ILectureService LectureService { get; }
         IProfileService ProfileService { get; }
         IQuizService QuizService { get; }
+
+        IHomeMVCService HomeService { get; }
     }
 }

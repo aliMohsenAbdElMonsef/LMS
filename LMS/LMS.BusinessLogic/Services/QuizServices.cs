@@ -488,5 +488,40 @@ namespace LMS.BusinessLogic.Services
                 };
             }
         }
+
+        public async Task<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByStudentAsync(string studentId)
+        {
+            try
+            {
+                // Get courses student is enrolled in
+                var studentEnrollments = await _unitOfWork.GetQueryable<StudentEnrollIntoCourse>()
+                    .Where(se => se.StudentId == studentId && se.Status == ApplicationStatus.Approved)
+                    .Select(se => se.CourseId)
+                    .ToListAsync();
+
+                // Get quizzes for these courses
+                var quizzes = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .Where(q => studentEnrollments.Contains(q.CourseId))
+                    .ToListAsync();
+
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Data = quizzes.Select(q => MapToReadDTO(q)).ToList(),
+                    Success = true,
+                    Message = "Quizzes retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving quizzes: {ex.Message}"
+                };
+            }
+        }
     }
 }

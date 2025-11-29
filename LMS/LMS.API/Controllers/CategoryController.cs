@@ -84,5 +84,13 @@ namespace LMS.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("top")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ServiceResponseDTO<List<ReadCategoryDTO>>>> GetTopCategories([FromQuery] int count = 6)
+        {
+            var result = await CategoryService.GetTopCategoriesAsync(count);
+            return Ok(result);
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace LMS.MVC.Services.Services
         private readonly Lazy<ILectureService> _lectureService;
         private readonly Lazy<IProfileService> _profileService;
         private readonly Lazy<IQuizService> _quizService;
-
+        private readonly Lazy<IHomeMVCService> _homeService;
         private readonly IConfiguration _configuration;
 
         public UnitOfServices(HttpClient client, IHttpContextAccessor httpContextAccessor, ITokenService tokenService,ILoggerFactory loggerFactory, IMapper mapper, IConfiguration configuration)
@@ -46,6 +46,7 @@ namespace LMS.MVC.Services.Services
             _lectureService = new Lazy<ILectureService>(() => new LectureService(_client, _httpContextAccessor));
             _profileService = new Lazy<IProfileService>(() => new ProfileService(_client, _httpContextAccessor));
             _quizService = new Lazy<IQuizService>(() => new QuizService(_client, _httpContextAccessor));
+            _homeService = new Lazy<IHomeMVCService>(() => new HomeMVCService(_client, _httpContextAccessor, _mapper));
         }
 
         public IAccountService AccountService => _accountService.Value;
@@ -57,5 +58,6 @@ namespace LMS.MVC.Services.Services
         public ILectureService LectureService => _lectureService.Value;
         public IProfileService ProfileService => _profileService.Value;
         public IQuizService QuizService => _quizService.Value;
+        public IHomeMVCService HomeService => _homeService.Value;
     }
 }

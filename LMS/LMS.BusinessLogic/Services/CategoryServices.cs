@@ -128,6 +128,39 @@ namespace LMS.BusinessLogic.Services
             existingEntity.Description = dto.Description ?? existingEntity.Description;
             existingEntity.LastUpdated = DateTime.UtcNow;
             return existingEntity;
+            existingEntity.LastUpdated = DateTime.UtcNow;
+            return existingEntity;
+        }
+
+        public async Task<ServiceResponseDTO<List<ReadCategoryDTO>>> GetTopCategoriesAsync(int count)
+        {
+            var response = new ServiceResponseDTO<List<ReadCategoryDTO>>();
+            try
+            {
+                var categories = await _unitOfWork.Categories.GetAllAsync();
+                var topCategories = categories
+                    .OrderByDescending(c => c.Courses?.Count(course => !course.IsDeleted) ?? 0)
+                    .Take(count)
+                    .ToList();
+
+                var dtos = _mapper.Map<List<ReadCategoryDTO>>(topCategories);
+                
+                // Manually populate CoursesCount since it might not be mapped automatically depending on configuration
+                for (int i = 0; i < topCategories.Count; i++)
+                {
+                    dtos[i].CoursesCount = topCategories[i].Courses?.Count(c => !c.IsDeleted) ?? 0;
+                }
+
+                response.Success = true;
+                response.Data = dtos;
+                response.Message = "Top categories retrieved successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Error retrieving top categories: {ex.Message}";
+            }
+            return response;
         }
     }
      
