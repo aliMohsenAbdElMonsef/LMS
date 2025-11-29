@@ -17,6 +17,8 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         public TimeSpan StartTime { get; set; }
 
         public TimeSpan? EndTime { get; set; }// calculated from the duration of the lecture in the course
+        
+        public int? DurationMinutes { get; set; }
 
         [Required]
         public string CourseId { get; set; }

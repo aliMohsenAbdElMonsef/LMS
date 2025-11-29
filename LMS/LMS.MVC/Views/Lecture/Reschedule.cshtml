@@ -1,0 +1,49 @@
+@model LMS.MVC.Models.ViewModels.Lecture.RescheduleLectureViewModel
+
+@{
+    ViewData["Title"] = "Reschedule Lecture";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">Reschedule Lecture: @Model.Title</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <strong>Current Schedule:</strong> @Model.CurrentDate.ToShortDateString() at @Model.CurrentStartTime
+            </div>
+
+            <form asp-action="Reschedule" method="post">
+                <input type="hidden" asp-for="LectureId" />
+                <input type="hidden" asp-for="CourseId" />
+                <input type="hidden" asp-for="Title" />
+                <input type="hidden" asp-for="CurrentDate" />
+                <input type="hidden" asp-for="CurrentStartTime" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="NewDate" class="form-label">New Date</label>
+                    <input asp-for="NewDate" class="form-control" type="date" />
+                    <span asp-validation-for="NewDate" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NewStartTime" class="form-label">New Start Time</label>
+                    <input asp-for="NewStartTime" class="form-control" type="time" />
+                    <span asp-validation-for="NewStartTime" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" asp-route-courseId="@Model.CourseId" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-warning">Reschedule Lecture</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

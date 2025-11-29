@@ -443,6 +443,29 @@ namespace LMS.MVC.Controllers
             return RedirectToAction("InstructorQuizzes");
         }
 
+        // GET: Quiz/MyQuizzes
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> MyQuizzes()
+        {
+            try
+            {
+                var result = await _services.QuizService.GetMyQuizzesAsync();
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.Message ?? "Error loading quizzes.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(result.Data ?? new List<QuizItemViewModel>());
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading quizzes: {ex.Message}";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         // GET: Quiz/InstructorQuizzes
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]

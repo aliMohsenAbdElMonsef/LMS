@@ -4,6 +4,7 @@ using LMS.MVC.Services.Contracts.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
+using LMS.MVC.Services.Implementation;
 
 namespace LMS.MVC.Services.Services
 {
@@ -23,6 +24,8 @@ namespace LMS.MVC.Services.Services
         private readonly Lazy<ILectureService> _lectureService;
         private readonly Lazy<IProfileService> _profileService;
         private readonly Lazy<IQuizService> _quizService;
+        private readonly Lazy<ICertificateTemplateService> _certificateTemplateService;
+        private readonly Lazy<ILectureScheduleService> _lectureScheduleService;
 
         private readonly IConfiguration _configuration;
 
@@ -46,7 +49,10 @@ namespace LMS.MVC.Services.Services
             _lectureService = new Lazy<ILectureService>(() => new LectureService(_client, _httpContextAccessor));
             _profileService = new Lazy<IProfileService>(() => new ProfileService(_client, _httpContextAccessor));
             _quizService = new Lazy<IQuizService>(() => new QuizService(_client, _httpContextAccessor));
+            _certificateTemplateService = new Lazy<ICertificateTemplateService>(() => new CertificateTemplateService(client, httpContextAccessor));
+            _lectureScheduleService = new Lazy<ILectureScheduleService>(() => new LectureScheduleService(_client, _httpContextAccessor, _tokenService));
         }
+
 
         public IAccountService AccountService => _accountService.Value;
         public IAssignmentService AssignmentService => _assignmentService.Value;
@@ -57,5 +63,7 @@ namespace LMS.MVC.Services.Services
         public ILectureService LectureService => _lectureService.Value;
         public IProfileService ProfileService => _profileService.Value;
         public IQuizService QuizService => _quizService.Value;
+        public ICertificateTemplateService CertificateTemplateService => _certificateTemplateService.Value;
+        public ILectureScheduleService LectureScheduleService => _lectureScheduleService.Value;
     }
 }

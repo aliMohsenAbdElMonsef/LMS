@@ -1,6 +1,6 @@
-@model dynamic
+@model LMS.MVC.Models.ViewModels.Lecture.LectureViewModel
 @{
-    ViewData["Title"] = "Watch Lecture";
+    ViewData["Title"] = Model.Title;
 }
 
 <div class="container-fluid py-4">
@@ -10,10 +10,19 @@
             <div class="card mb-4 animate-fade-in-up">
                 <div class="card-body p-0">
                     <div class="video-container">
-                        <video id="lectureVideo" class="w-100" controls>
-                            <source src="~/videos/lecture-1.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        @if (!string.IsNullOrEmpty(Model.VideoUrl))
+                        {
+                            <video id="lectureVideo" class="w-100" controls>
+                                <source src="@Model.VideoUrl" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning m-3">
+                                <i class="bi bi-exclamation-triangle"></i> No video available for this lecture yet.
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -23,11 +32,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h3 class="mb-2">Introduction to HTML</h3>
+                            <h3 class="mb-2">@Model.Title</h3>
                             <p class="text-muted mb-0">
-                                <i class="bi bi-person"></i> Instructor: John Smith | 
-                                <i class="bi bi-clock"></i> Duration: 45:30 | 
-                                <i class="bi bi-eye"></i> 234 views
+                                <i class="bi bi-calendar"></i> @Model.LectureDate.ToString("MMM dd, yyyy") | 
+                                <i class="bi bi-clock"></i> Duration: @Model.DurationMinutes minutes
+                            </p>
                             </p>
                         </div>
                         <div>
@@ -72,14 +81,14 @@
 
                     <div class="tab-content mt-3">
                         <div class="tab-pane fade show active" id="description">
-                            <p>Learn the fundamentals of HTML including structure, tags, elements, and attributes. This lecture covers:</p>
-                            <ul>
-                                <li>HTML document structure</li>
-                                <li>Common HTML tags</li>
-                                <li>Semantic HTML</li>
-                                <li>Forms and inputs</li>
-                                <li>Best practices</li>
-                            </ul>
+                            @if (!string.IsNullOrEmpty(Model.Description))
+                            {
+                                <p>@Model.Description</p>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No description available for this lecture.</p>
+                            }
                         </div>
                         <div class="tab-pane fade" id="notes">
                             <div class="notes-editor">

@@ -42,7 +42,7 @@ namespace LMS.MVC.Services.Services
             return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
-        private async Task AttachAccessTokenAsync()
+        protected async Task AttachAccessTokenAsync()
         {
             var context = _contextAccessor.HttpContext;
             var token = context?.Request.Cookies["AccessToken"];
@@ -58,7 +58,7 @@ namespace LMS.MVC.Services.Services
             }
         }
 
-        private async Task<bool> TryRefreshTokenAsync()
+        protected async Task<bool> TryRefreshTokenAsync()
         {
             var context = _contextAccessor.HttpContext;
             var refreshToken = context?.Request.Cookies["RefreshToken"];

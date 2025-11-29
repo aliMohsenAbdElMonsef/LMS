@@ -1,4 +1,4 @@
-@model dynamic
+@model IEnumerable<LMS.MVC.Models.ViewModels.Lecture.LectureViewModel>
 @{
     ViewData["Title"] = "Course Lectures";
     var courseId = ViewBag.CourseId;
@@ -10,7 +10,7 @@
             <h2><i class="bi bi-play-circle"></i> Course Lectures</h2>
             <p class="text-secondary mb-0">Learn at your own pace</p>
         </div>
-        @if (User.IsInRole("Instructor") || User.IsInRole("Admin"))
+        @if (User.IsInRole("Admin"))
         {
             <a href="@Url.Action("Create", "Lecture", new { courseId })" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Add Lecture
@@ -19,159 +19,93 @@
     </div>
 
     <div class="row g-4">
-        <!-- Lecture Card 1 -->
-        <div class="col-lg-6 animate-fade-in-up">
-            <div class="card lecture-card">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <div class="lecture-thumbnail">
-                            <img src="~/images/video-thumb.jpg" alt="Lecture" class="img-fluid">
-                            <div class="play-overlay">
-                                <i class="bi bi-play-circle-fill"></i>
-                            </div>
-                            <div class="lecture-duration">
-                                <i class="bi bi-clock"></i> 45:30
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-primary">Lecture 1</span>
-                                <span class="badge bg-success">Completed</span>
-                            </div>
-                            <h5 class="card-title">Introduction to HTML</h5>
-                            <p class="card-text text-muted small mb-3">
-                                Learn the basics of HTML structure, tags, and elements
-                            </p>
-                            <div class="lecture-meta mb-3">
-                                <small class="text-muted">
-                                    <i class="bi bi-eye"></i> 234 views
-                                </small>
-                            </div>
-                            <a href="@Url.Action("Watch", "Lecture", new { id = "1" })" class="btn btn-primary btn-sm">
-                                <i class="bi bi-play"></i> Watch Again
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var lecture in Model)
+            {
+                <div class="col-lg-6 animate-fade-in-up">
+                    <div class="card lecture-card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-primary">Lecture @lecture.LectureNumber</span>
+                                        @if (lecture.IsCompleted)
+                                        {
+                                            <span class="badge bg-success">Completed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Not Started</span>
+                                        }
+                                    </div>
+                                    <h5 class="card-title">@lecture.Title</h5>
+                                    <p class="card-text text-muted small mb-3">
+                                        @lecture.Description
+                                    </p>
+                                    <div class="lecture-meta mb-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> @lecture.LectureDate.ToString("MMM dd, yyyy")
+                                            <i class="bi bi-clock ms-2"></i> @lecture.StartTime.ToString(@"hh\:mm")
+                                            <i class="bi bi-hourglass ms-2"></i> @lecture.DurationMinutes min
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        @if (!string.IsNullOrEmpty(lecture.VideoUrl))
+                                        {
+                                            <a href="@Url.Action("Watch", "Lecture", new { id = lecture.Id })" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-play"></i> Watch
+                                            </a>
+                                        }
+                                        
+                                        @if (!string.IsNullOrEmpty(lecture.ZoomLink))
+                                        {
+                                            <a href="@Url.Action("Join", "Lecture", new { id = lecture.Id })" class="btn btn-success btn-sm">
+                                                <i class="bi bi-camera-video"></i> Join Live
+                                            </a>
+                                        }
 
-        <!-- Lecture Card 2 -->
-        <div class="col-lg-6 animate-fade-in-up animate-delay-100">
-            <div class="card lecture-card">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <div class="lecture-thumbnail">
-                            <img src="~/images/video-thumb.jpg" alt="Lecture" class="img-fluid">
-                            <div class="play-overlay">
-                                <i class="bi bi-play-circle-fill"></i>
-                            </div>
-                            <div class="lecture-duration">
-                                <i class="bi bi-clock"></i> 52:15
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-primary">Lecture 2</span>
-                                <span class="badge bg-warning">In Progress</span>
-                            </div>
-                            <h5 class="card-title">CSS Fundamentals</h5>
-                            <p class="card-text text-muted small mb-3">
-                                Master CSS selectors, properties, and styling techniques
-                            </p>
-                            <div class="lecture-meta mb-3">
-                                <small class="text-muted">
-                                    <i class="bi bi-eye"></i> 189 views
-                                </small>
-                                <div class="progress mt-2" style="height: 4px;">
-                                    <div class="progress-bar bg-primary" style="width: 60%"></div>
+                                        @if (User.IsInRole("Instructor") || User.IsInRole("Admin"))
+                                        {
+                                            var lectureDateTime = lecture.LectureDate.Date + lecture.StartTime;
+                                            var now = DateTime.UtcNow;
+                                            var tenMinutesBeforeLecture = lectureDateTime.AddMinutes(-10);
+                                            var canLaunch = now >= tenMinutesBeforeLecture && now <= lectureDateTime.AddHours(2);
+                                            
+                                            if (canLaunch)
+                                            {
+                                                <a href="@Url.Action("Launch", "Lecture", new { id = lecture.Id })" class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-broadcast"></i> Launch
+                                                </a>
+                                            }
+                                        }
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a href="@Url.Action("Reschedule", "Lecture", new { id = lecture.Id })" class="btn btn-info btn-sm">
+                                                <i class="bi bi-calendar-event"></i> Reschedule
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@lecture.Id" asp-route-courseId="@courseId" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this lecture?');">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                            <a href="@Url.Action("Watch", "Lecture", new { id = "2" })" class="btn btn-primary btn-sm">
-                                <i class="bi bi-play"></i> Continue Watching
-                            </a>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No lectures found for this course.</p>
             </div>
-        </div>
-
-        <!-- Lecture Card 3 -->
-        <div class="col-lg-6 animate-fade-in-up animate-delay-200">
-            <div class="card lecture-card">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <div class="lecture-thumbnail">
-                            <img src="~/images/video-thumb.jpg" alt="Lecture" class="img-fluid">
-                            <div class="play-overlay">
-                                <i class="bi bi-play-circle-fill"></i>
-                            </div>
-                            <div class="lecture-duration">
-                                <i class="bi bi-clock"></i> 38:45
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-primary">Lecture 3</span>
-                                <span class="badge bg-secondary">Not Started</span>
-                            </div>
-                            <h5 class="card-title">JavaScript Basics</h5>
-                            <p class="card-text text-muted small mb-3">
-                                Introduction to JavaScript programming and DOM manipulation
-                            </p>
-                            <div class="lecture-meta mb-3">
-                                <small class="text-muted">
-                                    <i class="bi bi-eye"></i> 156 views
-                                </small>
-                            </div>
-                            <a href="@Url.Action("Watch", "Lecture", new { id = "3" })" class="btn btn-primary btn-sm">
-                                <i class="bi bi-play"></i> Start Watching
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Lecture Card 4 (Locked) -->
-        <div class="col-lg-6 animate-fade-in-up animate-delay-300">
-            <div class="card lecture-card locked">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <div class="lecture-thumbnail">
-                            <img src="~/images/video-thumb.jpg" alt="Lecture" class="img-fluid" style="filter: grayscale(100%);">
-                            <div class="play-overlay">
-                                <i class="bi bi-lock-fill"></i>
-                            </div>
-                            <div class="lecture-duration">
-                                <i class="bi bi-clock"></i> 60:00
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-primary">Lecture 4</span>
-                                <span class="badge bg-secondary">Locked</span>
-                            </div>
-                            <h5 class="card-title">Advanced JavaScript</h5>
-                            <p class="card-text text-muted small mb-3">
-                                Complete previous lectures to unlock this content
-                            </p>
-                            <button class="btn btn-secondary btn-sm" disabled>
-                                <i class="bi bi-lock"></i> Locked
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
 
@@ -184,52 +118,23 @@
     overflow: hidden;
 }
 
-.lecture-card:not(.locked):hover {
+.lecture-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-.lecture-card.locked {
-    opacity: 0.6;
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
 }
 
-.lecture-thumbnail {
-    position: relative;
-    height: 100%;
-    min-height: 200px;
-    overflow: hidden;
-}
-
-.lecture-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.play-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3rem;
-    color: white;
-    opacity: 0.8;
-    transition: all 0.3s ease;
-}
-
-.lecture-card:hover .play-overlay {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.1);
-}
-
-.lecture-duration {
-    position: absolute;
-    bottom: 0.75rem;
-    right: 0.75rem;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>

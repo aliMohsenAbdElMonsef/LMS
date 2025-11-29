@@ -4,12 +4,14 @@ namespace LMS.MVC.Models.ViewModels.Quiz
     {
         public string Id { get; set; } = string.Empty;
         public string CourseId { get; set; } = string.Empty;
+        public string CourseName { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int NumberOfQuestions { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
         public bool IsCompleted { get; set; }
+        public int? Grade { get; set; }
         public int AchievedScore { get; set; }
         public bool IsLocked { get; set; }
         public List<LMS.BusinessLogic.DTOs.Question.ReadQuestionDTO>? Questions { get; set; }

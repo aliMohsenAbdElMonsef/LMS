@@ -1,0 +1,118 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Lecture.LectureViewModel>
+@{
+    ViewData["Title"] = "My Lectures";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in-up">
+        <div>
+            <h2><i class="bi bi-collection-play"></i> My Lectures</h2>
+            <p class="text-secondary mb-0">All your upcoming and past lectures</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var lecture in Model)
+            {
+                <div class="col-lg-6 animate-fade-in-up">
+                    <div class="card lecture-card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-primary">Lecture @lecture.LectureNumber</span>
+                                        <span class="badge bg-info text-dark">@lecture.CourseName</span>
+                                    </div>
+                                    <h5 class="card-title">@lecture.Title</h5>
+                                    <p class="card-text text-muted small mb-3">
+                                        @lecture.Description
+                                    </p>
+                                    <div class="lecture-meta mb-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> @lecture.LectureDate.ToString("MMM dd, yyyy")
+                                            <i class="bi bi-clock ms-2"></i> @lecture.StartTime.ToString(@"hh\:mm")
+                                            <i class="bi bi-hourglass ms-2"></i> @lecture.DurationMinutes min
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        @if (!string.IsNullOrEmpty(lecture.VideoUrl))
+                                        {
+                                            <a href="@Url.Action("Watch", "Lecture", new { id = lecture.Id })" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-play"></i> Watch
+                                            </a>
+                                        }
+                                        
+                                        @if (!string.IsNullOrEmpty(lecture.ZoomLink))
+                                        {
+                                            <a href="@Url.Action("Join", "Lecture", new { id = lecture.Id })" class="btn btn-success btn-sm">
+                                                <i class="bi bi-camera-video"></i> Join Live
+                                            </a>
+                                        }
+
+                                        @if (User.IsInRole("Instructor") || User.IsInRole("Admin"))
+                                        {
+                                            var lectureDateTime = lecture.LectureDate.Date + lecture.StartTime;
+                                            var now = DateTime.UtcNow;
+                                            var tenMinutesBeforeLecture = lectureDateTime.AddMinutes(-10);
+                                            var canLaunch = now >= tenMinutesBeforeLecture && now <= lectureDateTime.AddHours(2);
+                                            
+                                            if (canLaunch)
+                                            {
+                                                <a href="@Url.Action("Launch", "Lecture", new { id = lecture.Id })" class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-broadcast"></i> Launch
+                                                </a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <div class="py-5">
+                    <i class="bi bi-calendar-x display-1 text-muted"></i>
+                    <p class="lead text-muted mt-3">No lectures found.</p>
+                    <a href="@Url.Action("Index", "Course")" class="btn btn-primary mt-2">Browse Courses</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.lecture-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.lecture-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

@@ -6,16 +6,22 @@ using LMS.BusinessLogic.DTOs.Lecture;
 using LMS.BusinessLogic.DTOs.Responses;
 using LMS.BusinessLogic.Services;
 using LMS.DataAccess.Contracts;
+using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectureDTO, UpdateLectureDTO>, ILectureServices
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailService _emailService;
 
-    public LectureService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork)
+    public LectureService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService) : base(unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _emailService = emailService;
     }
 
     protected override Lecture MapToEntity(CreateLectureDTO dto)
@@ -46,6 +52,12 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
     private async Task<bool> CanAccessLecture(string courseid,string lectureId, string userId, string userRole)
     {
+        if (string.IsNullOrEmpty(courseid))
+        {
+            var lectureTemp = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
+            if (lectureTemp == null) return false;
+            courseid = lectureTemp.CourseId;
+        }
         Course c = await _unitOfWork.Courses.FindByIdAsync(courseid);
         if (c == null) {
             return false;
@@ -164,14 +176,27 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
                 return ErrorResponse<GetLectureDTO>("Start time must be before end time");
             }
 
-            //var conflictCheck = await CheckLectureConflictAsync(dto.CourseId, dto.LectureDate, dto.StartTime, dto.EndTime);
-            //if (conflictCheck.Data)
-            //{
-            //    return ErrorResponse<GetLectureDTO>($"Time conflict detected: {conflictCheck.Message}");
-            //}
+            TimeSpan endTimeToCheck = dto.EndTime ?? (dto.DurationMinutes.HasValue 
+                ? dto.StartTime.Add(TimeSpan.FromMinutes(dto.DurationMinutes.Value)) 
+                : dto.StartTime.Add(TimeSpan.FromHours(1)));
 
-            var baseResult = await base.CreateAsync(dto);
-            return baseResult;
+            var conflictCheck = await CheckLectureConflictAsync(dto.CourseId, dto.LectureDate, dto.StartTime, endTimeToCheck);
+            if (conflictCheck.Data)
+            {
+                return ErrorResponse<GetLectureDTO>(conflictCheck.Message);
+            }
+
+            var entity = _mapper.Map<Lecture>(dto);
+
+            // Calculate Lecture Number
+            var existingLectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(dto.CourseId);
+            entity.LectureNumber = existingLectures.Count() + 1;
+
+            await _unitOfWork.Lectures.CreateAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var readDto = _mapper.Map<GetLectureDTO>(entity);
+            return SuccessResponse(readDto, "Lecture created successfully");
         }
         catch (Exception ex)
         {
@@ -208,7 +233,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             if (conflictCheck.Data)
             {
-                return ErrorResponse<GetLectureDTO>($"Time conflict detected: {conflictCheck.Message}");
+                return ErrorResponse<GetLectureDTO>(conflictCheck.Message);
             }
 
             return await base.UpdateAsync(dto);
@@ -343,16 +368,15 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             }
 
             var lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
+            
+            // Check if there is any other lecture on the same day
             var conflictingLecture = lectures.FirstOrDefault(l =>
                 l.LectureDate.Date == date.Date &&
-                l.Id != excludeLectureId &&
-                ((startTime >= l.StartTime && startTime < l.EndTime) ||
-                 (endTime > l.StartTime && endTime <= l.EndTime) ||
-                 (startTime <= l.StartTime && endTime >= l.EndTime)));
+                l.Id != excludeLectureId);
 
             return SuccessResponse<bool>(
                 conflictingLecture != null,
-                conflictingLecture != null ? "Lecture time conflict detected" : "No time conflicts found"
+                conflictingLecture != null ? "There is already a lecture scheduled for this day. Only one lecture per day is allowed." : "No conflicts found"
             );
         }
         catch (Exception ex)
@@ -361,6 +385,108 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         }
     }
 
+
+    public async Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetMyLecturesAsync(string userId, string userRole)
+    {
+        try
+        {
+            IEnumerable<string> courseIds = new List<string>();
+
+            if (userRole == "Student")
+            {
+                var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
+                courseIds = enrollments.Where(e => e.StudentId == userId).Select(e => e.CourseId).ToList();
+            }
+            else if (userRole == "Instructor")
+            {
+                var enrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
+                courseIds = enrollments.Where(e => e.InstructorId == userId && e.Status == Domain.Enums.ApplicationStatus.Approved)
+                                       .Select(e => e.CourseId).ToList();
+            }
+            else if (userRole == "Admin")
+            {
+                 // Admin sees all? Or nothing? Let's assume nothing for "My Lectures" or maybe all. 
+                 // For now, let's return empty or handle as needed. 
+                 // User request implies Student and Instructor.
+                 return SuccessResponse<IEnumerable<GetLectureDTO>>(new List<GetLectureDTO>(), "Admins can view all lectures via Course management.");
+            }
+
+            if (!courseIds.Any())
+            {
+                return SuccessResponse<IEnumerable<GetLectureDTO>>(new List<GetLectureDTO>(), "No enrolled courses found.");
+            }
+
+            var lectures = await _unitOfWork.Lectures.GetLecturesByCourseIdsAsync(courseIds);
+            var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(lectures);
+
+            return SuccessResponse<IEnumerable<GetLectureDTO>>(lectureDTOs, "My lectures retrieved successfully");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<IEnumerable<GetLectureDTO>>($"Error retrieving my lectures: {ex.Message}");
+        }
+    }
+
+    public async Task<ServiceResponseDTO<bool>> LaunchLectureAsync(string lectureId, string zoomLink, string userId, string userRole)
+    {
+        try
+        {
+            // 1. Validate User (Instructor or Admin)
+            if (userRole != "Admin" && userRole != "Instructor")
+            {
+                return ErrorResponse<bool>("Only instructors or admins can launch lectures.");
+            }
+
+            // 2. Get Lecture
+            var lecture = await _unitOfWork.Lectures.GetQueryable()
+                .Include(l => l.Course)
+                .Include(l => l.Course.Students).ThenInclude(se => se.Student)
+                .Include(l => l.Instructor)
+                .FirstOrDefaultAsync(l => l.Id == lectureId);
+
+            if (lecture == null)
+            {
+                return ErrorResponse<bool>("Lecture not found.");
+            }
+
+            // 3. Verify Instructor Ownership
+            if (userRole == "Instructor" && lecture.InstructorId != userId)
+            {
+                return ErrorResponse<bool>("You can only launch your own lectures.");
+            }
+
+            // 4. Update Zoom Link
+            lecture.ZoomLink = zoomLink;
+            await _unitOfWork.Lectures.UpdateAsync(lecture);
+            await _unitOfWork.SaveChangesAsync();
+
+            // 5. Notify Students
+            foreach (var enrollment in lecture.Course.Students)
+            {
+                if (enrollment.Student != null)
+                {
+                    var subject = $"Lecture Started: {lecture.Course.Name}";
+                    var body = $@"
+                        <h2>Lecture Started</h2>
+                        <p>Hello {enrollment.Student.UserName},</p>
+                        <p>The lecture for <strong>{lecture.Course.Name}</strong> has started.</p>
+                        <p><strong>Topic:</strong> {lecture.Title}</p>
+                        <p><strong>Instructor:</strong> {lecture.Instructor?.UserName ?? "Unknown"}</p>
+                        <p><a href='{zoomLink}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Join Lecture</a></p>
+                        <p>Or copy this link: {zoomLink}</p>";
+
+                    // Fire and forget email to avoid blocking the response
+                    _ = _emailService.SendEmailAsync(enrollment.Student.Email, subject, body);
+                }
+            }
+
+            return SuccessResponse<bool>(true, "Lecture launched successfully and students notified.");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<bool>($"Error launching lecture: {ex.Message}");
+        }
+    }
 
     public Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetInstructorLecturesAsync(string instructorId)
     {

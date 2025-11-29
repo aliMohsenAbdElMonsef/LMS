@@ -12,5 +12,6 @@ namespace LMS.DataAccess.Contracts.Repositories
     {
         Task AddRangeAsync(List<Lecture> lectures);
         Task<IEnumerable<Lecture>> GetCourseLecturesAsync(string courseId);
+        Task<IEnumerable<Lecture>> GetLecturesByCourseIdsAsync(IEnumerable<string> courseIds);
     }
 }

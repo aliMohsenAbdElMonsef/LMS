@@ -16,6 +16,14 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<LectureViewModel>> UpdateLectureAsync(string id, UpdateLectureViewModel model);
         Task<SuccessServiceResult<bool>> TrackProgressAsync(string lectureId, int watchedSeconds);
         Task<bool> DeleteLectureAsync(string id);
+        Task<SuccessServiceResult<bool>> LaunchLectureAsync(string lectureId, string zoomLink);
+        Task<SuccessServiceResult<bool>> RescheduleLectureAsync(string lectureId, DateTime newDate, TimeSpan newStartTime);
+        Task<SuccessServiceResult<bool>> CheckLectureConflictAsync(string courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, string excludeLectureId = null);
+        Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetInstructorLecturesAsync(string instructorId);
+        Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetUpcomingLecturesAsync(string courseId);
+        Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetTodayLecturesAsync(string courseId);
+        Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetMyLecturesAsync(string userId, string userRole);
+
     }
 
     // Profile Service Interface

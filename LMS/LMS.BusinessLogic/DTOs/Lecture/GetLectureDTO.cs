@@ -21,6 +21,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
             public DateTime LectureDate { get; set; }
             public TimeSpan StartTime { get; set; }
             public TimeSpan EndTime { get; set; }
+            public int DurationMinutes { get; set; }
             
             public string CourseId { get; set; }
             public string CourseName { get; set; }

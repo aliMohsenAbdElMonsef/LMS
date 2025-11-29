@@ -51,6 +51,29 @@ namespace LMS.MVC.Services.Services
             }
         }
 
+        public async Task<ServiceResponseDTO<IEnumerable<UserViewModel>>> GetInstructorsAsync()
+        {
+            try
+            {
+                var users = await GetAllUsers();
+                var instructors = users.Where(u => u.ApplyAs == Domain.Enums.UserType.Instructor || u.ApplyAs == Domain.Enums.UserType.Admin);
+                
+                return new ServiceResponseDTO<IEnumerable<UserViewModel>>
+                {
+                    Success = true,
+                    Data = instructors
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<UserViewModel>>
+                {
+                    Success = false,
+                    Message = $"Error fetching instructors: {ex.Message}"
+                };
+            }
+        }
+
         public async Task<ServiceResponseDTO<UserViewModel>> GetUserById(string id)
         {
             try
