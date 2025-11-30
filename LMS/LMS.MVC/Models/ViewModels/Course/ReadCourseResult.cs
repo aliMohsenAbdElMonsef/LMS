@@ -42,7 +42,7 @@ namespace LMS.MVC.Models.ViewModels.Course
         public double HoursPerSession { get; set; }
         public int DaysPerWeek { get; set; }
 
-        public List<CreateDayScheduleDTO> Schedule { get; set; } = new List<CreateDayScheduleDTO>();
+        public List<LMS.BusinessLogic.DTOs.LectureSchedule.GetLectureScheduleDTO> Schedule { get; set; } = new();
         public List<InstructorInformationDTO> Instructors { get; set; } = new List<InstructorInformationDTO>();
     }
 }

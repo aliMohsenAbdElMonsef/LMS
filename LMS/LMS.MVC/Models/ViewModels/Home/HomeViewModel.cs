@@ -1,5 +1,5 @@
-using LMS.BusinessLogic.DTOs.Category;
-using LMS.BusinessLogic.DTOs.Course;
+using LMS.MVC.Models.ViewModels.Category;
+using LMS.MVC.Models.ViewModels.Course;
 
 namespace LMS.MVC.Models.ViewModels.Home
 {
@@ -8,7 +8,7 @@ namespace LMS.MVC.Models.ViewModels.Home
         public int TotalStudents { get; set; }
         public int TotalCourses { get; set; }
         public int TotalInstructors { get; set; }
-        public IEnumerable<ReadCategoryDTO> Categories { get; set; } = new List<ReadCategoryDTO>();
-        public IEnumerable<GetCourseDTO> PopularCourses { get; set; } = new List<GetCourseDTO>();
+        public List<ReadCategoryResult> Categories { get; set; } = new List<ReadCategoryResult>();
+        public List<ReadCourseResult> PopularCourses { get; set; } = new List<ReadCourseResult>();
     }
 }
