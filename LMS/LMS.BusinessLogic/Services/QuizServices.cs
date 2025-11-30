@@ -676,6 +676,8 @@ namespace LMS.BusinessLogic.Services
                     Message = $"Error retrieving quizzes: {ex.Message}"
                 };
             }
+        }
+
         public async Task<ServiceResponseDTO<StudentQuizStatusDTO>> GetStudentQuizStatusAsync(string quizId, string studentId)
         {
             try
