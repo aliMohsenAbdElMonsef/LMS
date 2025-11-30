@@ -23,6 +23,15 @@
                             <i class="bi bi-book"></i> Courses
                         </a>
                     </li>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item d-flex align-items-center mx-2">
+                        <div class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                            <div class="theme-toggle-slider">
+                                <i class="fas fa-sun"></i>
+                            </div>
+                        </div>
+                    </li>
                    
                    
                     <!-- Authentication Section -->
@@ -59,7 +68,7 @@
                         @if (User.IsInRole("Instructor"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Assignment" && ViewContext.RouteData.Values["Action"]?.ToString() == "InstructorAssignments" ? "active" : "")" 
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Assignment" && ViewContext.RouteData.Values["Action"]?.ToString() == "InstructorAssignments" ? "active": "")" 
                                    asp-controller="Assignment" asp-action="InstructorAssignments">
                                     <i class="bi bi-clipboard-check me-1"></i> My Assignments
                                 </a>
