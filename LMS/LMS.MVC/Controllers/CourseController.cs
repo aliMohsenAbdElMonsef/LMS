@@ -253,24 +253,30 @@ namespace LMS.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCourseViewModel model)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(model.AdminId) && !string.IsNullOrEmpty(userId))
+            {
+                model.AdminId = userId;
+            }
+
             if (!ModelState.IsValid)
             {
                 // Repopulate categories
                 var categories = await _services.CategoryService.GetAllCategories();
                 // Debug: Log validation errors
-Console.WriteLine("❌ Course Creation - ModelState Invalid:");
-foreach (var key in ModelState.Keys)
-{
-    var errors = ModelState[key].Errors;
-    if (errors.Count > 0)
-    {
-        Console.WriteLine($"  Field: {key}");
-        foreach (var error in errors)
-        {
-            Console.WriteLine($"    - {error.ErrorMessage}");
-        }
-    }
-}
+                Console.WriteLine("❌ Course Creation - ModelState Invalid:");
+                foreach (var key in ModelState.Keys)
+                {
+                    var errors = ModelState[key].Errors;
+                    if (errors.Count > 0)
+                    {
+                        Console.WriteLine($"  Field: {key}");
+                        foreach (var error in errors)
+                        {
+                            Console.WriteLine($"    - {error.ErrorMessage}");
+                        }
+                    }
+                }
                 if (categories != null)
                 {
                     model.AvailableCategories = categories.Select(c => new CategoryOption
@@ -287,11 +293,6 @@ foreach (var key in ModelState.Keys)
             }
 
             // Set the AdminId to the current user if not set (though it might be hidden in form)
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(model.AdminId) && !string.IsNullOrEmpty(userId))
-            {
-                model.AdminId = userId;
-            }
 
             var result = await _services.CourseService.CreateCourse(model);
 

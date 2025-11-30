@@ -80,19 +80,6 @@ namespace LMS.MVC.Models.ViewModels.Course
         public string? CertificateTemplateId { get; set; }
 
         [Display(Name = "Course Thumbnail")]
-        public IFormFile? ThumbnailFile { get; set; }
-
-        [Required(ErrorMessage = "Category is required")]
-        [Display(Name = "Category")]
-        public string CategoryId { get; set; } = string.Empty;
-
-        [Required]
-        [Display(Name = "Created By (Admin)")]
-        public string AdminId { get; set; } = string.Empty;
-
-        [Display(Name = "Available Categories")]
-        public List<CategoryOption> AvailableCategories { get; set; } = new();
-
         private int CalculateTotalWeeks()
         {
             if (StartDate == default || EndDate == default)
