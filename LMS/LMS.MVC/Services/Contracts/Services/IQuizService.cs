@@ -17,5 +17,6 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<IEnumerable<LMS.BusinessLogic.DTOs.Quiz.QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId);
         Task<bool> DeleteQuizAsync(string id);
         Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetQuizzesByInstructorAsync(string instructorId);
+        Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetMyQuizzesAsync();
     }
 }

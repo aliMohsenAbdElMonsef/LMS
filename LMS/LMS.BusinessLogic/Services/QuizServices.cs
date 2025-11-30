@@ -676,8 +676,6 @@ namespace LMS.BusinessLogic.Services
                     Message = $"Error retrieving quizzes: {ex.Message}"
                 };
             }
-        }
-
         public async Task<ServiceResponseDTO<StudentQuizStatusDTO>> GetStudentQuizStatusAsync(string quizId, string studentId)
         {
             try
@@ -849,12 +847,66 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>
                 {
                     Data = submissionDtos.OrderByDescending(s => s.CompletedAt),
-                    Success = true
+                    Success = true,
+                    Message = "Quiz submissions retrieved successfully."
                 };
             }
             catch (Exception ex)
             {
                 return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>> { Success = false, Message = $"Error retrieving submissions: {ex.Message}" };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetStudentQuizzesAsync(string studentId)
+        {
+            try
+            {
+                // 1. Get enrolled courses
+                var studentEnrollments = await _unitOfWork.GetQueryable<StudentEnrollIntoCourse>()
+                    .Where(se => se.StudentId == studentId)
+                    .Select(se => se.CourseId)
+                    .ToListAsync();
+
+                // 2. Get quizzes for these courses
+                var quizzes = await GetRepo().GetQueryable()
+                    .Include(q => q.Course)
+                    .Include(q => q.Instructor)
+                    .Include(q => q.Questions)
+                    .Where(q => studentEnrollments.Contains(q.CourseId))
+                    .OrderBy(q => q.StartDate) // 3. Sort by time
+                    .ToListAsync();
+
+                // 3. Get student attempts
+                var attempts = await _unitOfWork.GetQueryable<StudentQuiz>()
+                    .Where(sq => sq.StudentId == studentId)
+                    .ToListAsync();
+
+                var quizDtos = quizzes.Select(q => 
+                {
+                    var dto = MapToReadDTO(q);
+                    var attempt = attempts.FirstOrDefault(a => a.QuizId == q.Id);
+                    if (attempt != null)
+                    {
+                        dto.IsCompleted = attempt.Status == QuizStatus.Completed || attempt.Status == QuizStatus.Graded;
+                        dto.Grade = attempt.Grade;
+                    }
+                    return dto;
+                }).ToList();
+
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Data = quizDtos,
+                    Success = true,
+                    Message = "Student quizzes retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving student quizzes: {ex.Message}"
+                };
             }
         }
     }

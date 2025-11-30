@@ -8,6 +8,7 @@ using LMS.BusinessLogic.Services.Helpers;
 using LMS.DataAccess.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.BusinessLogic.Services
 {
@@ -72,6 +73,7 @@ namespace LMS.BusinessLogic.Services
                     InstructorName = a.Instructor?.UserName ?? $"{a.Instructor?.FirstName} {a.Instructor?.LastName}",
                     SubmissionsCount = a.Students?.Count ?? 0
                 }).ToList();
+            }
             if (entity.Quizzes != null)
             {
                 dto.Quizzes = entity.Quizzes.Select(q => new LMS.BusinessLogic.DTOs.Quiz.ReadQuizDTO
@@ -87,6 +89,10 @@ namespace LMS.BusinessLogic.Services
                     InstructorId = q.InstructorId
                 }).ToList();
             }
+            
+            if (entity.LectureSchedules != null)
+            {
+                dto.Schedule = entity.LectureSchedules.Select(ls => _mapper.Map<LMS.BusinessLogic.DTOs.LectureSchedule.GetLectureScheduleDTO>(ls)).ToList();
             }
 
             return dto;
@@ -115,6 +121,7 @@ namespace LMS.BusinessLogic.Services
             }
 
             existingEntity.IsFree = dto.IsFree;
+            existingEntity.EveryStuCouldEnroll = dto.EveryStuCouldEnroll;
             existingEntity.MinAttendancePercentage = dto.MinAttendancePercentage;
             existingEntity.MinPerformanceScore = dto.MinPerformanceScore;
             existingEntity.AutoIssueCertificates = dto.AutoIssueCertificates;
@@ -328,6 +335,45 @@ namespace LMS.BusinessLogic.Services
             response.Message = "Thumbnail updated successfully";
             response.Data = MapToReadDTO(course);
             return response;
+        }
+
+        public override async Task<ServiceResponseDTO<GetCourseDTO>> GetByIdAsync(string id)
+        {
+            try
+            {
+                var entity = await GetRepo().GetQueryable()
+                    .Include(c => c.Admin)
+                    .Include(c => c.Category)
+                    .Include(c => c.Students)
+                    .Include(c => c.InstructorEnrollments).ThenInclude(ie => ie.Instructor)
+                    .Include(c => c.Assignments).ThenInclude(a => a.Instructor)
+                    .Include(c => c.Assignments).ThenInclude(a => a.Students)
+                    .Include(c => c.Assignments).ThenInclude(a => a.Students)
+                    .Include(c => c.Quizzes)
+                    .Include(c => c.LectureSchedules)
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (entity == null)
+                {
+                    return new ServiceResponseDTO<GetCourseDTO>
+                    {
+                        Success = false,
+                        Message = "Entity Not Found."
+                    };
+                }
+
+                var ReadEntity = MapToReadDTO(entity);
+                return new ServiceResponseDTO<GetCourseDTO>
+                {
+                    Data = ReadEntity,
+                    Success = true,
+                    Message = "Entity retrieved successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving entity with id '{id}': {ex.Message}", ex);
+            }
         }
     }
 }

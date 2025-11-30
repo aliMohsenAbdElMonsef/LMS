@@ -1,0 +1,181 @@
+@model LMS.MVC.Models.ViewModels.LectureSchedule.CreateLectureScheduleViewModel
+
+@{
+    ViewData["Title"] = "Create Lecture Schedule";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i>Create Schedule for @Model.CourseName</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" id="scheduleForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="CourseId" />
+                        <input type="hidden" asp-for="CourseName" />
+
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-bold"></label>
+                            <input asp-for="Title" class="form-control" placeholder="e.g. Advanced C# Programming" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter a description for these lectures..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div id="scheduleContainer">
+                            <!-- Dynamic cards will be added here -->
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-primary" id="addDayBtn">
+                                <i class="bi bi-plus-circle me-2"></i>Add Another Day
+                            </button>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" asp-route-courseId="@Model.CourseId" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Schedule</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function () {
+            let scheduleIndex = 0;
+            const maxDays = 7;
+            const daysOfWeek = [
+                { val: 'Sunday', text: 'Sunday' },
+                { val: 'Monday', text: 'Monday' },
+                { val: 'Tuesday', text: 'Tuesday' },
+                { val: 'Wednesday', text: 'Wednesday' },
+                { val: 'Thursday', text: 'Thursday' },
+                { val: 'Friday', text: 'Friday' },
+                { val: 'Saturday', text: 'Saturday' }
+            ];
+
+            function getUsedDays() {
+                const used = [];
+                $('.day-select').each(function() {
+                    const val = $(this).val();
+                    if (val) used.push(val);
+                });
+                return used;
+            }
+
+            function updateDayOptions() {
+                const usedDays = getUsedDays();
+                
+                $('.day-select').each(function() {
+                    const currentVal = $(this).val();
+                    const $select = $(this);
+                    
+                    // Keep current value
+                    $select.find('option').each(function() {
+                        const val = $(this).val();
+                        if (val && val !== currentVal && usedDays.includes(val)) {
+                            $(this).prop('disabled', true); // Or hide
+                            $(this).hide();
+                        } else {
+                            $(this).prop('disabled', false);
+                            $(this).show();
+                        }
+                    });
+                });
+
+                // Disable add button if all days used
+                if (usedDays.length >= maxDays) {
+                    $('#addDayBtn').prop('disabled', true);
+                } else {
+                    $('#addDayBtn').prop('disabled', false);
+                }
+            }
+
+            function addScheduleCard() {
+                const index = scheduleIndex++;
+                
+                const cardHtml = `
+                    <div class="card mb-3 schedule-card border-secondary" id="card-${index}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Day Schedule</h5>
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-card-btn" data-target="#card-${index}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Day</label>
+                                    <select name="Schedules[${index}].DayOfWeek" class="form-select day-select" required>
+                                        <option value="">Select Day...</option>
+                                        ${daysOfWeek.map(d => `<option value="${d.val}">${d.text}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Instructor</label>
+                                    <select name="Schedules[${index}].InstructorId" class="form-select" required>
+                                        <option value="">Select Instructor...</option>
+                                        @if (ViewBag.Instructors != null)
+                                        {
+                                            foreach (var instructor in ViewBag.Instructors)
+                                            {
+                                                <option value="@instructor.Id">@instructor.Name (@instructor.Email)</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Start Time</label>
+                                    <input type="time" name="Schedules[${index}].StartTime" class="form-control" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Duration (min)</label>
+                                    <input type="number" name="Schedules[${index}].DurationMinutes" class="form-control" value="90" min="1" max="480" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                $('#scheduleContainer').append(cardHtml);
+                updateDayOptions();
+            }
+
+            // Add initial card
+            addScheduleCard();
+
+            $('#addDayBtn').click(function () {
+                addScheduleCard();
+            });
+
+            $(document).on('click', '.remove-card-btn', function () {
+                const target = $(this).data('target');
+                // Don't remove if it's the only one
+                if ($('.schedule-card').length > 1) {
+                    $(target).remove();
+                    updateDayOptions();
+                } else {
+                    alert("You must have at least one schedule day.");
+                }
+            });
+
+            $(document).on('change', '.day-select', function () {
+                updateDayOptions();
+            });
+        });
+    </script>
+}

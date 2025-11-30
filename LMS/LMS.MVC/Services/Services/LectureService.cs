@@ -2,6 +2,7 @@ using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Response;
 using LMS.MVC.Models.ViewModels.Lecture;
 using System.Net.Http.Json;
+using System.Net.Http.Headers;
 
 namespace LMS.MVC.Services.Services
 {
@@ -31,11 +32,12 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var lectures = await GetAsync<IEnumerable<LectureViewModel>>($"api/lectures/course/{courseId}");
+                var response = await GetAsync<ApiResponse<IEnumerable<LectureViewModel>>>($"api/Lecture/course/{courseId}");
                 return new SuccessServiceResult<IEnumerable<LectureViewModel>>
                 {
-                    Success = true,
-                    Data = lectures ?? Enumerable.Empty<LectureViewModel>()
+                    Success = response.Success,
+                    Data = response.Data ?? Enumerable.Empty<LectureViewModel>(),
+                    Message = response.Message
                 };
             });
         }
@@ -44,11 +46,12 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var lecture = await GetAsync<LectureViewModel>($"api/lectures/{id}");
+                var response = await GetAsync<ApiResponse<LectureViewModel>>($"api/Lecture/get_lecture/{id}");
                 return new SuccessServiceResult<LectureViewModel>
                 {
-                    Success = true,
-                    Data = lecture
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
                 };
             });
         }
@@ -57,12 +60,12 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var lecture = await PostAsync<LectureViewModel>($"api/lectures/create", JsonContent.Create(model));
+                var response = await PostAsync<ApiResponse<LectureViewModel>>($"api/Lecture", JsonContent.Create(model));
                 return new SuccessServiceResult<LectureViewModel>
                 {
-                    Success = true,
-                    Data = lecture,
-                    Message = "Lecture created successfully"
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
                 };
             });
         }
@@ -71,41 +74,185 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var lecture = await PutAsync<LectureViewModel>($"api/lectures/update/{id}", JsonContent.Create(model));
+                var response = await PutAsync<ApiResponse<LectureViewModel>>($"api/Lecture/{id}", JsonContent.Create(model));
                 return new SuccessServiceResult<LectureViewModel>
                 {
-                    Success = true,
-                    Data = lecture,
-                    Message = "Lecture updated successfully"
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
                 };
             });
         }
 
         public async Task<SuccessServiceResult<bool>> TrackProgressAsync(string lectureId, int watchedSeconds)
         {
-            return await ExecuteApiCallAsync(async () =>
+            // Mocking this for now as API endpoint is missing
+            return await Task.FromResult(new SuccessServiceResult<bool>
             {
-                var model = new { LectureId = lectureId, WatchedSeconds = watchedSeconds };
-                await PostAsync<object>($"api/lectures/track-progress", JsonContent.Create(model));
-                return new SuccessServiceResult<bool>
-                {
-                    Success = true,
-                    Data = true
-                };
+                Success = true,
+                Data = true
             });
         }
 
         public async Task<bool> DeleteLectureAsync(string id)
         {
-            try
+            await AttachAccessTokenAsync();
+            var response = await _client.DeleteAsync($"api/Lecture/{id}");
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<SuccessServiceResult<bool>> LaunchLectureAsync(string lectureId, string zoomLink)
+        {
+            return await ExecuteApiCallAsync(async () =>
             {
-                await DeleteAsync<object>($"api/lectures/delete/{id}");
-                return true;
-            }
-            catch
+                await AttachAccessTokenAsync();
+                var response = await PostAsync<ApiResponse<bool>>($"api/Lecture/{lectureId}/launch", JsonContent.Create(new { ZoomLink = zoomLink }));
+                return new SuccessServiceResult<bool>
+                {
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<bool>> RescheduleLectureAsync(string lectureId, DateTime newDate, TimeSpan newStartTime)
+        {
+            return await ExecuteApiCallAsync(async () =>
             {
-                return false;
-            }
+                await AttachAccessTokenAsync();
+                
+                // First, fetch the existing lecture to get all its data
+                var getLectureResponse = await GetLectureByIdAsync(lectureId);
+                if (!getLectureResponse.Success || getLectureResponse.Data == null)
+                {
+                    return new SuccessServiceResult<bool> 
+                    { 
+                        Success = false, 
+                        Message = getLectureResponse.Message ?? "Failed to fetch lecture data" 
+                    };
+                }
+                
+                var existingLecture = getLectureResponse.Data;
+                
+                // Calculate the new EndTime based on the existing duration
+                var existingDuration = existingLecture.DurationMinutes;
+                var newEndTime = newStartTime.Add(TimeSpan.FromMinutes(existingDuration));
+                
+                // Create UpdateLectureDTO with all existing data, but update date and time
+                var dto = new 
+                { 
+                    Id = lectureId,
+                    Title = existingLecture.Title,
+                    Description = existingLecture.Description,
+                    LectureDate = newDate, 
+                    StartTime = newStartTime,
+                    EndTime = newEndTime, // Preserve the duration
+                    ZoomLink = existingLecture.ZoomLink
+                };
+                
+                var response = await _client.PutAsJsonAsync($"api/Lecture/{lectureId}", dto);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    return new SuccessServiceResult<bool> { Success = true, Data = true, Message = "Lecture rescheduled successfully" };
+                }
+                
+                var content = await response.Content.ReadAsStringAsync();
+                return new SuccessServiceResult<bool> { Success = false, Message = content };
+            });
+        }
+
+        private class ApiResponse<T>
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+            public T Data { get; set; }
+            public List<string> Errors { get; set; }
+        }
+
+        public async Task<SuccessServiceResult<bool>> CheckLectureConflictAsync(string courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, string excludeLectureId = null)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var queryString = $"?courseId={courseId}&date={date:yyyy-MM-dd}&startTime={startTime}&endTime={endTime}";
+                if (!string.IsNullOrEmpty(excludeLectureId))
+                {
+                    queryString += $"&excludeLectureId={excludeLectureId}";
+                }
+
+                var response = await _client.GetAsync($"api/Lecture/check-conflict{queryString}");
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
+                
+                return new SuccessServiceResult<bool> 
+                { 
+                    Success = result.Success, 
+                    Data = result.Data, 
+                    Message = result.Message 
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetInstructorLecturesAsync(string instructorId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<IEnumerable<LectureViewModel>>>($"api/Lecture/instructor/{instructorId}");
+                return new SuccessServiceResult<IEnumerable<LectureViewModel>>
+                {
+                    Success = response.Success,
+                    Data = response.Data ?? Enumerable.Empty<LectureViewModel>(),
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetUpcomingLecturesAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<IEnumerable<LectureViewModel>>>($"api/Lecture/upcoming/course/{courseId}");
+                return new SuccessServiceResult<IEnumerable<LectureViewModel>>
+                {
+                    Success = response.Success,
+                    Data = response.Data ?? Enumerable.Empty<LectureViewModel>(),
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetTodayLecturesAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<IEnumerable<LectureViewModel>>>($"api/Lecture/today/course/{courseId}");
+                return new SuccessServiceResult<IEnumerable<LectureViewModel>>
+                {
+                    Success = response.Success,
+                    Data = response.Data ?? Enumerable.Empty<LectureViewModel>(),
+                    Message = response.Message
+                };
+            });
+        }
+
+
+        public async Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetMyLecturesAsync(string userId, string userRole)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<IEnumerable<LectureViewModel>>>("api/Lecture/my-lectures");
+                return new SuccessServiceResult<IEnumerable<LectureViewModel>>
+                {
+                    Success = response.Success,
+                    Data = response.Data ?? Enumerable.Empty<LectureViewModel>(),
+                    Message = response.Message
+                };
+            });
         }
     }
 }

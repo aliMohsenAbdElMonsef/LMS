@@ -19,6 +19,7 @@ namespace LMS.DataAccess.Contracts
         ICourseRepository Courses { get; }
 
         ILectureRepository Lectures { get; }
+        ILectureScheduleRepository LectureSchedules { get; }
         ICourseDayScheduleRepository DaySchedules { get; }
 
         IQuestionRepository Questions { get; }

@@ -34,12 +34,12 @@ namespace LMS.API.Controllers
         
 
         [HttpGet("get_lecture/{lectureId}")]
-        public async Task<IActionResult> GetLecture(GetLectureRecieveDTO dto)
+        public async Task<IActionResult> GetLecture(string lectureId)
         {
             var userId = GetCurrentUserId();
             var userRole = GetCurrentUserRole();
 
-            var result = await _unitOfServices.Lectures.GetByIdAsync(dto.courseId, dto.LectureId, userId, userRole);
+            var result = await _unitOfServices.Lectures.GetByIdAsync(null, lectureId, userId, userRole);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -145,6 +145,32 @@ namespace LMS.API.Controllers
             {
                 return BadRequest(CreateErrorResponse<GetLectureDTO>($"Error deleting lecture: {ex.Message}"));
             }
+        }
+
+        [HttpPost("{lectureId}/launch")]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> LaunchLecture(string lectureId, [FromBody] LaunchLectureRequest request)
+        {
+            var userId = GetCurrentUserId();
+            var userRole = GetCurrentUserRole();
+
+            var result = await _unitOfServices.Lectures.LaunchLectureAsync(lectureId, request.ZoomLink, userId, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        public class LaunchLectureRequest
+        {
+            public string ZoomLink { get; set; }
+        }
+
+        [HttpGet("my-lectures")]
+        public async Task<IActionResult> GetMyLectures()
+        {
+            var userId = GetCurrentUserId();
+            var userRole = GetCurrentUserRole();
+
+            var result = await _unitOfServices.Lectures.GetMyLecturesAsync(userId, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         private ServiceResponseDTO<T> CreateErrorResponse<T>(string message, List<string> errors = null)

@@ -79,7 +79,7 @@ namespace LMS.BusinessLogic.Services
                     Message = "Course not found."
                 };
 
-            var existing = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId);
+            var existing = await _studentEnrollRepo.GetEnrollmentIncludingDeletedAsync(dto.UserId, dto.CourseId);
             if (existing != null && !existing.IsDeleted)
                 return new BasicResponseDTO
                 {
@@ -89,6 +89,15 @@ namespace LMS.BusinessLogic.Services
             if (existing != null)
             {
                 existing.IsDeleted = false;
+                existing.Status = ApplicationStatus.Pending; // Reset status to pending or approved based on course settings
+                if (course.EveryStuCouldEnroll)
+                {
+                    existing.Status = ApplicationStatus.Approved;
+                }
+                existing.CreatedAt = DateTime.UtcNow; // Optional: Update created date
+                
+                await _unitOfWork.SaveChangesAsync(); // CRITICAL FIX: Save changes
+
                 return new BasicResponseDTO
                 {
                     Success = true,

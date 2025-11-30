@@ -1,0 +1,48 @@
+@model LMS.MVC.Models.ViewModels.Lecture.LaunchLectureViewModel
+@{
+    ViewData["Title"] = "Launch Lecture";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm animate-fade-in-up">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-broadcast"></i> Launch Lecture</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.LectureTitle</h4>
+                    <p class="text-muted">@Model.CourseName</p>
+                    <hr />
+                    
+                    <form asp-action="Launch" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="LectureId" />
+                        <input type="hidden" asp-for="CourseId" />
+                        
+                        <div class="mb-4">
+                            <label asp-for="ZoomLink" class="form-label">Zoom Meeting Link</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                                <input asp-for="ZoomLink" class="form-control" placeholder="https://zoom.us/j/..." />
+                            </div>
+                            <span asp-validation-for="ZoomLink" class="text-danger"></span>
+                            <div class="form-text">
+                                Enter the Zoom meeting link for this lecture. Once launched, students will be notified via email.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-rocket-takeoff"></i> Launch Lecture & Notify Students
+                            </button>
+                            <a asp-action="MyLectures" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

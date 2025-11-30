@@ -127,6 +127,7 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Quizzes.GetQuizzesByInstructorAsync(instructorId);
             return Ok(result);
         }
+
         [HttpGet("status/{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<StudentQuizStatusDTO>>> GetQuizStatus(string id)
@@ -159,6 +160,15 @@ namespace LMS.API.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
+            return Ok(result);
+        }
+
+        [HttpGet("my-quizzes")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>>> GetMyQuizzes()
+        {
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _unitOfServices.Quizzes.GetStudentQuizzesAsync(studentId);
             return Ok(result);
         }
     }

@@ -230,7 +230,17 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
-                var response = await _client.PostAsJsonAsync("api/user/forgot-password", new { Email = email });
+                // Build the reset URL for the MVC application
+                var request = _httpContextAccessor.HttpContext?.Request;
+                var resetUrl = $"{request?.Scheme}://{request?.Host}/Account/ResetPassword";
+
+                var dto = new 
+                { 
+                    Email = email,
+                    ResetUrl = resetUrl
+                };
+
+                var response = await _client.PostAsJsonAsync("api/user/forgot-password", dto);
                 return await response.Content.ReadFromJsonAsync<BasicServiceResult>()
                        ?? new BasicServiceResult { Success = false, Message = "Unknown error" };
             }

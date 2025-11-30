@@ -1,0 +1,17 @@
+diff --git a/LMS/LMS.BusinessLogic/Services/LectureService.cs b/LMS/LMS.BusinessLogic/Services/LectureService.cs
+index 1061eeb..05a69f4 100644
+--- a/LMS/LMS.BusinessLogic/Services/LectureService.cs
++++ b/LMS/LMS.BusinessLogic/Services/LectureService.cs
+@@ -46,6 +46,12 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
+ 
+     private async Task<bool> CanAccessLecture(string courseid,string lectureId, string userId, string userRole)
+     {
++        if (string.IsNullOrEmpty(courseid))
++        {
++            var lecture = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
++            if (lecture == null) return false;
++            courseid = lecture.CourseId;
++        }
+         Course c = await _unitOfWork.Courses.FindByIdAsync(courseid);
+         if (c == null) {
+             return false;

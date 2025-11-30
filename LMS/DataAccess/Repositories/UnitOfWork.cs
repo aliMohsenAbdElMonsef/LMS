@@ -25,6 +25,7 @@ namespace LMS.DataAccess.Repositories
         private readonly Lazy<IUserRepository> _users;
         private readonly Lazy<IInstructorEnrolltoCourseRepository> _instructorEnrollments;
         private readonly Lazy<ICourseDayScheduleRepository> _daySchedules;
+        private readonly Lazy<ILectureScheduleRepository> _lectureSchedules;
         private readonly Lazy<IStudentEnrollIntoCourseRepository> _studentEnrollments;
         public UnitOfWork(LMSDbContext db)
         {
@@ -40,6 +41,7 @@ namespace LMS.DataAccess.Repositories
             _users = new Lazy<IUserRepository>(() => new UserRepository(_db));
             _instructorEnrollments = new Lazy<IInstructorEnrolltoCourseRepository>(() => new InstructorEnrolltoCourseRepository(_db));
             _daySchedules = new Lazy<ICourseDayScheduleRepository>(() => new CourseDayScheduleRepository(_db));
+            _lectureSchedules = new Lazy<ILectureScheduleRepository>(() => new LectureScheduleRepository(_db));
             _studentEnrollments = new Lazy<IStudentEnrollIntoCourseRepository>(() => new StudentEnrollIntoCourseRepository(_db));
         }
 
@@ -50,6 +52,7 @@ namespace LMS.DataAccess.Repositories
         public ILectureRepository Lectures => _lectures.Value;
         public IQuestionRepository Questions => _questions.Value;
         public ICourseDayScheduleRepository DaySchedules => _daySchedules.Value;
+        public ILectureScheduleRepository LectureSchedules => _lectureSchedules.Value;
         public IQuizRepository Quizzes => _quizzes.Value;
         public ISkillRepository Skills => _skills.Value;
         public IUserRepository Users => _users.Value;

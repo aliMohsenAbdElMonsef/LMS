@@ -101,6 +101,12 @@ namespace LMS.MVC
             })
             .AddHttpMessageHandler<AuthHeaderHandler>();
 
+            builder.Services.AddHttpClient<ICategoryService, CategoryService>(client =>
+            {
+                client.BaseAddress = new Uri(apiBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(300);
+            }).AddHttpMessageHandler<AuthHeaderHandler>();
+
             // ---------------- JWT Authentication ----------------
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);

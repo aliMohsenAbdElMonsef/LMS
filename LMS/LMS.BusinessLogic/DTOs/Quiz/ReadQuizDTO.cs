@@ -26,6 +26,9 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public string InstructorId { get; set; }
         public string InstructorName { get; set; }
 
+        public bool IsCompleted { get; set; }
+        public int? Grade { get; set; }
+
         public ICollection<ReadQuestionDTO> Questions { get; set; } = new List<ReadQuestionDTO>();
     }
 }

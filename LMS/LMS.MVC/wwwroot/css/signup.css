@@ -65,6 +65,7 @@
         color: #fff;
         font-size: clamp(0.9rem, 2.5vw, 1rem);
         transition: border-color 0.3s ease, color 0.3s ease;
+        box-sizing: border-box; /* Ensure padding doesn't affect width */
     }
 
         .signup-form input:focus,
@@ -74,6 +75,38 @@
         }
 
     .signup-form ::placeholder {
+        color: #fff;
+    }
+
+    /* Password Toggle Styles */
+    .password-container,
+    .input-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .signup-form .password-container input,
+    .signup-form .input-container input {
+        margin-bottom: 0 !important;
+    }
+
+    .signup-form .password-container input {
+        padding-right: 35px;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #c70808; /* Match theme color */
+        z-index: 10;
+        font-size: 1rem;
+    }
+
+    .toggle-password:hover {
         color: #fff;
     }
 

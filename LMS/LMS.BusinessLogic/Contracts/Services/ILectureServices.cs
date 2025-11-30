@@ -13,7 +13,9 @@ namespace LMS.BusinessLogic.Contracts.Services
     {
         Task<ServiceResponseDTO<GetLectureDTO>> GetByIdAsync(string courseid, string lectureid, string userId, string userRole);
         Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetCourseLecturesAsync(string courseId, string userId, string userRole);
+        Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetMyLecturesAsync(string userId, string userRole);
         Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetInstructorLecturesAsync(string instructorId, string userId, string userRole);
+        Task<ServiceResponseDTO<bool>> LaunchLectureAsync(string lectureId, string zoomLink, string userId, string userRole);
 
         Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetUpcomingLecturesAsync(string courseId, string userId, string userRole);
         Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetTodayLecturesAsync(string courseId, string userId, string userRole);

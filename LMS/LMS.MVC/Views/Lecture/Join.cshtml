@@ -1,0 +1,64 @@
+@model LMS.MVC.Models.ViewModels.Lecture.JoinLectureViewModel
+
+@{
+    ViewData["Title"] = "Join Lecture";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <div class="avatar-circle bg-primary text-white mx-auto mb-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                            <i class="fas fa-video fa-2x"></i>
+                        </div>
+                        <h3 class="card-title">@Model.LectureTitle</h3>
+                        <p class="text-muted">@Model.CourseName</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="mb-1"><strong>Instructor:</strong> @Model.InstructorName</p>
+                        <p class="mb-1"><strong>Date:</strong> @Model.LectureDate.ToShortDateString()</p>
+                        <p><strong>Time:</strong> @Model.StartTime.ToString(@"hh\:mm")</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.ZoomLink))
+                    {
+                        <a href="@Model.ZoomLink" target="_blank" class="btn btn-primary btn-lg px-5 pulse-button">
+                            <i class="fas fa-external-link-alt me-2"></i>Join Meeting
+                        </a>
+                        <p class="text-muted mt-3 small">You will be redirected to Zoom.</p>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-hourglass-half me-2"></i>
+                            The instructor has not launched this lecture yet. Please wait or refresh the page.
+                        </div>
+                        <button onclick="location.reload()" class="btn btn-outline-primary mt-2">
+                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                        </button>
+                    }
+                    
+                    <div class="mt-4">
+                        <a asp-controller="Course" asp-action="Details" asp-route-id="@Model.CourseName" class="text-decoration-none text-muted">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Course
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pulse-button {
+        animation: pulse 2s infinite;
+    }
+    @@keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    }
+</style>

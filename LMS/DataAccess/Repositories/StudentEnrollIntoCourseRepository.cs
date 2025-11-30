@@ -35,6 +35,13 @@ namespace LMS.DataAccess.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<StudentEnrollIntoCourse?> GetEnrollmentIncludingDeletedAsync(string studentId, string courseId)
+        {
+            return await _set
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(e => e.StudentId == studentId && e.CourseId == courseId);
+        }
         public async Task<bool> ExistsAsync(string studentId, string courseId)
         {
             return await _set

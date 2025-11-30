@@ -16,7 +16,9 @@ namespace LMS.BusinessLogic.Mappings
         {
             
             CreateMap<Course, GetCourseDTO>()
-                .ForMember(dest => dest.Quizzes, opt => opt.Ignore());
+                .ForMember(dest => dest.Quizzes, opt => opt.Ignore())
+                .ForMember(dest => dest.Assignments, opt => opt.Ignore())
+                .ForMember(dest => dest.Instructors, opt => opt.Ignore());
  
             CreateMap<CreateCourseDTO, Course>();
 
