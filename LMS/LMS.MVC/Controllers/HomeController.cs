@@ -1,4 +1,6 @@
 using LMS.MVC.Models;
+using LMS.MVC.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
@@ -15,59 +17,45 @@ namespace LMS.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ICourseService _courseService;
-        private readonly ICategoryService _categoryService;
-        private readonly IUserService _userService;
+        private readonly IUnitOfServices _services;
 
-        public HomeController(
-            ILogger<HomeController> logger,
-            ICourseService courseService,
-            ICategoryService categoryService,
-            IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IUnitOfServices services)
         {
             _logger = logger;
-            _courseService = courseService;
-            _categoryService = categoryService;
-            _userService = userService;
+            _services = services;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var coursesResponse = await _courseService.GetAllCoursesAsync();
-            var categories = await _categoryService.GetAllCategories();
-            var userCounts = await _userService.GetUserCounts();
-
-            var courses = coursesResponse.Data ?? Enumerable.Empty<ReadCourseResult>();
-            
-            var viewModel = new HomeViewModel
+            try
             {
-                TotalStudents = userCounts.StudentCount,
-                TotalInstructors = userCounts.InstructorCount,
-                TotalCourses = courses.Count(),
-                Categories = categories.Take(6).Select(c => new LMS.BusinessLogic.DTOs.Category.ReadCategoryDTO 
-                { 
-                    Id = c.Id, 
-                    Name = c.Name, 
-                    CoursesCount = c.CoursesCount 
-                }),
-                PopularCourses = courses.OrderByDescending(c => c.EnrolledStudentsCount).Take(6).Select(c => new LMS.BusinessLogic.DTOs.Course.GetCourseDTO
-                {
-                    Id = c.Id.ToString(),
-                    Name = c.Name,
-                    Description = c.Description,
-                    ThumbnailPath = c.ThumbnailPath,
-                    IsFree = c.IsFree,
-                    Price = c.Price,
-                    AdminName = c.AdminName,
-                    AverageRating = c.AverageRating,
-                    EnrolledStudentsCount = c.EnrolledStudentsCount,
-                    Language = c.Language
-                })
-            };
+                // Fetch stats (Local logic)
+                var userCounts = await _services.UserService.GetUserCounts();
+                var coursesResponse = await _services.CourseService.GetAllCoursesAsync();
+                var totalCourses = coursesResponse.Data?.Count() ?? 0;
 
-            return View(viewModel);
+                var viewModel = new HomeViewModel
+                {
+                    TotalStudents = userCounts.StudentCount,
+                    TotalInstructors = userCounts.InstructorCount,
+                    TotalCourses = totalCourses,
+                    
+                    // Fetch lists using HomeService (Remote logic)
+                    Categories = await _services.HomeService.GetTopCategoriesAsync(6),
+                    PopularCourses = await _services.HomeService.GetPopularCoursesAsync(6)
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading home page data");
+                return View(new HomeViewModel());
+            }
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();

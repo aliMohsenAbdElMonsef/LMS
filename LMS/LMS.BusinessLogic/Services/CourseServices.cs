@@ -266,6 +266,26 @@ namespace LMS.BusinessLogic.Services
                     response.Message = "Course not found.";
                     return response;
                 }
+
+                // Check for duplicate course code
+                if (existingCourse.CourseCode != dto.CourseCode)
+                {
+                    if (string.IsNullOrWhiteSpace(dto.CourseCode))
+                    {
+                        response.Success = false;
+                        response.Message = "Course code cannot be empty.";
+                        return response;
+                    }
+
+                    var duplicateCourse = await _unitOfWork.Courses.FindByCodeAsync(dto.CourseCode);
+                    if (duplicateCourse != null)
+                    {
+                        response.Success = false;
+                        response.Message = "A course with this code already exists.";
+                        return response;
+                    }
+                }
+
                 existingCourse = UpdateToEntity(dto, existingCourse);
                 if (thumbnailFile != null)
                 {
@@ -332,9 +352,11 @@ namespace LMS.BusinessLogic.Services
             await _unitOfWork.Courses.UpdateAsync(course);
             await _unitOfWork.SaveChangesAsync();
             response.Success = true;
-            response.Message = "Thumbnail updated successfully";
-            response.Data = MapToReadDTO(course);
-            return response;
+                await _unitOfWork.SaveChangesAsync();
+                response.Success = true;
+                response.Message = "Thumbnail updated successfully";
+                response.Data = MapToReadDTO(course);
+                return response;
         }
 
         public override async Task<ServiceResponseDTO<GetCourseDTO>> GetByIdAsync(string id)
@@ -374,6 +396,31 @@ namespace LMS.BusinessLogic.Services
             {
                 throw new Exception($"Error retrieving entity with id '{id}': {ex.Message}", ex);
             }
+        }
+
+        public async Task<ServiceResponseDTO<List<GetCourseDTO>>> GetPopularCoursesAsync(int count)
+        {
+            var response = new ServiceResponseDTO<List<GetCourseDTO>>();
+            try
+            {
+                var courses = await _unitOfWork.Courses.GetAllAsync();
+                var popularCourses = courses
+                    .OrderByDescending(c => c.Students?.Count ?? 0)
+                    .Take(count)
+                    .ToList();
+
+                var dtos = popularCourses.Select(c => MapToReadDTO(c)).ToList();
+
+                response.Success = true;
+                response.Data = dtos;
+                response.Message = "Popular courses retrieved successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Error retrieving popular courses: {ex.Message}";
+            }
+            return response;
         }
     }
 }

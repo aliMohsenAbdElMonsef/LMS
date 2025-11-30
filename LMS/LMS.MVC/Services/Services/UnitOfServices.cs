@@ -26,7 +26,7 @@ namespace LMS.MVC.Services.Services
         private readonly Lazy<IQuizService> _quizService;
         private readonly Lazy<ICertificateTemplateService> _certificateTemplateService;
         private readonly Lazy<ILectureScheduleService> _lectureScheduleService;
-
+        private readonly Lazy<IHomeMVCService> _homeService;
         private readonly IConfiguration _configuration;
 
         public UnitOfServices(HttpClient client, IHttpContextAccessor httpContextAccessor, ITokenService tokenService,ILoggerFactory loggerFactory, IMapper mapper, IConfiguration configuration)
@@ -51,6 +51,7 @@ namespace LMS.MVC.Services.Services
             _quizService = new Lazy<IQuizService>(() => new QuizService(_client, _httpContextAccessor));
             _certificateTemplateService = new Lazy<ICertificateTemplateService>(() => new CertificateTemplateService(client, httpContextAccessor));
             _lectureScheduleService = new Lazy<ILectureScheduleService>(() => new LectureScheduleService(_client, _httpContextAccessor, _tokenService));
+            _homeService = new Lazy<IHomeMVCService>(() => new HomeMVCService(_client, _httpContextAccessor, _mapper));
         }
 
 
@@ -65,5 +66,6 @@ namespace LMS.MVC.Services.Services
         public IQuizService QuizService => _quizService.Value;
         public ICertificateTemplateService CertificateTemplateService => _certificateTemplateService.Value;
         public ILectureScheduleService LectureScheduleService => _lectureScheduleService.Value;
+        public IHomeMVCService HomeService => _homeService.Value;
     }
 }

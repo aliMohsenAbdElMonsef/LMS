@@ -1,10 +1,9 @@
-using Domain.Enums;
+﻿using System;
 using LMS.MVC.Models.ViewModels.Course;
 using LMS.MVC.Models.ViewModels.Enrollment;
-using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using LMS.MVC.Services.Contracts;
 using System.Security.Claims;
 
 namespace LMS.MVC.Controllers
@@ -60,121 +59,8 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        private async Task LoadDropdownData(CreateCourseViewModel model)
-        {
-            var categories = await _services.CategoryService.GetAllCategories();
-
-            model.AvailableCategories = categories?.Select(c => new Models.ViewModels.Course.CategoryOption
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList() ?? new List<Models.ViewModels.Course.CategoryOption>();
-
-            ViewBag.DeliveryModes = Enum.GetValues(typeof(DeliveryMode))
-                .Cast<DeliveryMode>()
-                .Select(m => new SelectListItem
-                {
-                    Value = ((int)m).ToString(),
-                    Text = m.ToString()
-                }).ToList();
-        }
-
         [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create()
-        {
-            var model = new CreateCourseViewModel
-            {
-                StartDate = DateTime.Today.AddDays(7),
-                EndDate = DateTime.Today.AddDays(91),
-                AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty
-            };
-
-            await LoadDropdownData(model);
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateCourseViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                await LoadDropdownData(model);
-                return View(model);
-            }
-
-            try
-            {
-                var result = await _services.CourseService.CreateCourse(model);
-
-
-                if (!result.Success)
-                {
-                    ModelState.AddModelError(string.Empty, result.Message);
-                    await LoadDropdownData(model);
-                    return View(model);
-                }
-
-                TempData["Success"] = "? Course created successfully!";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Unexpected error: {ex.Message}");
-                await LoadDropdownData(model);
-                return View(model);
-            }
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return BadRequest();
-
-            var createModel = new CreateCourseViewModel
-            {
-                AdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty
-            };
-
-            await LoadDropdownData(createModel);
-
-            var result = await _services.CourseService.GetCourseForEdit(Guid.Parse(id));
-
-            if (!result.Success || result.Data == null)
-            {
-                TempData["Error"] = result.Message ?? "Course not found!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(result.Data);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(EditCourseViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                await LoadDropdownData(model);
-                return View(model);
-            }
-
-            var result = await _services.CourseService.UpdateCourse(Guid.Parse(model.Id), model);
-            if (!result.Success)
-            {
-                ModelState.AddModelError("", result.Message);
-                await LoadDropdownData(model);
-                return View(model);
-            }
-
-            TempData["Success"] = "? Course updated successfully!";
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -187,41 +73,29 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)?.ToString();
-            var userRole = User.IsInRole("Instructor") ? "Instructor" :
-                           User.IsInRole("Student") ? "Student" : "None";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRole = User.IsInRole("Instructor") ? "Instructor"
+                           : User.IsInRole("Student") ? "Student"
+                           : "None";
 
-            var enrollmentStatus = "None";
+            bool isEnrolled = false;
+
             if (userRole != "None" && !string.IsNullOrEmpty(userId))
             {
-                enrollmentStatus = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
+                isEnrolled = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
             }
 
-            ViewBag.EnrollmentStatus = enrollmentStatus;
-            ViewBag.IsEnrolled = enrollmentStatus == "Approved";
+            ViewBag.UserRole = userRole;
+            ViewBag.IsEnrolled = isEnrolled;
 
             return View(result.Data);
         }
 
-        [HttpDelete]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (string.IsNullOrEmpty(id)) 
-                return Json(new { success = false, message = "Invalid course ID" });
-            var success = await _services.CourseService.DeleteCourse(Guid.Parse(id));
-            
-            return Json(new { 
-                success = success, 
-                message = success ? "Course deleted successfully!" : "Failed to delete course." 
-            });
-        }
 
         [HttpPost]
         [Authorize(Roles = "Instructor,Student")]
         public async Task<IActionResult> Enroll(string CourseId)
         {
-
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -273,6 +147,7 @@ namespace LMS.MVC.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized(new { success = false, message = "User not authenticated." });
+                
                 RequestErollmentintCourseViewModel model = new RequestErollmentintCourseViewModel
                 {
                     UserId = userId,
@@ -316,10 +191,9 @@ namespace LMS.MVC.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId))
+                if (string.IsNullOrWhiteSpace(userId))
                     return Unauthorized();
 
-                // Get all courses first
                 var allCoursesResult = await _services.CourseService.GetAllCoursesAsync();
                 if (!allCoursesResult.Success)
                 {
@@ -327,19 +201,19 @@ namespace LMS.MVC.Controllers
                     return View(new List<ReadCourseResult>());
                 }
 
-                // Filter courses where user is enrolled
                 var myCourses = new List<ReadCourseResult>();
 
                 foreach (var course in allCoursesResult.Data)
                 {
-                    var enrollmentStatus = await _services.CourseService.IsUserEnrollIntoCourse(userId, course.Id);
-                    if (enrollmentStatus == "Approved")
+                    bool isEnrolled = await _services.CourseService.IsUserEnrollIntoCourse(userId, course.Id);
+                    bool isInstructor = course.Instructors.Any(i => i.Id == userId);
+                    bool isAdmin = course.AdminId == userId;
+
+                    if (isEnrolled || isInstructor || isAdmin)
                     {
                         myCourses.Add(course);
                     }
                 }
-
-                ViewBag.UserRole = User.IsInRole("Instructor") ? "Instructor" : "Student";
 
                 return View(myCourses);
             }
@@ -349,5 +223,302 @@ namespace LMS.MVC.Controllers
                 return View(new List<ReadCourseResult>());
             }
         }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> Create()
+        {
+            var model = new CreateCourseViewModel();
+            
+            // Populate categories
+            var categories = await _services.CategoryService.GetAllCategories();
+            if (categories != null)
+            {
+                model.AvailableCategories = categories.Select(c => new CategoryOption
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList();
+            }
+
+            // Populate Delivery Modes
+            ViewBag.DeliveryModes = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Enum.GetValues(typeof(Domain.Enums.DeliveryMode)));
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Instructor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCourseViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Repopulate categories
+                var categories = await _services.CategoryService.GetAllCategories();
+                if (categories != null)
+                {
+                    model.AvailableCategories = categories.Select(c => new CategoryOption
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    }).ToList();
+                }
+
+                // Repopulate Delivery Modes
+                ViewBag.DeliveryModes = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Enum.GetValues(typeof(Domain.Enums.DeliveryMode)));
+
+                return View(model);
+            }
+
+            // Set the AdminId to the current user if not set (though it might be hidden in form)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(model.AdminId) && !string.IsNullOrEmpty(userId))
+            {
+                model.AdminId = userId;
+            }
+
+            var result = await _services.CourseService.CreateCourse(model);
+
+            if (result.Success)
+            {
+                TempData["Success"] = "Course created successfully!";
+                // Redirect to the details of the newly created course if possible, or Index
+                // Assuming result.Data contains the created course with its ID
+                if (result.Data != null)
+                {
+                    return RedirectToAction(nameof(Details), new { id = result.Data.Id });
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Error"] = result.Message ?? "Failed to create course.";
+
+            // Repopulate on failure
+            var catResult = await _services.CategoryService.GetAllCategories();
+            if (catResult != null)
+            {
+                model.AvailableCategories = catResult.Select(c => new CategoryOption
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList();
+            }
+            ViewBag.DeliveryModes = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Enum.GetValues(typeof(Domain.Enums.DeliveryMode)));
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+            var result = await _services.CourseService.GetCourseDetails(Guid.Parse(id));
+            if (!result.Success || result.Data == null)
+            {
+                TempData["Error"] = "Course not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var course = result.Data;
+            var model = new EditCourseViewModel
+            {
+                Id = course.Id,
+                Name = course.Name,
+                Description = course.Description,
+                CourseCode = course.CourseCode,
+                Credits = course.Credits,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
+                Level = course.Level,
+                Language = course.Language,
+                DeliveryMode = course.DeliveryMode,
+                Status = course.Status,
+                Price = course.Price,
+                IsFree = course.IsFree,
+                MinAttendancePercentage = course.MinAttendancePercentage,
+                MinPerformanceScore = course.MinPerformanceScore,
+                AutoIssueCertificates = course.AutoIssueCertificates,
+                CertificateTemplateId = course.CertificateTemplateId,
+                CategoryId = course.CategoryId,
+                CategoryName = course.CategoryName,
+                ThumbnailPath = course.ThumbnailPath,
+                EveryStuCouldEnroll = course.EveryStuCouldEnroll,
+                AdminId = course.AdminId
+            };
+
+            var categories = await _services.CategoryService.GetAllCategories();
+            if (categories != null)
+            {
+                model.AvailableCategories = categories.Select(c => new CategoryOption 
+                { 
+                    Id = c.Id, 
+                    Name = c.Name 
+                }).ToList();
+
+                // Ensure CategoryName is set if we have the CategoryId
+                if (!string.IsNullOrEmpty(model.CategoryId))
+                {
+                    // Try to find the category by ID (case-insensitive comparison)
+                    var category = model.AvailableCategories.FirstOrDefault(c => 
+                        !string.IsNullOrEmpty(c.Id) && 
+                        c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                    
+                    if (category != null && !string.IsNullOrEmpty(category.Name))
+                    {
+                        model.CategoryName = category.Name;
+                    }
+                    else if (string.IsNullOrEmpty(model.CategoryName))
+                    {
+                        // If still not found, try direct lookup from the categories list
+                        var directCategory = categories.FirstOrDefault(c => 
+                            !string.IsNullOrEmpty(c.Id) && 
+                            c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                        
+                        if (directCategory != null && !string.IsNullOrEmpty(directCategory.Name))
+                        {
+                            model.CategoryName = directCategory.Name;
+                        }
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditCourseViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload categories if validation fails
+                var categories = await _services.CategoryService.GetAllCategories();
+                model.AvailableCategories = categories?.Select(c => new CategoryOption
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList() ?? new List<CategoryOption>();
+
+                // Ensure CategoryName is set if we have the CategoryId
+                if (!string.IsNullOrEmpty(model.CategoryId) && model.AvailableCategories != null)
+                {
+                    var category = model.AvailableCategories.FirstOrDefault(c => 
+                        !string.IsNullOrEmpty(c.Id) && 
+                        c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                    
+                    if (category != null && !string.IsNullOrEmpty(category.Name))
+                    {
+                        model.CategoryName = category.Name;
+                    }
+                    else if (categories != null)
+                    {
+                        var directCategory = categories.FirstOrDefault(c => 
+                            !string.IsNullOrEmpty(c.Id) && 
+                            c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                        
+                        if (directCategory != null && !string.IsNullOrEmpty(directCategory.Name))
+                        {
+                            model.CategoryName = directCategory.Name;
+                        }
+                    }
+                }
+
+                return View(model);
+            }
+
+            // Check for duplicate course code
+            var allCourses = await _services.CourseService.GetAllCoursesAsync();
+            if (allCourses.Success && allCourses.Data.Any(c =>
+                c.CourseCode.Equals(model.CourseCode, StringComparison.OrdinalIgnoreCase)
+                && c.Id != model.Id))
+            {
+                TempData["Error"] = "Course code already exists!";
+                
+                // Reload categories and set CategoryName
+                var categories = await _services.CategoryService.GetAllCategories();
+                model.AvailableCategories = categories?.Select(c => new CategoryOption
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList() ?? new List<CategoryOption>();
+
+                // Ensure CategoryName is set if we have the CategoryId
+                if (!string.IsNullOrEmpty(model.CategoryId) && model.AvailableCategories != null)
+                {
+                    var category = model.AvailableCategories.FirstOrDefault(c => 
+                        !string.IsNullOrEmpty(c.Id) && 
+                        c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                    
+                    if (category != null && !string.IsNullOrEmpty(category.Name))
+                    {
+                        model.CategoryName = category.Name;
+                    }
+                    else if (categories != null)
+                    {
+                        var directCategory = categories.FirstOrDefault(c => 
+                            !string.IsNullOrEmpty(c.Id) && 
+                            c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                        
+                        if (directCategory != null && !string.IsNullOrEmpty(directCategory.Name))
+                        {
+                            model.CategoryName = directCategory.Name;
+                        }
+                    }
+                }
+
+                return View(model);
+            }
+
+            // Call the service to update
+            var result = await _services.CourseService.UpdateCourse(Guid.Parse(model.Id), model);
+
+            if (result.Success)
+            {
+                TempData["Success"] = "Course updated successfully!";
+                return RedirectToAction(nameof(Details), new { id = model.Id });
+            }
+
+            TempData["Error"] = result.Message ?? "Failed to update course.";
+
+            // Reload categories for view
+            var catResult = await _services.CategoryService.GetAllCategories();
+            model.AvailableCategories = catResult?.Select(c => new CategoryOption
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList() ?? new List<CategoryOption>();
+
+            // Ensure CategoryName is set if we have the CategoryId
+            if (!string.IsNullOrEmpty(model.CategoryId) && model.AvailableCategories != null)
+            {
+                var category = model.AvailableCategories.FirstOrDefault(c => 
+                    !string.IsNullOrEmpty(c.Id) && 
+                    c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                
+                if (category != null && !string.IsNullOrEmpty(category.Name))
+                {
+                    model.CategoryName = category.Name;
+                }
+                else if (catResult != null)
+                {
+                    var directCategory = catResult.FirstOrDefault(c => 
+                        !string.IsNullOrEmpty(c.Id) && 
+                        c.Id.Equals(model.CategoryId, StringComparison.OrdinalIgnoreCase));
+                    
+                    if (directCategory != null && !string.IsNullOrEmpty(directCategory.Name))
+                    {
+                        model.CategoryName = directCategory.Name;
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
     }
 }

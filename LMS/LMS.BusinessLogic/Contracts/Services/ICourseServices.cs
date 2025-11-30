@@ -17,5 +17,6 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task<ServiceResponseDTO<GetCourseDTO>> UpdateThumbnailAsync(string courseId, IFormFile thumbnailFile);
 
         Task<ServiceResponseDTO<GetCourseDTO>> CreateCourse(CreateCourseDTO dto);
+        Task<ServiceResponseDTO<List<GetCourseDTO>>> GetPopularCoursesAsync(int count);
     }
 }

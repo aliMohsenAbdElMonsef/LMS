@@ -39,7 +39,11 @@ namespace LMS.MVC.Services.Services
         {
             var response = await GetAsync<ServiceResponseDTO<CategoryDetailsDTO>>($"api/category/details/{id}");
 
-            var category = response?.Data ?? new CategoryDetailsDTO();
+            // Check if API call was successful
+            if (response == null || !response.Success || response.Data == null)
+                return null;
+
+            var category = response.Data;
 
             return new CategoryDetailsResult
             {
@@ -57,7 +61,11 @@ namespace LMS.MVC.Services.Services
         {
             var response = await GetAsync<ServiceResponseDTO<ReadCategoryDTO>>($"api/category/{id}");
 
-            return _mapper.Map<ReadCategoryResult>(response?.Data ?? new ReadCategoryDTO());
+            // Check if API call was successful
+            if (response == null || !response.Success || response.Data == null)
+                return null;
+
+            return _mapper.Map<ReadCategoryResult>(response.Data);
         }
 
 

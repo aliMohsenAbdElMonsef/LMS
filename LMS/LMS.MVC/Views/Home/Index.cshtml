@@ -7,14 +7,32 @@
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6">
+            <div class="col-lg-7">
                 <div class="hero-content">
-                    <h1 class="hero-title">Unlock Your Potential with Expert-Led Courses</h1>
-                    <p class="hero-description">Join thousands of learners mastering new skills. Access world-class courses, earn certificates, and advance your career.</p>
-                    <div class="hero-actions">
-                        <a href="/Account/Register" class="btn btn-primary btn-lg me-3">Get Started Free</a>
-                        <a href="/Account/Login" class="btn btn-outline-secondary btn-lg">Sign In</a>
-                    </div>
+                    <h1 class="hero-title">Transform Your Future with Expert-Led Learning</h1>
+                    <p class="hero-description">
+                        Embark on a journey of knowledge and growth. Access world-class courses, connect with expert instructors, and unlock your full potential with our modern learning platform.
+                    </p>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="hero-actions">
+                            <a href="/Account/SignUp" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-rocket me-2"></i>Start Learning Now
+                            </a>
+                            <a href="/Account/Login" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="hero-actions">
+                            <a href="/Course/Index" class="btn btn-primary btn-lg">
+                                <i class="fas fa-book-open me-2"></i>Browse Courses
+                            </a>
+                        </div>
+                    }
+
                     <div class="hero-stats mt-4">
                         <div class="stat-item">
                             <span class="stat-number">@Model.TotalStudents+</span>
@@ -31,16 +49,51 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-5">
                 <div class="hero-image">
-                    <img src="~/images/hero-learning.svg" alt="Online Learning" class="img-fluid" />
+                    <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Modern illustration representing online learning -->
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Book/Platform base -->
+                        <rect x="100" y="250" width="300" height="200" rx="15" fill="url(#grad1)" opacity="0.2"/>
+                        <rect x="120" y="270" width="260" height="160" rx="10" fill="url(#grad1)"/>
+                        
+                        <!-- Screen/Monitor representation -->
+                        <rect x="150" y="300" width="200" height="120" rx="8" fill="#ffffff" opacity="0.9"/>
+                        
+                        <!-- Play button -->
+                        <circle cx="250" cy="360" r="25" fill="url(#grad1)"/>
+                        <polygon points="245,350 245,370 265,360" fill="#ffffff"/>
+                        
+                        <!-- Floating elements representing learning -->
+                        <circle cx="380" cy="200" r="30" fill="#6366f1" opacity="0.3">
+                            <animateTransform attributeName="transform" type="translate" values="0,0; 0,-20; 0,0" dur="3s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="120" cy="180" r="25" fill="#8b5cf6" opacity="0.3">
+                            <animateTransform attributeName="transform" type="translate" values="0,0; 0,15; 0,0" dur="4s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="420" cy="320" r="20" fill="#3b82f6" opacity="0.3">
+                            <animateTransform attributeName="transform" type="translate" values="0,0; 0,-15; 0,0" dur="5s" repeatCount="indefinite"/>
+                        </circle>
+                        
+                        <!-- Graduation cap icon -->
+                        <path d="M 250 150 L 200 170 L 200 200 L 250 220 L 300 200 L 300 170 Z" fill="url(#grad1)"/>
+                        <rect x="240" y="220" width="20" height="40" fill="url(#grad1)"/>
+                        <ellipse cx="250" cy="260" rx="15" ry="5" fill="url(#grad1)"/>
+                    </svg>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Categories Section -->
+<!-- Categories Section - DYNAMIC -->
 <section class="categories-section py-5">
     <div class="container">
         <div class="section-header text-center mb-5">
@@ -48,27 +101,39 @@
             <p class="section-subtitle">Discover courses across various domains</p>
         </div>
         <div class="row g-4">
-            @foreach (var category in Model.Categories)
+            @if (Model.Categories != null && Model.Categories.Any())
             {
-                <div class="col-md-4 col-sm-6">
-                    <div class="category-card" onclick="redirectToLogin()">
-                        <div class="category-icon">
-                            <i class="fas fa-folder"></i> <!-- Default icon, consider adding Icon property to Category -->
-                        </div>
-                        <h3 class="category-title">@category.Name</h3>
-                        <p class="category-count">@category.CoursesCount Courses</p>
-                        <div class="category-overlay">
-                            <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                            <p class="overlay-text">Sign in to access</p>
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="col-md-4 col-sm-6">
+                        <div class="category-card" @(User.Identity.IsAuthenticated ? "" : "onclick=redirectToLogin()")>
+                            <div class="category-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <h3 class="category-title">@category.Name</h3>
+                            <p class="category-count">@category.CoursesCount Courses</p>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="category-overlay">
+                                    <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                                    <p class="overlay-text">Sign in to access</p>
+                                </div>
+                            }
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">No categories available at the moment.</p>
                 </div>
             }
         </div>
     </div>
 </section>
 
-<!-- Popular Courses Section -->
+<!-- Popular Courses Section - DYNAMIC -->
 <section class="courses-section py-5 bg-light-purple">
     <div class="container">
         <div class="section-header text-center mb-5">
@@ -76,49 +141,77 @@
             <p class="section-subtitle">Start learning with our most popular courses</p>
         </div>
         <div class="row g-4">
-            @foreach (var course in Model.PopularCourses)
+            @if (Model.PopularCourses != null && Model.PopularCourses.Any())
             {
-                <div class="col-lg-4 col-md-6">
-                    <div class="course-card card h-100" onclick="redirectToLogin()">
-                        <img src="@(string.IsNullOrEmpty(course.ThumbnailPath) ? "/images/default-course.jpg" : course.ThumbnailPath)" class="card-img-top course-thumbnail" alt="@course.Name">
-                        @if (course.IsFree)
-                        {
-                            <div class="course-badge badge-free-course">Free</div>
-                        }
-                        else
-                        {
-                            <div class="course-badge">Bestseller</div>
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">@course.Name</h5>
-                            <p class="course-description">@course.Description</p>
-                            <div class="course-meta mb-3">
-                                <span class="me-3"><i class="fas fa-user"></i> @course.AdminName</span> <!-- Assuming AdminName is Instructor Name -->
-                                <span><i class="fas fa-star text-warning"></i> @course.AverageRating.ToString("0.0") (@course.EnrolledStudentsCount)</span>
+                @foreach (var course in Model.PopularCourses)
+                {
+                    var badgeText = course.IsFree == true ? "Free" : "";
+                    var badgeClass = course.IsFree == true ? "badge-free-course" : "";
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="course-card card h-100" @(User.Identity.IsAuthenticated ? $"onclick=window.location.href='/Course/Details/{course.Id}'" : "onclick=redirectToLogin()")>
+                            <img src="@course.ThumbnailPath"
+                                 class="card-img-top course-thumbnail"
+                                 alt="@course.Name"
+                                 onerror="this.src='/images/default-course.jpg'">
+
+                            @if (!string.IsNullOrEmpty(badgeText))
+                            {
+                                <div class="course-badge @badgeClass">@badgeText</div>
+                            }
+
+                            <div class="card-body">
+                                <h5 class="card-title">@course.Name</h5>
+                                <p class="course-description">@course.Description</p>
+
+                                <div class="course-meta mb-3">
+                                    <span>
+                                        <i class="fas fa-star text-warning"></i>
+                                        @course.AverageRating.ToString("F1")
+                                        (@course.EnrolledStudentsCount students)
+                                    </span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    @if (course.IsFree == true)
+                                    {
+                                        <span class="badge badge-free">Free</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-price">
+                                            $@(course.Price != null ? course.Price.ToString("F2") : "")
+                                        </span>
+                                    }
+                                    <span class="badge badge-language">@course.Language</span>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                @if (course.IsFree)
-                                {
-                                    <span class="badge badge-free">Free</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-price">$@course.Price</span>
-                                }
-                                <span class="badge badge-language">@course.Language</span>
-                            </div>
-                        </div>
-                        <div class="card-overlay">
-                            <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                            <p class="overlay-text-large">Sign in to enroll</p>
+
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="card-overlay">
+                                    <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
+                                    <p class="overlay-text-large">Sign in to enroll</p>
+                                </div>
+                            }
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p class="text-muted">No courses available at the moment.</p>
                 </div>
             }
         </div>
-        <div class="text-center mt-5">
-            <a href="/Account/Register" class="btn btn-primary btn-lg">Sign Up to View All Courses</a>
-        </div>
+        
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="text-center mt-5">
+                <a href="/Account/SignUp" class="btn btn-primary btn-lg">Sign Up to View All Courses</a>
+            </div>
+        }
     </div>
 </section>
 
@@ -157,52 +250,12 @@
                     <p class="feature-description">Access your courses anytime, anywhere, on any device - forever.</p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h4 class="feature-title">Community Support</h4>
-                    <p class="feature-description">Join a vibrant community of learners and get help when you need it.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h4 class="feature-title">Learn at Your Pace</h4>
-                    <p class="feature-description">Self-paced learning that fits your schedule and learning style.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-medal"></i>
-                    </div>
-                    <h4 class="feature-title">Quality Content</h4>
-                    <p class="feature-description">High-quality video lessons, quizzes, and hands-on projects.</p>
-                </div>
-            </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section py-5">
-    <div class="container">
-        <div class="cta-content text-center">
-            <h2 class="cta-title">Ready to Start Learning?</h2>
-            <p class="cta-description">Join our community today and take the first step towards achieving your goals.</p>
-            <a href="/Account/Register" class="btn btn-primary btn-lg">Create Your Free Account</a>
-        </div>
-    </div>
-</section>
-
-@section Scripts {
-    <script>
-        function redirectToLogin() {
-            window.location.href = '/Account/Login';
-        }
-    </script>
-}
+<script>
+    function redirectToLogin() {
+        window.location.href = '/Account/Login';
+    }
+</script>

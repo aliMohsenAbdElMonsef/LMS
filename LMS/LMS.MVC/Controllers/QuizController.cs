@@ -536,6 +536,8 @@ namespace LMS.MVC.Controllers
                 return View(new List<QuizItemViewModel>());
             }
         }
+
+
         // GET: Quiz/Submissions/5
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
@@ -561,8 +563,7 @@ namespace LMS.MVC.Controllers
                 TempData["Error"] = $"Error loading submissions: {ex.Message}";
                 return RedirectToAction("Details", new { id });
             }
-            }
-
+        }
 
         // GET: Quiz/Grade
         [HttpGet]

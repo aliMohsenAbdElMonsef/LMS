@@ -156,6 +156,21 @@ namespace LMS.API.Controllers
                 return result.Success ? Ok(result) : BadRequest(result);
             }
         }
-        
+
+        [HttpGet("popular")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPopularCourses([FromQuery] int count = 6)
+        {
+            var result = await _unitOfServices.Courses.GetPopularCoursesAsync(count);
+
+            if (!result.Success)
+                return BadRequest(new { success = false, message = result.Message });
+
+            return Ok(new
+            {
+                success = true,
+                data = result.Data
+            });
+        }
     }
 }
