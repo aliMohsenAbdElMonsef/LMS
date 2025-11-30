@@ -26,6 +26,9 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         [Range(0, 100)]
         public int? PassingScore { get; set; }
 
+        [Range(1, 10)]
+        public int? MaxAttempts { get; set; }
+
         public string? InstructorId { get; set; }
 
         public ICollection<UpdateQuestionDTO> Questions { get; set; } = new List<UpdateQuestionDTO>();

@@ -26,7 +26,23 @@
                         <div class="progress-bar bg-gradient-primary" id="progressBar" style="width: 0%"></div>
                     </div>
                 </div>
+                </div>
             </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 
             <!-- Quiz Form -->
             <form method="post" asp-action="Submit" id="quizForm">
@@ -45,8 +61,9 @@
                             <p class="question-text mb-4">@question.Text</p>
                             
                             <div class="answer-options">
+                                <input type="hidden" name="Answers[@i].QuestionId" value="@question.Id" />
                                 <div class="form-check answer-option">
-                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0" required>
+                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
                                     <label class="form-check-label" for="q@(i)a">
                                         @question.OptionA
                                     </label>
@@ -224,259 +241,4 @@
 }
 </style>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <!-- Quiz Header -->
-            <div class="card mb-4 animate-fade-in-up">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h3 class="mb-2">Module 1 Quiz</h3>
-                            <p class="text-muted mb-0">Introduction to Web Development</p>
-                        </div>
-                        <div class="text-end">
-                            <div class="quiz-timer" id="quizTimer">
-                                <i class="bi bi-clock"></i> <span id="timeRemaining">30:00</span>
-                            </div>
-                            <small class="text-muted d-block mt-2">10 Questions | 10 Points</small>
-                        </div>
-                    </div>
-                    <div class="progress mt-3" style="height: 8px;">
-                        <div class="progress-bar bg-gradient-primary" id="progressBar" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Quiz Form -->
-            <form method="post" asp-action="Submit" id="quizForm">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="QuizId" value="@ViewBag.QuizId" />
-
-                <!-- Question 1 -->
-                <div class="card mb-4 question-card animate-fade-in-up" data-question="1">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5><span class="badge bg-primary">Question 1</span></h5>
-                            <span class="text-muted">1 Point</span>
-                        </div>
-                        <p class="question-text mb-4">What does HTML stand for?</p>
-                        
-                        <div class="answer-options">
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[0].SelectedOption" id="q1a" value="0" required>
-                                <label class="form-check-label" for="q1a">
-                                    Hyper Text Markup Language
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[0].SelectedOption" id="q1b" value="1">
-                                <label class="form-check-label" for="q1b">
-                                    High Tech Modern Language
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[0].SelectedOption" id="q1c" value="2">
-                                <label class="form-check-label" for="q1c">
-                                    Home Tool Markup Language
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[0].SelectedOption" id="q1d" value="3">
-                                <label class="form-check-label" for="q1d">
-                                    Hyperlinks and Text Markup Language
-                                </label>
-                            </div>
-                        </div>
-                        <input type="hidden" name="Answers[0].QuestionId" value="1" />
-                    </div>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="card mb-4 question-card animate-fade-in-up animate-delay-100" data-question="2">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5><span class="badge bg-primary">Question 2</span></h5>
-                            <span class="text-muted">1 Point</span>
-                        </div>
-                        <p class="question-text mb-4">Which HTML tag is used to define an internal style sheet?</p>
-                        
-                        <div class="answer-options">
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[1].SelectedOption" id="q2a" value="0" required>
-                                <label class="form-check-label" for="q2a">
-                                    &lt;style&gt;
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[1].SelectedOption" id="q2b" value="1">
-                                <label class="form-check-label" for="q2b">
-                                    &lt;css&gt;
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[1].SelectedOption" id="q2c" value="2">
-                                <label class="form-check-label" for="q2c">
-                                    &lt;script&gt;
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[1].SelectedOption" id="q2d" value="3">
-                                <label class="form-check-label" for="q2d">
-                                    &lt;link&gt;
-                                </label>
-                            </div>
-                        </div>
-                        <input type="hidden" name="Answers[1].QuestionId" value="2" />
-                    </div>
-                </div>
-
-                <!-- Question 3 -->
-                <div class="card mb-4 question-card animate-fade-in-up animate-delay-200" data-question="3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5><span class="badge bg-primary">Question 3</span></h5>
-                            <span class="text-muted">1 Point</span>
-                        </div>
-                        <p class="question-text mb-4">CSS stands for Cascading Style Sheets.</p>
-                        
-                        <div class="answer-options">
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[2].SelectedOption" id="q3a" value="0" required>
-                                <label class="form-check-label" for="q3a">
-                                    True
-                                </label>
-                            </div>
-                            <div class="form-check answer-option">
-                                <input class="form-check-input" type="radio" name="Answers[2].SelectedOption" id="q3b" value="1">
-                                <label class="form-check-label" for="q3b">
-                                    False
-                                </label>
-                            </div>
-                        </div>
-                        <input type="hidden" name="Answers[2].QuestionId" value="3" />
-                    </div>
-                </div>
-
-                <!-- Navigation -->
-                <div class="card animate-fade-in-up">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="mb-0 text-muted">
-                                    <i class="bi bi-info-circle"></i> Make sure to answer all questions before submitting
-                                </p>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-outline-secondary" onclick="return confirm('Are you sure you want to exit? Your progress will be lost.')">
-                                    <i class="bi bi-x-circle"></i> Exit
-                                </button>
-                                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to submit? You cannot change your answers after submission.')">
-                                    <i class="bi bi-check-circle"></i> Submit Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-        // Timer functionality
-        let timeRemaining = 30 * 60; // 30 minutes in seconds
-        
-        function updateTimer() {
-            const minutes = Math.floor(timeRemaining / 60);
-            const seconds = timeRemaining % 60;
-            document.getElementById('timeRemaining').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (timeRemaining <= 0) {
-                alert('Time is up! Submitting quiz...');
-                document.getElementById('quizForm').submit();
-            } else {
-                timeRemaining--;
-            }
-        }
-        
-        setInterval(updateTimer, 1000);
-        
-        // Progress tracking
-        const questions = document.querySelectorAll('.question-card');
-        const progressBar = document.getElementById('progressBar');
-        
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                let answeredCount = 0;
-                questions.forEach(q => {
-                    const questionInputs = q.querySelectorAll('input[type="radio"]');
-                    if (Array.from(questionInputs).some(input => input.checked)) {
-                        answeredCount++;
-                    }
-                });
-                
-                const progress = (answeredCount / questions.length) * 100;
-                progressBar.style.width = progress + '%';
-            });
-        });
-
-        // Auto-save to localStorage
-        setInterval(() => {
-            const formData = new FormData(document.getElementById('quizForm'));
-            const answers = {};
-            formData.forEach((value, key) => {
-                if (key.includes('SelectedOption')) {
-                    answers[key] = value;
-                }
-            });
-            localStorage.setItem('quizAnswers', JSON.stringify(answers));
-        }, 10000); // Save every 10 seconds
-    </script>
-}
-
-<style>
-.quiz-timer {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #667eea;
-}
-
-.question-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.question-text {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #1f2937;
-}
-
-.answer-option {
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.answer-option:hover {
-    border-color: #667eea;
-    background: #f9fafb;
-}
-
-.answer-option input:checked + label {
-    font-weight: 600;
-    color: #667eea;
-}
-
-.answer-option:has(input:checked) {
-    border-color: #667eea;
-    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
-}
-</style>

@@ -33,6 +33,7 @@ namespace LMS.DataAccess.Repositories
                     .ThenInclude(a => a.Instructor)
                 .Include(c => c.InstructorEnrollments)
                     .ThenInclude(ie => ie.Instructor)
+                .Include(c => c.Quizzes)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

@@ -127,5 +127,39 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Quizzes.GetQuizzesByInstructorAsync(instructorId);
             return Ok(result);
         }
+        [HttpGet("status/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<StudentQuizStatusDTO>>> GetQuizStatus(string id)
+        {
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _unitOfServices.Quizzes.GetStudentQuizStatusAsync(id, studentId);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("results/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ServiceResponseDTO<QuizResultDTO>>> GetQuizResults(string id)
+        {
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _unitOfServices.Quizzes.GetQuizResultAsync(id, studentId);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("submissions/{id}")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>>> GetQuizSubmissions(string id)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizSubmissionsAsync(id);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }

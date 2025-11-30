@@ -2,10 +2,11 @@ using LMS.MVC.Models.ViewModels.Quiz;
 using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
 
 namespace LMS.MVC.Controllers
 {
-    [Authorize]
     public class QuizController : Controller
     {
         private readonly IUnitOfServices _services;
@@ -19,6 +20,16 @@ namespace LMS.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string courseId)
         {
+            if (string.IsNullOrEmpty(courseId))
+            {
+                // If we have an error from a previous action (like Take), preserve it and redirect to Home or Course List
+                if (TempData["Error"] != null)
+                {
+                    return RedirectToAction("Index", "Course");
+                }
+                return BadRequest("Course ID is required.");
+            }
+
             try
             {
                 var serviceResult = await _services.QuizService.GetQuizzesByCourseAsync(courseId);
@@ -31,7 +42,7 @@ namespace LMS.MVC.Controllers
                 var viewModel = new LMS.MVC.Models.ViewModels.Quiz.QuizListViewModel
                 {
                     CourseId = courseId,
-                    Quizzes = serviceResult.Data ?? new List<QuizItemViewModel>()
+                    Quizzes = (serviceResult.Data ?? new List<QuizItemViewModel>()).OrderBy(q => q.EndDate).ToList()
                 };
 
                 return View(viewModel);
@@ -54,6 +65,16 @@ namespace LMS.MVC.Controllers
                 {
                     TempData["Error"] = result.Message ?? "Quiz not found.";
                     return RedirectToAction("Index");
+                }
+                // Fetch student status
+                if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
+                {
+                    var statusResult = await _services.QuizService.GetQuizStatusAsync(id);
+                    if (statusResult.Success && statusResult.Data != null)
+                    {
+                        result.Data.IsCompleted = statusResult.Data.Status == Domain.Enums.QuizStatus.Completed || statusResult.Data.Status == Domain.Enums.QuizStatus.Graded;
+                        result.Data.AchievedScore = statusResult.Data.Grade ?? 0;
+                    }
                 }
                 return View(result.Data);
             }
@@ -185,7 +206,10 @@ namespace LMS.MVC.Controllers
                     Description = result.Data.Description,
                     DurationMinutes = result.Data.DurationMinutes,
                     PassingScore = result.Data.PassingScore,
+                    MaxAttempts = result.Data.MaxAttempts,
                     NumberOfQuestions = result.Data.NumberOfQuestions,
+                    StartDate = result.Data.StartDate,
+                    EndDate = result.Data.EndDate,
                     InstructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
                     Questions = result.Data.Questions?.Select(q => new CreateQuestionViewModel
                     {
@@ -339,7 +363,14 @@ namespace LMS.MVC.Controllers
                 var result = await _services.QuizService.GetQuizForTakingAsync(id);
                 if (!result.Success || result.Data == null)
                 {
-                    TempData["Error"] = result.Message ?? "Quiz not found or not available.";
+                    if (result.Message != null && result.Message.Contains("You have already completed this quiz"))
+                    {
+                        TempData["Error"] = "You have already completed this quiz. You cannot take it again.";
+                    }
+                    else
+                    {
+                        TempData["Error"] = result.Message ?? "Quiz not found or not available.";
+                    }
                     return RedirectToAction("Index");
                 }
                 return View(result.Data);
@@ -357,6 +388,14 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Submit(SubmitQuizViewModel model)
         {
+            // Set StudentId from current user
+            model.StudentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(model.StudentId))
+            {
+                TempData["Error"] = "Unable to identify student. Please log in again.";
+                return RedirectToAction("Take", new { id = model.QuizId });
+            }
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Invalid submission.";
@@ -402,7 +441,7 @@ namespace LMS.MVC.Controllers
                 }
 
                 // Otherwise fetch from API
-                var apiResult = await _services.QuizService.GetQuizResultsAsync(id, User.Identity.Name);
+                var apiResult = await _services.QuizService.GetQuizResultsAsync(id);
                 if (!apiResult.Success || apiResult.Data == null)
                 {
                     TempData["Error"] = apiResult.Message ?? "Results not found.";
@@ -470,6 +509,32 @@ namespace LMS.MVC.Controllers
             {
                 TempData["Error"] = $"Error loading quizzes: {ex.Message}";
                 return View(new List<QuizItemViewModel>());
+            }
+        }
+        // GET: Quiz/Submissions/5
+        [HttpGet]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> Submissions(string id)
+        {
+            try
+            {
+                var result = await _services.QuizService.GetQuizSubmissionsAsync(id);
+                if (!result.Success)
+                {
+                    TempData["Error"] = result.Message ?? "Error loading submissions.";
+                    return RedirectToAction("Details", new { id });
+                }
+
+                var quiz = await _services.QuizService.GetQuizByIdAsync(id);
+                ViewBag.QuizTitle = quiz.Data?.Title ?? "Quiz";
+                ViewBag.QuizId = id;
+
+                return View(result.Data ?? new List<LMS.BusinessLogic.DTOs.Quiz.QuizSubmissionDTO>());
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading submissions: {ex.Message}";
+                return RedirectToAction("Details", new { id });
             }
         }
     }

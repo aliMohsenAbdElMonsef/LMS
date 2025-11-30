@@ -361,7 +361,8 @@ namespace LMS.MVC.Services.Services
                     Description = q.Description,
                     NumberOfQuestions = q.NumberOfQuestions,
                     DurationMinutes = q.DurationMinutes,
-                    PassingScore = 0,
+                    PassingScore = q.PassingScore,
+                    EndDate = q.EndDate,
                     IsCompleted = false // Logic for this would be complex, defaulting to false for now
                 }).ToList() ?? new List<LMS.MVC.Models.ViewModels.Quiz.QuizItemViewModel>()
             };

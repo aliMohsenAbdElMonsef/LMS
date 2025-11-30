@@ -9,9 +9,12 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public int NumberOfQuestions { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
+        public int MaxAttempts { get; set; }
         public bool IsCompleted { get; set; }
         public int AchievedScore { get; set; }
         public bool IsLocked { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public List<LMS.BusinessLogic.DTOs.Question.ReadQuestionDTO>? Questions { get; set; }
     }
 
@@ -29,7 +32,10 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public int NumberOfQuestions { get; set; }
         public int DurationMinutes { get; set; }
         public int PassingScore { get; set; }
+        public int MaxAttempts { get; set; } = 1;
         public string? InstructorId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public List<CreateQuestionViewModel> Questions { get; set; } = new List<CreateQuestionViewModel>();
     }
 
@@ -66,20 +72,22 @@ namespace LMS.MVC.Models.ViewModels.Quiz
     public class SubmitQuizViewModel
     {
         public string QuizId { get; set; } = string.Empty;
+        public string StudentId { get; set; } = string.Empty;
         public List<LMS.BusinessLogic.DTOs.Quiz.SubmitQuizAnswerDTO> Answers { get; set; } = new List<LMS.BusinessLogic.DTOs.Quiz.SubmitQuizAnswerDTO>();
     }
 
     public class QuizResultViewModel
     {
         public string QuizId { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public int Score { get; set; }
+        public string QuizTitle { get; set; } = string.Empty;
+        public string CourseId { get; set; } = string.Empty;
+        public int Grade { get; set; }
         public bool Passed { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectAnswers { get; set; }
         public int TotalPoints { get; set; }
         public int EarnedPoints { get; set; }
-        public IEnumerable<QuestionResultViewModel> Details { get; set; } = new List<QuestionResultViewModel>();
+        public IEnumerable<QuestionResultViewModel> QuestionResults { get; set; } = new List<QuestionResultViewModel>();
     }
 
     public class QuestionResultViewModel

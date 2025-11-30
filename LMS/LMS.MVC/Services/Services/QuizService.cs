@@ -143,11 +143,29 @@ namespace LMS.MVC.Services.Services
             });
         }
 
-        public async Task<SuccessServiceResult<QuizResultViewModel>> GetQuizResultsAsync(string quizId, string username)
+        public async Task<SuccessServiceResult<QuizResultViewModel>> GetQuizResultsAsync(string quizId)
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var result = await GetAsync<SuccessServiceResult<QuizResultViewModel>>($"api/quizzes/results/{quizId}?username={username}");
+                var result = await GetAsync<SuccessServiceResult<QuizResultViewModel>>($"api/quizzes/results/{quizId}");
+                return result;
+            });
+        }
+
+        public async Task<SuccessServiceResult<LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO>> GetQuizStatusAsync(string quizId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await GetAsync<SuccessServiceResult<LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO>>($"api/quizzes/status/{quizId}");
+                return result;
+            });
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<LMS.BusinessLogic.DTOs.Quiz.QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await GetAsync<SuccessServiceResult<IEnumerable<LMS.BusinessLogic.DTOs.Quiz.QuizSubmissionDTO>>>($"api/quizzes/submissions/{quizId}");
                 return result;
             });
         }

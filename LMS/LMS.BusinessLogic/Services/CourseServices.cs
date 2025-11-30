@@ -81,6 +81,8 @@ namespace LMS.BusinessLogic.Services
                     Description = q.Description,
                     NumberOfQuestions = q.NumberOfQuestions,
                     DurationMinutes = q.DurationMinutes,
+                    PassingScore = q.PassingScore,
+                    EndDate = q.EndDate,
                     CourseId = q.CourseId,
                     InstructorId = q.InstructorId
                 }).ToList();

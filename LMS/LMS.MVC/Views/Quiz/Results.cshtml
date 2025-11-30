@@ -1,7 +1,7 @@
 @model LMS.MVC.Models.ViewModels.Quiz.QuizResultViewModel
 @{
     ViewData["Title"] = "Quiz Results";
-    var percentage = Model.Score;
+    var percentage = Model.Grade;
     var isPassed = Model.Passed;
     var strokeDashoffset = 565 - (565 * percentage / 100);
 }
@@ -41,7 +41,7 @@
                             <i class="bi @(isPassed ? "bi-check-circle" : "bi-x-circle")"></i> @(isPassed ? "Passed" : "Failed")
                         </span>
                     </div>
-                    <p class="text-muted">@Model.Title</p>
+                    <p class="text-muted">@Model.QuizTitle</p>
                 </div>
             </div>
 
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Question Review -->
-            @if (Model.Details != null && Model.Details.Any())
+            @if (Model.QuestionResults != null && Model.QuestionResults.Any())
             {
                 <div class="card mb-4 animate-fade-in-up">
                     <div class="card-header">
@@ -87,7 +87,7 @@
                         @{
                             var questionIndex = 0;
                         }
-                        @foreach (var detail in Model.Details)
+                        @foreach (var detail in Model.QuestionResults)
                         {
                             questionIndex++;
                             <div class="review-item @(detail.IsCorrect ? "correct" : "incorrect") mb-3">
@@ -118,7 +118,7 @@
 
             <!-- Actions -->
             <div class="text-center animate-fade-in-up">
-                <a href="@Url.Action("Index", "Quiz")" class="btn btn-primary me-2">
+                <a href="@Url.Action("Index", "Quiz", new { courseId = Model.CourseId })" class="btn btn-primary me-2">
                     <i class="bi bi-arrow-left"></i> Back to Quizzes
                 </a>
             </div>

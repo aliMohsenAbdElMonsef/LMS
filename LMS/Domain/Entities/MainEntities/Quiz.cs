@@ -30,6 +30,8 @@ namespace Domain.Entities.MainEntities
         
         public int PassingScore { get; set; }  // Minimum score percentage required to pass
         
+        public int MaxAttempts { get; set; } = 1;  // Maximum number of attempts allowed per student
+        
         // relations
         // question
         public ICollection<Question> Questions { get; set; } = new List<Question>();

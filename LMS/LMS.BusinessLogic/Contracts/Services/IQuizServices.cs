@@ -14,5 +14,8 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task<DTOs.Responses.ServiceResponseDTO<QuizResultDTO>> SubmitQuizAsync(SubmitQuizDTO dto);
         Task<DTOs.Responses.ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByCourseAsync(string courseId);
         Task<DTOs.Responses.ServiceResponseDTO<IEnumerable<ReadQuizDTO>>> GetQuizzesByInstructorAsync(string instructorId);
+        Task<DTOs.Responses.ServiceResponseDTO<StudentQuizStatusDTO>> GetStudentQuizStatusAsync(string quizId, string studentId);
+        Task<DTOs.Responses.ServiceResponseDTO<QuizResultDTO>> GetQuizResultAsync(string quizId, string studentId);
+        Task<DTOs.Responses.ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId);
     }
 }

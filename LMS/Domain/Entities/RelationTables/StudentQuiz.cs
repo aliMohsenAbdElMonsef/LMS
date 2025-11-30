@@ -9,6 +9,7 @@ namespace Domain.Entities.RelationTables
 {
     public class StudentQuiz: SoftDeletion
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string StudentId { get; set; } = string.Empty;
         public ApplicationUser Student { get; set; }
         public string QuizId { get; set; } = string.Empty;

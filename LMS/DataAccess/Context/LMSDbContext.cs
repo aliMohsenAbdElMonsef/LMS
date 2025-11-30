@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Domain.Entities.MainEntities;
 using Domain.Entities.RelationTables;
 using Domain.Enums;
@@ -16,7 +16,7 @@ namespace DataAccess.Context
         public LMSDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<LMSDbContext>();
-            optionsBuilder.UseSqlServer("Server=.;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
+            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=LMS;Trusted_Connection=true;TrustServerCertificate=true");
 
             return new LMSDbContext(optionsBuilder.Options);
         }
@@ -340,7 +340,7 @@ namespace DataAccess.Context
 
             // student quiz
             builder.Entity<StudentQuiz>()
-                .HasKey(sq => new { sq.StudentId, sq.QuizId });
+                .HasKey(sq => sq.Id);
 
             builder.Entity<StudentQuiz>()
                 .HasOne(sq => sq.Student)

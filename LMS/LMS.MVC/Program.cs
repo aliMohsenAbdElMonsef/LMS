@@ -61,25 +61,45 @@ namespace LMS.MVC
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(300);
-            }).AddHttpMessageHandler<AuthHeaderHandler>();
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<IUserService, UserServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(300);
-            }).AddHttpMessageHandler<AuthHeaderHandler>();
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<ICourseService, CourseService>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(300);
-            }).AddHttpMessageHandler<AuthHeaderHandler>();
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
             builder.Services.AddHttpClient<IUnitOfServices, UnitOfServices>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(300);
-            }).AddHttpMessageHandler<AuthHeaderHandler>();
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>();
 
             // ---------------- JWT Authentication ----------------
             var jwtSettings = builder.Configuration.GetSection("Jwt");

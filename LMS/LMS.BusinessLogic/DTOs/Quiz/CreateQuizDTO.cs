@@ -30,6 +30,10 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public int PassingScore { get; set; }
 
         [Required]
+        [Range(1, 10)]
+        public int MaxAttempts { get; set; } = 1;
+
+        [Required]
         public string CourseId { get; set; }
 
         [Required]

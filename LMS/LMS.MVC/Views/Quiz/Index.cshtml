@@ -70,6 +70,34 @@
                                     <span class="text-muted small"><i class="bi bi-trophy"></i> Passing Score:</span>
                                     <span class="fw-bold">@quiz.PassingScore%</span>
                                 </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small"><i class="bi bi-calendar-event"></i> Deadline:</span>
+                                    @if (quiz.EndDate == DateTime.MinValue)
+                                    {
+                                        <span class="fw-bold text-success">No Deadline</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="fw-bold text-danger">@quiz.EndDate.ToString("MMM dd, yyyy HH:mm")</span>
+                                    }
+                                </div>
+                                @{
+                                    var timeText = "Unlimited";
+                                    var timeColor = "text-success";
+                                    
+                                    if (quiz.EndDate != DateTime.MinValue)
+                                    {
+                                        var timeRemaining = quiz.EndDate - DateTime.Now;
+                                        timeColor = timeRemaining.TotalHours < 24 ? "text-danger" : "text-success";
+                                        timeText = timeRemaining.TotalHours > 0 
+                                            ? $"{(int)timeRemaining.TotalDays}d {timeRemaining.Hours}h remaining" 
+                                            : "Expired";
+                                    }
+                                }
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small"><i class="bi bi-hourglass-split"></i> Time Left:</span>
+                                    <span class="fw-bold @timeColor">@timeText</span>
+                                </div>
                             </div>
 
                             @if (User.IsInRole("Student"))
@@ -77,35 +105,48 @@
                                 @if (quiz.IsCompleted)
                                 {
                                     <div class="quiz-status mb-3">
-                                        <span class="badge @(quiz.AchievedScore >= quiz.PassingScore ? "bg-success" : "bg-danger")">
-                                            Completed - @quiz.AchievedScore%
+                                        <span class="badge @(quiz.AchievedScore >= quiz.PassingScore ? "bg-success" : "bg-danger") w-100 py-2">
+                                            <i class="bi @(quiz.AchievedScore >= quiz.PassingScore ? "bi-check-circle" : "bi-x-circle")"></i>
+                                            Completed - Score: @quiz.AchievedScore%
                                         </span>
                                     </div>
                                     <div class="d-flex gap-2">
                                         <a href="@Url.Action("Results", "Quiz", new { id = quiz.Id })" class="btn btn-outline-primary btn-sm flex-fill">
                                             <i class="bi bi-eye"></i> View Results
                                         </a>
-                                        <a href="@Url.Action("Take", "Quiz", new { id = quiz.Id })" class="btn btn-primary btn-sm flex-fill">
-                                            <i class="bi bi-arrow-repeat"></i> Retake
-                                        </a>
+                                        @if (quiz.EndDate == DateTime.MinValue || quiz.EndDate > DateTime.Now)
+                                        {
+                                            <a href="@Url.Action("Take", "Quiz", new { id = quiz.Id })" class="btn btn-primary btn-sm flex-fill">
+                                                <i class="bi bi-arrow-repeat"></i> Retake
+                                            </a>
+                                        }
                                     </div>
                                 }
                                 else if (quiz.IsLocked)
                                 {
                                     <div class="quiz-status mb-3">
-                                        <span class="badge bg-warning">Locked</span>
+                                        <span class="badge bg-warning w-100 py-2">Locked</span>
                                     </div>
                                     <button class="btn btn-secondary w-100" disabled>
                                         <i class="bi bi-lock"></i> Complete Previous Requirements
                                     </button>
                                 }
+                                else if (quiz.EndDate != DateTime.MinValue && quiz.EndDate < DateTime.Now)
+                                {
+                                    <div class="quiz-status mb-3">
+                                        <span class="badge bg-danger w-100 py-2">Expired</span>
+                                    </div>
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-x-circle"></i> Quiz Expired
+                                    </button>
+                                }
                                 else
                                 {
                                     <div class="quiz-status mb-3">
-                                        <span class="badge bg-secondary">Not Started</span>
+                                        <span class="badge bg-info text-dark w-100 py-2">Available</span>
                                     </div>
-                                    <a href="@Url.Action("Take", "Quiz", new { id = quiz.Id })" class="btn btn-primary w-100">
-                                        <i class="bi bi-play-circle"></i> Start Quiz
+                                    <a href="@Url.Action("Take", "Quiz", new { id = quiz.Id })" class="btn btn-primary w-100 py-2 shadow-sm">
+                                        <i class="bi bi-play-circle-fill me-2"></i> <strong>Start Quiz</strong>
                                     </a>
                                 }
                             }

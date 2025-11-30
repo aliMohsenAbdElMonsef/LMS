@@ -27,6 +27,7 @@ namespace LMS.BusinessLogic.DTOs.Quiz
     {
         public string QuizId { get; set; }
         public string QuizTitle { get; set; }
+        public string CourseId { get; set; }
         public string StudentId { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectAnswers { get; set; }
@@ -34,6 +35,7 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public int EarnedPoints { get; set; }
         public double Percentage { get; set; }
         public int? Grade { get; set; }
+        public bool Passed { get; set; }
         public List<QuestionResultDTO> QuestionResults { get; set; } = new List<QuestionResultDTO>();
     }
 

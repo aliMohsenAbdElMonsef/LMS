@@ -18,6 +18,7 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public DateTime EndDate { get; set; }
         public int NumberOfQuestions { get; set; }
         public int PassingScore { get; set; }
+        public int MaxAttempts { get; set; }
 
         public string CourseId { get; set; }
         public string CourseName { get; set; }

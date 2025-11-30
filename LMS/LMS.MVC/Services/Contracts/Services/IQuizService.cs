@@ -12,7 +12,9 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<QuizItemViewModel>> CreateQuizAsync(CreateQuizViewModel model);
         Task<SuccessServiceResult<QuizItemViewModel>> UpdateQuizAsync(string id, UpdateQuizViewModel model);
         Task<SuccessServiceResult<QuizResultViewModel>> SubmitQuizAsync(SubmitQuizViewModel model);
-        Task<SuccessServiceResult<QuizResultViewModel>> GetQuizResultsAsync(string quizId, string username);
+        Task<SuccessServiceResult<QuizResultViewModel>> GetQuizResultsAsync(string quizId);
+        Task<SuccessServiceResult<LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO>> GetQuizStatusAsync(string quizId);
+        Task<SuccessServiceResult<IEnumerable<LMS.BusinessLogic.DTOs.Quiz.QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId);
         Task<bool> DeleteQuizAsync(string id);
         Task<SuccessServiceResult<IEnumerable<QuizItemViewModel>>> GetQuizzesByInstructorAsync(string instructorId);
     }

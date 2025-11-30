@@ -248,6 +248,9 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
+                            <a href="@Url.Action("Submissions", "Quiz", new { id = Model.Id })" class="btn btn-outline-success">
+                                <i class="bi bi-people-fill"></i> View Submissions
+                            </a>
                             <a href="@Url.Action("Edit", "Quiz", new { id = Model.Id })" class="btn btn-outline-primary">
                                 <i class="bi bi-pencil"></i> Edit Quiz Settings
                             </a>
