@@ -162,15 +162,28 @@ namespace LMS.MVC.Controllers
                 return View();
             }
 
-            var result = await _services.AccountService.ForgotPasswordAsync(email);
-            if (result.Success)
+            try
             {
-                TempData["Success"] = result.Message;
-                return RedirectToAction("Login");
-            }
+                Console.WriteLine($"🔍 ForgotPassword - Requesting reset for: {email}");
+                var result = await _services.AccountService.ForgotPasswordAsync(email);
+                Console.WriteLine($"🔍 ForgotPassword - Result: Success={result.Success}, Message={result.Message}");
+                
+                if (result.Success)
+                {
+                    ViewBag.SuccessMessage = result.Message;
+                    ModelState.Clear(); // Clear the form
+                    return View();
+                }
 
-            ModelState.AddModelError("", result.Message ?? "Error sending reset link.");
-            return View();
+                ModelState.AddModelError("", result.Message ?? "Error sending reset link.");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ForgotPassword - Exception: {ex.Message}");
+                ModelState.AddModelError("", "An error occurred. Please try again.");
+                return View();
+            }
         }
 
         [HttpGet]
