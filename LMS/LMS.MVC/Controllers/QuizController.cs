@@ -256,13 +256,11 @@ namespace LMS.MVC.Controllers
 
         private string DetermineQuestionType(LMS.BusinessLogic.DTOs.Question.ReadQuestionDTO question)
         {
-            // Check for Short Answer FIRST (no options at all)
             if (string.IsNullOrEmpty(question.OptionA) && string.IsNullOrEmpty(question.OptionB) &&
                 string.IsNullOrEmpty(question.OptionC) && string.IsNullOrEmpty(question.OptionD))
             {
                 return "ShortAnswer";
             }
-            // If no options C and D but has A and B, it's True/False
             if (string.IsNullOrEmpty(question.OptionC) && string.IsNullOrEmpty(question.OptionD))
             {
                 return "TrueFalse";
@@ -277,12 +275,10 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Edit(string id, UpdateQuizViewModel model)
         {
-            // Remove validation for question type-specific fields (same as Create)
             for (int i = 0; i < model.Questions.Count; i++)
             {
                 var question = model.Questions[i];
                 
-                // For True/False questions, remove validation for options C and D
                 if (question.Type == "TrueFalse")
                 {
                     ModelState.Remove($"Questions[{i}].OptionC");
@@ -291,7 +287,6 @@ namespace LMS.MVC.Controllers
                     question.OptionD = "";
                 }
                 
-                // For Short Answer questions, remove validation for all options
                 if (question.Type == "ShortAnswer")
                 {
                     ModelState.Remove($"Questions[{i}].OptionA");
@@ -566,6 +561,66 @@ namespace LMS.MVC.Controllers
                 TempData["Error"] = $"Error loading submissions: {ex.Message}";
                 return RedirectToAction("Details", new { id });
             }
+            }
+
+
+        // GET: Quiz/Grade
+        [HttpGet]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> Grade(string quizId, string studentId)
+        {
+            var result = await _services.QuizService.GetStudentQuizResultAsync(quizId, studentId);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message ?? "Error loading student result.";
+                return RedirectToAction("Submissions", new { id = quizId });
+            }
+
+            var viewModel = new ManualGradeViewModel
+            {
+                QuizId = result.Data.QuizId,
+                StudentId = studentId,
+                QuizTitle = result.Data.QuizTitle,
+                Questions = result.Data.QuestionResults.Select(q => new QuestionGradeViewModel
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionText = q.QuestionText,
+                    StudentAnswer = q.SelectedAnswer,
+                    CorrectAnswer = q.CorrectAnswer,
+                    IsCorrect = q.IsCorrect,
+                    Points = q.Points
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: Quiz/Grade
+        [HttpPost]
+        [Authorize(Roles = "Instructor,Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Grade(ManualGradeViewModel model)
+        {
+            var dto = new LMS.BusinessLogic.DTOs.Quiz.ManualGradeDTO
+            {
+                QuizId = model.QuizId,
+                StudentId = model.StudentId,
+                Grades = model.Questions.Select(q => new LMS.BusinessLogic.DTOs.Quiz.QuestionGradeDTO
+                {
+                    QuestionId = q.QuestionId,
+                    IsCorrect = q.IsCorrect
+                }).ToList()
+            };
+
+            var result = await _services.QuizService.GradeQuizAsync(dto);
+            if (result.Success)
+            {
+                TempData["Success"] = "Quiz graded successfully.";
+                return RedirectToAction("Submissions", new { id = model.QuizId });
+            }
+
+            TempData["Error"] = result.Message ?? "Failed to grade quiz.";
+            return View(model);
         }
     }
 }

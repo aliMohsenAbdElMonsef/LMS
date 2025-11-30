@@ -43,6 +43,7 @@
                                         <th class="text-center">Correct Answers</th>
                                         <th class="text-center">Status</th>
                                         <th>Completed At</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,9 +60,16 @@
                                             </td>
                                             <td>@submission.StudentEmail</td>
                                             <td class="text-center">
-                                                <span class="badge @(submission.Passed ? "bg-success" : "bg-danger") fs-6">
-                                                    @submission.Grade%
-                                                </span>
+                                                @if (submission.Grade.HasValue)
+                                                {
+                                                    <span class="badge @(submission.Passed ? "bg-success" : "bg-danger") fs-6">
+                                                        @submission.Grade%
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning text-dark fs-6">Pending</span>
+                                                }
                                             </td>
                                             <td class="text-center">
                                                 <span class="text-muted">
@@ -69,16 +77,25 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                @if (submission.Passed)
+                                                @if (submission.Grade.HasValue)
                                                 {
-                                                    <span class="badge bg-success">
-                                                        <i class="bi bi-check-circle"></i> Passed
-                                                    </span>
+                                                    if (submission.Passed)
+                                                    {
+                                                        <span class="badge bg-success">
+                                                            <i class="bi bi-check-circle"></i> Passed
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-danger">
+                                                            <i class="bi bi-x-circle"></i> Failed
+                                                        </span>
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-danger">
-                                                        <i class="bi bi-x-circle"></i> Failed
+                                                    <span class="badge bg-info text-dark">
+                                                        <i class="bi bi-hourglass-split"></i> Needs Grading
                                                     </span>
                                                 }
                                             </td>
@@ -91,6 +108,11 @@
                                                         <span class="text-muted">@submission.CompletedAt.Value.ToString("hh:mm tt")</span>
                                                     </small>
                                                 }
+                                            </td>
+                                            <td>
+                                                <a asp-action="Grade" asp-route-quizId="@ViewBag.QuizId" asp-route-studentId="@submission.StudentId" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-pencil-square"></i> Grade
+                                                </a>
                                             </td>
                                         </tr>
                                     }

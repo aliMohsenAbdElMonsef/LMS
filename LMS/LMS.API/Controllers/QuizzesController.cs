@@ -140,11 +140,24 @@ namespace LMS.API.Controllers
             return Ok(result);
         }
 
+
+
         [HttpGet("results/{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<QuizResultDTO>>> GetQuizResults(string id)
         {
             var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = await _unitOfServices.Quizzes.GetQuizResultAsync(id, studentId);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("results/{id}/{studentId}")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<ActionResult<ServiceResponseDTO<QuizResultDTO>>> GetStudentQuizResult(string id, string studentId)
+        {
             var result = await _unitOfServices.Quizzes.GetQuizResultAsync(id, studentId);
             if (!result.Success)
                 return BadRequest(result);
@@ -169,6 +182,16 @@ namespace LMS.API.Controllers
         {
             var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var result = await _unitOfServices.Quizzes.GetStudentQuizzesAsync(studentId);
+            return Ok(result);
+        }
+
+        [HttpPost("grade")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<IActionResult> GradeQuiz([FromBody] ManualGradeDTO dto)
+        {
+            var result = await _unitOfServices.Quizzes.GradeQuizAsync(dto);
+            if (!result.Success)
+                return BadRequest(result);
             return Ok(result);
         }
     }

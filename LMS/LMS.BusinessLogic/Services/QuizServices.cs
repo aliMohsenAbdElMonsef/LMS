@@ -486,7 +486,6 @@ namespace LMS.BusinessLogic.Services
                 {
                     return new ServiceResponseDTO<QuizResultDTO>
                     {
-                        Success = false,
                         Message = "Quiz not found."
                     };
                 }
@@ -499,6 +498,21 @@ namespace LMS.BusinessLogic.Services
 
                 if (attempt == null)
                 {
+                    // Check if max attempts reached before creating a new one implicitly
+                    var completedAttempts = await studentQuizSet
+                        .Where(sq => sq.StudentId == dto.StudentId && sq.QuizId == dto.QuizId && 
+                               (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
+                        .CountAsync();
+
+                    if (completedAttempts >= quiz.MaxAttempts)
+                    {
+                        return new ServiceResponseDTO<QuizResultDTO> 
+                        { 
+                            Success = false, 
+                            Message = $"You have reached the maximum number of attempts ({quiz.MaxAttempts}) for this quiz." 
+                        };
+                    }
+
                     // Create new attempt if missing (shouldn't happen normally)
                     attempt = new StudentQuiz
                     {
@@ -514,8 +528,6 @@ namespace LMS.BusinessLogic.Services
                 {
                      return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz already submitted." };
                 }
-
-                // Grade the quiz
                     int correctAnswers = 0;
                     int totalPoints = 0;
                     int earnedPoints = 0;
@@ -523,34 +535,63 @@ namespace LMS.BusinessLogic.Services
 
                     foreach (var question in quiz.Questions)
                     {
+                        // Determine if this is a short answer question (no options)
+                        bool isShortAnswer = string.IsNullOrEmpty(question.OptionA) && 
+                                           string.IsNullOrEmpty(question.OptionB) && 
+                                           string.IsNullOrEmpty(question.OptionC) && 
+                                           string.IsNullOrEmpty(question.OptionD);
+
                         totalPoints += question.Points;
                         var studentAnswer = dto.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
-                        bool isCorrect = studentAnswer != null && studentAnswer.SelectedAnswer == question.CorrectAnswer;
-                        if (isCorrect)
+                        
+                        bool isCorrect = false;
+                        string selectedAnswerText = "Not Answered";
+                        string correctAnswerText = question.CorrectAnswer.ToString();
+
+                        if (isShortAnswer)
                         {
-                            correctAnswers++;
-                            earnedPoints += question.Points;
+                            // Short answer questions require manual grading
+                            // Don't auto-grade, mark as pending review
+                            selectedAnswerText = "Pending Review";
+                            correctAnswerText = "Requires Manual Grading";
+                            // isCorrect stays false for now, instructor will grade later
+                        }
+                        else
+                        {
+                            // Auto-grade multiple choice and true/false questions
+                            isCorrect = studentAnswer != null && 
+                                       studentAnswer.SelectedAnswer.HasValue && 
+                                       studentAnswer.SelectedAnswer.Value == question.CorrectAnswer;
+                            
+                            if (isCorrect)
+                            {
+                                correctAnswers++;
+                                earnedPoints += question.Points;
+                            }
+
+                            selectedAnswerText = studentAnswer?.SelectedAnswer?.ToString() ?? "Not Answered";
                         }
 
                         questionResults.Add(new QuestionResultDTO
                         {
                             QuestionId = question.Id,
                             QuestionText = question.Text,
-                            SelectedAnswer = studentAnswer?.SelectedAnswer.ToString() ?? "Not Answered",
-                            CorrectAnswer = question.CorrectAnswer.ToString(),
+                            SelectedAnswer = selectedAnswerText,
+                            CorrectAnswer = correctAnswerText,
                             IsCorrect = isCorrect,
                             Points = isCorrect ? question.Points : 0
                         });
 
-                        // Save or update student answer
-                        if (studentAnswer != null)
+                        // Save or update student answer if provided (either selected option or text)
+                        if (studentAnswer != null && (studentAnswer.SelectedAnswer.HasValue || !string.IsNullOrEmpty(studentAnswer.ShortAnswerText)))
                         {
                             var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
                             var existingAnswer = await answerSet.FirstOrDefaultAsync(a => a.StudentId == dto.StudentId && a.QuestionId == question.Id);
                             
                             if (existingAnswer != null)
                             {
-                                existingAnswer.Answer = studentAnswer.SelectedAnswer;
+                                existingAnswer.Answer = studentAnswer.SelectedAnswer ?? Options.OptionA; // Default to OptionA if null (for short answer)
+                                existingAnswer.TextAnswer = studentAnswer.ShortAnswerText;
                                 existingAnswer.IsCorrect = isCorrect;
                             }
                             else
@@ -559,7 +600,8 @@ namespace LMS.BusinessLogic.Services
                                 {
                                     StudentId = dto.StudentId,
                                     QuestionId = question.Id,
-                                    Answer = studentAnswer.SelectedAnswer,
+                                    Answer = studentAnswer.SelectedAnswer ?? Options.OptionA, // Default to OptionA if null
+                                    TextAnswer = studentAnswer.ShortAnswerText,
                                     IsCorrect = isCorrect
                                 };
                                 await answerSet.AddAsync(newAnswer);
@@ -567,24 +609,53 @@ namespace LMS.BusinessLogic.Services
                         }
                     }
 
-                    // Calculate grade and percentage
-                    double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
-                    int grade = (int)Math.Round(percentage);
+                    // Check if there are any short answer questions that require manual grading
+                    bool hasShortAnswerQuestions = quiz.Questions.Any(q => 
+                        string.IsNullOrEmpty(q.OptionA) && 
+                        string.IsNullOrEmpty(q.OptionB) && 
+                        string.IsNullOrEmpty(q.OptionC) && 
+                        string.IsNullOrEmpty(q.OptionD));
 
-                    // Update attempt status
+                    double percentage = 0;
+                    int? grade = null;
+
+                    if (hasShortAnswerQuestions)
+                    {
+                        // Defer grading
+                        attempt.Grade = null;
+                        attempt.Status = QuizStatus.Completed; // Completed but not Graded
+                    }
+                    else
+                    {
+                        // Auto-grade
+                        percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
+                        grade = (int)Math.Round(percentage);
+                        
+                        attempt.Grade = grade;
+                        attempt.Status = QuizStatus.Graded;
+                    }
+
                     attempt.EndTime = DateTime.UtcNow;
-                    attempt.Grade = grade;
-                    attempt.Status = QuizStatus.Completed;
 
                     await _unitOfWork.SaveChangesAsync();
 
                 try
                 {
+                    string notificationMessage;
+                    if (hasShortAnswerQuestions)
+                    {
+                        notificationMessage = $"You have submitted '{quiz.Title}'. Your quiz is pending manual review by the instructor.";
+                    }
+                    else
+                    {
+                        notificationMessage = $"You scored {attempt.Grade}% on '{quiz.Title}'. You got {correctAnswers} out of {quiz.Questions.Count} questions correct.";
+                    }
+
                     await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
                     {
                         UserId = dto.StudentId,
                         Title = "Quiz Completed",
-                        Message = $"You scored {grade}% on '{quiz.Title}'. You got {correctAnswers} out of {quiz.Questions.Count} questions correct.",
+                        Message = notificationMessage,
                         Type = NotificationType.QuizResult
                     });
                 }
@@ -605,7 +676,8 @@ namespace LMS.BusinessLogic.Services
                     EarnedPoints = earnedPoints,
                     Percentage = percentage,
                     Grade = grade,
-                    Passed = grade >= quiz.PassingScore,
+                    Passed = grade.HasValue && grade.Value >= quiz.PassingScore,
+                    IsPendingGrading = grade == null,
                     QuestionResults = questionResults
                 };
 
@@ -763,12 +835,34 @@ namespace LMS.BusinessLogic.Services
                         earnedPoints += question.Points;
                     }
 
+                    // Determine if this is a short answer question
+                    bool isShortAnswer = string.IsNullOrEmpty(question.OptionA) && 
+                                       string.IsNullOrEmpty(question.OptionB) && 
+                                       string.IsNullOrEmpty(question.OptionC) && 
+                                       string.IsNullOrEmpty(question.OptionD);
+
+                    string selectedAnswerDisplay;
+                    string correctAnswerDisplay;
+
+                    if (isShortAnswer)
+                    {
+                        selectedAnswerDisplay = !string.IsNullOrEmpty(answer?.TextAnswer) 
+                            ? answer.TextAnswer 
+                            : "Not Answered";
+                        correctAnswerDisplay = "Requires Manual Grading";
+                    }
+                    else
+                    {
+                        selectedAnswerDisplay = answer != null ? answer.Answer.ToString() : "Not Answered";
+                        correctAnswerDisplay = question.CorrectAnswer.ToString();
+                    }
+
                     questionResults.Add(new QuestionResultDTO
                     {
                         QuestionId = question.Id,
                         QuestionText = question.Text,
-                        SelectedAnswer = answer?.Answer.ToString() ?? "Not Answered",
-                        CorrectAnswer = question.CorrectAnswer.ToString(),
+                        SelectedAnswer = selectedAnswerDisplay,
+                        CorrectAnswer = correctAnswerDisplay,
                         IsCorrect = isCorrect,
                         Points = isCorrect ? question.Points : 0
                     });
@@ -790,7 +884,8 @@ namespace LMS.BusinessLogic.Services
                         EarnedPoints = earnedPoints,
                         Percentage = percentage,
                         Grade = attempt.Grade,
-                        Passed = attempt.Grade >= quiz.PassingScore,
+                        Passed = attempt.Grade.HasValue && attempt.Grade >= quiz.PassingScore,
+                        IsPendingGrading = attempt.Grade == null,
                         QuestionResults = questionResults
                     },
                     Success = true
@@ -909,6 +1004,74 @@ namespace LMS.BusinessLogic.Services
                     Success = false,
                     Message = $"Error retrieving student quizzes: {ex.Message}"
                 };
+            }
+        }
+
+        public async Task<ServiceResponseDTO<bool>> GradeQuizAsync(ManualGradeDTO dto)
+        {
+            try
+            {
+                var attempt = await _unitOfWork.GetQueryable<StudentQuiz>()
+                    .FirstOrDefaultAsync(sq => sq.QuizId == dto.QuizId && sq.StudentId == dto.StudentId);
+
+                if (attempt == null)
+                    return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz attempt not found." };
+
+                var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
+                var questionSet = (DbSet<Question>)_unitOfWork.GetQueryable<Question>();
+
+                var quizQuestions = await questionSet.Where(q => q.QuizId == dto.QuizId).ToListAsync();
+                var studentAnswers = await answerSet
+                    .Where(a => a.StudentId == dto.StudentId && a.Question.QuizId == dto.QuizId)
+                    .ToListAsync();
+
+                // Update correctness based on instructor input
+                foreach (var grade in dto.Grades)
+                {
+                    var answer = studentAnswers.FirstOrDefault(a => a.QuestionId == grade.QuestionId);
+                    if (answer != null)
+                    {
+                        answer.IsCorrect = grade.IsCorrect;
+                    }
+                }
+
+                // Recalculate score
+                int earnedPoints = 0;
+                int totalPoints = quizQuestions.Sum(q => q.Points);
+
+                foreach (var question in quizQuestions)
+                {
+                    var answer = studentAnswers.FirstOrDefault(a => a.QuestionId == question.Id);
+                    if (answer != null && answer.IsCorrect)
+                    {
+                        earnedPoints += question.Points;
+                    }
+                }
+
+                double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
+                int finalGrade = (int)Math.Round(percentage);
+
+                // Update attempt
+                attempt.Grade = finalGrade;
+                attempt.Status = QuizStatus.Graded;
+                
+                await _unitOfWork.SaveChangesAsync();
+
+                // Notify student
+                var quiz = await GetRepo().FindByIdAsync(dto.QuizId);
+                await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
+                {
+                    UserId = dto.StudentId,
+                    Title = "Quiz Graded",
+                    Message = $"Your quiz '{quiz?.Title}' has been graded. You scored {finalGrade}%.",
+                    Type = NotificationType.QuizResult
+                });
+
+                return new ServiceResponseDTO<bool> { Success = true, Data = true, Message = "Quiz graded successfully." };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<bool> { Success = false, Message = $"Error grading quiz: {ex.Message}" };
             }
         }
     }

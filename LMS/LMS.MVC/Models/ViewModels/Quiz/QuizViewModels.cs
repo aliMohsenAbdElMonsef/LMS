@@ -83,8 +83,10 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public string QuizId { get; set; } = string.Empty;
         public string QuizTitle { get; set; } = string.Empty;
         public string CourseId { get; set; } = string.Empty;
-        public int Grade { get; set; }
+        public int? Grade { get; set; }
+        public double Percentage { get; set; }
         public bool Passed { get; set; }
+        public bool IsPendingGrading { get; set; }
         public int TotalQuestions { get; set; }
         public int CorrectAnswers { get; set; }
         public int TotalPoints { get; set; }

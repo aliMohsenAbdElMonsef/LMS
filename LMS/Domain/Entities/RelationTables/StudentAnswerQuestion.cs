@@ -16,6 +16,7 @@ namespace Domain.Entities.RelationTables
         public string QuestionId { get; set; } = string.Empty;
         public Question Question { get; set; }
         public Options Answer { get; set; }
+        public string? TextAnswer { get; set; }
         public bool IsCorrect { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 @model LMS.MVC.Models.ViewModels.Quiz.QuizResultViewModel
 @{
     ViewData["Title"] = "Quiz Results";
-    var percentage = Model.Grade;
+    var percentage = Model.Grade ?? 0;
     var isPassed = Model.Passed;
     var strokeDashoffset = 565 - (565 * percentage / 100);
 }
@@ -15,32 +15,43 @@
                     <div class="result-icon mb-4">
                         <i class="bi bi-trophy-fill text-warning" style="font-size: 5rem;"></i>
                     </div>
-                    <h2 class="mb-3">Quiz Completed!</h2>
-                    <div class="score-display mb-4">
-                        <div class="score-circle">
-                            <svg width="200" height="200">
-                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12"/>
-                                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gradient)" stroke-width="12" 
-                                        stroke-dasharray="565" stroke-dashoffset="@strokeDashoffset" stroke-linecap="round"
-                                        transform="rotate(-90 100 100)"/>
-                                <defs>
-                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <div class="score-text">
-                                <h1 class="mb-0">@percentage%</h1>
-                                <p class="text-muted mb-0">Score</p>
+                    @if (Model.IsPendingGrading)
+                    {
+                        <h2 class="mb-3">Quiz Submitted!</h2>
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Your quiz includes questions that require manual grading. Your final score will be available after the instructor reviews your answers.
+                        </div>
+                    }
+                    else
+                    {
+                        <h2 class="mb-3">Quiz Completed!</h2>
+                        <div class="score-display mb-4">
+                            <div class="score-circle">
+                                <svg width="200" height="200">
+                                    <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12"/>
+                                    <circle cx="100" cy="100" r="90" fill="none" stroke="url(#gradient)" stroke-width="12" 
+                                            stroke-dasharray="565" stroke-dashoffset="@strokeDashoffset" stroke-linecap="round"
+                                            transform="rotate(-90 100 100)"/>
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="score-text">
+                                    <h1 class="mb-0">@percentage%</h1>
+                                    <p class="text-muted mb-0">Score</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="result-status mb-4">
-                        <span class="badge @(isPassed ? "bg-success" : "bg-danger")" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
-                            <i class="bi @(isPassed ? "bi-check-circle" : "bi-x-circle")"></i> @(isPassed ? "Passed" : "Failed")
-                        </span>
-                    </div>
+                        <div class="result-status mb-4">
+                            <span class="badge @(isPassed ? "bg-success" : "bg-danger")" style="font-size: 1.25rem; padding: 0.75rem 1.5rem;">
+                                <i class="bi @(isPassed ? "bi-check-circle" : "bi-x-circle")"></i> @(isPassed ? "Passed" : "Failed")
+                            </span>
+                        </div>
+                    }
                     <p class="text-muted">@Model.QuizTitle</p>
                 </div>
             </div>
@@ -52,16 +63,16 @@
                         <div class="card-body">
                             <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
                             <h3 class="mt-2 mb-0">@Model.CorrectAnswers</h3>
-                            <small class="text-muted">Correct</small>
+                            <small class="text-muted">Correct (Auto-graded)</small>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 animate-fade-in-up animate-delay-100">
                     <div class="card stat-card text-center">
                         <div class="card-body">
-                            <i class="bi bi-x-circle text-danger" style="font-size: 2rem;"></i>
-                            <h3 class="mt-2 mb-0">@(Model.TotalQuestions - Model.CorrectAnswers)</h3>
-                            <small class="text-muted">Incorrect</small>
+                            <i class="bi bi-question-circle text-info" style="font-size: 2rem;"></i>
+                            <h3 class="mt-2 mb-0">@Model.TotalQuestions</h3>
+                            <small class="text-muted">Total Questions</small>
                         </div>
                     </div>
                 </div>
@@ -69,7 +80,7 @@
                     <div class="card stat-card text-center">
                         <div class="card-body">
                             <i class="bi bi-award text-warning" style="font-size: 2rem;"></i>
-                            <h3 class="mt-2 mb-0">@percentage%</h3>
+                            <h3 class="mt-2 mb-0">@(Model.IsPendingGrading ? "Pending" : percentage + "%")</h3>
                             <small class="text-muted">Grade</small>
                         </div>
                     </div>

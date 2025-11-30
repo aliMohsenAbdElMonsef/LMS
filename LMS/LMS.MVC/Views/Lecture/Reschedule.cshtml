@@ -31,7 +31,7 @@
 
                 <div class="mb-3">
                     <label asp-for="NewStartTime" class="form-label">New Start Time</label>
-                    <input asp-for="NewStartTime" class="form-control" type="time" />
+                    <input asp-for="NewStartTime" class="form-control" type="time" value="@Model.NewStartTime.ToString(@"hh\:mm")" />
                     <span asp-validation-for="NewStartTime" class="text-danger"></span>
                 </div>
 

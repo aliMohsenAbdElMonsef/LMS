@@ -62,32 +62,74 @@
                             
                             <div class="answer-options">
                                 <input type="hidden" name="Answers[@i].QuestionId" value="@question.Id" />
-                                <div class="form-check answer-option">
-                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
-                                    <label class="form-check-label" for="q@(i)a">
-                                        @question.OptionA
-                                    </label>
-                                </div>
-                                <div class="form-check answer-option">
-                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)b" value="1">
-                                    <label class="form-check-label" for="q@(i)b">
-                                        @question.OptionB
-                                    </label>
-                                </div>
-                                <div class="form-check answer-option">
-                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)c" value="2">
-                                    <label class="form-check-label" for="q@(i)c">
-                                        @question.OptionC
-                                    </label>
-                                </div>
-                                <div class="form-check answer-option">
-                                    <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)d" value="3">
-                                    <label class="form-check-label" for="q@(i)d">
-                                        @question.OptionD
-                                    </label>
-                                </div>
+                                
+                                @{
+                                    // Determine question type based on available options
+                                    var hasOptionC = !string.IsNullOrEmpty(question.OptionC);
+                                    var hasOptionD = !string.IsNullOrEmpty(question.OptionD);
+                                    var hasOptionA = !string.IsNullOrEmpty(question.OptionA);
+                                    var hasOptionB = !string.IsNullOrEmpty(question.OptionB);
+                                    
+                                    var isShortAnswer = !hasOptionA && !hasOptionB && !hasOptionC && !hasOptionD;
+                                    var isTrueFalse = hasOptionA && hasOptionB && !hasOptionC && !hasOptionD;
+                                    var isMultipleChoice = hasOptionA && hasOptionB && hasOptionC && hasOptionD;
+                                }
+
+                                @if (isShortAnswer)
+                                {
+                                    <!-- Short Answer Question -->
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="Answers[@i].ShortAnswerText" rows="3" placeholder="Type your answer here..."></textarea>
+                                        <small class="text-muted">This is a short answer question. Your answer will be manually graded by the instructor.</small>
+                                    </div>
+                                    <!-- Hidden field to indicate no option selected for short answer -->
+                                    <input type="hidden" name="Answers[@i].SelectedAnswer" value="" />
+                                }
+                                else if (isTrueFalse)
+                                {
+                                    <!-- True/False Question -->
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
+                                        <label class="form-check-label" for="q@(i)a">
+                                            @question.OptionA
+                                        </label>
+                                    </div>
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)b" value="1">
+                                        <label class="form-check-label" for="q@(i)b">
+                                            @question.OptionB
+                                        </label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <!-- Multiple Choice Question -->
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
+                                        <label class="form-check-label" for="q@(i)a">
+                                            @question.OptionA
+                                        </label>
+                                    </div>
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)b" value="1">
+                                        <label class="form-check-label" for="q@(i)b">
+                                            @question.OptionB
+                                        </label>
+                                    </div>
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)c" value="2">
+                                        <label class="form-check-label" for="q@(i)c">
+                                            @question.OptionC
+                                        </label>
+                                    </div>
+                                    <div class="form-check answer-option">
+                                        <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)d" value="3">
+                                        <label class="form-check-label" for="q@(i)d">
+                                            @question.OptionD
+                                        </label>
+                                    </div>
+                                }
                             </div>
-                            <input type="hidden" name="Answers[@i].QuestionId" value="@question.Id" />
                         </div>
                     </div>
                 }
@@ -105,7 +147,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="return confirm('Are you sure you want to exit? Your progress will be lost.')">
                                     <i class="bi bi-x-circle"></i> Exit
                                 </button>
-                                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to submit? You cannot change your answers after submission.')">
+                                <button type="submit" class="btn btn-primary" onclick="return validateQuizSubmission()">
                                     <i class="bi bi-check-circle"></i> Submit Quiz
                                 </button>
                             </div>
@@ -194,6 +236,35 @@
         document.getElementById('quizForm').addEventListener('submit', () => {
             localStorage.removeItem('quiz_@Model.Id');
         });
+        
+        // Validation function for quiz submission
+        function validateQuizSubmission() {
+            // Check for unanswered questions
+            let unansweredCount = 0;
+            questions.forEach((q, index) => {
+                const questionInputs = q.querySelectorAll('input[type="radio"]');
+                const shortAnswerTextarea = q.querySelector('textarea[name*="ShortAnswerText"]');
+                
+                // Check if it's a short answer question
+                if (shortAnswerTextarea) {
+                    // Short answer is considered unanswered if empty or only whitespace
+                    if (!shortAnswerTextarea.value || shortAnswerTextarea.value.trim() === '') {
+                        unansweredCount++;
+                    }
+                } else {
+                    // For radio button questions (True/False and Multiple Choice)
+                    if (!Array.from(questionInputs).some(input => input.checked)) {
+                        unansweredCount++;
+                    }
+                }
+            });
+            
+            if (unansweredCount > 0) {
+                return confirm(`You have ${unansweredCount} unanswered question(s). These will be marked as incorrect. Are you sure you want to submit?`);
+            }
+            
+            return confirm('Are you sure you want to submit? You cannot change your answers after submission.');
+        }
     </script>
 }
 

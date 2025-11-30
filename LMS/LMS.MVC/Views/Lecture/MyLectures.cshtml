@@ -47,23 +47,29 @@
                                         
                                         @if (!string.IsNullOrEmpty(lecture.ZoomLink))
                                         {
-                                            <a href="@Url.Action("Join", "Lecture", new { id = lecture.Id })" class="btn btn-success btn-sm">
-                                                <i class="bi bi-camera-video"></i> Join Live
-                                            </a>
+                                            var lectureEnd = (lecture.LectureDate.Date + lecture.StartTime).AddMinutes(lecture.DurationMinutes);
+                                            if (DateTime.Now <= lectureEnd)
+                                            {
+                                                <a href="@lecture.ZoomLink" class="btn btn-success btn-sm" target="_blank">
+                                                    <i class="bi bi-camera-video"></i> Join Live
+                                                </a>
+                                            }
                                         }
+
+
 
                                         @if (User.IsInRole("Instructor") || User.IsInRole("Admin"))
                                         {
                                             var lectureDateTime = lecture.LectureDate.Date + lecture.StartTime;
-                                            var now = DateTime.UtcNow;
+                                            var now = DateTime.Now;
                                             var tenMinutesBeforeLecture = lectureDateTime.AddMinutes(-10);
                                             var canLaunch = now >= tenMinutesBeforeLecture && now <= lectureDateTime.AddHours(2);
                                             
                                             if (canLaunch)
                                             {
-                                                <a href="@Url.Action("Launch", "Lecture", new { id = lecture.Id })" class="btn btn-warning btn-sm">
+                                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#launchModal" data-lecture-id="@lecture.Id">
                                                     <i class="bi bi-broadcast"></i> Launch
-                                                </a>
+                                                </button>
                                             }
                                         }
                                     </div>
@@ -86,6 +92,56 @@
         }
     </div>
 </div>
+
+<!-- Launch Modal -->
+<div class="modal fade" id="launchModal" tabindex="-1" aria-labelledby="launchModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="launchModalLabel">Launch Lecture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Launch" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="lectureId" name="id" />
+                    <div class="mb-3">
+                        <label for="zoomLink" class="form-label">Zoom Meeting Link</label>
+                        <input type="url" class="form-control" id="zoomLink" name="zoomLink" required placeholder="https://zoom.us/j/..." />
+                        <div class="form-text">Paste the Zoom meeting link here for students to join.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Launch Lecture</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle Modal Data
+        var launchModal = document.getElementById('launchModal');
+        if (launchModal) {
+            launchModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var lectureId = button.getAttribute('data-lecture-id');
+                var modalInput = launchModal.querySelector('#lectureId');
+                modalInput.value = lectureId;
+            });
+        }
+
+        // Auto Refresh Logic
+        var isInstructorOrAdmin = @((User.IsInRole("Instructor") || User.IsInRole("Admin")).ToString().ToLower());
+        var refreshInterval = isInstructorOrAdmin ? 90000 : 60000; // 90s for instructor, 60s for student
+
+        setInterval(function () {
+            location.reload();
+        }, refreshInterval);
+    });
+
+</script>
 
 <style>
 .lecture-card {

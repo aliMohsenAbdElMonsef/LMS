@@ -19,8 +19,9 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         [Required]
         public string QuestionId { get; set; }
 
-        [Required]
-        public Options SelectedAnswer { get; set; }
+        // Nullable to allow unanswered questions (null instead of defaulting to OptionA)
+        public Options? SelectedAnswer { get; set; }
+        public string? ShortAnswerText { get; set; }
     }
 
     public class QuizResultDTO
@@ -36,6 +37,7 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         public double Percentage { get; set; }
         public int? Grade { get; set; }
         public bool Passed { get; set; }
+        public bool IsPendingGrading { get; set; }
         public List<QuestionResultDTO> QuestionResults { get; set; } = new List<QuestionResultDTO>();
     }
 

@@ -269,20 +269,27 @@ namespace LMS.MVC.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Instructor,Admin")]
-        public async Task<IActionResult> Launch(LaunchLectureViewModel model)
+        public async Task<IActionResult> Launch(string id, string zoomLink)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(zoomLink))
+            {
+                TempData["Error"] = "Lecture ID and Zoom Link are required.";
+                return RedirectToAction("MyLectures");
+            }
             
-            var result = await _services.LectureService.LaunchLectureAsync(model.LectureId, model.ZoomLink);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+            var result = await _services.LectureService.LaunchLectureAsync(id, zoomLink);
+            
             if (result.Success)
             {
                 TempData["Success"] = "Lecture launched successfully. Students have been notified.";
-                // Redirect to Course Details using the CourseId from the model
-                return RedirectToAction("Details", "Course", new { id = model.CourseId });
+                return RedirectToAction("MyLectures");
             }
 
-            ModelState.AddModelError("", result.Message);
-            return View(model);
+            TempData["Error"] = result.Message;
+            return RedirectToAction("MyLectures");
         }
 
         [Authorize(Roles = "Student,Instructor,Admin")]
@@ -305,7 +312,7 @@ namespace LMS.MVC.Controllers
             if (User.IsInRole("Student"))
             {
                 var lectureDateTime = result.Data.LectureDate.Date + result.Data.StartTime;
-                var now = DateTime.UtcNow;
+                var now = DateTime.Now;
                 // Allow joining 15 minutes before start until 2 hours after start
                 if (now < lectureDateTime.AddMinutes(-15) || now > lectureDateTime.AddHours(2))
                 {

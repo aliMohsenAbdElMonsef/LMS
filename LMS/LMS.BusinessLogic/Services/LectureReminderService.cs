@@ -22,7 +22,7 @@ namespace LMS.BusinessLogic.Services
         public async Task SendLectureRemindersAsync()
         {
             // Find lectures starting in 10-15 minutes
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var reminderWindowStart = now.AddMinutes(10);
             var reminderWindowEnd = now.AddMinutes(15);
 

@@ -2,6 +2,8 @@ using LMS.MVC.Services.Contracts.Services;
 using LMS.MVC.Services.Response;
 using LMS.MVC.Models.ViewModels.Quiz;
 using System.Net.Http.Json;
+using LMS.BusinessLogic.DTOs.Quiz;
+using LMS.BusinessLogic.DTOs.Responses;
 
 namespace LMS.MVC.Services.Services
 {
@@ -152,6 +154,15 @@ namespace LMS.MVC.Services.Services
             });
         }
 
+        public async Task<SuccessServiceResult<QuizResultViewModel>> GetStudentQuizResultAsync(string quizId, string studentId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                var result = await GetAsync<SuccessServiceResult<QuizResultViewModel>>($"api/quizzes/results/{quizId}/{studentId}");
+                return result;
+            });
+        }
+
         public async Task<SuccessServiceResult<LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO>> GetQuizStatusAsync(string quizId)
         {
             return await ExecuteApiCallAsync(async () =>
@@ -199,6 +210,26 @@ namespace LMS.MVC.Services.Services
                 var result = await GetAsync<SuccessServiceResult<IEnumerable<QuizItemViewModel>>>("api/quizzes/my-quizzes");
                 return result;
             });
+        }
+        public async Task<SuccessServiceResult<bool>> GradeQuizAsync(ManualGradeDTO dto)
+        {
+            var response = await _client.PostAsJsonAsync("api/quizzes/grade", dto);
+            if (!response.IsSuccessStatusCode)
+            {
+                return new SuccessServiceResult<bool>
+                {
+                    Success = false,
+                    Message = "Failed to grade quiz."
+                };
+            }
+
+            var apiResult = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<bool>>();
+            return new SuccessServiceResult<bool>
+            {
+                Success = apiResult?.Success ?? false,
+                Data = apiResult?.Data ?? false,
+                Message = apiResult?.Message ?? "Failed to grade quiz."
+            };
         }
     }
 }
