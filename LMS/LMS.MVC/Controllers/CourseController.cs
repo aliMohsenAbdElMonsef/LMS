@@ -226,7 +226,7 @@ namespace LMS.MVC.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Instructor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var model = new CreateCourseViewModel();
@@ -248,18 +248,6 @@ namespace LMS.MVC.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin,Instructor")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCourseViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                // Repopulate categories
-                var categories = await _services.CategoryService.GetAllCategories();
-                if (categories != null)
-                {
-                    model.AvailableCategories = categories.Select(c => new CategoryOption
                     {
                         Id = c.Id,
                         Name = c.Name
