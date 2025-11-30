@@ -1,5 +1,6 @@
 using LMS.MVC.Models.ViewModels.Profile;
 using LMS.MVC.Services.Contracts;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
