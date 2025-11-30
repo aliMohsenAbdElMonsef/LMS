@@ -1720,3 +1720,49 @@ h6.text-primary,
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, var(--primary-dark), var(--primary));
 }
+
+/* ============================
+   Password Toggle Button
+   ============================ */
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper .form-control {
+    padding-right: 3rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: transparent;
+    border: none;
+    padding: 0 1rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.password-toggle-btn:hover {
+    color: var(--primary);
+}
+
+.password-toggle-btn:focus {
+    outline: none;
+    color: var(--primary);
+}
+
+.password-toggle-btn i {
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
