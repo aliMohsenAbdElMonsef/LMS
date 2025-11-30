@@ -40,21 +40,6 @@
                     </p>
                 </div>
             </div>
-            
-            <!-- Right Side - Form -->
-            <div class="auth-form-section">
-                <div class="auth-form-header">
-                    <h1 class="auth-form-title">Sign In</h1>
-                    <p class="auth-form-subtitle">Enter your credentials to access your account</p>
-                </div>
-                
-                <form asp-action="Login" asp-controller="Account" method="post" class="auth-form">
-                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
-                    
-                    <div class="form-group mb-3">
-                        <label asp-for="EmailOrUserName" class="form-label">Email or Username</label>
-                        <input asp-for="EmailOrUserName" 
-                               type="text" 
                                class="form-control" 
                                placeholder="Enter your email or username" />
                         <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
