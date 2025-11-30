@@ -226,7 +226,7 @@ namespace LMS.MVC.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Create()
         {
             var model = new CreateCourseViewModel();
@@ -248,6 +248,13 @@ namespace LMS.MVC.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin,Instructor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCourseViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(model.AdminId) && !string.IsNullOrEmpty(userId))
                     {
                         Id = c.Id,
                         Name = c.Name
@@ -261,7 +268,6 @@ namespace LMS.MVC.Controllers
             }
 
             // Set the AdminId to the current user if not set (though it might be hidden in form)
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(model.AdminId) && !string.IsNullOrEmpty(userId))
             {
                 model.AdminId = userId;
