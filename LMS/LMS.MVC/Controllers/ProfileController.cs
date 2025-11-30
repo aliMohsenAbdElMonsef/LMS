@@ -118,6 +118,9 @@ namespace LMS.MVC.Controllers
                 
                 if (result.Success)
                 {
+                    // Refresh authentication cookie with updated username
+                    await RefreshAuthenticationCookie(userId, model.UserName);
+                    
                     TempData["Success"] = "Profile updated successfully!";
                     return RedirectToAction("Index");
                 }
@@ -129,6 +132,50 @@ namespace LMS.MVC.Controllers
             {
                 TempData["Error"] = $"Error updating profile: {ex.Message}";
                 return View(model);
+            }
+        }
+
+        // Helper method to refresh authentication cookie
+        private async Task RefreshAuthenticationCookie(string userId, string newUserName)
+        {
+            try
+            {
+                // Get current claims
+                var currentClaims = User.Claims.ToList();
+                
+                // Create new claims list with updated username
+                var claims = new List<System.Security.Claims.Claim>
+                {
+                    new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, userId),
+                    new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, newUserName ?? string.Empty),
+                    new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, 
+                        currentClaims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value ?? string.Empty)
+                };
+
+                // Add all role claims
+                var roleClaims = currentClaims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role);
+                claims.AddRange(roleClaims);
+
+                var claimsIdentity = new System.Security.Claims.ClaimsIdentity(
+                    claims, 
+                    Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
+                {
+                    IsPersistent = User.Identity.AuthenticationType == Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
+                    AllowRefresh = true
+                };
+
+                // Sign in again with updated claims
+                await HttpContext.SignInAsync(
+                    Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
+                    new System.Security.Claims.ClaimsPrincipal(claimsIdentity),
+                    authProperties
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error refreshing authentication cookie: {ex.Message}");
             }
         }
 
