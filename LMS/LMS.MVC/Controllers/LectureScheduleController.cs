@@ -43,9 +43,7 @@ namespace LMS.MVC.Controllers
         public async Task<IActionResult> Create(string courseId)
         {
             var course = await _services.CourseService.GetCourseDetails(Guid.Parse(courseId));
-            // Fetch instructors (Admins + Instructors)
-            var instructors = await _services.UserService.GetInstructorsAsync(); // Assuming this method exists or similar
-            ViewBag.Instructors = instructors.Data;
+            ViewBag.Instructors = course.Data?.Instructors ?? new List<LMS.BusinessLogic.DTOs.Course.InstructorInformationDTO>();
 
             var model = new CreateLectureScheduleViewModel
             {

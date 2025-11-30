@@ -111,5 +111,18 @@ namespace LMS.MVC.Services.Services
                 };
             }
         }
+        public async Task<UserCountsViewModel> GetUserCounts()
+        {
+            try
+            {
+                var response = await _client.GetAsync("api/User/counts");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<UserCountsViewModel>() ?? new UserCountsViewModel();
+            }
+            catch (Exception)
+            {
+                return new UserCountsViewModel();
+            }
+        }
     }
 }

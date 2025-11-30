@@ -221,5 +221,41 @@ namespace LMS.MVC.Services.Services
             var result = await response.Content.ReadFromJsonAsync<ServiceResponseDTO<List<ReadEnrollmentViewModel>>>();
             return result!;
         }
+
+        public async Task<bool> IsApprovedEnrollmentAsync(string userId, string courseId)
+        {
+            var token = await GetValidTokenAsync();
+            if (string.IsNullOrEmpty(token))
+                return false;
+
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            try
+            {
+                var role = await GetUserRoleAsync(userId);
+                var apiUrl = role == "Instructor"
+                    ? $"{_rootUrl}/api/enrollment/instructor/get"
+                    : $"{_rootUrl}/api/enrollment/student/get";
+
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                query["userId"] = userId;
+                query["courseId"] = courseId;
+
+                var response = await _client.GetAsync($"{apiUrl}?{query}");
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ServiceResponseDTO<string>>(content,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                return result?.Data == "Approved";
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

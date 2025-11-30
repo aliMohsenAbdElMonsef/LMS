@@ -25,7 +25,7 @@ namespace LMS.API
 
             builder.Services.AddDataAcessServices(builder.Configuration).AddBusinessLogicServices(builder.Configuration);
             builder.Services.AddHostedService<LMS.API.BackgroundServices.LectureReminderBackgroundService>();
-
+            builder.Services.AddScoped<IFileUploadService, Services.FileUploadService>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowMvc",

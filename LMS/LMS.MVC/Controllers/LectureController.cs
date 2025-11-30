@@ -24,7 +24,7 @@ namespace LMS.MVC.Controllers
                 var result = await _services.LectureService.GetLecturesByCourseAsync(courseId);
                 if (!result.Success)
                 {
-                    TempData["Error"] = $"Error loading lectures: {result.Message}";
+                    TempData["Error"] = result.Message;
                     return RedirectToAction("Index", "Course");
                 }
 
@@ -33,7 +33,7 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error loading lectures: {ex.Message}";
+                TempData["Error"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction("Index", "Course");
             }
             }
@@ -51,7 +51,7 @@ namespace LMS.MVC.Controllers
                 var result = await _services.LectureService.GetMyLecturesAsync(userId, userRole);
                 if (!result.Success)
                 {
-                    TempData["Error"] = $"Error loading lectures: {result.Message}";
+                    TempData["Error"] = result.Message;
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -59,7 +59,7 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error loading lectures: {ex.Message}";
+                TempData["Error"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction("Index", "Home");
             }
         }

@@ -134,7 +134,7 @@
             <!-- Thumbnail -->
             <div class="col-md-12">
                 <label asp-for="ThumbnailFile" class="form-label"><i class="bi bi-image"></i> Course Thumbnail</label>
-                <input asp-for="ThumbnailFile" type="file" class="form-control" />
+                <input asp-for="ThumbnailFile" type="file" class="form-control" accept="image/*" />
                 <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
             </div>
 

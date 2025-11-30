@@ -15,6 +15,13 @@ namespace LMS.MVC.Controllers
             _services = services;
         }
 
+        private async Task<bool> CheckEnrollmentAccess(string courseId)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return false;
+            return await _services.EnrollmentService.IsApprovedEnrollmentAsync(userId, courseId);
+        }
+
         // GET: Quiz/Index
         [HttpGet]
         public async Task<IActionResult> Index(string courseId)

@@ -59,13 +59,6 @@
     }
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Error"]
-    </div>
-}
-
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-info text-center" role="alert">

@@ -1,9 +1,7 @@
-﻿@{
+﻿@model LMS.MVC.Models.ViewModels.Home.HomeViewModel
+@{
     ViewData["Title"] = "Home - Learn & Grow";
 }
-
-
-    
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -19,15 +17,15 @@
                     </div>
                     <div class="hero-stats mt-4">
                         <div class="stat-item">
-                            <span class="stat-number">10,000+</span>
+                            <span class="stat-number">@Model.TotalStudents+</span>
                             <span class="stat-label">Students</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">500+</span>
+                            <span class="stat-number">@Model.TotalCourses+</span>
                             <span class="stat-label">Courses</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">50+</span>
+                            <span class="stat-number">@Model.TotalInstructors+</span>
                             <span class="stat-label">Expert Instructors</span>
                         </div>
                     </div>
@@ -50,84 +48,22 @@
             <p class="section-subtitle">Discover courses across various domains</p>
         </div>
         <div class="row g-4">
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3 class="category-title">Programming</h3>
-                    <p class="category-count">150+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3 class="category-title">Design</h3>
-                    <p class="category-count">120+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
+            @foreach (var category in Model.Categories)
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="category-card" onclick="redirectToLogin()">
+                        <div class="category-icon">
+                            <i class="fas fa-folder"></i> <!-- Default icon, consider adding Icon property to Category -->
+                        </div>
+                        <h3 class="category-title">@category.Name</h3>
+                        <p class="category-count">@category.CoursesCount Courses</p>
+                        <div class="category-overlay">
+                            <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                            <p class="overlay-text">Sign in to access</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="category-title">Business</h3>
-                    <p class="category-count">100+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3 class="category-title">Data Science</h3>
-                    <p class="category-count">80+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3 class="category-title">Mobile Development</h3>
-                    <p class="category-count">70+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="category-card" onclick="redirectToLogin()">
-                    <div class="category-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <h3 class="category-title">Photography</h3>
-                    <p class="category-count">60+ Courses</p>
-                    <div class="category-overlay">
-                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text">Sign in to access</p>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
@@ -140,135 +76,45 @@
             <p class="section-subtitle">Start learning with our most popular courses</p>
         </div>
         <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-webdev.jpg" class="card-img-top course-thumbnail" alt="Web Development">
-                    <div class="course-badge">Bestseller</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Complete Web Development Bootcamp</h5>
-                        <p class="course-description">Master HTML, CSS, JavaScript, React, Node.js and more in this comprehensive bootcamp.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> John Smith</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.8 (2,345)</span>
+            @foreach (var course in Model.PopularCourses)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="course-card card h-100" onclick="redirectToLogin()">
+                        <img src="@(string.IsNullOrEmpty(course.ThumbnailPath) ? "/images/default-course.jpg" : course.ThumbnailPath)" class="card-img-top course-thumbnail" alt="@course.Name">
+                        @if (course.IsFree)
+                        {
+                            <div class="course-badge badge-free-course">Free</div>
+                        }
+                        else
+                        {
+                            <div class="course-badge">Bestseller</div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@course.Name</h5>
+                            <p class="course-description">@course.Description</p>
+                            <div class="course-meta mb-3">
+                                <span class="me-3"><i class="fas fa-user"></i> @course.AdminName</span> <!-- Assuming AdminName is Instructor Name -->
+                                <span><i class="fas fa-star text-warning"></i> @course.AverageRating.ToString("0.0") (@course.EnrolledStudentsCount)</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                @if (course.IsFree)
+                                {
+                                    <span class="badge badge-free">Free</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-price">$@course.Price</span>
+                                }
+                                <span class="badge badge-language">@course.Language</span>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-price">$49.99</span>
-                            <span class="badge badge-language">English</span>
+                        <div class="card-overlay">
+                            <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
+                            <p class="overlay-text-large">Sign in to enroll</p>
                         </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-python.jpg" class="card-img-top course-thumbnail" alt="Python Programming">
-                    <div class="course-badge badge-free-course">Free</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Python for Beginners</h5>
-                        <p class="course-description">Learn Python programming from scratch. Perfect for beginners with no prior coding experience.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> Sarah Johnson</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.9 (3,210)</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-free">Free</span>
-                            <span class="badge badge-language">English</span>
-                        </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-uiux.jpg" class="card-img-top course-thumbnail" alt="UI/UX Design">
-                    <div class="course-badge">Trending</div>
-                    <div class="card-body">
-                        <h5 class="card-title">UI/UX Design Masterclass</h5>
-                        <p class="course-description">Create stunning user interfaces and exceptional user experiences with industry-standard tools.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> Mike Chen</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.7 (1,890)</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-price">$39.99</span>
-                            <span class="badge badge-language">English</span>
-                        </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-dataanalysis.jpg" class="card-img-top course-thumbnail" alt="Data Analysis">
-                    <div class="card-body">
-                        <h5 class="card-title">Data Analysis with Excel & SQL</h5>
-                        <p class="course-description">Become a data analyst by mastering Excel, SQL, and data visualization techniques.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> Emily Davis</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.6 (1,456)</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-price">$44.99</span>
-                            <span class="badge badge-language">English</span>
-                        </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-mobile.jpg" class="card-img-top course-thumbnail" alt="Mobile App Development">
-                    <div class="card-body">
-                        <h5 class="card-title">iOS & Android App Development</h5>
-                        <p class="course-description">Build professional mobile applications for both iOS and Android platforms using React Native.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> David Park</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.8 (2,103)</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-price">$59.99</span>
-                            <span class="badge badge-language">English</span>
-                        </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="course-card card h-100" onclick="redirectToLogin()">
-                    <img src="~/images/course-marketing.jpg" class="card-img-top course-thumbnail" alt="Digital Marketing">
-                    <div class="card-body">
-                        <h5 class="card-title">Digital Marketing Essentials</h5>
-                        <p class="course-description">Learn SEO, social media marketing, content marketing, and analytics to grow your business online.</p>
-                        <div class="course-meta mb-3">
-                            <span class="me-3"><i class="fas fa-user"></i> Lisa Anderson</span>
-                            <span><i class="fas fa-star text-warning"></i> 4.7 (1,678)</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-price">$34.99</span>
-                            <span class="badge badge-language">English</span>
-                        </div>
-                    </div>
-                    <div class="card-overlay">
-                        <span class="lock-icon-large"><i class="fas fa-lock"></i></span>
-                        <p class="overlay-text-large">Sign in to enroll</p>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
         <div class="text-center mt-5">
             <a href="/Account/Register" class="btn btn-primary btn-lg">Sign Up to View All Courses</a>

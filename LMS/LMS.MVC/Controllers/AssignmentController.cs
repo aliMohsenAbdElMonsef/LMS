@@ -20,6 +20,12 @@ namespace LMS.MVC.Controllers
             _tokenService = tokenService;
         }
 
+        private async Task<bool> CheckEnrollmentAccess(string courseId)
+        {
+            var userId = _tokenService.GetUserId();
+            return await _services.EnrollmentService.IsApprovedEnrollmentAsync(userId, courseId);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Create(string courseId)
@@ -98,6 +104,18 @@ namespace LMS.MVC.Controllers
             var assignment = await _services.AssignmentService.GetAssignmentById(id);
             if (assignment == null)
                 return NotFound();
+
+            // Check enrollment status for non-admin users
+            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (userRole != "Admin")
+            {
+                var hasAccess = await CheckEnrollmentAccess(assignment.CourseId);
+                if (!hasAccess)
+                {
+                    TempData["ErrorMessage"] = "You must have an approved enrollment to access this assignment.";
+                    return RedirectToAction("Index", "Course");
+                }
+            }
 
             return View(assignment);
         }
@@ -184,6 +202,18 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Submit(string id)
         {
+            var assignment = await _services.AssignmentService.GetAssignmentById(id);
+            if (assignment == null)
+                return NotFound();
+
+            // Check enrollment status
+            var hasAccess = await CheckEnrollmentAccess(assignment.CourseId);
+            if (!hasAccess)
+            {
+                TempData["ErrorMessage"] = "You must have an approved enrollment to submit this assignment.";
+                return RedirectToAction("Index", "Course");
+            }
+
             var studentId = _tokenService.GetUserId();
             var submission = await _services.AssignmentService.GetStudentAssignment(id, studentId);
 
@@ -193,8 +223,7 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction("Details", new { id });
             }
 
-            var assignment = await _services.AssignmentService.GetAssignmentById(id);
-            if (assignment != null && assignment.DueDate < DateTime.Now)
+            if (assignment.DueDate < DateTime.Now)
             {
                 TempData["ErrorMessage"] = "This assignment is overdue and cannot be submitted.";
                 return RedirectToAction("Details", new { id });
@@ -251,6 +280,18 @@ namespace LMS.MVC.Controllers
                 {
                     TempData["ErrorMessage"] = "File not found.";
                     return RedirectToAction("Details", new { id });
+                }
+
+                // Check enrollment status for non-admin users
+                var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                if (userRole != "Admin")
+                {
+                    var hasAccess = await CheckEnrollmentAccess(assignment.CourseId);
+                    if (!hasAccess)
+                    {
+                        TempData["ErrorMessage"] = "You must have an approved enrollment to download this file.";
+                        return RedirectToAction("Index", "Course");
+                    }
                 }
 
                 var fileResult = await _services.AssignmentService.DownloadFileFromApi(assignment.FilePath);

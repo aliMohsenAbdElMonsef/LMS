@@ -14,7 +14,8 @@ namespace LMS.MVC.Models.ViewModels.Account
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "New Password")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-])[A-Za-z\d@$!%*?&\-]{8,}$", ErrorMessage = "Password must contain uppercase, lowercase, number, and special character")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]

@@ -9,5 +9,6 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<IEnumerable<UserViewModel>> GetAllUsers();
         Task<ServiceResponseDTO<IEnumerable<UserViewModel>>> GetInstructorsAsync();
         Task<ServiceResponseDTO<UserViewModel>> GetUserById(string id);
+        Task<UserCountsViewModel> GetUserCounts();
     }
 }

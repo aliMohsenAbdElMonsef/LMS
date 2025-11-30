@@ -119,6 +119,7 @@ namespace LMS.BusinessLogic.Services
             }
 
             existingEntity.IsFree = dto.IsFree;
+            existingEntity.EveryStuCouldEnroll = dto.EveryStuCouldEnroll;
             existingEntity.MinAttendancePercentage = dto.MinAttendancePercentage;
             existingEntity.MinPerformanceScore = dto.MinPerformanceScore;
             existingEntity.AutoIssueCertificates = dto.AutoIssueCertificates;

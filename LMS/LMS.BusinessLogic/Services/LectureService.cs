@@ -277,7 +277,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         {
             if (!await CanAccessCourseLectures(courseId, userId, userRole))
             {
-                return ErrorResponse<IEnumerable<GetLectureDTO>>("You are not authorized to access lectures for this course");
+                return ErrorResponse<IEnumerable<GetLectureDTO>>("Access denied. You need an approved enrollment to view this course's lecture schedule.");
             }
 
             var lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
@@ -318,7 +318,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         {
             if (!await CanAccessCourseLectures(courseId, userId, userRole))
             {
-                return ErrorResponse<IEnumerable<GetLectureDTO>>("You are not authorized to access lectures for this course");
+                return ErrorResponse<IEnumerable<GetLectureDTO>>("Access denied. You need an approved enrollment to view this course's lecture schedule.");
             }
 
             DateTime fromDate = DateTime.UtcNow.Date;
@@ -341,7 +341,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         {
             if (!await CanAccessCourseLectures(courseId, userId, userRole))
             {
-                return ErrorResponse<IEnumerable<GetLectureDTO>>("You are not authorized to access lectures for this course");
+                return ErrorResponse<IEnumerable<GetLectureDTO>>("Access denied. You need an approved enrollment to view this course's lecture schedule.");
             }
 
             var allLectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
