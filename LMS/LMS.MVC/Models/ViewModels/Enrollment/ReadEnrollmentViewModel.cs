@@ -11,9 +11,9 @@ namespace LMS.MVC.Models.ViewModels.Enrollment
 
         public string CourseCode { get; set; } = string.Empty;
 
-        public string Role;
-        public string UserEmail;
-        public DateTime CreatedAt;
+        public string Role { get; set; }
+        public string UserEmail { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public string Status { get; set; }
     }

@@ -39,11 +39,10 @@ namespace LMS.MVC.Services.Services
             _configuration = configuration;
             _accountService = new Lazy<IAccountService>(() => new AccountServices(_client, _httpContextAccessor, _loggerFactory.CreateLogger<AccountServices>(),_tokenService));
             _userService = new Lazy<IUserService>(() => new UserServices(_client,_httpContextAccessor, _configuration));
-            _courseService = new Lazy<ICourseService>(() => new CourseService(_client, _httpContextAccessor));
-            _categoryService = new Lazy<ICategoryService>(() => new CategoryService(_client,_httpContextAccessor,_mapper,_tokenService));
-            
             var baseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7033/";
             _enrollmentService = new Lazy<IEnrollmentService>(()=> new EnrollmentService(_client,_httpContextAccessor,_tokenService, baseUrl));
+            _courseService = new Lazy<ICourseService>(() => new CourseService(_client, _httpContextAccessor, _enrollmentService.Value));
+            _categoryService = new Lazy<ICategoryService>(() => new CategoryService(_client, _httpContextAccessor, _mapper, _tokenService));
             
             _assignmentService = new Lazy<IAssignmentService>(()=> new AssignmentService(_client,_httpContextAccessor,_tokenService, _mapper));
             _lectureService = new Lazy<ILectureService>(() => new LectureService(_client, _httpContextAccessor));

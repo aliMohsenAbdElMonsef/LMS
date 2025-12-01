@@ -6,8 +6,8 @@
     var isAdmin = User.IsInRole("Admin");
     var canEditDelete = isInstructor && Model.DueDate > DateTime.Now;
     var studentSubmission = Model.StudentSubmissions.FirstOrDefault(s => s.StudentId == ViewBag.CurrentStudentId);
-    var canSubmit = isStudent && Model.DueDate > DateTime.Now && (studentSubmission == null || !studentSubmission.Grade.HasValue);
-    var canResubmit = isStudent && Model.DueDate > DateTime.Now && studentSubmission != null && !studentSubmission.Grade.HasValue;
+    var canSubmit = isStudent && Model.DueDate > DateTime.Now && studentSubmission == null;
+    var canResubmit = isStudent && Model.DueDate > DateTime.Now && studentSubmission != null;
 }
 
 <div class="container-fluid">
@@ -46,12 +46,12 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong><i class="fas fa-calendar-plus me-2"></i>Upload Date:</strong>
-                            @Model.UploadDate.ToString("MMM dd, yyyy")
+                            @Model.UploadDate.ToLocalTime().ToString("MMM dd, yyyy")
                         </div>
                         <div class="col-md-6">
                             <strong><i class="fas fa-calendar-check me-2"></i>Due Date:</strong>
                             <span class="@(Model.DueDate < DateTime.Now ? "text-danger" : "text-success")">
-                                @Model.DueDate.ToString("MMM dd, yyyy hh:mm tt")
+                                @Model.DueDate.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")
                             </span>
                             @if (Model.DueDate < DateTime.Now)
                             {
@@ -79,9 +79,9 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 flex-wrap mt-4 pt-3 border-top">
-                        @if (isInstructor || isAdmin)
+                        @if (isInstructor)
                         {
-                            @if (canEditDelete || isAdmin)
+                            @if (canEditDelete)
                             {
                                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
                                     <i class="fas fa-edit me-1"></i> Edit
@@ -177,7 +177,7 @@
                             <div class="mb-3">
                                 <strong>Status:</strong>
                                 <span class="badge @GetStatusBadgeClass(studentSubmission.Status) ms-2">
-                                    @studentSubmission.Status
+                                    @studentSubmission.StatusDisplay
                                 </span>
                             </div>
 
@@ -185,7 +185,7 @@
                             <div class="mb-3">
                                 <strong><i class="fas fa-calendar me-2"></i>Submitted:</strong>
                                 <span class="text-muted">
-                                    @studentSubmission.SubmittedAt.ToString("MMM dd, yyyy hh:mm tt")
+                                    @studentSubmission.SubmittedAt.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")
                                 </span>
                             </div>
 

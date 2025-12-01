@@ -12,11 +12,13 @@ namespace LMS.BusinessLogic.Services
     {
         private readonly IStudentEnrollIntoCourseRepository _studentEnrollRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
 
-        public StudentEnrollIntoCourseService(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public StudentEnrollIntoCourseService(IUnitOfWork unitOfWork, IEmailService emailService) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _studentEnrollRepo = _unitOfWork.StudentEnrollments;
+            _emailService = emailService;
         }
 
         #region Repository Access
@@ -80,7 +82,7 @@ namespace LMS.BusinessLogic.Services
                 };
 
             var existing = await _studentEnrollRepo.GetEnrollmentIncludingDeletedAsync(dto.UserId, dto.CourseId);
-            if (existing != null && !existing.IsDeleted)
+            if (existing != null && !existing.IsDeleted && existing.Status != ApplicationStatus.Rejected)
                 return new BasicResponseDTO
                 {
                     Success = false,
@@ -161,24 +163,46 @@ namespace LMS.BusinessLogic.Services
 
         public override async Task<BasicResponseDTO> ApproveEnrollment(UpdateStudentEnrollmentDTO dto)
         {
-            var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId);
+            var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId, "Student,Course");
             if (enrollment == null)
                 return new BasicResponseDTO { Success = false, Message = "Enrollment not found." };
 
             enrollment.Status = ApplicationStatus.Approved;
             await _unitOfWork.SaveChangesAsync();
 
+            if (enrollment.Student != null && !string.IsNullOrEmpty(enrollment.Student.Email))
+            {
+                string subject = "Course Enrollment Approved";
+                string body = $@"
+                    <h3>Hello {enrollment.Student.UserName},</h3>
+                    <p>Your enrollment in the course <strong>{enrollment.Course?.Name}</strong> has been <strong>APPROVED</strong>.</p>
+                    <p>You can now access the course content.</p>";
+                
+                _ = _emailService.SendEmailAsync(enrollment.Student.Email, subject, body);
+            }
+
             return new BasicResponseDTO { Success = true, Message = "Enrollment approved successfully." };
         }
 
         public override async Task<BasicResponseDTO> DenyEnrollment(UpdateStudentEnrollmentDTO dto)
         {
-            var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId);
+            var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId, "Student,Course");
             if (enrollment == null)
                 return new BasicResponseDTO { Success = false, Message = "Enrollment not found." };
 
             enrollment.Status = ApplicationStatus.Rejected;
             await _unitOfWork.SaveChangesAsync();
+
+            if (enrollment.Student != null && !string.IsNullOrEmpty(enrollment.Student.Email))
+            {
+                string subject = "Course Enrollment Denied";
+                string body = $@"
+                    <h3>Hello {enrollment.Student.UserName},</h3>
+                    <p>Your enrollment in the course <strong>{enrollment.Course?.Name}</strong> has been <strong>DENIED</strong>.</p>
+                    <p>Please contact the administrator for more information.</p>";
+
+                _ = _emailService.SendEmailAsync(enrollment.Student.Email, subject, body);
+            }
 
             return new BasicResponseDTO { Success = true, Message = "Enrollment denied." };
         }
@@ -186,7 +210,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<ReadStudentEnrollmentDTO>> GetEnrollmentByIdAsync(RequestEnrollIntoCourseDTO dto)
         {
             var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId, "Student,Course");
-            if (enrollment == null)
+            if (enrollment == null || enrollment.IsDeleted)
                 return new ServiceResponseDTO<ReadStudentEnrollmentDTO>
                 {
                     Success = false,
@@ -203,7 +227,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<List<ReadStudentEnrollmentDTO>>> GetEnrollmentsAsync(string userId)
         {
             var allEnrollments = await _studentEnrollRepo.GetAllAsync();
-            var filtered = allEnrollments.Where(e => e.StudentId == userId).ToList();
+            var filtered = allEnrollments.Where(e => e.StudentId == userId && !e.IsDeleted).ToList();
             var result = filtered.Select(MapToReadDTO).ToList();
 
             return new ServiceResponseDTO<List<ReadStudentEnrollmentDTO>>
@@ -216,7 +240,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<List<ReadStudentEnrollmentDTO>>> GetCourseEnrollmentsAsync(string courseId)
         {
             var allEnrollments = await _studentEnrollRepo.GetAllAsync();
-            var filtered = allEnrollments.Where(e => e.CourseId == courseId).ToList();
+            var filtered = allEnrollments.Where(e => e.CourseId == courseId && !e.IsDeleted).ToList();
             var result = filtered.Select(MapToReadDTO).ToList();
 
             return new ServiceResponseDTO<List<ReadStudentEnrollmentDTO>>
@@ -229,13 +253,13 @@ namespace LMS.BusinessLogic.Services
         public override async Task<bool> IsUserEnrolledAsync(RequestEnrollIntoCourseDTO dto)
         {
             var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(dto.UserId, dto.CourseId);
-            return enrollment != null;
+            return enrollment != null && !enrollment.IsDeleted;
         }
 
         public override async Task<int> GetCourseEnrollmentCountAsync(string courseId)
         {
             var allEnrollments = await _studentEnrollRepo.GetAllAsync();
-            return allEnrollments.Count(e => e.CourseId == courseId);
+            return allEnrollments.Count(e => e.CourseId == courseId && !e.IsDeleted);
         }
 
         public async Task<ServiceResponseDTO<double>> GetAverageProgressForCourseAsync(string courseId)
@@ -287,7 +311,7 @@ namespace LMS.BusinessLogic.Services
             var courseId = dto.CourseId;
             var enrollment = await _studentEnrollRepo.GetFirstOrDefaultAsync(userId, courseId);
             
-            string status = enrollment?.Status.ToString() ?? "None";
+            string status = (enrollment != null && !enrollment.IsDeleted) ? enrollment.Status.ToString() : "None";
 
             return new ServiceResponseDTO<string>
             {

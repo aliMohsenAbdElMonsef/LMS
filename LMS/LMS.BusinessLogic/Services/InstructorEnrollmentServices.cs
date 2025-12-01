@@ -131,7 +131,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<ReadEnrollIntoCourseDTO>> GetEnrollmentByIdAsync(RequestEnrollIntoCourseDTO dto)
         {
             var enrollment = await _instructorEnrollRepo.GetByInstructorAndCourseAsync(dto.UserId, dto.CourseId);
-            if (enrollment == null)
+            if (enrollment == null || enrollment.IsDeleted)
                 return new ServiceResponseDTO<ReadEnrollIntoCourseDTO>
                 {
                     Success = false,
@@ -148,7 +148,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<List<ReadEnrollIntoCourseDTO>>> GetEnrollmentsAsync(string userId)
         {
             var enrollments = await _instructorEnrollRepo.GetByInstructorIdAsync(userId);
-            var result = enrollments.Select(MapToReadDTO).ToList();
+            var result = enrollments.Where(e => !e.IsDeleted).Select(MapToReadDTO).ToList();
 
             return new ServiceResponseDTO<List<ReadEnrollIntoCourseDTO>>
             {
@@ -160,7 +160,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<ServiceResponseDTO<List<ReadEnrollIntoCourseDTO>>> GetCourseEnrollmentsAsync(string courseId)
         {
             var enrollments = await _instructorEnrollRepo.GetByCourseIdAsync(courseId);
-            var result = enrollments.Select(MapToReadDTO).ToList();
+            var result = enrollments.Where(e => !e.IsDeleted).Select(MapToReadDTO).ToList();
 
             return new ServiceResponseDTO<List<ReadEnrollIntoCourseDTO>>
             {
@@ -172,7 +172,7 @@ namespace LMS.BusinessLogic.Services
         public override async Task<bool> IsUserEnrolledAsync(RequestEnrollIntoCourseDTO dto)
         {
             var exists = await _instructorEnrollRepo.GetByInstructorAndCourseAsync(dto.UserId, dto.CourseId);
-            return exists!=null;
+            return exists != null && !exists.IsDeleted;
         }
 
         public override async Task<int> GetCourseEnrollmentCountAsync(string courseId)
@@ -187,7 +187,7 @@ namespace LMS.BusinessLogic.Services
             var courseId = dto.CourseId;
             var enrollment = await _instructorEnrollRepo.GetByInstructorAndCourseAsync(userId, courseId);
             
-            string status = enrollment?.Status.ToString() ?? "None";
+            string status = (enrollment != null && !enrollment.IsDeleted) ? enrollment.Status.ToString() : "None";
 
             return new ServiceResponseDTO<string> 
             { 

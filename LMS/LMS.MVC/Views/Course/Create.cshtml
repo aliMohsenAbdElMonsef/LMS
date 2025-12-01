@@ -281,6 +281,15 @@
                     suggestionsList.style.display = 'none';
                 }
             });
+
+            // Restore selected category if model has one (e.g. after validation error)
+            const initialCategoryId = '@Model.CategoryId';
+            if (initialCategoryId) {
+                const initialCategory = categories.find(c => c.Id === initialCategoryId);
+                if (initialCategory) {
+                    selectCategory(initialCategory);
+                }
+            }
         });
     </script>
 }

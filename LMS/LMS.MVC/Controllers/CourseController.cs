@@ -78,15 +78,15 @@ namespace LMS.MVC.Controllers
                            : User.IsInRole("Student") ? "Student"
                            : "None";
 
-            bool isEnrolled = false;
+            string enrollmentStatus = "None";
 
             if (userRole != "None" && !string.IsNullOrEmpty(userId))
             {
-                isEnrolled = await _services.CourseService.IsUserEnrollIntoCourse(userId, id);
+                enrollmentStatus = await _services.EnrollmentService.GetEnrollmentStatusAsync(userId, id);
             }
 
             ViewBag.UserRole = userRole;
-            ViewBag.IsEnrolled = isEnrolled;
+            ViewBag.EnrollmentStatus = enrollmentStatus;
 
             return View(result.Data);
         }
@@ -111,12 +111,20 @@ namespace LMS.MVC.Controllers
 
                 if (result.Success)
                 {
-                    bool isPending = User.IsInRole("Instructor");
+                    // Check if the course allows immediate enrollment
+                    var courseResult = await _services.CourseService.GetCourseDetails(Guid.Parse(CourseId));
+                    bool canEnrollImmediately = false;
+                    
+                    if (courseResult.Success && courseResult.Data != null)
+                    {
+                         canEnrollImmediately = courseResult.Data.EveryStuCouldEnroll;
+                    }
+
                     return Json(new
                     {
                         success = true,
                         message = result.Message,
-                        canEnrollImmediately = !isPending
+                        canEnrollImmediately = canEnrollImmediately
                     });
                 }
                 else
@@ -194,28 +202,18 @@ namespace LMS.MVC.Controllers
                 if (string.IsNullOrWhiteSpace(userId))
                     return Unauthorized();
 
-                var allCoursesResult = await _services.CourseService.GetAllCoursesAsync();
-                if (!allCoursesResult.Success)
+                var role = User.IsInRole("Student") ? "Student" : 
+                           User.IsInRole("Instructor") ? "Instructor" : "None";
+
+                var result = await _services.CourseService.GetMyCoursesAsync(userId, role);
+
+                if (!result.Success)
                 {
-                    TempData["Error"] = "Failed to load courses.";
+                    TempData["Error"] = result.Message;
                     return View(new List<ReadCourseResult>());
                 }
 
-                var myCourses = new List<ReadCourseResult>();
-
-                foreach (var course in allCoursesResult.Data)
-                {
-                    bool isEnrolled = await _services.CourseService.IsUserEnrollIntoCourse(userId, course.Id);
-                    bool isInstructor = course.Instructors.Any(i => i.Id == userId);
-                    bool isAdmin = course.AdminId == userId;
-
-                    if (isEnrolled || isInstructor || isAdmin)
-                    {
-                        myCourses.Add(course);
-                    }
-                }
-
-                return View(myCourses);
+                return View(result.Data);
             }
             catch (Exception ex)
             {
@@ -258,11 +256,23 @@ namespace LMS.MVC.Controllers
             {
                 model.AdminId = userId;
             }
+            ModelState.Remove("AdminId");
+
+            // Check for duplicate course code
+            if (!string.IsNullOrEmpty(model.CourseCode))
+            {
+                var allCourses = await _services.CourseService.GetAllCoursesAsync();
+                if (allCourses.Success && allCourses.Data.Any(c => c.CourseCode.Equals(model.CourseCode, StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("CourseCode", "A course with this code already exists. Please choose a different code.");
+                }
+            }
 
             if (!ModelState.IsValid)
             {
                 // Repopulate categories
                 var categories = await _services.CategoryService.GetAllCategories();
+                
                 // Debug: Log validation errors
                 Console.WriteLine("❌ Course Creation - ModelState Invalid:");
                 foreach (var key in ModelState.Keys)
@@ -277,6 +287,7 @@ namespace LMS.MVC.Controllers
                         }
                     }
                 }
+
                 if (categories != null)
                 {
                     model.AvailableCategories = categories.Select(c => new CategoryOption
@@ -292,15 +303,11 @@ namespace LMS.MVC.Controllers
                 return View(model);
             }
 
-            // Set the AdminId to the current user if not set (though it might be hidden in form)
-
             var result = await _services.CourseService.CreateCourse(model);
 
             if (result.Success)
             {
                 TempData["Success"] = "Course created successfully!";
-                // Redirect to the details of the newly created course if possible, or Index
-                // Assuming result.Data contains the created course with its ID
                 if (result.Data != null)
                 {
                     return RedirectToAction(nameof(Details), new { id = result.Data.Id });
@@ -533,6 +540,32 @@ namespace LMS.MVC.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpDelete]
+        [Route("Course/Delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                if (!Guid.TryParse(id, out var courseId))
+                {
+                    return Json(new { success = false, message = "Invalid course ID." });
+                }
+
+                var result = await _services.CourseService.DeleteCourse(courseId);
+                if (result)
+                {
+                    return Json(new { success = true, message = "Course deleted successfully." });
+                }
+                
+                return Json(new { success = false, message = "Failed to delete course." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
         }
 
     }

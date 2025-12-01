@@ -84,11 +84,15 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         var lecture = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
         if (lecture == null) return false; 
 
-        if (userRole == "Instructor" && lecture.InstructorId == userId) return true;
+        if (userRole == "Instructor" && lecture.InstructorId == userId)
+        {
+            var enrollment = await _unitOfWork.StudentEnrollments.GetFirstOrDefaultAsync(userId, lecture.CourseId);
+            return enrollment != null && !enrollment.IsDeleted && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
+        }
         if (userRole == "Student")
         {
             var enrollment = await _unitOfWork.StudentEnrollments.GetFirstOrDefaultAsync(userId, lecture.CourseId);
-            return enrollment != null;
+            return enrollment != null && !enrollment.IsDeleted && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
         }
 
 
@@ -110,13 +114,14 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         if (userRole == "Instructor")
         {
             var enrollment = await _unitOfWork.InstructorEnrollments.GetByInstructorAndCourseAsync(userId, courseId);
-            return enrollment != null && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
+            return enrollment != null && !enrollment.IsDeleted && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
         }
 
         if (userRole == "Student")
         {
             var enrollment = await _unitOfWork.StudentEnrollments.GetFirstOrDefaultAsync(userId, courseId);
-            return enrollment != null;
+            return enrollment != null && !enrollment.IsDeleted && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
+
         }
 
         return false;
@@ -299,7 +304,10 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             {
                 return ErrorResponse<IEnumerable<GetLectureDTO>>("You can only view your own lectures");
             }
-
+            if(! await CanAccessCourseLectures(instructorId, userId, userRole))
+            {
+                return ErrorResponse<IEnumerable<GetLectureDTO>>("Access denied. You need an approved enrollment to view this course's lecture schedule.");
+            }
             var lectures = await _unitOfWork.Lectures.GetAllAsync();
             var filteredLectures = lectures.Where(l => l.InstructorId == instructorId);
             var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(filteredLectures);
@@ -369,7 +377,6 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             var lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
             
-            // Check if there is any other lecture on the same day
             var conflictingLecture = lectures.FirstOrDefault(l =>
                 l.LectureDate.Date == date.Date &&
                 l.Id != excludeLectureId);
@@ -395,19 +402,16 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             if (userRole == "Student")
             {
                 var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync();
-                courseIds = enrollments.Where(e => e.StudentId == userId).Select(e => e.CourseId).ToList();
+                courseIds = enrollments.Where(e => e.StudentId == userId &&!e.IsDeleted &&e.Status == Domain.Enums.ApplicationStatus.Approved).Select(e => e.CourseId).ToList();
             }
             else if (userRole == "Instructor")
             {
                 var enrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
-                courseIds = enrollments.Where(e => e.InstructorId == userId && e.Status == Domain.Enums.ApplicationStatus.Approved)
+                courseIds = enrollments.Where(e => e.InstructorId == userId&&!e.IsDeleted && e.Status == Domain.Enums.ApplicationStatus.Approved)
                                        .Select(e => e.CourseId).ToList();
             }
             else if (userRole == "Admin")
             {
-                 // Admin sees all? Or nothing? Let's assume nothing for "My Lectures" or maybe all. 
-                 // For now, let's return empty or handle as needed. 
-                 // User request implies Student and Instructor.
                  return SuccessResponse<IEnumerable<GetLectureDTO>>(new List<GetLectureDTO>(), "Admins can view all lectures via Course management.");
             }
 

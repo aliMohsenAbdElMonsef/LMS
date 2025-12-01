@@ -6,13 +6,11 @@ public class AssignmentMapping : Profile
 {
     public AssignmentMapping()
     {
-        // DTO to ViewModel
         CreateMap<ReadAssignmentDTO, ReadAssignmentResult>();
         CreateMap<AssignmentDetailsDTO, AssignmentDetailsResult>();
         CreateMap<StudentAssignmentDTO, StudentAssignmentResult>()
-            .ForMember(dest => dest.StudentAssignmentId, opt => opt.MapFrom(src => src.Id)); 
-
-        // ViewModel to DTO
+            .ForMember(dest => dest.StudentAssignmentId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.StatusDisplay));
         CreateMap<ReadAssignmentResult, CreateAssignmentDTO>();
         CreateMap<ReadAssignmentResult, UpdateAssignmentDTO>();
         CreateMap<StudentAssignmentResult, SubmitAssignmentDTO>();

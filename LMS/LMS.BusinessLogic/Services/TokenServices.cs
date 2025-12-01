@@ -125,27 +125,15 @@ namespace LMS.BusinessLogic.Services
             return expiryDate > DateTime.UtcNow;
         }
 
-        public async Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string refreshToken)
+        public async Task<RefreshTokenResponseDTO> RefreshAccessTokenAsync(string refreshToken, string userId)
         {
-            var users = _userManager.Users.ToList(); 
-            ApplicationUser? user = null;
-
-            foreach (var u in users)
-            {
-                var storedToken = await _userManager.GetAuthenticationTokenAsync(u, "LMS", "RefreshToken");
-                if (storedToken == refreshToken)
-                {
-                    user = u;
-                    break;
-                }
-            }
-
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return new RefreshTokenResponseDTO
                 {
                     Success = false,
-                    Message = "Invalid refresh token."
+                    Message = "User not found."
                 };
             }
 

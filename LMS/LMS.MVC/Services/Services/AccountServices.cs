@@ -89,7 +89,7 @@ namespace LMS.MVC.Services.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = loginResult.AccessTokenExpiresAt,
                 Path = "/"
@@ -167,8 +167,9 @@ namespace LMS.MVC.Services.Services
                     };
                 }
 
-                _client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                // AuthHeaderHandler handles the Authorization header
+                // _client.DefaultRequestHeaders.Authorization =
+                //    new AuthenticationHeaderValue("Bearer", token);
 
                 var response = await _client.PostAsync($"api/user/approve/{userId}", null);
 
@@ -203,8 +204,9 @@ namespace LMS.MVC.Services.Services
                     };
                 }
 
-                _client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                // AuthHeaderHandler handles the Authorization header
+                // _client.DefaultRequestHeaders.Authorization =
+                //    new AuthenticationHeaderValue("Bearer", token);
 
                 var response = await _client.PostAsync($"api/user/deny/{userId}", null);
 

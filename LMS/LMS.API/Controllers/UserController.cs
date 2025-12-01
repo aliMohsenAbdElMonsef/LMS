@@ -64,8 +64,8 @@ namespace LMS.API.Controllers
         public async Task<IActionResult> GetUserCounts()
         {
             var users = await _userServices.GetAllUsers();
-            var studentCount = users.Count(u => u.ApplyAs == Domain.Enums.UserType.Student);
-            var instructorCount = users.Count(u => u.ApplyAs == Domain.Enums.UserType.Instructor);
+            var studentCount = users.Count(u => u.ApplyAs == Domain.Enums.UserType.Student && u.Status == Domain.Enums.ApplicationStatus.Approved);
+            var instructorCount = users.Count(u => u.ApplyAs == Domain.Enums.UserType.Instructor && u.Status == Domain.Enums.ApplicationStatus.Approved);
             return Ok(new { StudentCount = studentCount, InstructorCount = instructorCount });
         }
 

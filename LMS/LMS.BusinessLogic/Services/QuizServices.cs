@@ -321,15 +321,14 @@ namespace LMS.BusinessLogic.Services
                            (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
                     .CountAsync();
 
-                if (completedAttempts >= quiz.MaxAttempts)
+                if (completedAttempts >= 1) 
                 {
                     return new ServiceResponseDTO<bool> 
                     { 
                         Success = false, 
-                        Message = $"You have reached the maximum number of attempts ({quiz.MaxAttempts}) for this quiz." 
+                        Message = "You have already completed this quiz. Only one attempt is allowed." 
                     };
                 }
-
                 // Check if already in progress
                 var inProgressAttempt = await studentQuizSet
                     .FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId && sq.Status == QuizStatus.InProgress);
@@ -504,12 +503,12 @@ namespace LMS.BusinessLogic.Services
                                (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
                         .CountAsync();
 
-                    if (completedAttempts >= quiz.MaxAttempts)
+                    if (completedAttempts >= 1)  
                     {
                         return new ServiceResponseDTO<QuizResultDTO> 
                         { 
                             Success = false, 
-                            Message = $"You have reached the maximum number of attempts ({quiz.MaxAttempts}) for this quiz." 
+                            Message = "You have already submitted this quiz. Only one submission is allowed." 
                         };
                     }
 
@@ -733,9 +732,18 @@ namespace LMS.BusinessLogic.Services
                     .Where(q => q.InstructorId == instructorId)
                     .ToListAsync();
 
+                // Filter to only include quizzes from courses where instructor has active enrollment
+                var instructorEnrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
+                var activeCourseIds = instructorEnrollments
+                    .Where(e => e.InstructorId == instructorId && !e.IsDeleted && e.Status == Domain.Enums.ApplicationStatus.Approved)
+                    .Select(e => e.CourseId)
+                    .ToHashSet();
+                
+                var filteredQuizzes = quizzes.Where(q => activeCourseIds.Contains(q.CourseId)).ToList();
+
                 return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
                 {
-                    Data = quizzes.Select(q => MapToReadDTO(q)).ToList(),
+                    Data = filteredQuizzes.Select(q => MapToReadDTO(q)).ToList(),
                     Success = true,
                     Message = "Quizzes retrieved successfully."
                 };
@@ -960,7 +968,7 @@ namespace LMS.BusinessLogic.Services
             {
                 // 1. Get enrolled courses
                 var studentEnrollments = await _unitOfWork.GetQueryable<StudentEnrollIntoCourse>()
-                    .Where(se => se.StudentId == studentId)
+                    .Where(se => se.StudentId == studentId && !se.IsDeleted && se.Status == ApplicationStatus.Approved)
                     .Select(se => se.CourseId)
                     .ToListAsync();
 

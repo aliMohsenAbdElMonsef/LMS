@@ -482,6 +482,11 @@ namespace LMS.BusinessLogic.Services
             var user = await _userManager.Users
                 .Include(u => u.Enrollment)
                 .Include(u => u.Courses)
+                .ThenInclude(c => c.Course)
+                .ThenInclude(c => c.Students)
+                .Include(u => u.Courses)
+                .ThenInclude(c => c.Course)
+                .ThenInclude(c => c.Reviews)
                 .Include(u => u.EarnedCertificates)
                 .Include(u => u.UploadedAssignemnts)
                 .Include(u => u.QuizzesAttended)
@@ -496,8 +501,46 @@ namespace LMS.BusinessLogic.Services
             }
 
             Console.WriteLine($"🔍 GetUserStatsAsync - UserId: {userId}");
-            Console.WriteLine($"🔍 Student Enrollments: {user.Enrollment.Count}");
-            Console.WriteLine($"🔍 Instructor Enrollments: {user.Courses.Count}");
+            Console.WriteLine($"🔍 Student Enrollments Count: {user.Enrollment.Count}");
+            Console.WriteLine($"🔍 Instructor Enrollments Count: {user.Courses.Count}");
+            
+            // Debug: Log each student enrollment
+            foreach (var enrollment in user.Enrollment)
+            {
+                Console.WriteLine($"  📚 Student Enrollment - CourseId: {enrollment.CourseId}, Status: {enrollment.Status}, IsDeleted: {enrollment.IsDeleted}, Progress: {enrollment.progress}");
+            }
+            
+            // Debug: Log each instructor enrollment
+            foreach (var course in user.Courses)
+            {
+                Console.WriteLine($"  🎓 Instructor Enrollment - CourseId: {course.CourseId}, Status: {course.Status}, IsDeleted: {course.IsDeleted}");
+                if (course.Course != null)
+                {
+                    Console.WriteLine($"    Course Name: {course.Course.Name}, Students: {course.Course.Students?.Count ?? 0}, Reviews: {course.Course.Reviews?.Count ?? 0}");
+                }
+                else
+                {
+                    Console.WriteLine($"    ⚠️ Course is NULL!");
+                }
+            }
+
+            // Calculate Total Students for Instructor (unique students across all courses they teach)
+            var totalStudents = user.Courses
+                .Where(c => c.Course != null)
+                .SelectMany(c => c.Course.Students)
+                .Select(s => s.StudentId)
+                .Distinct()
+                .Count();
+
+            // Calculate Average Rating for Instructor (average of all reviews on their courses)
+            var allReviews = user.Courses
+                .Where(c => c.Course != null)
+                .SelectMany(c => c.Course.Reviews)
+                .ToList();
+            var averageRating = allReviews.Any() ? allReviews.Average(r => r.Rating) : 0;
+
+            // Calculate Average Score for Student (average progress across enrolled courses)
+            var averageScore = user.Enrollment.Any() ? user.Enrollment.Average(e => e.progress) : 0;
 
             var stats = new UserStatsDTO
             {
@@ -506,10 +549,10 @@ namespace LMS.BusinessLogic.Services
                 CertificatesCount = user.EarnedCertificates.Count,
                 AssignmentsSubmitted = user.UploadedAssignemnts.Count,
                 QuizzesTaken = user.QuizzesAttended.Count,
-                AverageScore = 0,
+                AverageScore = Math.Round(averageScore, 2),
                 CreatedCoursesCount = user.CreatedCourses.Count,
-                TotalStudents = 0,
-                AverageRating = 0
+                TotalStudents = totalStudents,
+                AverageRating = Math.Round(averageRating, 1)
             };
 
             return new ServiceResponseDTO<UserStatsDTO>

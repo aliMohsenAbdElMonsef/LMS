@@ -121,8 +121,6 @@ namespace LMS.MVC.Services.Services
             return await ExecuteApiCallAsync(async () =>
             {
                 await AttachAccessTokenAsync();
-                
-                // First, fetch the existing lecture to get all its data
                 var getLectureResponse = await GetLectureByIdAsync(lectureId);
                 if (!getLectureResponse.Success || getLectureResponse.Data == null)
                 {

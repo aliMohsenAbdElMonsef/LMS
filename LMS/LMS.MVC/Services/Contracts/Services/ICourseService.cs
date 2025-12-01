@@ -16,5 +16,6 @@ namespace LMS.MVC.Services.Contracts.Services
 
         Task<bool> DeleteCourse(Guid id);
         Task<SuccessServiceResult<ReadCourseViewModel>> GetCourseDetails(Guid id);
+        Task<SuccessServiceResult<IEnumerable<ReadCourseResult>>> GetMyCoursesAsync(string userId, string role);
     }
 }

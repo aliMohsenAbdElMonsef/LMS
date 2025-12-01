@@ -37,5 +37,17 @@ namespace LMS.MVC.Models.ViewModels.Assignment
         public bool IsSubmitted => !string.IsNullOrEmpty(FilePath);
         public bool IsGraded => Grade.HasValue;
         public bool IsPending => IsSubmitted && !IsGraded;
+        public string? StatusDisplay { get; set; }
+
+        private string GetStatusDisplay(string status)
+        {
+            return status switch
+            {
+                "NotSubmitted" => "Not Submitted",
+                "PendingGrading" => "Pending Grading",
+                "Graded" => "Graded",
+                _ => status 
+            };
+        }
     }
 }

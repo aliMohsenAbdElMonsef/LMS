@@ -11,36 +11,36 @@ namespace LMS.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_InstructorEnrollments_AspNetUsers_ApplicationUserId",
-                table: "InstructorEnrollments");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_InstructorEnrollments_AspNetUsers_ApplicationUserId",
+            //    table: "InstructorEnrollments");
 
-            migrationBuilder.DropTable(
-                name: "Notification");
+            //migrationBuilder.DropTable(
+            //    name: "Notification");
 
-            migrationBuilder.DropIndex(
-                name: "IX_InstructorEnrollments_ApplicationUserId",
-                table: "InstructorEnrollments");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_InstructorEnrollments_ApplicationUserId",
+            //    table: "InstructorEnrollments");
 
-            migrationBuilder.DropColumn(
-                name: "ApplicationUserId",
-                table: "InstructorEnrollments");
+            //migrationBuilder.DropColumn(
+            //    name: "ApplicationUserId",
+            //    table: "InstructorEnrollments");
 
-            migrationBuilder.DropColumn(
-                name: "EmailVerificationToken",
-                table: "AspNetUsers");
+            //migrationBuilder.DropColumn(
+            //    name: "EmailVerificationToken",
+            //    table: "AspNetUsers");
 
-            migrationBuilder.DropColumn(
-                name: "EmailVerificationTokenExpiry",
-                table: "AspNetUsers");
+            //migrationBuilder.DropColumn(
+            //    name: "EmailVerificationTokenExpiry",
+            //    table: "AspNetUsers");
 
-            migrationBuilder.DropColumn(
-                name: "PasswordResetToken",
-                table: "AspNetUsers");
+            //migrationBuilder.DropColumn(
+            //    name: "PasswordResetToken",
+            //    table: "AspNetUsers");
 
-            migrationBuilder.DropColumn(
-                name: "PasswordResetTokenExpiry",
-                table: "AspNetUsers");
+            //migrationBuilder.DropColumn(
+            //    name: "PasswordResetTokenExpiry",
+            //    table: "AspNetUsers");
         }
 
         /// <inheritdoc />

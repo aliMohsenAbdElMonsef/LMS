@@ -25,12 +25,14 @@ namespace LMS.BusinessLogic.Mappings
             CreateMap<UpdateLectureDTO, Lecture>();
             
             CreateMap<Lecture, GetLectureDTO>()
-                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => (int)(src.EndTime - src.StartTime).TotalMinutes))
+                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => 
+                    (int)((src.EndTime < src.StartTime ? src.EndTime.Add(TimeSpan.FromDays(1)) : src.EndTime) - src.StartTime).TotalMinutes))
                 .ForMember(dest => dest.LectureNumber, opt => opt.MapFrom(src => src.LectureNumber))
                 .ForMember(dest => dest.Instructor, opt => opt.Ignore());
             
             CreateMap<Lecture, ReadLectureDTO>()
-                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => (int)(src.EndTime - src.StartTime).TotalMinutes));
+                .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => 
+                    (int)((src.EndTime < src.StartTime ? src.EndTime.Add(TimeSpan.FromDays(1)) : src.EndTime) - src.StartTime).TotalMinutes));
         }
     }
 }

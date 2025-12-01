@@ -58,6 +58,7 @@ namespace DataAccess.Context
 
         // Relation Entities
         public DbSet<CourseReview> CourseReviews { get; set; }
+        public DbSet<CourseDaySchedule> CourseDaySchedules { get; set; }
         public DbSet<StudentCertificate> StudentCertificates { get; set; }
         public DbSet<InstructorEnrolltoCourse> InstructorEnrollments { get; set; }
         public DbSet<StudentEnrollIntoCourse> StudentEnrollments { get; set; }
@@ -80,18 +81,6 @@ namespace DataAccess.Context
             builder.Entity<Assignment>().HasQueryFilter(a => !a.IsDeleted);       
             builder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
             builder.Entity<Skills>().HasQueryFilter(s => !s.IsDeleted);
-            builder.Entity<CertificateTemplate>().HasQueryFilter(ct => !ct.IsDeleted);
-            builder.Entity<LectureSchedule>().HasQueryFilter(ls => !ls.IsDeleted);
-
-            // ADDED: Query filters for relationship entities to fix warnings
-            builder.Entity<CourseReview>().HasQueryFilter(cr => !cr.IsDeleted);
-            builder.Entity<StudentCertificate>().HasQueryFilter(sc => !sc.IsDeleted);
-            builder.Entity<InstructorEnrolltoCourse>().HasQueryFilter(ie => !ie.IsDeleted);
-            builder.Entity<StudentEnrollIntoCourse>().HasQueryFilter(se => !se.IsDeleted);
-            builder.Entity<StudentLecture>().HasQueryFilter(sl => !sl.IsDeleted);
-            builder.Entity<StudentQuiz>().HasQueryFilter(sq => !sq.IsDeleted);
-            builder.Entity<StudentAssignment>().HasQueryFilter(sa => !sa.IsDeleted);
-            builder.Entity<StudentAnswerQuestion>().HasQueryFilter(saq => !saq.IsDeleted);
             builder.Entity<CourseSkill>().HasQueryFilter(cs => !cs.IsDeleted);
 
             // ADDED: Decimal precision for Price

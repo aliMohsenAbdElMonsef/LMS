@@ -4,6 +4,7 @@ using DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.DataAccess.Migrations
 {
     [DbContext(typeof(LMSDbContext))]
-    partial class LMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251130183557_CreateDaySchedulesTable")]
+    partial class CreateDaySchedulesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -966,7 +969,7 @@ namespace LMS.DataAccess.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("CourseDaySchedules");
+                    b.ToTable("CourseDaySchedule");
                 });
 
             modelBuilder.Entity("LMS.Entity.Entities.RelationTables.InstructorEnrolltoCourse", b =>

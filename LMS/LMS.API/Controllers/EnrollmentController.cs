@@ -108,12 +108,10 @@ namespace LMS.API.Controllers
 
         #endregion
 
-        
-
         #region Retrieval Endpoints
 
         [HttpGet("student/get")]
-        public async Task<IActionResult> GetEnrollmentById(RequestEnrollIntoCourseDTO dto)
+        public async Task<IActionResult> GetEnrollmentById([FromQuery] RequestEnrollIntoCourseDTO dto)
         {
             try
             {
@@ -177,7 +175,7 @@ namespace LMS.API.Controllers
 
         [HttpGet("student/check-enrollment")]
         [Authorize(Roles ="Admin,Student")]
-        public async Task<IActionResult> IsStudentEnrolled(RequestEnrollIntoCourseDTO dto)
+        public async Task<IActionResult> IsStudentEnrolled([FromQuery] RequestEnrollIntoCourseDTO dto)
         {
             try
             {

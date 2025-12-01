@@ -111,6 +111,17 @@ namespace LMS.MVC.Controllers
             var instructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             model.InstructorId = instructorId;
 
+            Console.WriteLine($"📝 Quiz Creation: Received {model.Questions?.Count ?? 0} questions.");
+            if (model.Questions != null)
+            {
+                for (int i = 0; i < model.Questions.Count; i++)
+                {
+                    var q = model.Questions[i];
+                    Console.WriteLine($"  - Q[{i}]: Type={q.Type}, Text='{q.Text}', Correct={q.CorrectAnswer}");
+                    Console.WriteLine($"    Options: A='{q.OptionA}', B='{q.OptionB}', C='{q.OptionC}', D='{q.OptionD}'");
+                }
+            }
+
             // Set temporary QuizId for questions to satisfy backend validation if needed
             // The backend service should overwrite this with the real ID
             foreach (var question in model.Questions)
@@ -432,7 +443,6 @@ namespace LMS.MVC.Controllers
         {
             try
             {
-                // Try to get result from TempData first (just submitted)
                 if (TempData["QuizResult"] is string resultJson)
                 {
                     var result = System.Text.Json.JsonSerializer.Deserialize<QuizResultViewModel>(resultJson);
@@ -442,8 +452,8 @@ namespace LMS.MVC.Controllers
                     }
                 }
 
-                // Otherwise fetch from API
-                var apiResult = await _services.QuizService.GetQuizResultsAsync(id);
+                var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var apiResult = await _services.QuizService.GetStudentQuizResultAsync(id, studentId);
                 if (!apiResult.Success || apiResult.Data == null)
                 {
                     TempData["Error"] = apiResult.Message ?? "Results not found.";
@@ -577,12 +587,10 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction("Submissions", new { id = quizId });
             }
 
-            var viewModel = new ManualGradeViewModel
-            {
-                QuizId = result.Data.QuizId,
-                StudentId = studentId,
-                QuizTitle = result.Data.QuizTitle,
-                Questions = result.Data.QuestionResults.Select(q => new QuestionGradeViewModel
+            // Filter to show only short answer questions that require manual grading
+            var questionsToGrade = result.Data.QuestionResults
+                .Where(q => q.CorrectAnswer == "Requires Manual Grading")
+                .Select(q => new QuestionGradeViewModel
                 {
                     QuestionId = q.QuestionId,
                     QuestionText = q.QuestionText,
@@ -590,7 +598,21 @@ namespace LMS.MVC.Controllers
                     CorrectAnswer = q.CorrectAnswer,
                     IsCorrect = q.IsCorrect,
                     Points = q.Points
-                }).ToList()
+                }).ToList();
+
+            // If no questions require manual grading, redirect back with message
+            if (!questionsToGrade.Any())
+            {
+                TempData["Info"] = "This quiz has been fully auto-graded. No manual grading required.";
+                return RedirectToAction("Submissions", new { id = quizId });
+            }
+
+            var viewModel = new ManualGradeViewModel
+            {
+                QuizId = result.Data.QuizId,
+                StudentId = studentId,
+                QuizTitle = result.Data.QuizTitle,
+                Questions = questionsToGrade
             };
 
             return View(viewModel);

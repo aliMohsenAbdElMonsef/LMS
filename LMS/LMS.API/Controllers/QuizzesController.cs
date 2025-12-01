@@ -147,5 +147,38 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Quizzes.GetStudentQuizzesAsync(studentId);
             return Ok(result);
         }
+
+        [HttpGet("submissions/{quizId}")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<ActionResult<ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>>> GetQuizSubmissions(string quizId)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizSubmissionsAsync(quizId);
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("results/{quizId}/{studentId}")]
+        [Authorize(Roles = "Instructor,Admin,Student")]
+        public async Task<ActionResult<ServiceResponseDTO<QuizResultDTO>>> GetQuizResults(string quizId, string studentId)
+        {
+            var result = await _unitOfServices.Quizzes.GetQuizResultAsync(quizId, studentId);
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        [HttpPost("grade")]
+        [Authorize(Roles = "Instructor,Admin")]
+        public async Task<ActionResult<ServiceResponseDTO<bool>>> GradeQuiz(ManualGradeDTO dto)
+        {
+            var result = await _unitOfServices.Quizzes.GradeQuizAsync(dto);
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }

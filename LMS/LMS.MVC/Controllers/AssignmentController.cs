@@ -105,7 +105,7 @@ namespace LMS.MVC.Controllers
             if (assignment == null)
                 return NotFound();
 
-            // Check enrollment status for non-admin users
+            // Check enrollment status for non-admin and non-instructor users
             var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
             if (userRole != "Admin")
             {
@@ -116,6 +116,7 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Index", "Course");
                 }
             }
+            ViewBag.CurrentStudentId = _tokenService.GetUserId();
 
             return View(assignment);
         }
@@ -217,11 +218,7 @@ namespace LMS.MVC.Controllers
             var studentId = _tokenService.GetUserId();
             var submission = await _services.AssignmentService.GetStudentAssignment(id, studentId);
 
-            if (submission != null && submission.IsSubmitted)
-            {
-                TempData["InfoMessage"] = "You have already submitted this assignment.";
-                return RedirectToAction("Details", new { id });
-            }
+        
 
             if (assignment.DueDate < DateTime.Now)
             {
@@ -282,9 +279,9 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id });
                 }
 
-                // Check enrollment status for non-admin users
+                // Check enrollment status for non-admin and non-instructor users
                 var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
-                if (userRole != "Admin")
+                if (userRole != "Admin" && userRole != "Instructor")
                 {
                     var hasAccess = await CheckEnrollmentAccess(assignment.CourseId);
                     if (!hasAccess)

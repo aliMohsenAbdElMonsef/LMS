@@ -461,7 +461,16 @@ namespace LMS.BusinessLogic.Services
             try
             {
                 var assignments = await _unitOfWork.Assignments.GetAssignmentsByInstructorAsync(instructorId);
-                var dtos = _mapper.Map<List<ReadAssignmentDTO>>(assignments);
+                
+                // Filter to only include assignments from courses where instructor has active enrollment
+                var instructorEnrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
+                var activeCourseIds = instructorEnrollments
+                    .Where(e => e.InstructorId == instructorId && !e.IsDeleted && e.Status == Domain.Enums.ApplicationStatus.Approved)
+                    .Select(e => e.CourseId)
+                    .ToHashSet();
+                
+                var filteredAssignments = assignments.Where(a => activeCourseIds.Contains(a.CourseId)).ToList();
+                var dtos = _mapper.Map<List<ReadAssignmentDTO>>(filteredAssignments);
 
                 return new ServiceResponseDTO<IEnumerable<ReadAssignmentDTO>>
                 {

@@ -102,7 +102,7 @@ namespace LMS.MVC.Services.Services
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false, 
+                    Secure = true, 
                     SameSite = SameSiteMode.Lax,
                     Expires = expires,
                     IsEssential = true,

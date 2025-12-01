@@ -53,7 +53,8 @@ namespace LMS.DataAccess.Repositories
             return await _set
                 .AnyAsync(e => e.StudentId == studentId
                     && e.CourseId == courseId
-                    && !e.IsDeleted);
+                    && !e.IsDeleted
+                    && e.Status == Domain.Enums.ApplicationStatus.Approved);
         }
     }
 }

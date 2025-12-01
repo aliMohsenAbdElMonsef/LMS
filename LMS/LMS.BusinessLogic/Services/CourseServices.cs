@@ -398,6 +398,60 @@ namespace LMS.BusinessLogic.Services
             }
         }
 
+        public override async Task<ServiceResponseDTO<GetCourseDTO>> DeleteAsync(string id)
+        {
+            try
+            {
+                var course = await GetRepo().GetQueryable()
+                    .Include(c => c.Quizzes)
+                    .Include(c => c.Assignments)
+                    .Include(c => c.Students)
+                    .Include(c => c.InstructorEnrollments)
+                    .Include(c => c.Lectures)
+                    .Include(c => c.LectureSchedules)
+                    .Include(c => c.DaySchedules)
+                    .Include(c => c.Reviews)
+                    .Include(c => c.Skills)
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (course == null)
+                {
+                    return new ServiceResponseDTO<GetCourseDTO>
+                    {
+                        Success = false,
+                        Message = "Course not found."
+                    };
+                }
+
+                // Soft delete related entities
+                foreach (var quiz in course.Quizzes) { quiz.IsDeleted = true; quiz.DeletedAt = DateTime.UtcNow; }
+                foreach (var assignment in course.Assignments) { assignment.IsDeleted = true; assignment.DeletedAt = DateTime.UtcNow; }
+                foreach (var student in course.Students) { student.IsDeleted = true; student.DeletedAt = DateTime.UtcNow; }
+                foreach (var instructor in course.InstructorEnrollments) { instructor.IsDeleted = true; instructor.DeletedAt = DateTime.UtcNow; }
+                foreach (var lecture in course.Lectures) { lecture.IsDeleted = true; lecture.DeletedAt = DateTime.UtcNow; }
+                foreach (var schedule in course.LectureSchedules) { schedule.IsDeleted = true; schedule.DeletedAt = DateTime.UtcNow; }
+                foreach (var daySchedule in course.DaySchedules) { daySchedule.IsDeleted = true; daySchedule.DeletedAt = DateTime.UtcNow; }
+                foreach (var review in course.Reviews) { review.IsDeleted = true; review.DeletedAt = DateTime.UtcNow; }
+                foreach (var skill in course.Skills) { skill.IsDeleted = true; skill.DeletedAt = DateTime.UtcNow; }
+
+                // Soft delete the course
+                course.IsDeleted = true;
+                course.DeletedAt = DateTime.UtcNow;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return new ServiceResponseDTO<GetCourseDTO>
+                {
+                    Success = true,
+                    Message = "Course and related data deleted successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting course: {ex.Message}", ex);
+            }
+        }
+
         public async Task<ServiceResponseDTO<List<GetCourseDTO>>> GetPopularCoursesAsync(int count)
         {
             var response = new ServiceResponseDTO<List<GetCourseDTO>>();

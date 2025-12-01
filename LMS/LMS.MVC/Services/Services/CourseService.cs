@@ -24,10 +24,13 @@ namespace LMS.MVC.Services.Services
             PropertyNameCaseInsensitive = true
         };
 
-        public CourseService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        private readonly IEnrollmentService _enrollmentService;
+
+        public CourseService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IEnrollmentService enrollmentService)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
+            _enrollmentService = enrollmentService;
         }
 
         #region Helpers
@@ -460,6 +463,78 @@ namespace LMS.MVC.Services.Services
                 return false;
 
             return bool.TryParse(wrapper.Data, out var b) && b;
+        }
+
+        public async Task<SuccessServiceResult<IEnumerable<ReadCourseResult>>> GetMyCoursesAsync(string userId, string role)
+        {
+            try
+            {
+                var allCoursesResult = await GetAllCoursesAsync();
+                if (!allCoursesResult.Success || allCoursesResult.Data == null)
+                {
+                    return new SuccessServiceResult<IEnumerable<ReadCourseResult>>
+                    {
+                        Success = false,
+                        Message = allCoursesResult.Message ?? "Failed to load courses."
+                    };
+                }
+
+                var allCourses = allCoursesResult.Data;
+                var myCourses = new List<ReadCourseResult>();
+
+                // 1. Add courses where user is Instructor or Admin (fast check)
+                var ownedCourses = allCourses.Where(c =>
+                    c.AdminId == userId ||
+                    c.Instructors.Any(i => i.Id == userId));
+                myCourses.AddRange(ownedCourses);
+
+                // 2. Add courses where user is Enrolled (API call)
+                if (role == "Student")
+                {
+                    var enrollments = await _enrollmentService.GetStudentEnrollmentsAsync(userId);
+                    if (enrollments.Success && enrollments.Data != null)
+                    {
+                        var enrolledCourseIds = enrollments.Data
+                            .Where(e => string.Equals(e.Status, "Approved", StringComparison.OrdinalIgnoreCase))
+                            .Select(e => e.CourseId)
+                            .ToHashSet();
+
+                        var enrolledCourses = allCourses.Where(c => enrolledCourseIds.Contains(c.Id));
+                        myCourses.AddRange(enrolledCourses);
+                    }
+                }
+                else if (role == "Instructor")
+                {
+                    var enrollments = await _enrollmentService.GetInstructorEnrollmentsAsync(userId);
+                    if (enrollments.Success && enrollments.Data != null)
+                    {
+                        var enrolledCourseIds = enrollments.Data
+                            .Where(e => string.Equals(e.Status, "Approved", StringComparison.OrdinalIgnoreCase))
+                            .Select(e => e.CourseId)
+                            .ToHashSet();
+
+                        var enrolledCourses = allCourses.Where(c => enrolledCourseIds.Contains(c.Id));
+                        myCourses.AddRange(enrolledCourses);
+                    }
+                }
+
+                // Deduplicate by ID
+                var result = myCourses.GroupBy(c => c.Id).Select(g => g.First()).ToList();
+
+                return new SuccessServiceResult<IEnumerable<ReadCourseResult>>
+                {
+                    Success = true,
+                    Data = result
+                };
+            }
+            catch (Exception ex)
+            {
+                return new SuccessServiceResult<IEnumerable<ReadCourseResult>>
+                {
+                    Success = false,
+                    Message = $"Error loading your courses: {ex.Message}"
+                };
+            }
         }
 
     }
