@@ -73,6 +73,16 @@ namespace LMS.MVC.Controllers
                     TempData["Error"] = result.Message ?? "Quiz not found.";
                     return RedirectToAction("Index");
                 }
+                // Check enrollment for all authenticated users (except Admin)
+                if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+                {
+                    if (!await CheckEnrollmentAccess(result.Data.CourseId))
+                    {
+                        TempData["Error"] = "You must be enrolled in the course to view this quiz.";
+                        return RedirectToAction("Details", "Course", new { id = result.Data.CourseId });
+                    }
+                }
+
                 // Fetch student status
                 if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
                 {
@@ -95,8 +105,16 @@ namespace LMS.MVC.Controllers
         // GET: Quiz/Create
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
-        public IActionResult Create(string courseId)
+        public async Task<IActionResult> Create(string courseId)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                if (!await CheckEnrollmentAccess(courseId))
+                {
+                    TempData["Error"] = "You must be enrolled in the course to create a quiz.";
+                    return RedirectToAction("Details", "Course", new { id = courseId });
+                }
+            }
             ViewBag.CourseId = courseId;
             return View();
         }
@@ -107,6 +125,15 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Create(CreateQuizViewModel model)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                if (!await CheckEnrollmentAccess(model.CourseId))
+                {
+                    TempData["Error"] = "You must be enrolled in the course to create a quiz.";
+                    return RedirectToAction("Details", "Course", new { id = model.CourseId });
+                }
+            }
+
             // Set InstructorId from current user
             var instructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             model.InstructorId = instructorId;
@@ -215,6 +242,15 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Index");
                 }
 
+                if (!User.IsInRole("Admin"))
+                {
+                    if (!await CheckEnrollmentAccess(result.Data.CourseId))
+                    {
+                        TempData["Error"] = "You must be enrolled in the course to edit this quiz.";
+                        return RedirectToAction("Details", "Course", new { id = result.Data.CourseId });
+                    }
+                }
+
                 // Map QuizItemViewModel to UpdateQuizViewModel
                 var updateModel = new UpdateQuizViewModel
                 {
@@ -286,6 +322,14 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Edit(string id, UpdateQuizViewModel model)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                if (!await CheckEnrollmentAccess(model.CourseId))
+                {
+                    TempData["Error"] = "You must be enrolled in the course to edit this quiz.";
+                    return RedirectToAction("Details", "Course", new { id = model.CourseId });
+                }
+            }
             for (int i = 0; i < model.Questions.Count; i++)
             {
                 var question = model.Questions[i];
@@ -365,6 +409,20 @@ namespace LMS.MVC.Controllers
         {
             try
             {
+                // Security Check: Ensure student is enrolled
+                var quizResult = await _services.QuizService.GetQuizByIdAsync(id);
+                if (!quizResult.Success || quizResult.Data == null)
+                {
+                    TempData["Error"] = "Quiz not found.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (!await CheckEnrollmentAccess(quizResult.Data.CourseId))
+                {
+                    TempData["Error"] = "You must be enrolled in the course to take this quiz.";
+                    return RedirectToAction("Details", "Course", new { id = quizResult.Data.CourseId });
+                }
+
                 // Start the quiz first
                 var startResult = await _services.QuizService.StartQuizAsync(id);
                 if (!startResult.Success)
@@ -476,6 +534,19 @@ namespace LMS.MVC.Controllers
         {
             try
             {
+                if (!User.IsInRole("Admin"))
+                {
+                    var quiz = await _services.QuizService.GetQuizByIdAsync(id);
+                    if (quiz.Success && quiz.Data != null)
+                    {
+                        if (!await CheckEnrollmentAccess(quiz.Data.CourseId))
+                        {
+                            TempData["Error"] = "You must be enrolled in the course to delete this quiz.";
+                            return RedirectToAction("InstructorQuizzes");
+                        }
+                    }
+                }
+
                 var result = await _services.QuizService.DeleteQuizAsync(id);
                 if (result)
                 {
@@ -563,6 +634,16 @@ namespace LMS.MVC.Controllers
                 }
 
                 var quiz = await _services.QuizService.GetQuizByIdAsync(id);
+                
+                if (quiz.Success && quiz.Data != null && !User.IsInRole("Admin"))
+                {
+                    if (!await CheckEnrollmentAccess(quiz.Data.CourseId))
+                    {
+                        TempData["Error"] = "You must be enrolled in the course to view submissions.";
+                        return RedirectToAction("Details", "Course", new { id = quiz.Data.CourseId });
+                    }
+                }
+
                 ViewBag.QuizTitle = quiz.Data?.Title ?? "Quiz";
                 ViewBag.QuizId = id;
 
@@ -585,6 +666,15 @@ namespace LMS.MVC.Controllers
             {
                 TempData["Error"] = result.Message ?? "Error loading student result.";
                 return RedirectToAction("Submissions", new { id = quizId });
+            }
+
+            if (!User.IsInRole("Admin"))
+            {
+                if (!await CheckEnrollmentAccess(result.Data.CourseId))
+                {
+                    TempData["Error"] = "You must be enrolled in the course to grade this quiz.";
+                    return RedirectToAction("Details", "Course", new { id = result.Data.CourseId });
+                }
             }
 
             // Filter to show only short answer questions that require manual grading
@@ -624,6 +714,19 @@ namespace LMS.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Grade(ManualGradeViewModel model)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                var quiz = await _services.QuizService.GetQuizByIdAsync(model.QuizId);
+                if (quiz.Success && quiz.Data != null)
+                {
+                    if (!await CheckEnrollmentAccess(quiz.Data.CourseId))
+                    {
+                        TempData["Error"] = "You must be enrolled in the course to grade this quiz.";
+                        return RedirectToAction("Details", "Course", new { id = quiz.Data.CourseId });
+                    }
+                }
+            }
+
             var dto = new LMS.BusinessLogic.DTOs.Quiz.ManualGradeDTO
             {
                 QuizId = model.QuizId,

@@ -6,6 +6,8 @@ using LMS.BusinessLogic.DTOs.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Tests.Controllers
 {
@@ -26,10 +28,25 @@ namespace LMS.Tests.Controllers
             _controller = new QuizzesController(_mockUnitOfServices.Object);
         }
 
+        private void SetUser(string userId)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            };
+        }
+
         [Fact]
         public async Task CreateQuiz_ReturnsOk_WhenCreationIsSuccessful()
         {
             // Arrange
+            SetUser("user1");
             var createDto = new CreateQuizDTO { Title = "Test Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -54,6 +71,7 @@ namespace LMS.Tests.Controllers
         public async Task CreateQuiz_ReturnsBadRequest_WhenCreationFails()
         {
             // Arrange
+            SetUser("user1");
             var createDto = new CreateQuizDTO { Title = "Test Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -249,6 +267,7 @@ namespace LMS.Tests.Controllers
         public async Task SubmitQuiz_ReturnsOk_WhenSubmissionIsSuccessful()
         {
             // Arrange
+            SetUser("user1");
             var submitDto = new SubmitQuizDTO { QuizId = "1" };
             var responseDto = new ServiceResponseDTO<QuizResultDTO> 
             { 
@@ -273,6 +292,7 @@ namespace LMS.Tests.Controllers
         public async Task SubmitQuiz_ReturnsBadRequest_WhenSubmissionFails()
         {
             // Arrange
+            SetUser("user1");
             var submitDto = new SubmitQuizDTO { QuizId = "1" };
             var responseDto = new ServiceResponseDTO<QuizResultDTO> 
             { 

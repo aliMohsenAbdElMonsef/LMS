@@ -9,6 +9,7 @@ using LMS.DataAccess.Contracts.Repositories;
 using LMS.Entity.Entities.RelationTables;
 using MockQueryable.Moq;
 using Moq;
+using LMS.BusinessLogic.Contracts.Services;
 using Xunit;
 
 namespace LMS.Tests.Services
@@ -21,12 +22,14 @@ namespace LMS.Tests.Services
         private readonly Mock<ICourseRepository> _courseRepoMock;
         private readonly Mock<IStudentEnrollIntoCourseRepository> _studentEnrollmentRepoMock;
         private readonly Mock<IInstructorEnrolltoCourseRepository> _instructorEnrollmentRepoMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
         private readonly LectureService _lectureService;
 
         public LectureServiceTests()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
+            _emailServiceMock = new Mock<IEmailService>();
             _lectureRepoMock = new Mock<ILectureRepository>();
             _courseRepoMock = new Mock<ICourseRepository>();
             _studentEnrollmentRepoMock = new Mock<IStudentEnrollIntoCourseRepository>();
@@ -37,7 +40,7 @@ namespace LMS.Tests.Services
             _unitOfWorkMock.Setup(u => u.StudentEnrollments).Returns(_studentEnrollmentRepoMock.Object);
             _unitOfWorkMock.Setup(u => u.InstructorEnrollments).Returns(_instructorEnrollmentRepoMock.Object);
 
-            _lectureService = new LectureService(_unitOfWorkMock.Object, _mapperMock.Object);
+            _lectureService = new LectureService(_unitOfWorkMock.Object, _mapperMock.Object, _emailServiceMock.Object);
         }
 
         [Fact]
@@ -66,8 +69,9 @@ namespace LMS.Tests.Services
             var result = await _lectureService.CreateAsync(dto, userId, userRole);
 
             // Assert
+            // Assert
             Assert.True(result.Success);
-            Assert.Equal("Entity created successfully.", result.Message);
+            Assert.Equal("Lecture created successfully", result.Message);
         }
 
         [Fact]
@@ -101,7 +105,7 @@ namespace LMS.Tests.Services
             var userRole = "Student";
             var course = new Course { Id = courseId };
             var lecture = new Lecture { Id = lectureId, CourseId = courseId };
-            var enrollment = new StudentEnrollIntoCourse { StudentId = userId, CourseId = courseId };
+            var enrollment = new StudentEnrollIntoCourse { StudentId = userId, CourseId = courseId, Status = ApplicationStatus.Approved };
             var getLectureDto = new GetLectureDTO { Id = lectureId };
 
             _courseRepoMock.Setup(r => r.FindByIdAsync(courseId)).ReturnsAsync(course);

@@ -1,5 +1,7 @@
+using AutoMapper;
 using Domain.Entities.MainEntities;
 using Domain.Enums;
+using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Question;
 using LMS.BusinessLogic.DTOs.Responses;
 using LMS.BusinessLogic.Services;
@@ -15,16 +17,18 @@ namespace LMS.Tests.Services
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly Mock<IQuestionRepository> _mockQuestionRepo;
-        private readonly QuestionServices _service;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly IQuestionServices _service;
 
         public QuestionServicesTests()
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockQuestionRepo = new Mock<IQuestionRepository>();
+            _mockMapper = new Mock<IMapper>();
 
             _mockUnitOfWork.Setup(u => u.Questions).Returns(_mockQuestionRepo.Object);
 
-            _service = new QuestionServices(_mockUnitOfWork.Object);
+            _service = new QuestionServices(_mockUnitOfWork.Object, _mockMapper.Object);
         }
 
         [Fact]
@@ -47,6 +51,15 @@ namespace LMS.Tests.Services
                 .Returns(Task.CompletedTask);
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync())
                 .ReturnsAsync(1);
+
+            _mockMapper.Setup(m => m.Map<Question>(createDto)).Returns(new Question());
+            _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(It.IsAny<Question>()))
+                .Returns(new ReadQuestionDTO
+                {
+                    Text = createDto.Text,
+                    CorrectAnswer = createDto.CorrectAnswer.ToString(),
+                    Points = createDto.Points
+                });
 
             // Act
             var result = await _service.CreateAsync(createDto);
@@ -119,6 +132,15 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync())
                 .ReturnsAsync(1);
 
+            _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(existingQuestion))
+                .Returns(new ReadQuestionDTO
+                {
+                    Text = updateDto.Text,
+                    OptionA = updateDto.OptionA,
+                    CorrectAnswer = "OptionB",
+                    Points = updateDto.Points.Value
+                });
+
             // Act
             var result = await _service.UpdateAsync(updateDto);
 
@@ -146,9 +168,12 @@ namespace LMS.Tests.Services
             _mockQuestionRepo.Setup(r => r.FindByIdAsync("nonexistent"))
                 .ReturnsAsync((Question?)null);
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _service.UpdateAsync(updateDto));
-            Assert.Contains("not found", exception.Message);
+            // Act
+            var result = await _service.UpdateAsync(updateDto);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Equal("Entity Not Found.", result.Message);
         }
 
         [Fact]
@@ -186,6 +211,15 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync())
                 .ReturnsAsync(1);
 
+            _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(existingQuestion))
+                .Returns(new ReadQuestionDTO
+                {
+                    Text = updateDto.Text,
+                    OptionA = existingQuestion.OptionA,
+                    CorrectAnswer = existingQuestion.CorrectAnswer.ToString(),
+                    Points = existingQuestion.Points
+                });
+
             // Act
             var result = await _service.UpdateAsync(updateDto);
 
@@ -217,7 +251,7 @@ namespace LMS.Tests.Services
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync(questionId))
                 .ReturnsAsync(existingQuestion);
-            _mockQuestionRepo.Setup(r => r.DeleteWithIDAsync(questionId))
+            _mockQuestionRepo.Setup(r => r.DeleteByEntityAsync(existingQuestion))
                 .Returns(Task.CompletedTask);
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync())
                 .ReturnsAsync(1);
@@ -229,7 +263,7 @@ namespace LMS.Tests.Services
             Assert.True(result.Success);
             Assert.Equal("Entity Deleted Succesfully.", result.Message);
             _mockQuestionRepo.Verify(r => r.FindByIdAsync(questionId), Times.Once);
-            _mockQuestionRepo.Verify(r => r.DeleteWithIDAsync(questionId), Times.Once);
+            _mockQuestionRepo.Verify(r => r.DeleteByEntityAsync(existingQuestion), Times.Once);
         }
 
         [Fact]
@@ -247,7 +281,7 @@ namespace LMS.Tests.Services
             // Assert
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
-            _mockQuestionRepo.Verify(r => r.DeleteWithIDAsync(It.IsAny<string>()), Times.Never);
+            _mockQuestionRepo.Verify(r => r.DeleteByEntityAsync(It.IsAny<Question>()), Times.Never);
         }
 
         [Fact]
@@ -270,6 +304,15 @@ namespace LMS.Tests.Services
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync(questionId))
                 .ReturnsAsync(question);
+
+            _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(question))
+                .Returns(new ReadQuestionDTO
+                {
+                    Id = question.Id,
+                    Text = question.Text,
+                    CorrectAnswer = question.CorrectAnswer.ToString(),
+                    Points = question.Points
+                });
 
             // Act
             var result = await _service.GetByIdAsync(questionId);
@@ -336,6 +379,13 @@ namespace LMS.Tests.Services
             _mockQuestionRepo.Setup(r => r.GetAllAsync())
                 .ReturnsAsync(questions);
 
+            _mockMapper.Setup(m => m.Map<IEnumerable<ReadQuestionDTO>>(questions))
+                .Returns(new List<ReadQuestionDTO>
+                {
+                    new ReadQuestionDTO { Id = "1", Text = "Question 1" },
+                    new ReadQuestionDTO { Id = "2", Text = "Question 2" }
+                });
+
             // Act
             var result = await _service.GetAllAsync();
 
@@ -355,6 +405,9 @@ namespace LMS.Tests.Services
 
             _mockQuestionRepo.Setup(r => r.GetAllAsync())
                 .ReturnsAsync(emptyList);
+
+            _mockMapper.Setup(m => m.Map<IEnumerable<ReadQuestionDTO>>(emptyList))
+                .Returns(new List<ReadQuestionDTO>());
 
             // Act
             var result = await _service.GetAllAsync();
@@ -384,6 +437,9 @@ namespace LMS.Tests.Services
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync("1"))
                 .ReturnsAsync(question);
+
+            _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(question))
+                .Returns(new ReadQuestionDTO { CorrectAnswer = "OptionD" });
 
             // Act
             var result = await _service.GetByIdAsync("1");

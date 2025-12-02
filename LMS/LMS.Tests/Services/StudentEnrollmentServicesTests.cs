@@ -19,7 +19,7 @@ namespace LMS.Tests.Services
         private readonly Mock<IStudentEnrollIntoCourseRepository> _studentEnrollRepoMock;
         private readonly Mock<ICourseRepository> _courseRepoMock;
         private readonly Mock<IUserRepository> _userRepoMock;
-        private readonly Mock<INotificationService> _notificationServiceMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
         private readonly StudentEnrollIntoCourseService _enrollmentService;
 
         public StudentEnrollmentServicesTests()
@@ -28,13 +28,13 @@ namespace LMS.Tests.Services
             _studentEnrollRepoMock = new Mock<IStudentEnrollIntoCourseRepository>();
             _courseRepoMock = new Mock<ICourseRepository>();
             _userRepoMock = new Mock<IUserRepository>();
-            _notificationServiceMock = new Mock<INotificationService>();
+            _emailServiceMock = new Mock<IEmailService>();
 
             _unitOfWorkMock.Setup(u => u.StudentEnrollments).Returns(_studentEnrollRepoMock.Object);
             _unitOfWorkMock.Setup(u => u.Courses).Returns(_courseRepoMock.Object);
             _unitOfWorkMock.Setup(u => u.Users).Returns(_userRepoMock.Object);
 
-            _enrollmentService = new StudentEnrollIntoCourseService(_unitOfWorkMock.Object, _notificationServiceMock.Object);
+            _enrollmentService = new StudentEnrollIntoCourseService(_unitOfWorkMock.Object, _emailServiceMock.Object);
         }
 
         [Fact]
@@ -80,13 +80,14 @@ namespace LMS.Tests.Services
                 StudentId = "student1", 
                 CourseId = "course1", 
                 Status = ApplicationStatus.Pending,
-                Course = new Course { Name = "Test Course" }
+                Course = new Course { Name = "Test Course" },
+                Student = new ApplicationUser { UserName = "student1", Email = "student@test.com" }
             };
 
-            _studentEnrollRepoMock.Setup(r => r.GetFirstOrDefaultAsync("student1", "course1", "Course")).ReturnsAsync(enrollment);
+            _studentEnrollRepoMock.Setup(r => r.GetFirstOrDefaultAsync("student1", "course1", "Student,Course")).ReturnsAsync(enrollment);
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
-            _notificationServiceMock.Setup(n => n.CreateNotificationAsync(It.IsAny<CreateNotificationDTO>()))
-                .ReturnsAsync(new ServiceResponseDTO<ReadNotificationDTO> { Success = true });
+            _emailServiceMock.Setup(e => e.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
 
             // Act
             var result = await _enrollmentService.ApproveEnrollment(dto);
@@ -95,7 +96,7 @@ namespace LMS.Tests.Services
             Assert.True(result.Success);
             Assert.Equal("Enrollment approved successfully.", result.Message);
             Assert.Equal(ApplicationStatus.Approved, enrollment.Status);
-            _notificationServiceMock.Verify(n => n.CreateNotificationAsync(It.IsAny<CreateNotificationDTO>()), Times.Once);
+            _emailServiceMock.Verify(e => e.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

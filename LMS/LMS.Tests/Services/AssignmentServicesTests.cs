@@ -9,6 +9,7 @@ using LMS.DataAccess.Contracts;
 using LMS.DataAccess.Contracts.Repositories;
 using LMS.Entity.Enums;
 using Moq;
+using LMS.BusinessLogic.Contracts.Services;
 using Xunit;
 
 namespace LMS.Tests.Services
@@ -21,12 +22,14 @@ namespace LMS.Tests.Services
         private readonly Mock<ICourseRepository> _courseRepoMock;
         private readonly Mock<IUserRepository> _userRepoMock;
         private readonly Mock<IStudentEnrollIntoCourseRepository> _studentEnrollmentRepoMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
         private readonly AssignmentServices _assignmentServices;
 
         public AssignmentServicesTests()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
+            _emailServiceMock = new Mock<IEmailService>();
             _assignmentRepoMock = new Mock<IAssignmentRepository>();
             _courseRepoMock = new Mock<ICourseRepository>();
             _userRepoMock = new Mock<IUserRepository>();
@@ -37,7 +40,7 @@ namespace LMS.Tests.Services
             _unitOfWorkMock.Setup(u => u.Users).Returns(_userRepoMock.Object);
             _unitOfWorkMock.Setup(u => u.StudentEnrollments).Returns(_studentEnrollmentRepoMock.Object);
 
-            _assignmentServices = new AssignmentServices(_unitOfWorkMock.Object, _mapperMock.Object);
+            _assignmentServices = new AssignmentServices(_unitOfWorkMock.Object, _mapperMock.Object, _emailServiceMock.Object);
         }
 
         [Fact]
@@ -45,7 +48,7 @@ namespace LMS.Tests.Services
         {
             // Arrange
             var dto = new SubmitAssignmentDTO { AssignmentId = "assign1", StudentId = "student1", FilePath = "path/to/file" };
-            var assignment = new Assignment { Id = "assign1" };
+            var assignment = new Assignment { Id = "assign1", DueDate = DateTime.UtcNow.AddDays(1) };
             var student = new ApplicationUser { Id = "student1" };
             var submissionDto = new StudentAssignmentDTO { Id = "sub1", Status = AssignmentStatus.PendingGrading };
 

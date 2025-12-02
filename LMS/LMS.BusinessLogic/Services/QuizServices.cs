@@ -313,6 +313,13 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz is not currently available." };
                 }
 
+                // Check enrollment
+                var isEnrolled = await _unitOfWork.StudentEnrollments.IsStudentEnrolledInCourseAsync(studentId, quiz.CourseId);
+                if (!isEnrolled)
+                {
+                    return new ServiceResponseDTO<bool> { Success = false, Message = "You must be enrolled in the course to take this quiz." };
+                }
+
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
 
                 // Check max attempts
@@ -395,6 +402,13 @@ namespace LMS.BusinessLogic.Services
                     var msg = $"Quiz is not currently available. Now: {DateTime.Now}, Start: {quiz.StartDate}, End: {quiz.EndDate}";
                     Console.WriteLine($"❌ {msg}");
                     return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = msg };
+                }
+
+                // Check enrollment
+                var isEnrolled = await _unitOfWork.StudentEnrollments.IsStudentEnrolledInCourseAsync(studentId, quiz.CourseId);
+                if (!isEnrolled)
+                {
+                    return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "You must be enrolled in the course to take this quiz." };
                 }
 
                 var studentQuizSet = _unitOfWork.GetQueryable<StudentQuiz>();
@@ -486,6 +500,15 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<QuizResultDTO>
                     {
                         Message = "Quiz not found."
+                    };
+                }
+
+                if (quiz.StartDate > DateTime.UtcNow || quiz.EndDate < DateTime.UtcNow)
+                {
+                    return new ServiceResponseDTO<QuizResultDTO>
+                    {
+                        Success = false,
+                        Message = "Quiz is not currently available."
                     };
                 }
 
@@ -763,7 +786,18 @@ namespace LMS.BusinessLogic.Services
             try
             {
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
-                var attempt = await studentQuizSet.FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId);
+                var attempts = await studentQuizSet
+                    .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId)
+                    .ToListAsync();
+                
+                // Prioritize completed/graded attempts with highest grade
+                var bestAttempt = attempts
+                    .Where(a => a.Status == QuizStatus.Completed || a.Status == QuizStatus.Graded)
+                    .OrderByDescending(a => a.Grade)
+                    .FirstOrDefault();
+
+                // If no completed attempt, take the latest one (e.g. InProgress)
+                var attempt = bestAttempt ?? attempts.OrderByDescending(a => a.StartTime).FirstOrDefault();
 
                 if (attempt == null)
                 {
@@ -815,7 +849,16 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz not found." };
 
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
-                var attempt = await studentQuizSet.FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId);
+                var attempts = await studentQuizSet
+                    .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId)
+                    .ToListAsync();
+
+                var bestAttempt = attempts
+                    .Where(a => a.Status == QuizStatus.Completed || a.Status == QuizStatus.Graded)
+                    .OrderByDescending(a => a.Grade)
+                    .FirstOrDefault();
+
+                var attempt = bestAttempt ?? attempts.OrderByDescending(a => a.StartTime).FirstOrDefault();
 
                 if (attempt == null || (attempt.Status != QuizStatus.Completed && attempt.Status != QuizStatus.Graded))
                 {

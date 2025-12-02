@@ -24,9 +24,13 @@ namespace LMS.Tests.Controllers
             _controller = new TokenController(_mockService.Object);
         }
 
-        private void SetUserRole(string role)
+        private void SetUser(string role, string userId = "testuser")
         {
-            var claims = new List<Claim> { new Claim(ClaimTypes.Role, role) };
+            var claims = new List<Claim> 
+            { 
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            };
             var identity = new ClaimsIdentity(claims, "TestAuth");
             var principal = new ClaimsPrincipal(identity);
             _controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = principal } };
@@ -35,9 +39,13 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task RefreshToken_MissingJwt_ReturnsUnauthorized()
         {
+            // Even if JWT is missing/invalid, the controller might expect a User principal to be present (e.g. from middleware)
+            // or we need to simulate an unauthenticated user if that's the goal. 
+            // But to avoid NRE in controller, we often need to set at least an empty context or a user.
+            SetUser("User"); 
             // No Authorization header set
             var dto = new RefreshTokenDTO { RefreshToken = "someRefreshToken" };
-            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken))
+            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken, It.IsAny<string>()))
                 .ReturnsAsync(new RefreshTokenResponseDTO { Success = false, Message = "Invalid token" });
             
             var result = await _controller.RefreshToken(dto);
@@ -47,9 +55,10 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task RefreshToken_MalformedJwt_ReturnsUnauthorized()
         {
+            SetUser("User");
             // Simulate malformed token by not setting user claims
             var dto = new RefreshTokenDTO { RefreshToken = "malformedToken" };
-            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken))
+            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken, It.IsAny<string>()))
                 .ReturnsAsync(new RefreshTokenResponseDTO { Success = false, Message = "Malformed token" });
             
             var result = await _controller.RefreshToken(dto);
@@ -59,9 +68,9 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task RefreshToken_ExpiredRefreshToken_ReturnsUnauthorized()
         {
-            SetUserRole("User");
+            SetUser("User");
             var dto = new RefreshTokenDTO { RefreshToken = "expiredToken" };
-            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken))
+            _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken, It.IsAny<string>()))
                 .ReturnsAsync(new RefreshTokenResponseDTO { Success = false, Message = "Refresh token expired" });
             
             var result = await _controller.RefreshToken(dto);

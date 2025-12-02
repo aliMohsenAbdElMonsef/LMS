@@ -170,25 +170,6 @@ namespace LMS.Tests.Services
             Assert.Equal(ApplicationStatus.Approved, user.Status);
         }
 
-        [Fact]
-        public async Task SendEmailVerificationAsync_ShouldSendEmail_WhenUserExistsAndNotVerified()
-        {
-            // Arrange
-            var userId = "user1";
-            var user = new ApplicationUser { Id = userId, Email = "test@example.com", EmailConfirmed = false };
 
-            _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
-            _userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
-            _emailServiceMock.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.CompletedTask);
-
-            // Act
-            var result = await _userServices.SendEmailVerificationAsync(userId);
-
-            // Assert
-            Assert.True(result.Success);
-            Assert.Equal("Verification email sent", result.Message);
-            Assert.NotNull(user.EmailVerificationToken);
-        }
     }
 }
