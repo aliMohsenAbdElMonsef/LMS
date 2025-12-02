@@ -36,17 +36,21 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong><i class="fas fa-book me-2"></i>Course:</strong> @Model.CourseName
+                            <strong><i class="fas fa-book me-2"></i>Course:</strong>
+                            <span class="assignment-meta-text">@Model.CourseName</span>
                         </div>
                         <div class="col-md-6">
-                            <strong><i class="fas fa-user-tie me-2"></i>Instructor:</strong> @Model.InstructorName
+                            <strong><i class="fas fa-user-tie me-2"></i>Instructor:</strong>
+                            <span class="assignment-meta-text">@Model.InstructorName</span>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong><i class="fas fa-calendar-plus me-2"></i>Upload Date:</strong>
-                            @Model.UploadDate.ToLocalTime().ToString("MMM dd, yyyy")
+                            <span class="assignment-meta-text">
+                                @Model.UploadDate.ToLocalTime().ToString("MMM dd, yyyy")
+                            </span>
                         </div>
                         <div class="col-md-6">
                             <strong><i class="fas fa-calendar-check me-2"></i>Due Date:</strong>
@@ -64,7 +68,7 @@
                     {
                         <div class="mb-3">
                             <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
-                            <p class="mt-2 p-3 bg-light rounded">@Model.Description</p>
+                            <p class="mt-2 p-3 rounded" style="background: var(--bg-tertiary) !important; color: #ffffff !important;">@Model.Description</p>
                         </div>
                     }
 

@@ -1,0 +1,46 @@
+@model IEnumerable<LMS.MVC.Models.ViewModels.Category.ReadCategoryResult>
+
+@{
+    ViewData["Title"] = "All Categories";
+}
+
+<div class="container py-5">
+    <div class="section-header text-center mb-5">
+        <h2 class="section-title">All Categories</h2>
+        <p class="section-subtitle">Explore our wide range of learning topics</p>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var category in Model)
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="category-card" onclick="window.location.href='/Category/Details/@category.Id'">
+                        <div class="category-icon">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                        <h3 class="category-title">@category.Name</h3>
+                        <p class="category-count">@category.CoursesCount Courses</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No categories available.</p>
+            </div>
+        }
+    </div>
+    
+    <div class="mt-5 text-center">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+
+<script>
+    function redirectToLogin() {
+        window.location.href = '/Account/Login';
+    }
+</script>

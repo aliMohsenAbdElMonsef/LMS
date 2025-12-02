@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfServices _services;
@@ -17,6 +16,23 @@ namespace LMS.MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var categories = await _services.CategoryService.GetAllCategories();
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error loading categories: {ex.Message}";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Details(string id)
         {
             try
@@ -25,7 +41,7 @@ namespace LMS.MVC.Controllers
                 if (result == null)
                 {
                     TempData["Error"] = "Category not found.";
-                    return RedirectToAction("CategoryManagement", "Dashboard");
+                    return RedirectToAction("Index", "Home");
                 }
 
                 return View("Details", result);
@@ -33,11 +49,12 @@ namespace LMS.MVC.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = $"Error loading category: {ex.Message}";
-                return RedirectToAction("CategoryManagement", "Dashboard");
+                return RedirectToAction("Index", "Home");
             }
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id) 
         {
             try
@@ -58,6 +75,7 @@ namespace LMS.MVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(ReadCategoryResult model)
         {
             if (!ModelState.IsValid)
@@ -95,6 +113,7 @@ namespace LMS.MVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var model = _services.CategoryService.GetCreateModel();
@@ -103,6 +122,7 @@ namespace LMS.MVC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ReadCategoryResult model)
         {
             if (!ModelState.IsValid)

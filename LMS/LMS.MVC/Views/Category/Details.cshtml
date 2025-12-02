@@ -8,17 +8,23 @@
     <hr />
 
     <dl class="row">
-        <dt class="col-sm-3">ID</dt>
-        <dd class="col-sm-9">@Model.Id</dd>
+        @if (User.IsInRole("Admin"))
+        {
+            <dt class="col-sm-3">ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+        }
 
         <dt class="col-sm-3">Description</dt>
         <dd class="col-sm-9">@(Model.Description ?? "No description")</dd>
 
-        <dt class="col-sm-3">Created On</dt>
-        <dd class="col-sm-9">@Model.CreationDate.ToString("yyyy-MM-dd")</dd>
+        @if (User.IsInRole("Admin"))
+        {
+            <dt class="col-sm-3">Created On</dt>
+            <dd class="col-sm-9">@Model.CreationDate.ToString("yyyy-MM-dd")</dd>
 
-        <dt class="col-sm-3">Last Updated</dt>
-        <dd class="col-sm-9">@(Model.LastUpdated?.ToString("yyyy-MM-dd") ?? "Never")</dd>
+            <dt class="col-sm-3">Last Updated</dt>
+            <dd class="col-sm-9">@(Model.LastUpdated?.ToString("yyyy-MM-dd") ?? "Never")</dd>
+        }
 
         <dt class="col-sm-3">Total Courses</dt>
         <dd class="col-sm-9">@Model.CoursesCount</dd>
@@ -59,10 +65,14 @@
     }
 
     <div class="mt-3">
-        <a asp-action="CategoryManagement" asp-controller="Dashboard" class="btn btn-secondary">Back to Categories</a>
         @if (User.IsInRole("Admin"))
         {
+            <a asp-action="CategoryManagement" asp-controller="Dashboard" class="btn btn-secondary">Back to Categories</a>
             <a asp-action="Edit" asp-controller="Category" asp-route-id="@Model.Id" class="btn btn-primary">Edit Category</a>   
+        }
+        else
+        {
+             <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Back to Home</a>
         }
     </div>
 </div>

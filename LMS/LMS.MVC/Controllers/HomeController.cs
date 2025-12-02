@@ -41,9 +41,9 @@ namespace LMS.MVC.Controllers
                     TotalInstructors = userCounts.InstructorCount,
                     TotalCourses = totalCourses,
                     
-                    // Fetch lists using HomeService (Remote logic)
-                    Categories = await _services.HomeService.GetTopCategoriesAsync(6),
-                    PopularCourses = await _services.HomeService.GetPopularCoursesAsync(6)
+                    // Fetch all items - view will handle showing appropriate count
+                    Categories = await _services.HomeService.GetTopCategoriesAsync(100), // Load more to show all
+                    PopularCourses = await _services.HomeService.GetPopularCoursesAsync(100) // Load more to show all
                 };
 
                 return View(viewModel);
