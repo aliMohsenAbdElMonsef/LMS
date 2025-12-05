@@ -1,0 +1,20 @@
+--- a/LMS/LMS.API/Controllers/LectureController.cs
++++ b/LMS/LMS.API/Controllers/LectureController.cs
+@@ -173,6 +173,18 @@ namespace LMS.API.Controllers
+             return result.Success ? Ok(result) : BadRequest(result);
+         }
+ 
++        [HttpPost("{lectureId}/upload-content")]
++        [Authorize(Roles = "Admin,Instructor")]
++        public async Task<IActionResult> UploadLectureContent(string lectureId, [FromForm] IFormFile? recording, [FromForm] IFormFile? materials)
++        {
++            var userId = GetCurrentUserId();
++            var userRole = GetCurrentUserRole();
++
++            var result = await _unitOfServices.Lectures.UploadLectureContentAsync(lectureId, recording, materials, userId, userRole);
++            return result.Success ? Ok(result) : BadRequest(result);
++        }
++
+         private ServiceResponseDTO<T> CreateErrorResponse<T>(string message, List<string> errors = null)
+         {
+             return new ServiceResponseDTO<T>

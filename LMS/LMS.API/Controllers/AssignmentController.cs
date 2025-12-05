@@ -26,45 +26,29 @@ namespace LMS.API.Controllers
         private string? GetCurrentUserId() => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         private IAssignmentServices AssignmentService => _unitOfServices.Assignments;
 
-        // ============== FILE UPLOAD ENDPOINTS ==============
-
         [HttpPost("create-with-file")]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<ActionResult<ServiceResponseDTO<ReadAssignmentDTO>>> CreateAssignmentWithFile(
             [FromForm] CreateAssignmentDTO assignment,
             [FromForm] IFormFile? assignmentFile)
         {
-            Console.WriteLine("=== API: CreateAssignmentWithFile ===");
-            Console.WriteLine($"Assignment Title: {assignment.Title}");
-            Console.WriteLine($"Assignment CourseId: {assignment.CourseId}");
-            Console.WriteLine($"File: {assignmentFile?.FileName ?? "NULL"}");
-            Console.WriteLine($"File Size: {assignmentFile?.Length ?? 0} bytes");
-
             try
             {
                 var instructorId = GetCurrentUserId() ?? "";
-                Console.WriteLine($"InstructorId: {instructorId}");
 
                 assignment.InstructorId = instructorId;
                 assignment.FilePath = "";
-                Console.WriteLine("✅ Creating assignment...");
                 var result = await AssignmentService.CreateAsync(assignment);
 
                 if (!result.Success)
                 {
-                    Console.WriteLine($"❌ Create failed: {result.Message}");
                     return BadRequest(result);
                 }
 
-                Console.WriteLine($"✅ Assignment created: {result.Data?.Id}");
-
                 if (assignmentFile != null && result.Data != null)
                 {
-                    Console.WriteLine("✅ Uploading file...");
                     var filePath = await _fileUploadService.UploadAssignmentFileAsync(
                         assignmentFile, result.Data.Id);
-
-                    Console.WriteLine($"✅ File uploaded to: {filePath}");
 
                     var updateDto = new UpdateAssignmentDTO
                     {
@@ -75,16 +59,13 @@ namespace LMS.API.Controllers
                         FilePath = filePath
                     };
 
-                    Console.WriteLine("✅ Updating assignment with file path...");
                     result = await AssignmentService.UpdateAsync(updateDto);
-                    Console.WriteLine($"✅ Update complete");
                 }
 
                 return Ok(result);
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"❌ Argument Exception: {ex.Message}");
                 return BadRequest(new ServiceResponseDTO<ReadAssignmentDTO>
                 {
                     Success = false,
@@ -93,8 +74,6 @@ namespace LMS.API.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack: {ex.StackTrace}");
                 return BadRequest(new ServiceResponseDTO<ReadAssignmentDTO>
                 {
                     Success = false,
@@ -162,8 +141,6 @@ namespace LMS.API.Controllers
                 return BadRequest(new { message = $"Error downloading file: {ex.Message}" });
             }
         }
-        
-        // ============== ORIGINAL ENDPOINTS ==============
 
         [HttpPost("create")]
         [Authorize(Roles = "Instructor,Admin")]
@@ -292,18 +269,15 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Instructor")]
         public async Task<ActionResult<ServiceResponseDTO<bool>>> DeleteAssignment(string id)
         {
-            // Get assignment details first to delete associated files
             var assignmentResult = await AssignmentService.GetAssignmentWithDetailsAsync(id);
 
             if (assignmentResult.Success && assignmentResult.Data != null)
             {
-                // Delete assignment file
                 if (!string.IsNullOrEmpty(assignmentResult.Data.FilePath))
                 {
                     await _fileUploadService.DeleteFileAsync(assignmentResult.Data.FilePath);
                 }
 
-                // Delete all submission files
                 if (assignmentResult.Data.StudentSubmissions != null)
                 {
                     foreach (var submission in assignmentResult.Data.StudentSubmissions)
@@ -327,7 +301,6 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ServiceResponseDTO<List<StudentAssignmentDTO>>>> GetStudentSubmissions(string studentId)
         {
-            // Verify the requesting user is the same as studentId
             var currentUserId = GetCurrentUserId();
             if (currentUserId != studentId)
             {

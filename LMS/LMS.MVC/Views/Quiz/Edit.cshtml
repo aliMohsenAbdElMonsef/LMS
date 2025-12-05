@@ -31,7 +31,7 @@
                         <input type="hidden" name="CourseId" value="@Model.CourseId" />
                         <input type="hidden" name="InstructorId" value="@Model.InstructorId" />
 
-                        <!-- Quiz Details -->
+
                         <div class="row g-3 mb-4">
                             <div class="col-12">
                                 <label class="form-label">Quiz Title <span class="text-danger">*</span></label>
@@ -69,7 +69,7 @@
                             </div>
                         </div>
 
-                        <!-- Questions Section -->
+
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5><i class="bi bi-list-ol"></i> Questions</h5>
@@ -114,7 +114,7 @@
                                             <div class="options-section" id="options-section-@i">
                                                 <label class="form-label">Answer Options</label>
                                                 
-                                                <!-- Option A -->
+
                                                 <div class="input-group mb-2 option-group">
                                                     <span class="input-group-text fw-bold">A</span>
                                                     <input type="text" class="form-control option-input" name="Questions[@i].OptionA" value="@question.OptionA" placeholder="Option A text" required>
@@ -124,7 +124,7 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Option B -->
+
                                                 <div class="input-group mb-2 option-group">
                                                     <span class="input-group-text fw-bold">B</span>
                                                     <input type="text" class="form-control option-input" name="Questions[@i].OptionB" value="@question.OptionB" placeholder="Option B text" required>
@@ -134,7 +134,7 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Option C -->
+
                                                 <div class="input-group mb-2 option-group option-c-d @(question.Type == "TrueFalse" ? "d-none" : "")">
                                                     <span class="input-group-text fw-bold">C</span>
                                                     <input type="text" class="form-control option-input" name="Questions[@i].OptionC" value="@question.OptionC" placeholder="Option C text" required>
@@ -144,7 +144,7 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Option D -->
+
                                                 <div class="input-group mb-2 option-group option-c-d @(question.Type == "TrueFalse" ? "d-none" : "")">
                                                     <span class="input-group-text fw-bold">D</span>
                                                     <input type="text" class="form-control option-input" name="Questions[@i].OptionD" value="@question.OptionD" placeholder="Option D text" required>
@@ -184,9 +184,9 @@
 
 @section Scripts {
     <script>
-        // Debug form submission
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize question type visibility for existing questions
+
             const questionTypeSelects = document.querySelectorAll('select[name^="Questions"][name$=".Type"]');
             questionTypeSelects.forEach((select, index) => {
                 handleTypeChange(select, index);
@@ -198,7 +198,7 @@
                     console.log('Form submitting...');
                     console.log('Form data:', new FormData(form));
                     
-                    // Check if there are any validation errors
+
                     const invalidInputs = form.querySelectorAll(':invalid');
                     if (invalidInputs.length > 0) {
                         console.error('Invalid inputs found:', invalidInputs);
@@ -311,12 +311,12 @@
             const inputs = optionsSection.querySelectorAll('input');
             const optionCD = optionsSection.querySelectorAll('.option-c-d');
             
-            // Reset visibility
+
             optionsSection.classList.remove('d-none');
             shortAnswerNote.classList.add('d-none');
             optionCD.forEach(el => el.classList.remove('d-none'));
             
-            // Reset required and enabled
+
             inputs.forEach(input => {
                 input.required = true;
                 input.disabled = false;

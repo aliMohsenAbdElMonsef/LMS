@@ -44,7 +44,7 @@ namespace LMS.BusinessLogic.Services
                     AverageStudentProgress = enrollments.Any() ? enrollments.Average(e => e.progress) : 0
                 };
 
-                // Get top 5 courses by enrollment
+
                 var topCourses = courses
                     .Select(c => new CourseStatsDTO
                     {
@@ -113,7 +113,7 @@ namespace LMS.BusinessLogic.Services
                     AverageStudentPerformance = myStudents.Any() ? myStudents.Average(s => s.progress) : 0
                 };
 
-                // Get course stats
+
                 var myCourseStats = courses
                     .Where(c => myCourseIds.Contains(c.Id))
                     .Select(c => new CourseStatsDTO
@@ -185,7 +185,7 @@ namespace LMS.BusinessLogic.Services
                     OverallProgress = myEnrollments.Any() ? myEnrollments.Average(e => e.progress) : 0
                 };
 
-                // Get course progress
+
                 var courses = await _unitOfWork.Courses.GetAllAsync();
                 var courseProgress = myEnrollments.Select(e =>
                 {

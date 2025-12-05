@@ -15,7 +15,7 @@ namespace LMS.BusinessLogic.Mappings
             .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(_ => DateTime.UtcNow));
 
             CreateMap<Category, ReadCategoryDTO>()
-                .ForMember(dest => dest.AdminName, opt => opt.MapFrom(src => src.Admin.UserName)) // if you have Admin relation
+                .ForMember(dest => dest.AdminName, opt => opt.MapFrom(src => src.Admin.UserName))
                 .ForMember(dest => dest.CoursesCount, opt => opt.MapFrom(src => src.Courses.Count));
 
             CreateMap<UpdateCategoryDTO, Category>();

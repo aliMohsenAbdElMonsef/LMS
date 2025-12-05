@@ -1,0 +1,78 @@
+2
+4
+TrafficDensity
+3
+low
+2
+0
+0
+10
+20
+medium
+1
+15 25 35
+high
+2
+30 40 50 50
+WaitingTime
+3
+short
+2
+0 0 20 40
+medium
+1
+30 55 80
+long
+2
+70 90 120 120
+QueueLength
+3
+short
+2
+0 0 3 6
+medium
+1
+4 8 12
+long
+2
+10 14 20 20
+GreenDuration
+3
+short
+1
+10 15 25
+medium
+1
+20 35 50
+long
+2
+45 55 60 60
+1
+1
+1
+1
+IF TrafficDensity IS High AND WaitingTime IS Long AND QueueLength IS Long THEN GreenDuration IS Long
+1
+IF TrafficDensity IS High AND WaitingTime IS Medium AND QueueLength IS Medium THEN GreenDuration IS Medium
+1
+IF TrafficDensity IS Low AND WaitingTime IS Short AND QueueLength IS Short THEN GreenDuration IS Short
+1
+IF TrafficDensity IS Medium AND WaitingTime IS Long AND QueueLength IS Long THEN GreenDuration IS Long
+1
+IF TrafficDensity IS Low AND WaitingTime IS Long AND QueueLength IS Medium THEN GreenDuration IS Medium
+1
+IF TrafficDensity IS Medium AND WaitingTime IS Medium AND QueueLength IS Short THEN GreenDuration IS Medium
+1
+IF TrafficDensity IS High AND WaitingTime IS Short AND QueueLength IS Long THEN GreenDuration IS Medium
+1
+IF TrafficDensity IS Medium AND WaitingTime IS Short AND QueueLength IS Medium THEN GreenDuration IS Short
+5
+1
+GreenDuration
+Enter value for TrafficDensity: 35
+Enter value for WaitingTime: 80
+Enter value for QueueLength: 18
+
+
+output: 55.0 Seconds
+

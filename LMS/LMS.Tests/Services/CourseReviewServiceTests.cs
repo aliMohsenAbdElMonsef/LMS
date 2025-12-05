@@ -25,7 +25,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetCourseRatingStatsAsync_CalculatesCorrectAverage()
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = new List<CourseReview>
             {
@@ -36,19 +36,19 @@ namespace LMS.Tests.Services
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseRatingStatsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
-            Assert.Equal(4.0, result.Data!.AverageRating); // (5+4+3)/3 = 4.0
+            Assert.Equal(4.0, result.Data!.AverageRating);
             Assert.Equal(3, result.Data.TotalReviews);
         }
 
         [Fact]
         public async Task GetCourseRatingStatsAsync_CountsStarDistribution()
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = new List<CourseReview>
             {
@@ -62,10 +62,10 @@ namespace LMS.Tests.Services
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseRatingStatsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(2, result.Data!.FiveStars);
             Assert.Equal(1, result.Data.FourStars);
@@ -77,16 +77,16 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetCourseRatingStatsAsync_ReturnsZeroForNoReviews()
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = new List<CourseReview>().BuildMockDbSet().Object;
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseRatingStatsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(0, result.Data!.AverageRating);
             Assert.Equal(0, result.Data.TotalReviews);
@@ -95,23 +95,23 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetCourseRatingStatsAsync_IgnoresDeletedReviews()
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = new List<CourseReview>
             {
                 new CourseReview { Id = "1", CourseId = courseId, Rating = 5, IsDeleted = false, Course = new Course { Name = "Test" } },
-                new CourseReview { Id = "2", CourseId = courseId, Rating = 1, IsDeleted = true, Course = new Course { Name = "Test" } }, // Should be ignored
+                new CourseReview { Id = "2", CourseId = courseId, Rating = 1, IsDeleted = true, Course = new Course { Name = "Test" } },
                 new CourseReview { Id = "3", CourseId = courseId, Rating = 5, IsDeleted = false, Course = new Course { Name = "Test" } }
             }.BuildMockDbSet().Object;
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseRatingStatsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
-            Assert.Equal(5.0, result.Data!.AverageRating); // (5+5)/2 = 5.0, ignoring deleted review
+            Assert.Equal(5.0, result.Data!.AverageRating);
             Assert.Equal(2, result.Data.TotalReviews);
         }
 
@@ -122,7 +122,7 @@ namespace LMS.Tests.Services
         [InlineData(new[] { 5, 4 }, 4.5)]
         public async Task GetCourseRatingStatsAsync_CalculatesVariousAverages(int[] ratings, double expectedAverage)
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = ratings.Select((rating, index) => new CourseReview
             {
@@ -135,10 +135,10 @@ namespace LMS.Tests.Services
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseRatingStatsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(expectedAverage, result.Data!.AverageRating);
         }
@@ -146,7 +146,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetCourseReviewsAsync_ReturnsOnlyNonDeletedReviews()
         {
-            // Arrange
+
             var courseId = "course1";
             var reviews = new List<CourseReview>
             {
@@ -157,10 +157,10 @@ namespace LMS.Tests.Services
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetCourseReviewsAsync(courseId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(2, result.Data!.Count());
         }
@@ -168,7 +168,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetStudentReviewsAsync_ReturnsOnlyStudentReviews()
         {
-            // Arrange
+
             var studentId = "student1";
             var reviews = new List<CourseReview>
             {
@@ -179,10 +179,10 @@ namespace LMS.Tests.Services
 
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.GetStudentReviewsAsync(studentId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(2, result.Data!.Count());
             Assert.All(result.Data, review => Assert.Equal(studentId, review.StudentId));
@@ -191,7 +191,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ModerateReviewAsync_RemovesReviewWhenNotApproved()
         {
-            // Arrange
+
             var reviewId = "review1";
             var review = new CourseReview
             {
@@ -203,10 +203,10 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _service.ModerateReviewAsync(reviewId, approve: false);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Contains("removed", result.Message);
             Assert.True(review.IsDeleted);
@@ -216,7 +216,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ModerateReviewAsync_ApprovesReviewWhenApproved()
         {
-            // Arrange
+
             var reviewId = "review1";
             var review = new CourseReview
             {
@@ -228,10 +228,10 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _service.ModerateReviewAsync(reviewId, approve: true);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Contains("approved", result.Message);
             Assert.False(review.IsDeleted);
@@ -240,15 +240,15 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ModerateReviewAsync_ReturnsErrorWhenReviewNotFound()
         {
-            // Arrange
+
             var reviewId = "non-existent";
             var reviews = new List<CourseReview>().BuildMockDbSet().Object;
             _mockUnitOfWork.Setup(u => u.GetQueryable<CourseReview>()).Returns(reviews);
 
-            // Act
+
             var result = await _service.ModerateReviewAsync(reviewId, approve: true);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Review not found.", result.Message);
         }

@@ -1,0 +1,64 @@
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> StreamRecording(string id)
+        {
+            try
+            {
+                var result = await _services.LectureService.GetLectureByIdAsync(id);
+                if (!result.Success || result.Data == null || string.IsNullOrEmpty(result.Data.RecordingPath))
+                {
+                    return NotFound();
+                }
+
+                var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var filePath = Path.Combine(webRootPath, "uploads", "lectures", "recordings", result.Data.RecordingPath);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound();
+                }
+
+                var contentType = result.Data.RecordingPath.EndsWith(".mp4") ? "video/mp4" : 
+                                 result.Data.RecordingPath.EndsWith(".mkv") ? "video/x-matroska" :
+                                 result.Data.RecordingPath.EndsWith(".avi") ? "video/x-msvideo" :
+                                 result.Data.RecordingPath.EndsWith(".mov") ? "video/quicktime" :
+                                 "application/octet-stream";
+
+                return PhysicalFile(filePath, contentType, enableRangeProcessing: true);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DownloadMaterials(string id)
+        {
+            try
+            {
+                var result = await _services.LectureService.GetLectureByIdAsync(id);
+                if (!result.Success || result.Data == null || string.IsNullOrEmpty(result.Data.MaterialsPath))
+                {
+                    TempData["Error"] = "Materials not found.";
+                    return RedirectToAction("MyLectures");
+                }
+
+                var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var filePath = Path.Combine(webRootPath, "uploads", "lectures", "materials", result.Data.MaterialsPath);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    TempData["Error"] = "Materials file not found.";
+                    return RedirectToAction("MyLectures");
+                }
+
+                return PhysicalFile(filePath, "application/zip", result.Data.MaterialsPath);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error downloading materials: {ex.Message}";
+                return RedirectToAction("MyLectures");
+            }
+        }

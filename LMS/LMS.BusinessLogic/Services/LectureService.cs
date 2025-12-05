@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.MainEntities;
+using Domain.Entities.RelationTables;
 using LMS.BusinessLogic.Contracts;
 using LMS.BusinessLogic.Contracts.Services;
 using LMS.BusinessLogic.DTOs.Lecture;
@@ -9,19 +10,21 @@ using LMS.DataAccess.Contracts;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MailKit.Net.Smtp;
-using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 
 internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectureDTO, UpdateLectureDTO>, ILectureServices
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
+    private readonly IFileService _fileService;
 
-    public LectureService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService) : base(unitOfWork)
+    public LectureService(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService, IFileService fileService) : base(unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _emailService = emailService;
+        _fileService = fileService;
     }
 
     protected override Lecture MapToEntity(CreateLectureDTO dto)
@@ -86,7 +89,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
         if (userRole == "Instructor" && lecture.InstructorId == userId)
         {
-            var enrollment = await _unitOfWork.StudentEnrollments.GetFirstOrDefaultAsync(userId, lecture.CourseId);
+            var enrollment = await _unitOfWork.InstructorEnrollments.GetByInstructorAndCourseAsync(userId, lecture.CourseId);
             return enrollment != null && !enrollment.IsDeleted && enrollment.Status == Domain.Enums.ApplicationStatus.Approved;
         }
         if (userRole == "Student")
@@ -193,9 +196,29 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             var entity = _mapper.Map<Lecture>(dto);
 
-            // Calculate Lecture Number
+
             var existingLectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(dto.CourseId);
             entity.LectureNumber = existingLectures.Count() + 1;
+
+            if (dto.NewRecordingFile != null)
+            {
+                var recordingUpload = await _fileService.SaveLectureRecordingAsync(dto.NewRecordingFile);
+                if (!recordingUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(recordingUpload.Message);
+                }
+                entity.RecordingPath = recordingUpload.FileName;
+            }
+
+            if (dto.NewMaterialsFile != null)
+            {
+                var materialsUpload = await _fileService.SaveLectureMaterialAsync(dto.NewMaterialsFile);
+                if (!materialsUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(materialsUpload.Message);
+                }
+                entity.MaterialsPath = materialsUpload.FileName;
+            }
 
             await _unitOfWork.Lectures.CreateAsync(entity);
             await _unitOfWork.SaveChangesAsync();
@@ -233,12 +256,39 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             TimeSpan startTimeToCheck = dto.StartTime ?? existingLecture.StartTime;
             TimeSpan endTimeToCheck = dto.EndTime ?? existingLecture.EndTime;
 
-            var conflictCheck = await CheckLectureConflictAsync(
-                existingLecture.CourseId, dateToCheck, startTimeToCheck, endTimeToCheck, dto.Id);
+            var conflictCheck = await CheckLectureConflictAsync(existingLecture.CourseId, dateToCheck, startTimeToCheck, endTimeToCheck, dto.Id);
 
             if (conflictCheck.Data)
             {
                 return ErrorResponse<GetLectureDTO>(conflictCheck.Message);
+            }
+
+            if (dto.NewRecordingFile != null)
+            {
+                if (!string.IsNullOrEmpty(existingLecture.RecordingPath))
+                {
+                    await _fileService.DeleteLectureRecordingAsync(existingLecture.RecordingPath);
+                }
+                var recordingUpload = await _fileService.SaveLectureRecordingAsync(dto.NewRecordingFile);
+                if (!recordingUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(recordingUpload.Message);
+                }
+                dto.RecordingPath = recordingUpload.FileName;
+            }
+
+            if (dto.NewMaterialsFile != null)
+            {
+                if (!string.IsNullOrEmpty(existingLecture.MaterialsPath))
+                {
+                    await _fileService.DeleteLectureMaterialAsync(existingLecture.MaterialsPath);
+                }
+                var materialsUpload = await _fileService.SaveLectureMaterialAsync(dto.NewMaterialsFile);
+                if (!materialsUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(materialsUpload.Message);
+                }
+                dto.MaterialsPath = materialsUpload.FileName;
             }
 
             return await base.UpdateAsync(dto);
@@ -288,6 +338,11 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             var lectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
             var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(lectures);
 
+            if (userRole == "Student")
+            {
+                await PopulateAttendanceStatus(lectureDTOs, userId);
+            }
+
             return SuccessResponse<IEnumerable<GetLectureDTO>>(lectureDTOs, "Course lectures retrieved successfully");
         }
         catch (Exception ex)
@@ -335,6 +390,11 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(upcomingLectures);
 
+            if (userRole == "Student")
+            {
+                await PopulateAttendanceStatus(lectureDTOs, userId);
+            }
+
             return SuccessResponse<IEnumerable<GetLectureDTO>>(lectureDTOs, "Upcoming lectures retrieved successfully");
         }
         catch (Exception ex)
@@ -354,9 +414,16 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
 
             var allLectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(courseId);
             var todayLectures = allLectures.Where(l => l.LectureDate.Date == DateTime.Today.Date);
+            
+            var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(todayLectures);
+
+            if (userRole == "Student")
+            {
+                await PopulateAttendanceStatus(lectureDTOs, userId);
+            }
 
             return SuccessResponse<IEnumerable<GetLectureDTO>>(
-                _mapper.Map<IEnumerable<GetLectureDTO>>(todayLectures),
+                lectureDTOs,
                 "Today's lectures retrieved successfully"
             );
         }
@@ -423,6 +490,11 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
             var lectures = await _unitOfWork.Lectures.GetLecturesByCourseIdsAsync(courseIds);
             var lectureDTOs = _mapper.Map<IEnumerable<GetLectureDTO>>(lectures);
 
+            if (userRole == "Student")
+            {
+                await PopulateAttendanceStatus(lectureDTOs, userId);
+            }
+
             return SuccessResponse<IEnumerable<GetLectureDTO>>(lectureDTOs, "My lectures retrieved successfully");
         }
         catch (Exception ex)
@@ -435,13 +507,13 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
     {
         try
         {
-            // 1. Validate User (Instructor or Admin)
+
             if (userRole != "Admin" && userRole != "Instructor")
             {
                 return ErrorResponse<bool>("Only instructors or admins can launch lectures.");
             }
 
-            // 2. Get Lecture
+
             var lecture = await _unitOfWork.Lectures.GetQueryable()
                 .Include(l => l.Course)
                 .Include(l => l.Course.Students).ThenInclude(se => se.Student)
@@ -453,18 +525,18 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
                 return ErrorResponse<bool>("Lecture not found.");
             }
 
-            // 3. Verify Instructor Ownership
+
             if (userRole == "Instructor" && lecture.InstructorId != userId)
             {
                 return ErrorResponse<bool>("You can only launch your own lectures.");
             }
 
-            // 4. Update Zoom Link
+
             lecture.ZoomLink = zoomLink;
             await _unitOfWork.Lectures.UpdateAsync(lecture);
             await _unitOfWork.SaveChangesAsync();
 
-            // 5. Notify Students
+
             foreach (var enrollment in lecture.Course.Students)
             {
                 if (enrollment.Student != null)
@@ -479,7 +551,7 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
                         <p><a href='{zoomLink}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Join Lecture</a></p>
                         <p>Or copy this link: {zoomLink}</p>";
 
-                    // Fire and forget email to avoid blocking the response
+
                     _ = _emailService.SendEmailAsync(enrollment.Student.Email, subject, body);
                 }
             }
@@ -492,8 +564,220 @@ internal class LectureService : BaseServices<Lecture, GetLectureDTO, CreateLectu
         }
     }
 
+    public async Task<ServiceResponseDTO<bool>> MarkAsAttendedAsync(string lectureId, string studentId)
+    {
+        try
+        {
+            var lecture = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
+            if (lecture == null)
+                return ErrorResponse<bool>("Lecture not found");
+
+            var isEnrolled = await _unitOfWork.StudentEnrollments.GetQueryable()
+                .AnyAsync(se => se.StudentId == studentId && se.CourseId == lecture.CourseId && se.Status == Domain.Enums.ApplicationStatus.Approved && !se.IsDeleted);
+
+            if (!isEnrolled)
+                return ErrorResponse<bool>("Student is not enrolled in this course");
+
+            var studentLecture = await _unitOfWork.GetQueryable<StudentLecture>()
+                .FirstOrDefaultAsync(sl => sl.LectureId == lectureId && sl.StudentId == studentId);
+
+            if (studentLecture == null)
+            {
+                studentLecture = new StudentLecture
+                {
+                    LectureId = lectureId,
+                    StudentId = studentId,
+                    IsAttended = true,
+                    AttendanceDate = DateTime.UtcNow
+                };
+                await _unitOfWork.GetQueryable<StudentLecture>().AddAsync(studentLecture);
+            }
+            else
+            {
+                if (!studentLecture.IsAttended)
+                {
+                    studentLecture.IsAttended = true;
+                    studentLecture.AttendanceDate = DateTime.UtcNow;
+                    _unitOfWork.GetQueryable<StudentLecture>().Update(studentLecture);
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+            return SuccessResponse(true, "Attendance marked successfully");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<bool>($"Error marking attendance: {ex.Message}");
+        }
+    }
+
+    public async Task<ServiceResponseDTO<AttendanceStatisticsDTO>> GetAttendanceStatisticsAsync(string studentId)
+    {
+        try
+        {
+            var enrolledCourseIds = await _unitOfWork.StudentEnrollments.GetQueryable()
+                .Where(se => se.StudentId == studentId && se.Status == Domain.Enums.ApplicationStatus.Approved && !se.IsDeleted)
+                .Select(se => se.CourseId)
+                .ToListAsync();
+
+            if (!enrolledCourseIds.Any())
+            {
+                return SuccessResponse(new AttendanceStatisticsDTO { TotalLectures = 0, AttendedLectures = 0, AttendancePercentage = 0.0 }, "No enrollments found");
+            }
+
+            var totalLectures = await _unitOfWork.Lectures.GetQueryable()
+                .CountAsync(l => enrolledCourseIds.Contains(l.CourseId) && !l.IsDeleted);
+
+            var attendedLectures = await _unitOfWork.GetQueryable<StudentLecture>()
+                                        .Join(_unitOfWork.Lectures.GetQueryable(),
+                                            sl => sl.LectureId,
+                                            l => l.Id,
+                                            (sl, l) => new { StudentLecture = sl, Lecture = l })
+                                        .CountAsync(x => x.StudentLecture.StudentId == studentId 
+                                            && x.StudentLecture.IsAttended 
+                                            && !x.StudentLecture.IsDeleted 
+                                            && !x.Lecture.IsDeleted);
+
+            double percentage = totalLectures > 0 ? (double)attendedLectures / totalLectures * 100 : 0;
+
+            return SuccessResponse(new AttendanceStatisticsDTO 
+            { 
+                TotalLectures = totalLectures, 
+                AttendedLectures = attendedLectures, 
+                AttendancePercentage = percentage 
+            }, "Attendance statistics retrieved");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<AttendanceStatisticsDTO>($"Error retrieving statistics: {ex.Message}");
+        }
+    }
+
+    public async Task<ServiceResponseDTO<AttendanceStatisticsDTO>> GetCourseAttendanceStatisticsAsync(string courseId, string studentId)
+    {
+        try
+        {
+            var isEnrolled = await _unitOfWork.StudentEnrollments.GetQueryable()
+                .AnyAsync(se => se.StudentId == studentId && se.CourseId == courseId && se.Status == Domain.Enums.ApplicationStatus.Approved && !se.IsDeleted);
+
+            if (!isEnrolled)
+            {
+                return ErrorResponse<AttendanceStatisticsDTO>("Student is not enrolled in this course");
+            }
+
+            var totalLectures = await _unitOfWork.Lectures.GetQueryable()
+                .CountAsync(l => l.CourseId == courseId && !l.IsDeleted);
+
+            var attendedLectures = await _unitOfWork.GetQueryable<StudentLecture>()
+                .Include(sl => sl.Lecture)
+                .CountAsync(sl => sl.StudentId == studentId && sl.Lecture.CourseId == courseId && sl.IsAttended && !sl.IsDeleted);
+
+            double percentage = totalLectures > 0 ? (double)attendedLectures / totalLectures * 100 : 0;
+
+            return SuccessResponse(new AttendanceStatisticsDTO 
+            { 
+                TotalLectures = totalLectures, 
+                AttendedLectures = attendedLectures, 
+                AttendancePercentage = percentage 
+            }, "Course attendance statistics retrieved");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<AttendanceStatisticsDTO>($"Error retrieving statistics: {ex.Message}");
+        }
+    }
+
     public Task<ServiceResponseDTO<IEnumerable<GetLectureDTO>>> GetInstructorLecturesAsync(string instructorId)
     {
         throw new NotImplementedException();
+    }
+
+
+    private async Task PopulateAttendanceStatus(IEnumerable<GetLectureDTO> lectures, string studentId)
+    {
+        var lectureIds = lectures.Select(l => l.Id).ToList();
+        var studentLectures = await _unitOfWork.GetQueryable<StudentLecture>()
+            .Where(sl => sl.StudentId == studentId && lectureIds.Contains(sl.LectureId) && !sl.IsDeleted)
+            .ToListAsync();
+
+        var now = DateTime.Now;
+
+        foreach (var lecture in lectures)
+        {
+            var studentLecture = studentLectures.FirstOrDefault(sl => sl.LectureId == lecture.Id);
+            var lectureEnd = lecture.LectureDate.Date + lecture.EndTime;
+            var lectureStart = lecture.LectureDate.Date + lecture.StartTime;
+
+            if (studentLecture != null && studentLecture.IsAttended)
+            {
+                lecture.AttendanceStatus = "Present";
+            }
+            else if (now > lectureEnd)
+            {
+                lecture.AttendanceStatus = "Absent";
+            }
+            else if (now >= lectureStart && now <= lectureEnd)
+            {
+                lecture.AttendanceStatus = "Ongoing";
+            }
+            else
+            {
+                lecture.AttendanceStatus = "Upcoming";
+            }
+        }
+    }
+    public async Task<ServiceResponseDTO<GetLectureDTO>> UploadLectureContentAsync(string lectureId, IFormFile? recording, IFormFile? materials, string userId, string userRole)
+    {
+        try
+        {
+            if (!await CanManageLecture(lectureId, userId, userRole))
+            {
+                return ErrorResponse<GetLectureDTO>("You are not authorized to upload content for this lecture");
+            }
+
+            var lecture = await _unitOfWork.Lectures.FindByIdAsync(lectureId);
+            if (lecture == null)
+            {
+                return ErrorResponse<GetLectureDTO>("Lecture not found");
+            }
+
+            if (recording != null)
+            {
+                if (!string.IsNullOrEmpty(lecture.RecordingPath))
+                {
+                    await _fileService.DeleteLectureRecordingAsync(lecture.RecordingPath);
+                }
+                var recordingUpload = await _fileService.SaveLectureRecordingAsync(recording);
+                if (!recordingUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(recordingUpload.Message);
+                }
+                lecture.RecordingPath = recordingUpload.FileName;
+            }
+
+            if (materials != null)
+            {
+                if (!string.IsNullOrEmpty(lecture.MaterialsPath))
+                {
+                    await _fileService.DeleteLectureMaterialAsync(lecture.MaterialsPath);
+                }
+                var materialsUpload = await _fileService.SaveLectureMaterialAsync(materials);
+                if (!materialsUpload.Success)
+                {
+                    return ErrorResponse<GetLectureDTO>(materialsUpload.Message);
+                }
+                lecture.MaterialsPath = materialsUpload.FileName;
+            }
+
+            await _unitOfWork.Lectures.UpdateAsync(lecture);
+            await _unitOfWork.SaveChangesAsync();
+
+            var readDto = _mapper.Map<GetLectureDTO>(lecture);
+            return SuccessResponse(readDto, "Lecture content uploaded successfully");
+        }
+        catch (Exception ex)
+        {
+            return ErrorResponse<GetLectureDTO>($"Error uploading lecture content: {ex.Message}");
+        }
     }
 }

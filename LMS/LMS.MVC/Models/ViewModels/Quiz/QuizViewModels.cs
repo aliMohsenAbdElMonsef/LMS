@@ -43,7 +43,7 @@ namespace LMS.MVC.Models.ViewModels.Quiz
 
     public class CreateQuestionViewModel
     {
-        public string? Id { get; set; }  // For updates
+        public string? Id { get; set; }
         public string Text { get; set; } = string.Empty;
         public string OptionA { get; set; } = string.Empty;
         public string OptionB { get; set; } = string.Empty;

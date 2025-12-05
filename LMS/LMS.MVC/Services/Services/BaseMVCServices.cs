@@ -33,11 +33,10 @@ namespace LMS.MVC.Services.Services
 
             var content = await response.Content.ReadAsStringAsync();
 
-            // Don't throw exceptions - let controllers handle error responses
-            // Just return the deserialized content which will have success=false and message
+
             if (string.IsNullOrWhiteSpace(content))
             {
-                // Return a default error response instead of throwing
+
                 return JsonSerializer.Deserialize<T>("{\"success\":false,\"message\":\"Empty API response\"}", 
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             }

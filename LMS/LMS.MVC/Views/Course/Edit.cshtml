@@ -40,28 +40,28 @@
 
         <div class="row g-3">
 
-            <!-- Course Name -->
+
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label"><i class="bi bi-card-heading"></i> Course Name</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <!-- Course Code -->
+
             <div class="col-md-6">
                 <label asp-for="CourseCode" class="form-label"><i class="bi bi-hash"></i> Course Code</label>
                 <input asp-for="CourseCode" class="form-control" />
                 <span asp-validation-for="CourseCode" class="text-danger"></span>
             </div>
 
-            <!-- Description -->
+
             <div class="col-md-12">
                 <label asp-for="Description" class="form-label"><i class="bi bi-file-text"></i> Description</label>
                 <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <!-- Category -->
+
             <div class="col-md-12">
                 <label class="form-label"><i class="bi bi-tags"></i> Category</label>
 
@@ -97,7 +97,7 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
-            <!-- Level -->
+
             <div class="col-md-6">
                 <label asp-for="Level" class="form-label"><i class="bi bi-bar-chart-line"></i> Level</label>
                 <select asp-for="Level" class="form-select"
@@ -105,42 +105,42 @@
                 <span asp-validation-for="Level" class="text-danger"></span>
             </div>
 
-            <!-- Language -->
+
             <div class="col-md-6">
                 <label asp-for="Language" class="form-label"><i class="bi bi-translate"></i> Language</label>
                 <input asp-for="Language" class="form-control" />
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
 
-            <!-- Credits -->
+
             <div class="col-md-6">
                 <label asp-for="Credits" class="form-label"><i class="bi bi-award"></i> Credits</label>
                 <input asp-for="Credits" type="number" class="form-control" min="0" />
                 <span asp-validation-for="Credits" class="text-danger"></span>
             </div>
 
-            <!-- Start Date -->
+
             <div class="col-md-6">
                 <label asp-for="StartDate" class="form-label"><i class="bi bi-calendar-event"></i> Start Date</label>
                 <input asp-for="StartDate" type="date" class="form-control" />
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
 
-            <!-- End Date -->
+
             <div class="col-md-6">
                 <label asp-for="EndDate" class="form-label"><i class="bi bi-calendar-check"></i> End Date</label>
                 <input asp-for="EndDate" type="date" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
 
-            <!-- Price -->
+
             <div class="col-md-6">
                 <label asp-for="Price" class="form-label"><i class="bi bi-currency-dollar"></i> Price</label>
                 <input asp-for="Price" type="number" step="0.01" class="form-control" min="0" id="priceInput" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
-            <!-- Delivery Mode -->
+
             <div class="col-md-6">
                 <label asp-for="DeliveryMode" class="form-label"><i class="bi bi-laptop"></i> Delivery Mode</label>
                 <select asp-for="DeliveryMode" class="form-select">
@@ -153,7 +153,7 @@
                 <span asp-validation-for="DeliveryMode" class="text-danger"></span>
             </div>
 
-            <!-- Thumbnail -->
+
             <div class="col-md-12">
                 <label asp-for="ThumbnailFile" class="form-label"><i class="bi bi-image"></i> Thumbnail</label>
 
@@ -168,21 +168,21 @@
                 <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
             </div>
 
-            <!-- Min Attendance -->
+
             <div class="col-md-6">
                 <label asp-for="MinAttendancePercentage" class="form-label"><i class="bi bi-check2-square"></i> Min Attendance %</label>
                 <input asp-for="MinAttendancePercentage" type="number" step="0.1" class="form-control" min="0" max="100" />
                 <span asp-validation-for="MinAttendancePercentage" class="text-danger"></span>
             </div>
 
-            <!-- Min Performance Score -->
+
             <div class="col-md-6">
                 <label asp-for="MinPerformanceScore" class="form-label"><i class="bi bi-stars"></i> Min Performance Score</label>
                 <input asp-for="MinPerformanceScore" type="number" step="0.1" class="form-control" min="0" max="100" />
                 <span asp-validation-for="MinPerformanceScore" class="text-danger"></span>
             </div>
 
-            <!-- Is Free -->
+
             <div class="col-md-4">
                 <div class="form-check mt-4">
                     <input asp-for="IsFree" class="form-check-input" type="checkbox" id="isFreeCheckbox" />
@@ -190,7 +190,7 @@
                 </div>
             </div>
 
-            <!-- ✅ Every Student Could Enroll -->
+
             <div class="col-md-4">
                 <div class="form-check mt-4">
                     <input asp-for="EveryStuCouldEnroll" class="form-check-input" type="checkbox" />
@@ -200,7 +200,7 @@
                 </div>
             </div>
 
-            <!-- Auto Certificates -->
+
             <div class="col-md-4">
                 <div class="form-check mt-4">
                     <input asp-for="AutoIssueCertificates" class="form-check-input" type="checkbox" />
@@ -210,14 +210,14 @@
                 </div>
             </div>
 
-            <!-- Certificate Template -->
+
             <div class="col-md-12">
                 <label asp-for="CertificateTemplateId" class="form-label"><i class="bi bi-award"></i> Certificate Template</label>
                 <input asp-for="CertificateTemplateId" class="form-control" />
                 <span asp-validation-for="CertificateTemplateId" class="text-danger"></span>
             </div>
 
-            <!-- Actions -->
+
             <div class="col-md-12 mt-4">
                 <div class="d-flex gap-2 justify-content-end">
                     <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i> Cancel</a>
@@ -233,7 +233,7 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Price toggle functionality
+
             const isFreeCheckbox = document.getElementById('isFreeCheckbox');
             const priceInput = document.getElementById('priceInput');
 
@@ -250,7 +250,7 @@
                 isFreeCheckbox.addEventListener('change', updatePriceField);
             }
 
-            // Category search
+
             const categories = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AvailableCategories ?? new List<LMS.MVC.Models.ViewModels.Course.CategoryOption>()));
             const searchBox = document.getElementById('categorySearch');
             const suggestionsList = document.getElementById('categorySuggestions');

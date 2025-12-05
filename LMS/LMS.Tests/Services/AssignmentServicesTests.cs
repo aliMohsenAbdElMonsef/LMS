@@ -46,7 +46,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitAssignmentAsync_ShouldReturnSuccess_WhenNewSubmission()
         {
-            // Arrange
+
             var dto = new SubmitAssignmentDTO { AssignmentId = "assign1", StudentId = "student1", FilePath = "path/to/file" };
             var assignment = new Assignment { Id = "assign1", DueDate = DateTime.UtcNow.AddDays(1) };
             var student = new ApplicationUser { Id = "student1" };
@@ -58,15 +58,15 @@ namespace LMS.Tests.Services
             _assignmentRepoMock.Setup(r => r.CreateStudentAssignmentAsync(It.IsAny<StudentAssignment>())).Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
             
-            // Mock getting the created submission
+
             var createdSubmission = new StudentAssignment { Id = "sub1", Status = AssignmentStatus.PendingGrading };
             _assignmentRepoMock.Setup(r => r.GetStudentAssignmentAsync("assign1", "student1")).ReturnsAsync(createdSubmission);
             _mapperMock.Setup(m => m.Map<StudentAssignmentDTO>(createdSubmission)).Returns(submissionDto);
 
-            // Act
+
             var result = await _assignmentServices.SubmitAssignmentAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Assignment submitted successfully", result.Message);
             Assert.Equal(AssignmentStatus.PendingGrading, result.Data.Status);
@@ -75,7 +75,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GradeAssignmentAsync_ShouldReturnSuccess_WhenSubmissionExists()
         {
-            // Arrange
+
             var dto = new GradeAssignmentDTO { StudentAssignmentId = "sub1", Grade = 95, Feedback = "Good job" };
             var submission = new StudentAssignment { Id = "sub1", Status = AssignmentStatus.PendingGrading };
             var gradedDto = new StudentAssignmentDTO { Id = "sub1", Grade = 95, Status = AssignmentStatus.Graded };
@@ -85,10 +85,10 @@ namespace LMS.Tests.Services
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
             _mapperMock.Setup(m => m.Map<StudentAssignmentDTO>(submission)).Returns(gradedDto);
 
-            // Act
+
             var result = await _assignmentServices.GradeAssignmentAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Assignment graded successfully", result.Message);
             Assert.Equal(95, submission.Grade);
@@ -98,7 +98,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetStudentAllAssignmentsAsync_ShouldReturnAssignments_WhenEnrolled()
         {
-            // Arrange
+
             var studentId = "student1";
             var assignment = new Assignment { Id = "assign1", CourseId = "course1", Title = "Test Assignment" };
             var course = new Course { Id = "course1", Name = "Test Course" };
@@ -108,10 +108,10 @@ namespace LMS.Tests.Services
             _courseRepoMock.Setup(r => r.FindByIdAsync("course1")).ReturnsAsync(course);
             _assignmentRepoMock.Setup(r => r.GetStudentAssignmentAsync("assign1", studentId)).ReturnsAsync((StudentAssignment?)null);
 
-            // Act
+
             var result = await _assignmentServices.GetStudentAllAssignmentsAsync(studentId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Single(result.Data);
             Assert.Equal("Test Assignment", result.Data.First().AssignmentTitle);

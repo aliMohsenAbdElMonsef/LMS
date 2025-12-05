@@ -33,7 +33,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateAsync_ShouldCreateCertificateTemplate_WhenDataIsValid()
         {
-            // Arrange
+
             var dto = new CreateCertificateTemplateDTO
             {
                 Title = "Course Completion Certificate",
@@ -46,17 +46,17 @@ namespace LMS.Tests.Services
             _certificateTemplateRepoMock.Setup(r => r.CreateAsync(It.IsAny<CertificateTemplate>()))
                 .Callback<CertificateTemplate>(t => {
                     capturedTemplate = t;
-                    // Set navigation properties to avoid NullReferenceException
+
                     t.Admin = new ApplicationUser { FirstName = "Test", LastName = "Admin" };
                     t.Course = new Course { Name = "Test Course" };
                 })
                 .Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _certificateTemplateService.CreateAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Entity created successfully.", result.Message);
             Assert.NotNull(capturedTemplate);
@@ -69,7 +69,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ShouldReturnCertificateTemplate_WhenExists()
         {
-            // Arrange
+
             var templateId = "template1";
             var template = new CertificateTemplate
             {
@@ -86,10 +86,10 @@ namespace LMS.Tests.Services
 
             _certificateTemplateRepoMock.Setup(r => r.FindByIdAsync(templateId)).ReturnsAsync(template);
 
-            // Act
+
             var result = await _certificateTemplateService.GetByIdAsync(templateId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Equal(template.Id, result.Data.Id);
@@ -101,14 +101,14 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ShouldReturnFailure_WhenNotFound()
         {
-            // Arrange
+
             var templateId = "nonexistent";
             _certificateTemplateRepoMock.Setup(r => r.FindByIdAsync(templateId)).ReturnsAsync((CertificateTemplate)null);
 
-            // Act
+
             var result = await _certificateTemplateService.GetByIdAsync(templateId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
         }
@@ -116,7 +116,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task UpdateAsync_ShouldUpdateCertificateTemplate_WhenExists()
         {
-            // Arrange
+
             var updateDto = new UpdateCertificateTemplateDTO
             {
                 Id = "template1",
@@ -139,10 +139,10 @@ namespace LMS.Tests.Services
             _certificateTemplateRepoMock.Setup(r => r.UpdateAsync(It.IsAny<CertificateTemplate>())).Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _certificateTemplateService.UpdateAsync(updateDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Entity updated successfully.", result.Message);
             Assert.Equal(updateDto.Title, existingTemplate.Title);
@@ -152,7 +152,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteAsync_ShouldDeleteCertificateTemplate_WhenExists()
         {
-            // Arrange
+
             var templateId = "template1";
             var template = new CertificateTemplate
             {
@@ -166,10 +166,10 @@ namespace LMS.Tests.Services
             _certificateTemplateRepoMock.Setup(r => r.DeleteWithIDAsync(templateId)).Returns(Task.CompletedTask);
             _unitOfWorkMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _certificateTemplateService.DeleteAsync(templateId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Entity Deleted Succesfully.", result.Message);
             _certificateTemplateRepoMock.Verify(r => r.DeleteWithIDAsync(templateId), Times.Once);
@@ -178,14 +178,14 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteAsync_ShouldReturnFailure_WhenNotFound()
         {
-            // Arrange
+
             var templateId = "nonexistent";
             _certificateTemplateRepoMock.Setup(r => r.FindByIdAsync(templateId)).ReturnsAsync((CertificateTemplate)null);
 
-            // Act
+
             var result = await _certificateTemplateService.DeleteAsync(templateId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
         }

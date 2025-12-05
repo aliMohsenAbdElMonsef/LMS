@@ -1,4 +1,4 @@
-﻿using Domain.Entities.RelationTables;
+using Domain.Entities.RelationTables;
 
 namespace LMS.DataAccess.Contracts.Repositories
 {

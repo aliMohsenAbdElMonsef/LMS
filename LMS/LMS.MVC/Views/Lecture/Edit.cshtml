@@ -1,4 +1,4 @@
-@model dynamic
+@model LMS.MVC.Models.ViewModels.Lecture.LectureViewModel
 @{
     ViewData["Title"] = "Edit Lecture";
 }
@@ -47,9 +47,27 @@
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Replace Video (Optional)</label>
-                                <input type="file" class="form-control" name="VideoFile" accept="video/*">
+                                <label class="form-label">Replace Recording (Video)</label>
+                                @if (!string.IsNullOrEmpty(Model.RecordingPath))
+                                {
+                                    <div class="mb-2">
+                                        <span class="badge bg-success">Current: @Model.RecordingPath</span>
+                                    </div>
+                                }
+                                <input type="file" class="form-control" asp-for="NewRecordingFile" accept="video/*">
                                 <small class="text-muted">Leave empty to keep current video</small>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Replace Materials (Zip)</label>
+                                @if (!string.IsNullOrEmpty(Model.MaterialsPath))
+                                {
+                                    <div class="mb-2">
+                                        <span class="badge bg-success">Current: @Model.MaterialsPath</span>
+                                    </div>
+                                }
+                                <input type="file" class="form-control" asp-for="NewMaterialsFile" accept=".zip,.rar,.pdf,.doc,.docx,.ppt,.pptx">
+                                <small class="text-muted">Leave empty to keep current materials</small>
                             </div>
 
                             <div class="col-12">

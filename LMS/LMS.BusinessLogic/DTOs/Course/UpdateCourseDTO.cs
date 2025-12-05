@@ -41,7 +41,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Language")]
         public string Language { get; set; } = "English";
 
-        // ================= DURATION =================
+
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
@@ -55,7 +55,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Duration (Weeks)")]
         public int? DurationWeeks => CalculateTotalWeeks();
 
-        // ================= MODE & STATUS =================
+
         [Required]
         [Display(Name = "Delivery Mode")]
         public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
@@ -63,7 +63,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Status")]
         public Status Status { get; set; } = Status.Draft;
 
-        // ================= PRICE & CERTIFICATE =================
+
         [Range(0, 10000)]
         [Display(Name = "Price")]
         public decimal? Price { get; set; } = 0;
@@ -85,19 +85,19 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Certificate Template")]
         public string? CertificateTemplateId { get; set; }
 
-        // ================= MEDIA =================
+
         [Display(Name = "Course Thumbnail")]
         public IFormFile? ThumbnailFile { get; set; }
 
-        // For internal use - stores the uploaded filename
+
         public string? ThumbnailFileName { get; set; }
 
-        // ================= RELATIONS =================
+
         [Required]
         [Display(Name = "Category")]
         public string CategoryId { get; set; } = string.Empty;
 
-        // Note: We don't include AdminId in UpdateDTO since it shouldn't change
+
 
         private int CalculateTotalWeeks()
         {
@@ -113,9 +113,9 @@ namespace LMS.BusinessLogic.DTOs.Course
             if (EndDate <= StartDate)
                 yield return new ValidationResult("End date must be after start date.", new[] { nameof(EndDate) });
 
-            // Allow past start dates for existing courses being updated
-            // if (StartDate < DateTime.Today)
-            //     yield return new ValidationResult("Start date cannot be in the past.", new[] { nameof(StartDate) });
+
+
+
 
             if (DurationWeeks < 1)
                 yield return new ValidationResult("Course duration must be at least 1 week.", new[] { nameof(EndDate) });

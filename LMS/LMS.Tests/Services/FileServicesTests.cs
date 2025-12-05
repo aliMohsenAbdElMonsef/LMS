@@ -21,17 +21,17 @@ namespace LMS.Tests.Services
 
             _fileService = new FileService(_webHostEnvironmentMock.Object);
 
-            // Create test directories
+
             Directory.CreateDirectory(Path.Combine(_testWebRootPath, "uploads", "course", "thumbnails"));
         }
 
         [Fact]
         public async Task SaveCourseThumbnailAsync_ShouldReturnFailure_WhenFileIsNull()
         {
-            // Act
+
             var result = await _fileService.SaveCourseThumbnailAsync(null);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("No file provided", result.Message);
         }
@@ -39,15 +39,15 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SaveCourseThumbnailAsync_ShouldReturnFailure_WhenFileIsEmpty()
         {
-            // Arrange
+
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.Length).Returns(0);
             fileMock.Setup(f => f.FileName).Returns("test.jpg");
 
-            // Act
+
             var result = await _fileService.SaveCourseThumbnailAsync(fileMock.Object);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("No file provided", result.Message);
         }
@@ -55,15 +55,15 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SaveCourseThumbnailAsync_ShouldReturnFailure_WhenFileTypeIsInvalid()
         {
-            // Arrange
+
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.Length).Returns(1024);
-            fileMock.Setup(f => f.FileName).Returns("test.exe"); // Invalid extension
+            fileMock.Setup(f => f.FileName).Returns("test.exe");
 
-            // Act
+
             var result = await _fileService.SaveCourseThumbnailAsync(fileMock.Object);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Invalid file type. Only image files are allowed.", result.Message);
         }
@@ -71,15 +71,15 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SaveCourseThumbnailAsync_ShouldReturnFailure_WhenFileSizeExceeds5MB()
         {
-            // Arrange
+
             var fileMock = new Mock<IFormFile>();
-            fileMock.Setup(f => f.Length).Returns(6 * 1024 * 1024); // 6MB
+            fileMock.Setup(f => f.Length).Returns(6 * 1024 * 1024);
             fileMock.Setup(f => f.FileName).Returns("test.jpg");
 
-            // Act
+
             var result = await _fileService.SaveCourseThumbnailAsync(fileMock.Object);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("File size cannot exceed 5MB.", result.Message);
         }
@@ -87,7 +87,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SaveCourseThumbnailAsync_ShouldReturnSuccess_WhenFileIsValid()
         {
-            // Arrange
+
             var content = "Fake image content";
             var fileName = "test.jpg";
             var ms = new MemoryStream();
@@ -103,16 +103,16 @@ namespace LMS.Tests.Services
             fileMock.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
                 .Returns((Stream stream, CancellationToken token) => ms.CopyToAsync(stream));
 
-            // Act
+
             var result = await _fileService.SaveCourseThumbnailAsync(fileMock.Object);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("File uploaded successfully", result.Message);
             Assert.NotNull(result.FileName);
             Assert.Contains(".jpg", result.FileName);
 
-            // Cleanup
+
             if (!string.IsNullOrEmpty(result.FileName))
             {
                 var filePath = Path.Combine(_testWebRootPath, "uploads", "course", "thumbnails", result.FileName);
@@ -124,10 +124,10 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteCourseThumbnailAsync_ShouldReturnFailure_WhenFileNameIsInvalid()
         {
-            // Act - test with path traversal attempt
+
             var result = await _fileService.DeleteCourseThumbnailAsync("../../../etc/passwd");
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Invalid file name", result.Message);
         }
@@ -135,10 +135,10 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteCourseThumbnailAsync_ShouldReturnFailure_WhenFileNameIsEmpty()
         {
-            // Act
+
             var result = await _fileService.DeleteCourseThumbnailAsync("");
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Invalid file name", result.Message);
         }
@@ -146,10 +146,10 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteCourseThumbnailAsync_ShouldReturnFailure_WhenFileDoesNotExist()
         {
-            // Act
+
             var result = await _fileService.DeleteCourseThumbnailAsync("nonexistent.jpg");
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("File not found", result.Message);
         }
@@ -157,15 +157,15 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteCourseThumbnailAsync_ShouldReturnSuccess_WhenFileExists()
         {
-            // Arrange - create a test file
+
             var fileName = "test-delete.jpg";
             var filePath = Path.Combine(_testWebRootPath, "uploads", "course", "thumbnails", fileName);
             await File.WriteAllTextAsync(filePath, "test content");
 
-            // Act
+
             var result = await _fileService.DeleteCourseThumbnailAsync(fileName);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("File deleted successfully", result.Message);
             Assert.False(File.Exists(filePath));

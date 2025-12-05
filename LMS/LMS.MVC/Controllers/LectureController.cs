@@ -108,7 +108,6 @@ namespace LMS.MVC.Controllers
             return View(new CreateLectureViewModel { CourseId = courseId, LectureDate = DateTime.UtcNow.Date });
         }
 
-        // POST: Lecture/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -116,7 +115,6 @@ namespace LMS.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Re-populate instructors on error
                 if (Guid.TryParse(model.CourseId, out var courseGuid))
                 {
                     var courseResult = await _services.CourseService.GetCourseDetails(courseGuid);
@@ -138,7 +136,6 @@ namespace LMS.MVC.Controllers
                 }
                 
                 TempData["Error"] = result.Message;
-                // Re-populate instructors on error
                 if (Guid.TryParse(model.CourseId, out var courseGuid))
                 {
                     var courseResult = await _services.CourseService.GetCourseDetails(courseGuid);
@@ -152,7 +149,6 @@ namespace LMS.MVC.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = $"Error creating lecture: {ex.Message}";
-                // Re-populate instructors on error
                 if (Guid.TryParse(model.CourseId, out var courseGuid))
                 {
                     var courseResult = await _services.CourseService.GetCourseDetails(courseGuid);
@@ -165,7 +161,6 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Lecture/Edit/5
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
@@ -217,7 +212,6 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // POST: Lecture/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -291,6 +285,25 @@ namespace LMS.MVC.Controllers
             TempData["Error"] = result.Message;
             return RedirectToAction("MyLectures");
         }
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetAttendanceStats()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "User not found" });
+            }
+
+            var result = await _services.LectureService.GetAttendanceStatisticsAsync(userId);
+
+            return Json(new
+            {
+                success = result.Success,
+                data = result.Data,
+                message = result.Message
+            });
+        }
 
         [Authorize(Roles = "Student,Instructor,Admin")]
         public async Task<IActionResult> Join(string id)
@@ -308,16 +321,32 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction("Details", "Course", new { id = result.Data.CourseId });
             }
 
-            // Time validation for students
             if (User.IsInRole("Student"))
             {
                 var lectureDateTime = result.Data.LectureDate.Date + result.Data.StartTime;
                 var now = DateTime.Now;
-                // Allow joining 15 minutes before start until 2 hours after start
                 if (now < lectureDateTime.AddMinutes(-15) || now > lectureDateTime.AddHours(2))
                 {
                     TempData["Error"] = "You can only join the lecture 15 minutes before it starts.";
                     return RedirectToAction("MyLectures");
+                }
+                
+                // Mark student as attended
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    try
+                    {
+                        var joinResult = await _services.LectureService.JoinLectureAsync(id);
+                        if (!joinResult.Success)
+                        {
+                            TempData["Warning"] = $"You joined the lecture but attendance was not recorded: {joinResult.Message}";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["Warning"] = $"You joined the lecture but attendance recording failed: {ex.Message}";
+                    }
                 }
             }
 
@@ -365,6 +394,128 @@ namespace LMS.MVC.Controllers
 
             ModelState.AddModelError("", result.Message);
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> StreamRecording(string id)
+        {
+            try
+            {
+                var result = await _services.LectureService.GetLectureByIdAsync(id);
+                if (!result.Success || result.Data == null || string.IsNullOrEmpty(result.Data.RecordingPath))
+                {
+                    return NotFound();
+                }
+
+                var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "LMS.API", "wwwroot");
+                var filePath = Path.Combine(apiPath, "uploads", "lectures", "recordings", result.Data.RecordingPath);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound();
+                }
+
+                var contentType = result.Data.RecordingPath.EndsWith(".mp4") ? "video/mp4" : 
+                                 result.Data.RecordingPath.EndsWith(".mkv") ? "video/x-matroska" :
+                                 result.Data.RecordingPath.EndsWith(".avi") ? "video/x-msvideo" :
+                                 result.Data.RecordingPath.EndsWith(".mov") ? "video/quicktime" :
+                                 "application/octet-stream";
+
+                return PhysicalFile(filePath, contentType, enableRangeProcessing: true);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DownloadMaterials(string id)
+        {
+            try
+            {
+                var result = await _services.LectureService.GetLectureByIdAsync(id);
+                if (!result.Success || result.Data == null || string.IsNullOrEmpty(result.Data.MaterialsPath))
+                {
+                    TempData["Error"] = "Materials not found.";
+                    return RedirectToAction("MyLectures");
+                }
+
+                // Files are stored in the API project's wwwroot folder
+                var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "LMS.API", "wwwroot");
+                var filePath = Path.Combine(apiPath, "uploads", "lectures", "materials", result.Data.MaterialsPath);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    TempData["Error"] = "Materials file not found.";
+                    return RedirectToAction("MyLectures");
+                }
+
+                return PhysicalFile(filePath, "application/zip", result.Data.MaterialsPath);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error downloading materials: {ex.Message}";
+                return RedirectToAction("MyLectures");
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> UploadContent(string id)
+        {
+            var result = await _services.LectureService.GetLectureByIdAsync(id);
+            if (!result.Success || result.Data == null)
+            {
+                TempData["Error"] = "Lecture not found.";
+                return RedirectToAction("MyLectures");
+            }
+
+            var viewModel = new UploadLectureContentViewModel
+            {
+                LectureId = result.Data.Id,
+                CourseId = result.Data.CourseId,
+                LectureTitle = result.Data.Title,
+                CurrentRecordingPath = result.Data.RecordingPath,
+                CurrentMaterialsPath = result.Data.MaterialsPath
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> UploadContent(UploadLectureContentViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                
+                var result = await _services.LectureService.UploadLectureContentAsync(model.LectureId, model.NewRecordingFile, model.NewMaterialsFile, userId, userRole);
+                
+                if (result.Success)
+                {
+                    TempData["Success"] = "Content uploaded successfully!";
+                    return RedirectToAction("MyLectures");
+                }
+
+                TempData["Error"] = result.Message;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error uploading content: {ex.Message}";
+                return View(model);
+            }
         }
 
     }

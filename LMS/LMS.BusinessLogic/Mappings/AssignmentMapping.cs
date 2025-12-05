@@ -11,22 +11,22 @@ namespace LMS.BusinessLogic.Mappings
     {
         public AssignmentMapping()
         {
-            // Entity to DTO Mappings
 
-            // Assignment to ReadAssignmentDTO
+
+
             CreateMap<Assignment, ReadAssignmentDTO>()
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course.Name))
                 .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor.UserName))
                 .ForMember(dest => dest.SubmissionsCount, opt => opt.MapFrom(src => src.Students.Count));
 
-            // Assignment to AssignmentDetailsDTO
+
             CreateMap<Assignment, AssignmentDetailsDTO>()
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course.Name))
                 .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor.UserName))
                 .ForMember(dest => dest.SubmissionsCount, opt => opt.MapFrom(src => src.Students.Count))
                 .ForMember(dest => dest.StudentSubmissions, opt => opt.MapFrom(src => src.Students));
 
-            // StudentAssignment to StudentAssignmentDTO (UPDATED with enum)
+
             CreateMap<StudentAssignment, StudentAssignmentDTO>()
                .ForMember(dest => dest.StudentName,
                    opt => opt.MapFrom(src => src.Student != null ? src.Student.UserName : string.Empty))
@@ -40,9 +40,9 @@ namespace LMS.BusinessLogic.Mappings
                .ForMember(dest => dest.Status,
                    opt => opt.MapFrom(src => src.Status));
 
-            // DTO to Entity Mappings
 
-            // CreateAssignmentDTO to Assignment
+
+
             CreateMap<CreateAssignmentDTO, Assignment>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.UploadDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
@@ -50,18 +50,18 @@ namespace LMS.BusinessLogic.Mappings
                 .ForMember(dest => dest.Instructor, opt => opt.Ignore())
                 .ForMember(dest => dest.Course, opt => opt.Ignore());
 
-            // UpdateAssignmentDTO to Assignment
+
             CreateMap<UpdateAssignmentDTO, Assignment>()
                 .ForMember(dest => dest.Students, opt => opt.Ignore())
                 .ForMember(dest => dest.Instructor, opt => opt.Ignore())
                 .ForMember(dest => dest.Course, opt => opt.Ignore())
                 .ForMember(dest => dest.UploadDate, opt => opt.Ignore());
 
-            // SubmitAssignmentDTO to StudentAssignment (UPDATED with enum)
+
             CreateMap<SubmitAssignmentDTO, StudentAssignment>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.SubmittedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => AssignmentStatus.PendingGrading)) // NEW: Set default status
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => AssignmentStatus.PendingGrading))
                 .ForMember(dest => dest.Grade, opt => opt.MapFrom(_ => (double?)null))
                 .ForMember(dest => dest.GradedAt, opt => opt.MapFrom(_ => (DateTime?)null))
                 .ForMember(dest => dest.Feedback, opt => opt.MapFrom(_ => (string?)null))

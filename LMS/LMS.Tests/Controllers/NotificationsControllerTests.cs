@@ -34,50 +34,50 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateNotification_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var dto = new CreateNotificationDTO { Title = "Test" };
             var responseDto = new ServiceResponseDTO<ReadNotificationDTO> { Success = true };
 
             _mockNotificationService.Setup(s => s.CreateNotificationAsync(dto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateNotification(dto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetMyNotifications_ReturnsOk()
         {
-            // Arrange
+
             var responseDto = new ServiceResponseDTO<IEnumerable<ReadNotificationDTO>> { Success = true };
 
             _mockNotificationService.Setup(s => s.GetUserNotificationsAsync("user-id"))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetMyNotifications();
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
         public async Task MarkAsRead_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var id = "1";
             var responseDto = new BasicResponseDTO { Success = true };
 
             _mockNotificationService.Setup(s => s.MarkAsReadAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.MarkAsRead(id);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
     }

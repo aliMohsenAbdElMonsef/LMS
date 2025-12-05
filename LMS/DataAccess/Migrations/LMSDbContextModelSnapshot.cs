@@ -429,6 +429,10 @@ namespace LMS.DataAccess.Migrations
                     b.Property<string>("LectureScheduleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("MaterialsPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("RecordingPath")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");

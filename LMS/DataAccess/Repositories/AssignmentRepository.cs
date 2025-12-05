@@ -1,4 +1,4 @@
-﻿using DataAccess.Context;
+using DataAccess.Context;
 using Domain.Entities.MainEntities;
 using Domain.Entities.RelationTables;
 using LMS.DataAccess.Contracts.Repositories;
@@ -109,7 +109,7 @@ namespace LMS.DataAccess.Repositories
             return await _set
                 .Include(a => a.Course)
                 .Include(a => a.Instructor)
-                .Include(a => a.Students) // Optional: if we want to show submission counts immediately
+                .Include(a => a.Students)
                 .Where(a => a.InstructorId == instructorId && !a.IsDeleted)
                 .OrderByDescending(a => a.UploadDate)
                 .ToListAsync();

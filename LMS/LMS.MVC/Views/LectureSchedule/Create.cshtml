@@ -30,7 +30,7 @@
                         </div>
 
                         <div id="scheduleContainer">
-                            <!-- Dynamic cards will be added here -->
+
                         </div>
 
                         <div class="d-grid gap-2 mb-3">
@@ -83,11 +83,11 @@
                     const currentVal = $(this).val();
                     const $select = $(this);
                     
-                    // Keep current value
+
                     $select.find('option').each(function() {
                         const val = $(this).val();
                         if (val && val !== currentVal && usedDays.includes(val)) {
-                            $(this).prop('disabled', true); // Or hide
+                            $(this).prop('disabled', true);
                             $(this).hide();
                         } else {
                             $(this).prop('disabled', false);
@@ -96,7 +96,7 @@
                     });
                 });
 
-                // Disable add button if all days used
+
                 if (usedDays.length >= maxDays) {
                     $('#addDayBtn').prop('disabled', true);
                 } else {
@@ -155,7 +155,7 @@
                 updateDayOptions();
             }
 
-            // Add initial card
+
             addScheduleCard();
 
             $('#addDayBtn').click(function () {
@@ -164,7 +164,7 @@
 
             $(document).on('click', '.remove-card-btn', function () {
                 const target = $(this).data('target');
-                // Don't remove if it's the only one
+
                 if ($('.schedule-card').length > 1) {
                     $(target).remove();
                     updateDayOptions();

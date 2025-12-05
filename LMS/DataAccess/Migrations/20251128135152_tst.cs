@@ -1,49 +1,49 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LMS.DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class tst : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.DropForeignKey(
-            //    name: "FK_InstructorEnrollments_AspNetUsers_ApplicationUserId",
-            //    table: "InstructorEnrollments");
 
-            //migrationBuilder.DropTable(
-            //    name: "Notification");
 
-            //migrationBuilder.DropIndex(
-            //    name: "IX_InstructorEnrollments_ApplicationUserId",
-            //    table: "InstructorEnrollments");
 
-            //migrationBuilder.DropColumn(
-            //    name: "ApplicationUserId",
-            //    table: "InstructorEnrollments");
 
-            //migrationBuilder.DropColumn(
-            //    name: "EmailVerificationToken",
-            //    table: "AspNetUsers");
 
-            //migrationBuilder.DropColumn(
-            //    name: "EmailVerificationTokenExpiry",
-            //    table: "AspNetUsers");
 
-            //migrationBuilder.DropColumn(
-            //    name: "PasswordResetToken",
-            //    table: "AspNetUsers");
 
-            //migrationBuilder.DropColumn(
-            //    name: "PasswordResetTokenExpiry",
-            //    table: "AspNetUsers");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
-        /// <inheritdoc />
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(

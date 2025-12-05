@@ -27,7 +27,7 @@ namespace LMS.BusinessLogic.Services
             _blacklistService = blacklistService;
         }
 
-        // ---------------- ACCESS TOKEN ----------------
+
         public async Task<(string token, DateTime expires)> GenerateAccessToken(ApplicationUser user, IList<string> roles)
         {
             var authClaims = new List<Claim>
@@ -68,11 +68,10 @@ namespace LMS.BusinessLogic.Services
             var jwtToken = handler.ReadJwtToken(token);
             var expClaim = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Exp).Value;
             var expUnix = long.Parse(expClaim);
-
             return DateTimeOffset.FromUnixTimeSeconds(expUnix).UtcDateTime;
         }
 
-        // --------------- BLACKLIST ----------------
+
         public async Task BlacklistAccessToken(string token, DateTime expiry, string userId)
         {
             await _blacklistService.AddTokenAsync(token, expiry, userId);
@@ -83,7 +82,7 @@ namespace LMS.BusinessLogic.Services
             return _blacklistService.IsTokenBlackListedAsync(token);
         }
 
-        // ---------------- REFRESH TOKEN ----------------
+
         public (string refreshToken, DateTime expires) GenerateRefreshToken()
         {
             var randomBytes = new byte[32];

@@ -3,6 +3,7 @@ using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LMS.MVC.Controllers
 {
@@ -30,16 +31,11 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Login", "Account");
                 }
                 
-                Console.WriteLine($"🔍 ProfileController.Index - UserId: {userId}");
-                
                 var result = await _services.ProfileService.GetProfileAsync(userId);
-                
-                Console.WriteLine($"🔍 ProfileController.Index - Result Success: {result.Success}, Data: {result.Data != null}");
                 
                 if (!result.Success || result.Data == null)
                 {
                     TempData["Error"] = result.Message ?? "Profile not found.";
-                    Console.WriteLine($"❌ ProfileController.Index - Error: {result.Message}");
                     return RedirectToAction("Index", "Home");
                 }
                 
@@ -56,8 +52,6 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ ProfileController.Index - Exception: {ex.Message}");
-                Console.WriteLine($"❌ Stack Trace: {ex.StackTrace}");
                 TempData["Error"] = $"Error loading profile: {ex.Message}";
                 return RedirectToAction("Index", "Home");
             }
@@ -174,9 +168,9 @@ namespace LMS.MVC.Controllers
                     authProperties
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error refreshing authentication cookie: {ex.Message}");
+                // Ignore errors during cookie refresh
             }
         }
 

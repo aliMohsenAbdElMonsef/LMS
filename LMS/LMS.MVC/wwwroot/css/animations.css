@@ -1,11 +1,6 @@
-/* ============================
-   Animations & Transitions
-   Modern LMS Platform
-   ============================ */
 
-/* ============================
-   Keyframe Animations
-   ============================ */
+
+
 
 @keyframes fadeIn {
     from {
@@ -125,9 +120,7 @@
     }
 }
 
-/* ============================
-   Animation Utility Classes
-   ============================ */
+
 
 .animate-fade-in {
     animation: fadeIn 0.6s ease-out;
@@ -169,7 +162,7 @@
     animation: glow 2s ease-in-out infinite;
 }
 
-/* Delayed animations for staggered effects */
+
 .animate-delay-100 {
     animation-delay: 0.1s;
 }
@@ -190,9 +183,7 @@
     animation-delay: 0.5s;
 }
 
-/* ============================
-   Hover Effects
-   ============================ */
+
 
 .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -227,9 +218,7 @@
     filter: brightness(1.1);
 }
 
-/* ============================
-   Loading States
-   ============================ */
+
 
 .loading-spinner {
     border: 3px solid rgba(102, 126, 234, 0.1);
@@ -275,9 +264,7 @@
     height: 50px;
 }
 
-/* ============================
-   Transition Utilities
-   ============================ */
+
 
 .transition-all {
     transition: all 0.3s ease;
@@ -303,9 +290,7 @@
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* ============================
-   Page Transitions
-   ============================ */
+
 
 .page-enter {
     opacity: 0;
@@ -327,9 +312,7 @@
     transition: opacity 0.3s ease;
 }
 
-/* ============================
-   Modal Animations
-   ============================ */
+
 
 .modal-backdrop {
     animation: fadeIn 0.3s ease;
@@ -344,9 +327,7 @@
     transform: translateY(0);
 }
 
-/* ============================
-   Toast Notifications
-   ============================ */
+
 
 @keyframes slideInRight {
     from {
@@ -378,9 +359,7 @@
     animation: slideOutRight 0.3s ease;
 }
 
-/* ============================
-   Progress Bar Animation
-   ============================ */
+
 
 @keyframes progressBar {
     from {
@@ -392,9 +371,7 @@
     animation: progressBar 1s ease-out;
 }
 
-/* ============================
-   Ripple Effect
-   ============================ */
+
 
 @keyframes ripple {
     to {
@@ -426,9 +403,7 @@
     height: 300px;
 }
 
-/* ============================
-   Scroll Animations
-   ============================ */
+
 
 .scroll-fade-in {
     opacity: 0;
@@ -441,9 +416,7 @@
     transform: translateY(0);
 }
 
-/* ============================
-   Gradient Animation
-   ============================ */
+
 
 @keyframes gradientShift {
     0% {

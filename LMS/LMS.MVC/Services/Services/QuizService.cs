@@ -78,34 +78,12 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
-                Console.WriteLine($"🔄 Updating quiz {id}...");
-                Console.WriteLine($"Quiz Data: Title={model.Title}, Questions={model.Questions.Count}");
-                
-                // Log each question being sent
-                for (int i = 0; i < model.Questions.Count; i++)
-                {
-                    var q = model.Questions[i];
-                    var textPreview = string.IsNullOrEmpty(q.Text) ? "" : q.Text.Substring(0, Math.Min(30, q.Text.Length));
-                    Console.WriteLine($"  Question {i}: Id={q.Id ?? "NULL"}, Type={q.Type}, Text={textPreview}...");
-                }
-                
-                // API expects PUT /api/quizzes/update with ID in the body, not in the URL
+
                 var response = await _client.PutAsJsonAsync($"api/quizzes/update", model);
-                
-                Console.WriteLine($"Response Status: {response.StatusCode}");
                 
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ API Error Response: {errorContent}");
-                    
-                    // Try to parse as JSON to get more details
-                    try
-                    {
-                        var errorJson = System.Text.Json.JsonDocument.Parse(errorContent);
-                        Console.WriteLine($"Parsed error: {errorJson.RootElement}");
-                    }
-                    catch { }
                     
                     return new SuccessServiceResult<QuizItemViewModel>
                     {
@@ -115,7 +93,6 @@ namespace LMS.MVC.Services.Services
                 }
                 
                 var result = await response.Content.ReadFromJsonAsync<SuccessServiceResult<QuizItemViewModel>>();
-                Console.WriteLine($"✅ Update successful: {result?.Success}");
                 
                 return result ?? new SuccessServiceResult<QuizItemViewModel>
                 {
@@ -125,9 +102,6 @@ namespace LMS.MVC.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Exception in UpdateQuizAsync: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                
                 return new SuccessServiceResult<QuizItemViewModel>
                 {
                     Success = false,

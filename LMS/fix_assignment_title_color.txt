@@ -1,0 +1,11 @@
+// FIX FOR ASSIGNMENT TITLE COLOR IN LIGHT MODE
+// File: LMS.MVC/Views/Assignment/MyAssignments.cshtml
+// Line: 121
+
+// CHANGE THIS LINE:
+                                           class="text-decoration-none fw-bold">
+
+// TO THIS:
+                                           class="text-decoration-none fw-bold text-dark">
+
+// This adds the text-dark class which ensures the assignment title is visible in light mode

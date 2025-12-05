@@ -31,21 +31,12 @@ namespace LMS.MVC.Services.Services
             _contextAccessor = accessor;
         }
 
-        // ============== FILE UPLOAD METHODS ==============
 
-        /// <summary>
-        /// Creates assignment with file by sending multipart form data to API
-        /// </summary>
+
         public async Task<ReadAssignmentResult> CreateAssignmentWithFile(
             ReadAssignmentResult model,
             IFormFile file)
         {
-            Console.WriteLine("=== MVC SERVICE: CreateAssignmentWithFile ===");
-            Console.WriteLine($"Model Title: {model.Title}");
-            Console.WriteLine($"File Name: {file.FileName}");
-            Console.WriteLine($"File Size: {file.Length} bytes");
-            Console.WriteLine($"API Base URL: {_client.BaseAddress}");
-
             using var content = new MultipartFormDataContent();
 
             content.Add(new StringContent(model.Title ?? ""), "Title");
@@ -58,36 +49,26 @@ namespace LMS.MVC.Services.Services
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "assignmentFile", file.FileName);
 
-            Console.WriteLine("✅ Sending POST to api/assignment/create-with-file");
-
             var response = await _client.PostAsync("api/assignment/create-with-file", content);
-
-            Console.WriteLine($"Response Status: {response.StatusCode}");
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"❌ API Error: {errorContent}");
                 throw new Exception($"API Error: {response.StatusCode} - {errorContent}");
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Response JSON: {json.Substring(0, Math.Min(200, json.Length))}...");
 
             var serviceResponse = JsonConvert.DeserializeObject<ServiceResponseDTO<ReadAssignmentDTO>>(json);
 
             if (serviceResponse?.Success != true || serviceResponse.Data == null)
             {
-                Console.WriteLine($"❌ Service response failed: {serviceResponse?.Message}");
                 throw new Exception(serviceResponse?.Message ?? "Failed to create assignment");
             }
 
-            Console.WriteLine($"✅ Assignment created successfully: {serviceResponse.Data.Id}");
-
             return _mapper.Map<ReadAssignmentResult>(serviceResponse.Data);
-        }        /// <summary>
-                 /// Submits assignment with file by sending multipart form data to API
-                 /// </summary>
+        }        
+        
         public async Task<StudentAssignmentResult> SubmitAssignmentWithFile(
             string assignmentId,
             string studentId,
@@ -95,15 +76,15 @@ namespace LMS.MVC.Services.Services
         {
             using var content = new MultipartFormDataContent();
 
-            // Add form fields
+
             content.Add(new StringContent(assignmentId), "assignmentId");
 
-            // Add file
+
             var fileContent = new StreamContent(file.OpenReadStream());
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "submissionFile", file.FileName);
 
-            // Send to API
+
             var response = await _client.PostAsync("api/assignment/submit-with-file", content);
 
             if (!response.IsSuccessStatusCode)
@@ -123,33 +104,29 @@ namespace LMS.MVC.Services.Services
             return _mapper.Map<StudentAssignmentResult>(serviceResponse.Data);
         }
 
-        /// <summary>
-        /// Downloads file from API
-        /// </summary>
         public async Task<FileContentResult?> DownloadFileFromApi(string filePath)
         {
             try
             {
-                // Encode the file path for URL
+
                 var encodedPath = Uri.EscapeDataString(filePath);
 
-                // Request file from API
+
                 var response = await _client.GetAsync($"api/assignment/download/{encodedPath}");
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"❌ Download failed: {response.StatusCode}");
                     return null;
                 }
 
-                // Read file bytes
+
                 var bytes = await response.Content.ReadAsByteArrayAsync();
 
-                // Get content type
+
                 var contentType = response.Content.Headers.ContentType?.ToString()
                     ?? "application/octet-stream";
 
-                // Get filename from path
+
                 var fileName = Path.GetFileName(filePath);
 
                 return new FileContentResult(bytes, contentType)
@@ -157,14 +134,13 @@ namespace LMS.MVC.Services.Services
                     FileDownloadName = fileName
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error downloading file from API: {ex.Message}");
                 return null;
             }
         }
 
-        // ============== GET METHODS ==============
+
 
         public async Task<IEnumerable<ReadAssignmentResult>> GetAssignmentsByCourse(string courseId)
         {
@@ -207,12 +183,11 @@ namespace LMS.MVC.Services.Services
             }
             catch (Exception ex) when (ex.Message.Contains("not found"))
             {
-                // Not found is a normal case - student hasn't submitted yet
+
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error getting student assignment: {ex.Message}");
                 return null;
             }
         }
@@ -231,7 +206,7 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
-                // Convert string status to enum
+
                 if (!Enum.TryParse<AssignmentStatus>(status, out var statusEnum))
                 {
                     return Enumerable.Empty<StudentAssignmentResult>();
@@ -243,9 +218,8 @@ namespace LMS.MVC.Services.Services
                 var submissions = response?.Data ?? Enumerable.Empty<StudentAssignmentDTO>();
                 return _mapper.Map<IEnumerable<StudentAssignmentResult>>(submissions);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error getting submissions by status: {ex.Message}");
                 return Enumerable.Empty<StudentAssignmentResult>();
             }
         }
@@ -277,16 +251,15 @@ namespace LMS.MVC.Services.Services
 
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error retrieving edit model: {ex.Message}");
                 return null;
             }
         }
 
         public ReadAssignmentResult GetCreateModel() => new ReadAssignmentResult();
 
-        // ============== CRUD METHODS ==============
+
 
         public async Task<ReadAssignmentResult> CreateAssignment(ReadAssignmentResult model)
         {
@@ -331,14 +304,13 @@ namespace LMS.MVC.Services.Services
                     $"api/assignment/delete/{id}");
                 return response?.Success == true && response.Data;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error deleting assignment: {ex.Message}");
                 return false;
             }
         }
 
-        // ============== SUBMISSION & GRADING ==============
+
 
         public async Task<StudentAssignmentResult> SubmitAssignment(StudentAssignmentResult model)
         {
@@ -372,7 +344,7 @@ namespace LMS.MVC.Services.Services
             return _mapper.Map<StudentAssignmentResult>(response.Data);
         }
 
-        // ============== HELPER METHODS ==============
+
 
         public async Task<T> PutAsync<T>(string url, object content)
         {
@@ -397,7 +369,7 @@ namespace LMS.MVC.Services.Services
             return JsonConvert.DeserializeObject<T>(responseJson)!;
         }
 
-        // ============== DEPRECATED METHODS (For Compatibility) ==============
+
 
         [Obsolete("Use DownloadFileFromApi instead")]
         public async Task<FileResult> DownloadAssignmentFileAsync(string filePath, string fileName)
@@ -422,9 +394,8 @@ namespace LMS.MVC.Services.Services
                 var submissions = response?.Data ?? Enumerable.Empty<StudentAssignmentDTO>();
                 return _mapper.Map<IEnumerable<StudentAssignmentResult>>(submissions);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error getting student submissions: {ex.Message}");
                 return Enumerable.Empty<StudentAssignmentResult>();
             }
         }
@@ -452,9 +423,8 @@ namespace LMS.MVC.Services.Services
                     SubmittedAt = a.SubmittedAt
                 }).ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"❌ Error getting student assignments: {ex.Message}");
                 return new List<StudentAssignmentItemResult>();
             }
         }
@@ -484,7 +454,6 @@ namespace LMS.MVC.Services.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error getting instructor assignments: {ex.Message}");
                 return new ServiceResponseDTO<IEnumerable<ReadAssignmentResult>>
                 {
                     Success = false,

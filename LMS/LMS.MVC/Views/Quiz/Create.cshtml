@@ -16,7 +16,7 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="CourseId" value="@courseId" />
 
-                        <!-- Quiz Details -->
+
                         <div class="row g-3 mb-4">
                             <div class="col-12">
                                 <label class="form-label">Quiz Title <span class="text-danger">*</span></label>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <!-- Questions Section -->
+
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5><i class="bi bi-list-ol"></i> Questions</h5>
@@ -73,7 +73,7 @@
                             </div>
 
                             <div id="questionsContainer">
-                                <!-- Initial Question -->
+
                                 <div class="question-item card mb-3" id="question-0">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between mb-3">
@@ -106,7 +106,7 @@
                                         <div class="options-section" id="options-section-0">
                                             <label class="form-label">Answer Options</label>
                                             
-                                            <!-- Option A -->
+
                                             <div class="input-group mb-2 option-group">
                                                 <span class="input-group-text fw-bold">A</span>
                                                 <input type="text" class="form-control option-input option-a" name="Questions[0].OptionA" placeholder="Option A text" required>
@@ -116,7 +116,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Option B -->
+
                                             <div class="input-group mb-2 option-group">
                                                 <span class="input-group-text fw-bold">B</span>
                                                 <input type="text" class="form-control option-input option-b" name="Questions[0].OptionB" placeholder="Option B text" required>
@@ -126,7 +126,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Option C -->
+
                                             <div class="input-group mb-2 option-group option-c-d">
                                                 <span class="input-group-text fw-bold">C</span>
                                                 <input type="text" class="form-control option-input option-c" name="Questions[0].OptionC" placeholder="Option C text" required>
@@ -136,7 +136,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Option D -->
+
                                             <div class="input-group mb-2 option-group option-c-d">
                                                 <span class="input-group-text fw-bold">D</span>
                                                 <input type="text" class="form-control option-input option-d" name="Questions[0].OptionD" placeholder="Option D text" required>
@@ -176,7 +176,7 @@
 
         function addQuestion() {
             const container = document.getElementById('questionsContainer');
-            const index = questionCount; // Use a unique counter for IDs, but we'll re-index names on submit
+            const index = questionCount;
             
             const questionHtml = `
                 <div class="question-item card mb-3" id="question-${index}">
@@ -279,53 +279,53 @@
             const inputs = optionsSection.querySelectorAll('input');
             const optionCD = optionsSection.querySelectorAll('.option-c-d');
             
-            // Reset visibility
+
             optionsSection.classList.remove('d-none');
             shortAnswerNote.classList.add('d-none');
             optionCD.forEach(el => el.classList.remove('d-none'));
             
-            // Reset required and enabled
+
             inputs.forEach(input => {
                 input.required = true;
                 input.disabled = false;
-                if (input.type === 'radio') input.required = false; // Radio group handles required
+                if (input.type === 'radio') input.required = false;
             });
             
-            // Ensure at least one radio is required per group
+
             const radios = optionsSection.querySelectorAll('input[type="radio"]');
             if(radios.length > 0) radios[0].required = true;
 
             if (type === 'TrueFalse') {
-                // Hide C and D
+
                 optionCD.forEach(el => el.classList.add('d-none'));
                 
-                // Remove required from C and D inputs
+
                 optionCD.forEach(el => {
                     el.querySelectorAll('input').forEach(i => i.required = false);
                 });
 
-                // Pre-fill A and B
+
                 const inputA = optionsSection.querySelector('.option-a');
                 const inputB = optionsSection.querySelector('.option-b');
                 if (inputA) inputA.value = "True";
                 if (inputB) inputB.value = "False";
             } 
             else if (type === 'ShortAnswer') {
-                // Hide options section entirely
+
                 optionsSection.classList.add('d-none');
                 shortAnswerNote.classList.remove('d-none');
                 
-                // Remove all required attributes in options
+
                 inputs.forEach(input => input.required = false);
             }
         }
 
-        // Form submission handler to re-index questions
+
         document.querySelector('form').addEventListener('submit', function(e) {
             const questions = document.querySelectorAll('.question-item');
             
             questions.forEach((q, index) => {
-                // Update names for all inputs within this question
+
                 q.querySelector('.question-text').name = `Questions[${index}].Text`;
                 q.querySelector('.question-type').name = `Questions[${index}].Type`;
                 q.querySelector('.question-points').name = `Questions[${index}].Points`;
@@ -335,7 +335,7 @@
                 q.querySelector('.option-c').name = `Questions[${index}].OptionC`;
                 q.querySelector('.option-d').name = `Questions[${index}].OptionD`;
                 
-                // Radio buttons for correct answer need special handling to ensure they belong to the same group per question
+
                 const radios = q.querySelectorAll('.correct-answer');
                 radios.forEach(radio => {
                     radio.name = `Questions[${index}].CorrectAnswer`;

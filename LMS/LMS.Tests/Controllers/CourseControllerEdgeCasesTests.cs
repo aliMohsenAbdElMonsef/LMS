@@ -38,15 +38,15 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateCourse_BadRequest_WhenDtoInvalid()
         {
-            // Arrange: admin role but missing required fields
+
             SetUserRole("Admin");
             var dto = new CreateCourseDTO { Name = "", Description = null };
             _controller.ModelState.AddModelError("Name", "Required");
 
-            // Act
+
             var result = await _controller.CreateCourse(dto);
 
-            // Assert
+
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.NotNull(badResult.Value);
         }

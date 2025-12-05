@@ -41,7 +41,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateQuestion_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var createDto = new CreateQuestionDTO
             {
                 QuizId = "quiz1",
@@ -63,10 +63,10 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.CreateAsync(It.IsAny<CreateQuestionDTO>()))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateQuestion(createDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuestionDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -75,7 +75,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateQuestion_ReturnsBadRequest_WhenUnsuccessful()
         {
-            // Arrange
+
             var createDto = new CreateQuestionDTO
             {
                 QuizId = "quiz1",
@@ -91,17 +91,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.CreateAsync(It.IsAny<CreateQuestionDTO>()))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateQuestion(createDto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task UpdateQuestion_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var updateDto = new UpdateQuestionDTO
             {
                 Id = "1",
@@ -124,10 +124,10 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.UpdateAsync(It.IsAny<UpdateQuestionDTO>()))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.UpdateQuestion(updateDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuestionDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -136,7 +136,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task UpdateQuestion_ReturnsBadRequest_WhenUnsuccessful()
         {
-            // Arrange
+
             var updateDto = new UpdateQuestionDTO { Id = "1" };
 
             var responseDto = new ServiceResponseDTO<ReadQuestionDTO>
@@ -148,17 +148,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.UpdateAsync(It.IsAny<UpdateQuestionDTO>()))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.UpdateQuestion(updateDto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task DeleteQuestion_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var id = "1";
             var responseDto = new ServiceResponseDTO<ReadQuestionDTO>
             {
@@ -168,17 +168,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.DeleteAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.DeleteQuestion(id);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task DeleteQuestion_ReturnsNotFound_WhenUnsuccessful()
         {
-            // Arrange
+
             var id = "nonexistent";
             var responseDto = new ServiceResponseDTO<ReadQuestionDTO>
             {
@@ -189,17 +189,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.DeleteAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.DeleteQuestion(id);
 
-            // Assert
+
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetQuestionById_ReturnsOk_WhenFound()
         {
-            // Arrange
+
             var id = "1";
             var responseDto = new ServiceResponseDTO<ReadQuestionDTO>
             {
@@ -210,17 +210,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.GetByIdAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetQuestionById(id);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetQuestionById_ReturnsNotFound_WhenNotFound()
         {
-            // Arrange
+
             var id = "nonexistent";
             var responseDto = new ServiceResponseDTO<ReadQuestionDTO>
             {
@@ -231,17 +231,17 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.GetByIdAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetQuestionById(id);
 
-            // Assert
+
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetAllQuestions_ReturnsOk()
         {
-            // Arrange
+
             var questions = new List<ReadQuestionDTO>
             {
                 new ReadQuestionDTO { Id = "1", Text = "Question 1" },
@@ -256,10 +256,10 @@ namespace LMS.Tests.Controllers
             _mockQuestionServices.Setup(s => s.GetAllAsync())
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetAllQuestions();
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<IEnumerable<ReadQuestionDTO>>>(okResult.Value);
             Assert.True(returnValue.Success);

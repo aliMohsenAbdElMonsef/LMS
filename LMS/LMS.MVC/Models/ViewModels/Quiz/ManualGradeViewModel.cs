@@ -6,7 +6,7 @@ namespace LMS.MVC.Models.ViewModels.Quiz
     {
         public string QuizId { get; set; } = string.Empty;
         public string StudentId { get; set; } = string.Empty;
-        public string StudentName { get; set; } = string.Empty; // Might need to fetch user details separately or pass it
+        public string StudentName { get; set; } = string.Empty;
         public string QuizTitle { get; set; } = string.Empty;
         public List<QuestionGradeViewModel> Questions { get; set; } = new List<QuestionGradeViewModel>();
     }
@@ -19,6 +19,6 @@ namespace LMS.MVC.Models.ViewModels.Quiz
         public string CorrectAnswer { get; set; } = string.Empty;
         public bool IsCorrect { get; set; }
         public int Points { get; set; }
-        public string Type { get; set; } = string.Empty; // To distinguish ShortAnswer
+        public string Type { get; set; } = string.Empty;
     }
 }

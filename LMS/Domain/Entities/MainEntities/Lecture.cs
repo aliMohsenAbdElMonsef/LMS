@@ -20,6 +20,9 @@ namespace Domain.Entities.MainEntities
         public string? RecordingPath { get; set; }
 
         [MaxLength(500)]
+        public string? MaterialsPath { get; set; }
+
+        [MaxLength(500)]
         public string? ZoomLink { get; set; }
         public string InstructorId { get; set; }
         public ApplicationUser Instructor { get; set; }

@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMS.BusinessLogic.DTOs.Lecture
@@ -16,7 +16,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         public DateTime LectureDate { get; set; }
         public TimeSpan StartTime { get; set; }
 
-        public TimeSpan? EndTime { get; set; }// calculated from the duration of the lecture in the course
+        public TimeSpan? EndTime { get; set; }
         
         public int? DurationMinutes { get; set; }
 
@@ -27,5 +27,8 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         public string? AssignedInstructorId { get; set; }
 
         public string? RecordingPath { get; set; }
+        public string? MaterialsPath { get; set; }
+        public IFormFile? NewRecordingFile { get; set; }
+        public IFormFile? NewMaterialsFile { get; set; }
     }
 }

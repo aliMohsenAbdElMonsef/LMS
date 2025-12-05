@@ -61,7 +61,7 @@ namespace LMS.MVC.Services.Services
                 {
                     var courses = _mapper.Map<List<ReadCourseResult>>(response.Data);
 
-                    // Convert thumbnail paths
+
                     foreach (var course in courses)
                     {
                         course.ThumbnailPath = ConvertThumbnail(course.ThumbnailPath);

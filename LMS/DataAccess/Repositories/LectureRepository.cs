@@ -1,4 +1,4 @@
-﻿using DataAccess.Context;
+using DataAccess.Context;
 using Domain.Entities.MainEntities;
 using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +27,7 @@ namespace LMS.DataAccess.Repositories
         public async Task<IEnumerable<Lecture>> GetLecturesByCourseIdsAsync(IEnumerable<string> courseIds)
         {
             return await _set
-                 .Include(l => l.Course) // Include Course to get Course Name
+                 .Include(l => l.Course)
                  .Where(l => courseIds.Contains(l.CourseId) && !l.IsDeleted)
                  .OrderBy(l => l.LectureDate)
                  .ThenBy(l => l.StartTime)

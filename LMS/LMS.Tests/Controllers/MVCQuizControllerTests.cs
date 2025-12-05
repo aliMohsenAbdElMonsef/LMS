@@ -30,7 +30,7 @@ namespace LMS.Tests.Controllers
 
             _controller = new QuizController(_mockUnitOfServices.Object);
             
-            // Setup TempData
+
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
         }
 
@@ -53,10 +53,10 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Index_ReturnsViewWithSortedQuizzes()
         {
-            // Arrange
+
             var courseId = "course1";
             var quiz1 = new QuizItemViewModel { Id = "1", Title = "Quiz 1", EndDate = DateTime.Now.AddDays(5) };
-            var quiz2 = new QuizItemViewModel { Id = "2", Title = "Quiz 2", EndDate = DateTime.Now.AddDays(1) }; // Sooner
+            var quiz2 = new QuizItemViewModel { Id = "2", Title = "Quiz 2", EndDate = DateTime.Now.AddDays(1) };
             var quiz3 = new QuizItemViewModel { Id = "3", Title = "Quiz 3", EndDate = DateTime.Now.AddDays(10) };
 
             var quizzes = new List<QuizItemViewModel> { quiz1, quiz2, quiz3 };
@@ -69,16 +69,16 @@ namespace LMS.Tests.Controllers
             _mockQuizService.Setup(s => s.GetQuizzesByCourseAsync(courseId))
                 .ReturnsAsync(serviceResult);
 
-            // Act
+
             var result = await _controller.Index(courseId);
 
-            // Assert
+
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<QuizListViewModel>(viewResult.Model);
             
             var sortedQuizzes = model.Quizzes.ToList();
             Assert.Equal(3, sortedQuizzes.Count);
-            Assert.Equal("Quiz 2", sortedQuizzes[0].Title); // Earliest deadline first
+            Assert.Equal("Quiz 2", sortedQuizzes[0].Title);
             Assert.Equal("Quiz 1", sortedQuizzes[1].Title);
             Assert.Equal("Quiz 3", sortedQuizzes[2].Title);
         }
@@ -86,7 +86,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Details_RedirectsToCourse_WhenStudentNotEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var courseId = "course1";
             var userId = "student1";
@@ -104,12 +104,12 @@ namespace LMS.Tests.Controllers
                 .ReturnsAsync(new SuccessServiceResult<QuizItemViewModel> { Success = true, Data = quizViewModel });
 
             _mockEnrollmentService.Setup(s => s.IsApprovedEnrollmentAsync(userId, courseId))
-                .ReturnsAsync(false); // Not enrolled
+                .ReturnsAsync(false);
 
-            // Act
+
             var result = await _controller.Details(quizId);
 
-            // Assert
+
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Details", redirectResult.ActionName);
             Assert.Equal("Course", redirectResult.ControllerName);
@@ -120,7 +120,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Details_ReturnsView_WhenStudentIsEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var courseId = "course1";
             var userId = "student1";
@@ -138,7 +138,7 @@ namespace LMS.Tests.Controllers
                 .ReturnsAsync(new SuccessServiceResult<QuizItemViewModel> { Success = true, Data = quizViewModel });
 
             _mockEnrollmentService.Setup(s => s.IsApprovedEnrollmentAsync(userId, courseId))
-                .ReturnsAsync(true); // Enrolled
+                .ReturnsAsync(true);
 
             _mockQuizService.Setup(s => s.GetQuizStatusAsync(quizId))
                 .ReturnsAsync(new SuccessServiceResult<LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO> 
@@ -147,10 +147,10 @@ namespace LMS.Tests.Controllers
                     Data = new LMS.BusinessLogic.DTOs.Quiz.StudentQuizStatusDTO { Status = Domain.Enums.QuizStatus.NotStarted } 
                 });
 
-            // Act
+
             var result = await _controller.Details(quizId);
 
-            // Assert
+
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsType<QuizItemViewModel>(viewResult.Model);
             Assert.Equal(quizId, model.Id);
@@ -159,7 +159,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Details_RedirectsToCourse_WhenInstructorNotEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var courseId = "course1";
             var userId = "instructor1";
@@ -177,12 +177,12 @@ namespace LMS.Tests.Controllers
                 .ReturnsAsync(new SuccessServiceResult<QuizItemViewModel> { Success = true, Data = quizViewModel });
 
             _mockEnrollmentService.Setup(s => s.IsApprovedEnrollmentAsync(userId, courseId))
-                .ReturnsAsync(false); // Not enrolled
+                .ReturnsAsync(false);
 
-            // Act
+
             var result = await _controller.Details(quizId);
 
-            // Assert
+
             var redirectResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Details", redirectResult.ActionName);
             Assert.Equal("Course", redirectResult.ControllerName);

@@ -24,22 +24,17 @@ namespace LMS.BusinessLogic.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<INotificationService, NotificationService>();
-            // Add this to your service registration
             services.AddScoped<IEnrollmentManagement, EnrollmentManagementService>();
             services.AddScoped<ILectureScheduleService, LectureScheduleService>();
-
-            //services.AddScoped<IQuestionServices, QuestionServices>();
             services.AddScoped<IQuizServices, QuizServices>();
             services.AddScoped<ILectureReminderService, LectureReminderService>();
-            //services.AddScoped<ISkillServices, SkillServices>();
-            //services.AddScoped<ICourseDayScheduleServices, CourseDayScheduleServices>();
             services.AddScoped<IUnitOfServices, UnitOfServices>();
 
-            // Register EmailSettings
+
             var emailSettings = configuration.GetSection("EmailSettings").Get<LMS.BusinessLogic.DTOs.Email.EmailSettings>();
             if (emailSettings == null)
             {
-                // Fallback or throw, but for now let's create a default to prevent startup crash if config is missing
+
                 emailSettings = new LMS.BusinessLogic.DTOs.Email.EmailSettings { UseMockEmail = true };
             }
             services.AddSingleton(emailSettings);

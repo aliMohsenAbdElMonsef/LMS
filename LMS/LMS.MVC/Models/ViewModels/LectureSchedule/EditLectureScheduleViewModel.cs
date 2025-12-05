@@ -33,5 +33,9 @@ namespace LMS.MVC.Models.ViewModels.LectureSchedule
         [Range(1, 480)]
         [Display(Name = "Duration (Minutes)")]
         public int DurationMinutes { get; set; }
+
+        [Required]
+        [Display(Name = "Instructor")]
+        public string InstructorId { get; set; }
     }
 }

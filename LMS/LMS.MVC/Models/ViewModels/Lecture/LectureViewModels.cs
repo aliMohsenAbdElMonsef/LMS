@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace LMS.MVC.Models.ViewModels.Lecture
 {
     public class LectureViewModel
@@ -12,9 +14,14 @@ namespace LMS.MVC.Models.ViewModels.Lecture
         public int LectureNumber { get; set; }
         public bool IsCompleted { get; set; }
         public string ZoomLink { get; set; } = string.Empty;
+        public string? RecordingPath { get; set; }
+        public string? MaterialsPath { get; set; }
         public string CourseName { get; set; } = string.Empty;
         public DateTime LectureDate { get; set; }
         public TimeSpan StartTime { get; set; }
+        public string? AttendanceStatus { get; set; } 
+        public IFormFile? NewRecordingFile { get; set; }
+        public IFormFile? NewMaterialsFile { get; set; }
     }
 
     public class CreateLectureViewModel
@@ -30,6 +37,8 @@ namespace LMS.MVC.Models.ViewModels.Lecture
         public TimeSpan StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
         public string InstructorId { get; set; } = string.Empty;
+        public IFormFile? NewRecordingFile { get; set; }
+        public IFormFile? NewMaterialsFile { get; set; }
     }
 
     public class UpdateLectureViewModel : CreateLectureViewModel

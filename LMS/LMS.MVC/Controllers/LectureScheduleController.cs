@@ -93,6 +93,9 @@ namespace LMS.MVC.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            var course = await _services.CourseService.GetCourseDetails(Guid.Parse(result.Data.CourseId));
+            ViewBag.Instructors = course.Data?.Instructors ?? new List<LMS.BusinessLogic.DTOs.Course.InstructorInformationDTO>();
+
             var model = new EditLectureScheduleViewModel
             {
                 Id = result.Data.Id,
@@ -102,7 +105,8 @@ namespace LMS.MVC.Controllers
                 Description = result.Data.Description,
                 DayOfWeek = result.Data.DayOfWeek,
                 StartTime = result.Data.StartTime,
-                DurationMinutes = result.Data.DurationMinutes
+                DurationMinutes = result.Data.DurationMinutes,
+                InstructorId = result.Data.InstructorId
             };
 
             return View(model);
@@ -111,7 +115,13 @@ namespace LMS.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditLectureScheduleViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+
+            if (!ModelState.IsValid)
+            {
+                var course = await _services.CourseService.GetCourseDetails(Guid.Parse(model.CourseId));
+                ViewBag.Instructors = course.Data?.Instructors ?? new List<LMS.BusinessLogic.DTOs.Course.InstructorInformationDTO>();
+                return View(model);
+            }
 
             var dto = new UpdateLectureScheduleDTO
             {
@@ -120,7 +130,8 @@ namespace LMS.MVC.Controllers
                 Description = model.Description,
                 DayOfWeek = model.DayOfWeek,
                 StartTime = model.StartTime,
-                DurationMinutes = model.DurationMinutes
+                DurationMinutes = model.DurationMinutes,
+                InstructorId = model.InstructorId
             };
 
             var result = await _services.LectureScheduleService.UpdateScheduleAsync(dto);
@@ -131,6 +142,11 @@ namespace LMS.MVC.Controllers
             }
 
             ModelState.AddModelError("", result.Message);
+            ModelState.AddModelError("", result.Message);
+            
+            var courseData = await _services.CourseService.GetCourseDetails(Guid.Parse(model.CourseId));
+            ViewBag.Instructors = courseData.Data?.Instructors ?? new List<LMS.BusinessLogic.DTOs.Course.InstructorInformationDTO>();
+            
             return View(model);
         }
 

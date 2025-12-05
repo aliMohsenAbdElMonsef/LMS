@@ -37,6 +37,7 @@ namespace LMS.BusinessLogic.Services
             };
 
             await _blackListedTokensRepository.AddAsync(blackListed);
+            await _blackListedTokensRepository.SaveChangesAsync();
         }
 
         public async Task RemoveExpiredTokensAsync()
@@ -46,6 +47,7 @@ namespace LMS.BusinessLogic.Services
             {
                 await _blackListedTokensRepository.DeleteAsync(item);
             }
+            await _blackListedTokensRepository.SaveChangesAsync();
         }
     }
 }

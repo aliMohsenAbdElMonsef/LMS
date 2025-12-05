@@ -38,8 +38,14 @@ namespace LMS.API.BackgroundServices
                     _logger.LogError(ex, "Error occurred while sending lecture reminders.");
                 }
 
-                // Wait for 1 minute before checking again
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                try
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
             }
 
             _logger.LogInformation("Lecture Reminder Background Service is stopping.");

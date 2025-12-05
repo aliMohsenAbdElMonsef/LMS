@@ -19,9 +19,7 @@ namespace LMS.API.Controllers
                 _unitOfServices = unitOfServices;
             }
 
-            /// <summary>
-            /// Get all day schedules for a specific course.
-            /// </summary>
+
             [HttpGet("course/{courseId}")]
             [AllowAnonymous]
             public async Task<IActionResult> GetCourseSchedules(string courseId)
@@ -45,9 +43,7 @@ namespace LMS.API.Controllers
                 }
             }
 
-            /// <summary>
-            /// Get a specific day schedule by ID.
-            /// </summary>
+
             [HttpGet("{scheduleId}")]
             [AllowAnonymous]
             public async Task<IActionResult> GetDaySchedule(string scheduleId)
@@ -71,9 +67,7 @@ namespace LMS.API.Controllers
                 }
             }
 
-            /// <summary>
-            /// Create a new day schedule.
-            /// </summary>
+
             [HttpPost]
             [Authorize(Roles = "Admin")]
             public async Task<IActionResult> CreateDaySchedule([FromBody] CreateDayScheduleDTO dto)
@@ -105,9 +99,7 @@ namespace LMS.API.Controllers
                 }
             }
 
-            /// <summary>
-            /// Update an existing day schedule.
-            /// </summary>
+
             [HttpPut("{scheduleId}")]
             [Authorize(Roles = "Admin")]
             public async Task<IActionResult> UpdateDaySchedule(string scheduleId, [FromBody] UpdateDayScheduleDTO dto)
@@ -146,9 +138,7 @@ namespace LMS.API.Controllers
                 }
             }
 
-            /// <summary>
-            /// Delete a day schedule by ID.
-            /// </summary>
+
             [HttpDelete("{scheduleId}")]
             [Authorize(Roles = "Admin")]
             public async Task<IActionResult> DeleteDaySchedule(string scheduleId)

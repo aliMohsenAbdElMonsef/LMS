@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LMS.DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class AddUserVerificationColumns : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -66,7 +66,7 @@ namespace LMS.DataAccess.Migrations
                 column: "UserId");
         }
 
-        /// <inheritdoc />
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

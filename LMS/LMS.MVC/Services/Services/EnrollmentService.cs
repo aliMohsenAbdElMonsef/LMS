@@ -333,7 +333,7 @@ namespace LMS.MVC.Services.Services
 
                 var content = await response.Content.ReadAsStringAsync();
                 
-                // The API returns ServiceResponseDTO<ReadEnrollIntoCourseDTO>, not ServiceResponseDTO<string>
+
                 var result = JsonSerializer.Deserialize<ServiceResponseDTO<ReadEnrollmentViewModel>>(content,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 

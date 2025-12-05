@@ -200,7 +200,7 @@
                         </a>
                     }
 
-                    <!-- Assignment Upload Button for Instructors who are enrolled -->
+
                     @if (User.IsInRole("Instructor") && ViewBag.EnrollmentStatus == "Approved")
                     {
                         <a asp-controller="Assignment" asp-action="Create" asp-route-courseId="@Model.Id" class="btn btn-info">
@@ -264,21 +264,21 @@
                     if (!response.ok) throw new Error(result.message || "Something went wrong.");
 
                     if (result.success && !result.unenrolled) {
-                        // Enrolled successfully
+
                         if (result.canEnrollImmediately !== false) {
-                             // Approved immediately (e.g. Student)
+
                             this.dataset.enrollmentStatus = "Approved";
                             this.classList.remove("btn-success");
                             this.classList.add("btn-danger");
                             this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
                             alert("? You have been enrolled successfully!");
                             
-                            // Reload for instructors to see upload button
+
                              if (@(User.IsInRole("Instructor").ToString().ToLower())) {
                                 location.reload();
                             }
                         } else {
-                            // Pending approval (e.g. Instructor)
+
                             this.dataset.enrollmentStatus = "Pending";
                             this.classList.remove("btn-success");
                             this.classList.add("btn-secondary");
@@ -288,14 +288,14 @@
                         }
                     }
                     else if (result.success && result.unenrolled) {
-                        // Unenrolled successfully
+
                         this.dataset.enrollmentStatus = "None";
                         this.classList.remove("btn-danger");
                         this.classList.add("btn-success");
                         this.innerHTML = `<i class="bi bi-check-circle"></i> Enroll`;
                         alert("? You have been unenrolled.");
 
-                        // Reload for instructors to hide upload button
+
                          if (@(User.IsInRole("Instructor").ToString().ToLower())) {
                             location.reload();
                         }
@@ -305,7 +305,7 @@
                 } catch (err) {
                     console.error(err);
                     alert("?? Error: " + err.message);
-                    // Reset button state on error
+
                     if (currentStatus === "Approved") {
                          this.innerHTML = `<i class="bi bi-x-circle"></i> Unenroll`;
                     } else {

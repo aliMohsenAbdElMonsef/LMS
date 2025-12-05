@@ -22,7 +22,7 @@ namespace LMS.DataAccess.Repositories
         public async Task<IEnumerable<LectureSchedule>> GetByCourseIdAsync(string courseId)
         {
             return await _context.LectureSchedules
-                .Where(ls => ls.CourseId == courseId)
+                .Where(ls => ls.CourseId == courseId && !ls.IsDeleted)
                 .OrderBy(ls => ls.DayOfWeek)
                 .ThenBy(ls => ls.StartTime)
                 .ToListAsync();
@@ -32,14 +32,15 @@ namespace LMS.DataAccess.Repositories
         {
             return await _context.LectureSchedules
                 .Include(ls => ls.Lectures)
-                .FirstOrDefaultAsync(ls => ls.Id == id);
+                .FirstOrDefaultAsync(ls => ls.Id == id && !ls.IsDeleted);
         }
 
         public async Task<IEnumerable<LectureSchedule>> GetByCourseIdWithLecturesAsync(string courseId)
         {
             return await _context.LectureSchedules
                 .Include(ls => ls.Lectures)
-                .Where(ls => ls.CourseId == courseId)
+                .Include(ls => ls.Instructor)
+                .Where(ls => ls.CourseId == courseId && !ls.IsDeleted)
                 .OrderBy(ls => ls.DayOfWeek)
                 .ThenBy(ls => ls.StartTime)
                 .ToListAsync();

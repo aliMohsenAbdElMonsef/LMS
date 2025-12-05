@@ -1,6 +1,7 @@
 ﻿using LMS.BusinessLogic.DTOs.Course;
 using LMS.BusinessLogic.DTOs.Lecture;
 using LMS.BusinessLogic.DTOs.Responses;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,9 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task DeleteAsync(string id, string userId, string userRole);
         Task<ServiceResponseDTO<GetLectureDTO>> CreateAsync(CreateLectureDTO dto, string userId, string userRole);
         Task<ServiceResponseDTO<bool>> CheckLectureConflictAsync(string courseId, DateTime date, TimeSpan startTime, TimeSpan endTime, string excludeLectureId = null);
+        Task<ServiceResponseDTO<bool>> MarkAsAttendedAsync(string lectureId, string studentId);
+        Task<ServiceResponseDTO<AttendanceStatisticsDTO>> GetAttendanceStatisticsAsync(string studentId);
+        Task<ServiceResponseDTO<AttendanceStatisticsDTO>> GetCourseAttendanceStatisticsAsync(string courseId, string studentId);
+        Task<ServiceResponseDTO<GetLectureDTO>> UploadLectureContentAsync(string lectureId, IFormFile? recording, IFormFile? materials, string userId, string userRole);
     }
 }

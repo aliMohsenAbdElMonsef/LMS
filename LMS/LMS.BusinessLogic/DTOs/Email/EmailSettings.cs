@@ -9,6 +9,6 @@ namespace LMS.BusinessLogic.DTOs.Email
         public string Username { get; set; } = "";
         public string Password { get; set; } = "";
         public bool EnableSsl { get; set; } = true;
-        public bool UseMockEmail { get; set; } = true; // Set to false for production
+        public bool UseMockEmail { get; set; } = true; 
     }
 }

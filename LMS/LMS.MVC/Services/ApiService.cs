@@ -16,7 +16,7 @@ namespace LMS.MVC.Services
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
             
-            // Set base address from configuration
+
             var baseUrl = _configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/api";
             _httpClient.BaseAddress = new Uri(baseUrl);
         }

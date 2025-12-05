@@ -15,6 +15,10 @@ namespace LMS.BusinessLogic.Contracts.Services
         Task<FileResult?> GetDefaultThumbnailAsync();
         Task<FileOperationResponseDTO> DeleteCourseThumbnailAsync(string fileName);
         Task<FileUploadResponseDTO> SaveCourseThumbnailAsync(IFormFile file);
+        Task<FileUploadResponseDTO> SaveLectureMaterialAsync(IFormFile file);
+        Task<FileUploadResponseDTO> SaveLectureRecordingAsync(IFormFile file);
+        Task<FileOperationResponseDTO> DeleteLectureMaterialAsync(string fileName);
+        Task<FileOperationResponseDTO> DeleteLectureRecordingAsync(string fileName);
     }
 
 }

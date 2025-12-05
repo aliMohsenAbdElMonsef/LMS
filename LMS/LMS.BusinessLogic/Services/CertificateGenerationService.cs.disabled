@@ -32,7 +32,7 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // 1. Validate Enrollment and Completion
+
                 var enrollment = await _unitOfWork.StudentEnrollments.GetQueryable()
                     .Include(e => e.Student)
                     .Include(e => e.Course)
@@ -58,7 +58,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // 2. Check if certificate already exists
+
                 var existing = await _unitOfWork.GetQueryable<StudentCertificate>()
                     .FirstOrDefaultAsync(c => c.StudentId == dto.StudentId &&
                                              c.CertificateTemplate.CourseId == dto.CourseId &&
@@ -72,13 +72,13 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // 3. Get Certificate Template
+
                 var template = await _unitOfWork.CertificateTemplates.GetQueryable()
                     .FirstOrDefaultAsync(t => t.CourseId == dto.CourseId && !t.IsDeleted);
 
                 if (template == null)
                 {
-                    // Fallback or Error? Let's error for now, admin must create a template.
+
                     return new ServiceResponseDTO<ReadStudentCertificateDTO>
                     {
                         Success = false,
@@ -86,7 +86,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // 4. Generate PDF
+
                 var certificateId = Guid.NewGuid().ToString();
                 var issueDate = DateTime.UtcNow;
                 var studentName = $"{enrollment.Student.FirstName} {enrollment.Student.LastName}";
@@ -97,7 +97,7 @@ namespace LMS.BusinessLogic.Services
 
                 var pdfBytes = GeneratePdfBytes(template, studentName, courseName, instructorName, issueDate);
 
-                // 5. Save PDF to Disk
+
                 var fileName = $"certificate_{certificateId}.pdf";
                 var relativePath = Path.Combine("certificates", fileName);
                 var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
@@ -107,7 +107,7 @@ namespace LMS.BusinessLogic.Services
 
                 await File.WriteAllBytesAsync(absolutePath, pdfBytes);
 
-                // 6. Save Record to DB
+
                 var certificate = new StudentCertificate
                 {
                     Id = certificateId,
@@ -117,7 +117,7 @@ namespace LMS.BusinessLogic.Services
                     IssuedDate = issueDate
                 };
 
-                // Add to DbSet and save
+
                 var dbSet = _unitOfWork.GetQueryable<StudentCertificate>() as DbSet<StudentCertificate>;
                 if (dbSet != null)
                 {
@@ -130,7 +130,7 @@ namespace LMS.BusinessLogic.Services
                 
                 await _unitOfWork.SaveChangesAsync();
 
-                // 7. Send Email
+
                 var emailBody = template.MessageBody
                     .Replace("{StudentName}", studentName)
                     .Replace("{CourseName}", courseName);
@@ -162,7 +162,7 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                // Log exception
+
                 return new ServiceResponseDTO<ReadStudentCertificateDTO>
                 {
                     Success = false,

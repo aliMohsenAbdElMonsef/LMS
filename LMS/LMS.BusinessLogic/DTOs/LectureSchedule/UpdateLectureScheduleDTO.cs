@@ -22,5 +22,7 @@ namespace LMS.BusinessLogic.DTOs.LectureSchedule
         [Required]
         [Range(1, 480)]
         public int DurationMinutes { get; set; }
+
+        public string InstructorId { get; set; }
     }
 }

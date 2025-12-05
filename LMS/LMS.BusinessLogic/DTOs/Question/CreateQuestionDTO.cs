@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LMS.BusinessLogic.DTOs.Question
 {
-    // check if the quiz pass or not
+
     public class CreateQuestionDTO
     {
         [Required]

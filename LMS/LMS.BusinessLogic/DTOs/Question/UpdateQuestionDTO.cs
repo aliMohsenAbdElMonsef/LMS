@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace LMS.BusinessLogic.DTOs.Question
 {
-    // check if the quiz end or not 
+ 
     public class UpdateQuestionDTO
     {
-        public string? Id { get; set; }  // Optional - null for new questions
+        public string? Id { get; set; }
         [Required]
         public string QuizId { get; set; }
         public string? Text { get; set; }

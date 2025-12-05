@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LMS.DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class addingprogresstocertificatestudent : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
@@ -30,7 +30,7 @@ namespace LMS.DataAccess.Migrations
                 oldNullable: true);
         }
 
-        /// <inheritdoc />
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(

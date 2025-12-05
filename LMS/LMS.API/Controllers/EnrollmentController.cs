@@ -248,7 +248,7 @@ namespace LMS.API.Controllers
 
 
 
-        // instrcutor
+
         #region Enrollment Management
 
         [HttpPost("instructor/enroll")]

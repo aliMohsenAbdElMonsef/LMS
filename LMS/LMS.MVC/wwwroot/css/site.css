@@ -1,9 +1,7 @@
-/* ============================
-   Modern Design System with Dark Mode
-   ============================ */
+
 
 :root {
-  /* Light Mode Colors - Inspired by reference dashboard */
+
   --primary: #6366f1;
   --primary-dark: #4f46e5;
   --primary-light: #818cf8;
@@ -13,22 +11,22 @@
   --warning: #f59e0b;
   --danger: #ef4444;
 
-  /* Backgrounds */
+
   --bg-primary: #f8f9fc;
   --bg-secondary: #ffffff;
   --bg-tertiary: #f1f5f9;
   --bg-card: #ffffff;
 
-  /* Text Colors */
+
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --text-tertiary: #94a3b8;
 
-  /* Borders */
+
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
 
-  /* Shadows */
+
   --shadow-sm: 0 1px 3px 0 rgba(99, 102, 241, 0.1),
     0 1px 2px -1px rgba(99, 102, 241, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(99, 102, 241, 0.1),
@@ -38,7 +36,7 @@
   --shadow-xl: 0 20px 25px -5px rgba(99, 102, 241, 0.2),
     0 8px 10px -6px rgba(99, 102, 241, 0.1);
 
-  /* Design tokens */
+
   --border-radius-sm: 0.5rem;
   --border-radius: 0.75rem;
   --border-radius-lg: 1rem;
@@ -47,7 +45,7 @@
   --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Colors */
+
 [data-theme="dark"] {
   --primary: #818cf8;
   --primary-dark: #6366f1;
@@ -55,22 +53,22 @@
   --secondary: #a78bfa;
   --accent: #60a5fa;
 
-  /* Dark Backgrounds */
+
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
   --bg-card: rgba(30, 41, 59, 0.8);
 
-  /* Dark Text */
+
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
 
-  /* Dark Borders */
+
   --border-color: #334155;
   --border-light: #475569;
 
-  /* Dark Shadows */
+
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
     0 2px 4px -2px rgba(0, 0, 0, 0.3);
@@ -80,9 +78,7 @@
     0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
-/* ============================
-   Global Styles
-   ============================ */
+
 
 * {
   margin: 0;
@@ -110,9 +106,7 @@ main {
   padding-top: 2rem;
 }
 
-/* ============================
-   Theme Toggle Button
-   ============================ */
+
 
 .theme-toggle {
   position: relative;
@@ -154,9 +148,7 @@ main {
   border-color: var(--primary);
 }
 
-/* ============================
-   Header Styles
-   ============================ */
+
 
 .site-header {
   background: linear-gradient(
@@ -260,9 +252,7 @@ main {
   margin: 0.5rem 0;
 }
 
-/* ============================
-   Footer Styles
-   ============================ */
+
 
 .site-footer {
   background: var(--bg-secondary);
@@ -300,9 +290,7 @@ main {
   transform: translateY(-3px) rotate(5deg);
 }
 
-/* ============================
-   Button Styles
-   ============================ */
+
 
 .btn {
   font-weight: 500;
@@ -396,9 +384,7 @@ main {
   font-size: 1.1rem;
 }
 
-/* ============================
-   Card Styles
-   ============================ */
+
 
 .card {
   background: var(--bg-card);
@@ -448,9 +434,7 @@ main {
   flex-direction: column;
 }
 
-/* ============================
-   Form Styles
-   ============================ */
+
 
 .form-container {
   background: var(--bg-card);
@@ -499,9 +483,7 @@ main {
   color: var(--text-primary);
 }
 
-/* ============================
-   Hero Section
-   ============================ */
+
 
 .hero-section {
   background: linear-gradient(135deg, #f8f9fc 0%, #e5e7eb 100%);
@@ -634,9 +616,7 @@ main {
   }
 }
 
-/* ============================
-   Section Styles
-   ============================ */
+
 
 .section-header {
   margin-bottom: 3rem;
@@ -669,9 +649,7 @@ main {
   color: var(--text-secondary);
 }
 
-/* ============================
-   Category Cards
-   ============================ */
+
 
 .category-card {
   background: var(--bg-card);
@@ -794,9 +772,7 @@ main {
   font-weight: 600;
 }
 
-/* ============================
-   Course Cards
-   ============================ */
+
 
 .course-thumbnail {
   height: 200px;

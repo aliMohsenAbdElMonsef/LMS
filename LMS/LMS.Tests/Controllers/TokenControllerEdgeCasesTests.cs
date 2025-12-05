@@ -39,11 +39,8 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task RefreshToken_MissingJwt_ReturnsUnauthorized()
         {
-            // Even if JWT is missing/invalid, the controller might expect a User principal to be present (e.g. from middleware)
-            // or we need to simulate an unauthenticated user if that's the goal. 
-            // But to avoid NRE in controller, we often need to set at least an empty context or a user.
             SetUser("User"); 
-            // No Authorization header set
+
             var dto = new RefreshTokenDTO { RefreshToken = "someRefreshToken" };
             _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken, It.IsAny<string>()))
                 .ReturnsAsync(new RefreshTokenResponseDTO { Success = false, Message = "Invalid token" });
@@ -56,7 +53,7 @@ namespace LMS.Tests.Controllers
         public async Task RefreshToken_MalformedJwt_ReturnsUnauthorized()
         {
             SetUser("User");
-            // Simulate malformed token by not setting user claims
+
             var dto = new RefreshTokenDTO { RefreshToken = "malformedToken" };
             _mockService.Setup(s => s.RefreshAccessTokenAsync(dto.RefreshToken, It.IsAny<string>()))
                 .ReturnsAsync(new RefreshTokenResponseDTO { Success = false, Message = "Malformed token" });

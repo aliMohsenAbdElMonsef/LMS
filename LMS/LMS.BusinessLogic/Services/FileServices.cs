@@ -161,5 +161,182 @@ namespace LMS.BusinessLogic.Services
                 _ => "application/octet-stream"
             };
         }
+
+
+        public async Task<FileUploadResponseDTO> SaveLectureMaterialAsync(IFormFile file)
+        {
+            var result = new FileUploadResponseDTO();
+
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    result.Success = false;
+                    result.Message = "No file provided";
+                    return result;
+                }
+                var allowedExtensions = new[] { ".zip", ".rar", ".pdf", ".doc", ".docx", ".ppt", ".pptx" };
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    result.Success = false;
+                    result.Message = "Invalid file type. Only zip, rar, pdf, doc, ppt files are allowed.";
+                    return result;
+                }
+                if (file.Length > 50 * 1024 * 1024) // 50MB
+                {
+                    result.Success = false;
+                    result.Message = "File size cannot exceed 50MB.";
+                    return result;
+                }
+
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "lectures", "materials");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileNameWithoutExtension(file.FileName)}{fileExtension}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                result.Success = true;
+                result.FileName = uniqueFileName;
+                result.Message = "File uploaded successfully";
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error uploading file: {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<FileUploadResponseDTO> SaveLectureRecordingAsync(IFormFile file)
+        {
+            var result = new FileUploadResponseDTO();
+
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    result.Success = false;
+                    result.Message = "No file provided";
+                    return result;
+                }
+                var allowedExtensions = new[] { ".mp4", ".mkv", ".avi", ".mov" };
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    result.Success = false;
+                    result.Message = "Invalid file type. Only video files are allowed.";
+                    return result;
+                }
+                if (file.Length > 500 * 1024 * 1024) // 500MB
+                {
+                    result.Success = false;
+                    result.Message = "File size cannot exceed 500MB.";
+                    return result;
+                }
+
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "lectures", "recordings");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileNameWithoutExtension(file.FileName)}{fileExtension}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                result.Success = true;
+                result.FileName = uniqueFileName;
+                result.Message = "File uploaded successfully";
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error uploading file: {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<FileOperationResponseDTO> DeleteLectureMaterialAsync(string fileName)
+        {
+            var result = new FileOperationResponseDTO();
+
+            try
+            {
+                if (string.IsNullOrEmpty(fileName) || fileName.Contains("..") || Path.IsPathRooted(fileName))
+                {
+                    result.Success = false;
+                    result.Message = "Invalid file name";
+                    return result;
+                }
+
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "lectures", "materials");
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    result.Success = false;
+                    result.Message = "File not found";
+                    return result;
+                }
+
+                System.IO.File.Delete(filePath);
+                result.Success = true;
+                result.Message = "File deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error deleting file: {ex.Message}";
+            }
+
+            return result;
+        }
+
+        public async Task<FileOperationResponseDTO> DeleteLectureRecordingAsync(string fileName)
+        {
+            var result = new FileOperationResponseDTO();
+
+            try
+            {
+                if (string.IsNullOrEmpty(fileName) || fileName.Contains("..") || Path.IsPathRooted(fileName))
+                {
+                    result.Success = false;
+                    result.Message = "Invalid file name";
+                    return result;
+                }
+
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "lectures", "recordings");
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                if (!System.IO.File.Exists(filePath))
+                {
+                    result.Success = false;
+                    result.Message = "File not found";
+                    return result;
+                }
+
+                System.IO.File.Delete(filePath);
+                result.Success = true;
+                result.Message = "File deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error deleting file: {ex.Message}";
+            }
+
+            return result;
+        }
     }
 }

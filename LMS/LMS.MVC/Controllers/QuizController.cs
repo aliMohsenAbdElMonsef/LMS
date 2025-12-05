@@ -3,6 +3,7 @@ using LMS.MVC.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using LMS.BusinessLogic.DTOs.Quiz;
 
 
 namespace LMS.MVC.Controllers
@@ -23,13 +24,13 @@ namespace LMS.MVC.Controllers
             return await _services.EnrollmentService.IsApprovedEnrollmentAsync(userId, courseId);
         }
 
-        // GET: Quiz/Index
+
         [HttpGet]
         public async Task<IActionResult> Index(string courseId)
         {
             if (string.IsNullOrEmpty(courseId))
             {
-                // If we have an error from a previous action (like Take), preserve it and redirect to Home or Course List
+
                 if (TempData["Error"] != null)
                 {
                     return RedirectToAction("Index", "Course");
@@ -61,7 +62,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Details/5
+
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
@@ -73,7 +74,7 @@ namespace LMS.MVC.Controllers
                     TempData["Error"] = result.Message ?? "Quiz not found.";
                     return RedirectToAction("Index");
                 }
-                // Check enrollment for all authenticated users (except Admin)
+
                 if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
                 {
                     if (!await CheckEnrollmentAccess(result.Data.CourseId))
@@ -83,7 +84,7 @@ namespace LMS.MVC.Controllers
                     }
                 }
 
-                // Fetch student status
+
                 if (User.Identity.IsAuthenticated && User.IsInRole("Student"))
                 {
                     var statusResult = await _services.QuizService.GetQuizStatusAsync(id);
@@ -102,7 +103,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Create
+
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Create(string courseId)
@@ -119,7 +120,7 @@ namespace LMS.MVC.Controllers
             return View();
         }
 
-        // POST: Quiz/Create
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor,Admin")]
@@ -134,52 +135,40 @@ namespace LMS.MVC.Controllers
                 }
             }
 
-            // Set InstructorId from current user
+
             var instructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             model.InstructorId = instructorId;
 
-            Console.WriteLine($"📝 Quiz Creation: Received {model.Questions?.Count ?? 0} questions.");
-            if (model.Questions != null)
-            {
-                for (int i = 0; i < model.Questions.Count; i++)
-                {
-                    var q = model.Questions[i];
-                    Console.WriteLine($"  - Q[{i}]: Type={q.Type}, Text='{q.Text}', Correct={q.CorrectAnswer}");
-                    Console.WriteLine($"    Options: A='{q.OptionA}', B='{q.OptionB}', C='{q.OptionC}', D='{q.OptionD}'");
-                }
-            }
 
-            // Set temporary QuizId for questions to satisfy backend validation if needed
-            // The backend service should overwrite this with the real ID
             foreach (var question in model.Questions)
             {
                 question.QuizId = "TEMP";
             }
 
-            // Remove validation errors for these fields since we just set them
+
             ModelState.Remove("InstructorId");
             foreach (var key in ModelState.Keys.Where(k => k.StartsWith("Questions") && k.EndsWith("QuizId")).ToList())
             {
                 ModelState.Remove(key);
             }
 
-            // Remove validation for question type-specific fields
+
             for (int i = 0; i < model.Questions.Count; i++)
             {
                 var question = model.Questions[i];
                 
-                // For True/False questions, remove validation for options C and D
+
                 if (question.Type == "TrueFalse")
                 {
                     ModelState.Remove($"Questions[{i}].OptionC");
                     ModelState.Remove($"Questions[{i}].OptionD");
                     
-                    // Set empty values for C and D to satisfy DTO if needed
+
                     question.OptionC = "";
                     question.OptionD = "";
                 }
                 
-                // For Short Answer questions, remove validation for all options
+
                 if (question.Type == "ShortAnswer")
                 {
                     ModelState.Remove($"Questions[{i}].OptionA");
@@ -188,7 +177,7 @@ namespace LMS.MVC.Controllers
                     ModelState.Remove($"Questions[{i}].OptionD");
                     ModelState.Remove($"Questions[{i}].CorrectAnswer");
                     
-                    // Set empty values for all options
+
                     question.OptionA = "";
                     question.OptionB = "";
                     question.OptionC = "";
@@ -198,14 +187,6 @@ namespace LMS.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("❌ Quiz Creation ModelState Invalid:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - Field: {state.Key}, Error: {error.ErrorMessage}, Exception: {error.Exception?.Message}");
-                    }
-                }
                 return View(model);
             }
 
@@ -228,7 +209,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Edit/5
+
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Edit(string id)
@@ -251,7 +232,7 @@ namespace LMS.MVC.Controllers
                     }
                 }
 
-                // Map QuizItemViewModel to UpdateQuizViewModel
+
                 var updateModel = new UpdateQuizViewModel
                 {
                     Id = result.Data.Id,
@@ -267,7 +248,7 @@ namespace LMS.MVC.Controllers
                     InstructorId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
                     Questions = result.Data.Questions?.Select(q => new CreateQuestionViewModel
                     {
-                        Id = q.Id,  // Include question ID for updates
+                        Id = q.Id,
                         Text = q.Text,
                         OptionA = q.OptionA ?? "",
                         OptionB = q.OptionB ?? "",
@@ -312,11 +293,11 @@ namespace LMS.MVC.Controllers
             {
                 return "TrueFalse";
             }
-            // Otherwise it's Multiple Choice
+
             return "MultipleChoice";
         }
 
-        // POST: Quiz/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor,Admin")]
@@ -359,14 +340,6 @@ namespace LMS.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("❌ Quiz Edit ModelState Invalid:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - Field: {state.Key}, Error: {error.ErrorMessage}, Exception: {error.Exception?.Message}");
-                    }
-                }
                 return View(model);
             }
 
@@ -379,20 +352,11 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id });
                 }
                 
-                Console.WriteLine($"❌ Quiz Update Failed: {result.Message}");
                 TempData["Error"] = $"Failed to update quiz: {result.Message}";
                 return View(model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Quiz Update Exception: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-                    Console.WriteLine($"Inner Stack Trace: {ex.InnerException.StackTrace}");
-                }
-                
                 TempData["Error"] = $"Error updating quiz: {ex.Message}";
                 if (ex.InnerException != null)
                 {
@@ -402,14 +366,14 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Take/5
+
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Take(string id)
         {
             try
             {
-                // Security Check: Ensure student is enrolled
+
                 var quizResult = await _services.QuizService.GetQuizByIdAsync(id);
                 if (!quizResult.Success || quizResult.Data == null)
                 {
@@ -423,7 +387,7 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", "Course", new { id = quizResult.Data.CourseId });
                 }
 
-                // Start the quiz first
+
                 var startResult = await _services.QuizService.StartQuizAsync(id);
                 if (!startResult.Success)
                 {
@@ -453,13 +417,13 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // POST: Quiz/Submit
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Submit(SubmitQuizViewModel model)
         {
-            // Set StudentId from current user
+
             model.StudentId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(model.StudentId))
@@ -479,7 +443,7 @@ namespace LMS.MVC.Controllers
                 if (result.Success && result.Data != null)
                 {
                     TempData["Success"] = "Quiz submitted successfully!";
-                    // Store the result in TempData to pass to Results view
+
                     TempData["QuizResult"] = System.Text.Json.JsonSerializer.Serialize(result.Data);
                     return RedirectToAction("Results", new { id = model.QuizId });
                 }
@@ -494,7 +458,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Results/5
+
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Results(string id)
@@ -526,7 +490,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // POST: Quiz/Delete/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor,Admin")]
@@ -565,7 +529,7 @@ namespace LMS.MVC.Controllers
             return RedirectToAction("InstructorQuizzes");
         }
 
-        // GET: Quiz/MyQuizzes
+
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyQuizzes()
@@ -588,7 +552,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/InstructorQuizzes
+
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> InstructorQuizzes()
@@ -619,7 +583,7 @@ namespace LMS.MVC.Controllers
         }
 
 
-        // GET: Quiz/Submissions/5
+
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Submissions(string id)
@@ -656,7 +620,7 @@ namespace LMS.MVC.Controllers
             }
         }
 
-        // GET: Quiz/Grade
+
         [HttpGet]
         [Authorize(Roles = "Instructor,Admin")]
         public async Task<IActionResult> Grade(string quizId, string studentId)
@@ -677,7 +641,7 @@ namespace LMS.MVC.Controllers
                 }
             }
 
-            // Filter to show only short answer questions that require manual grading
+
             var questionsToGrade = result.Data.QuestionResults
                 .Where(q => q.CorrectAnswer == "Requires Manual Grading")
                 .Select(q => new QuestionGradeViewModel
@@ -690,7 +654,7 @@ namespace LMS.MVC.Controllers
                     Points = q.Points
                 }).ToList();
 
-            // If no questions require manual grading, redirect back with message
+
             if (!questionsToGrade.Any())
             {
                 TempData["Info"] = "This quiz has been fully auto-graded. No manual grading required.";
@@ -708,7 +672,7 @@ namespace LMS.MVC.Controllers
             return View(viewModel);
         }
 
-        // POST: Quiz/Grade
+
         [HttpPost]
         [Authorize(Roles = "Instructor,Admin")]
         [ValidateAntiForgeryToken]

@@ -1,22 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LMS.DataAccess.Migrations
 {
-    /// <inheritdoc />
+
     public partial class FixDaySchedulesTable : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Drop the wrongly created table
+
             migrationBuilder.Sql("IF OBJECT_ID('DaySchedules', 'U') IS NOT NULL DROP TABLE DaySchedules");
 
-            // Rename CourseDaySchedule to CourseDaySchedules if it exists
+
             migrationBuilder.Sql("IF OBJECT_ID('CourseDaySchedule', 'U') IS NOT NULL EXEC sp_rename 'CourseDaySchedule', 'CourseDaySchedules'");
 
-            // If CourseDaySchedules doesn't exist (neither did CourseDaySchedule), create it
+
             migrationBuilder.Sql(@"
                 IF OBJECT_ID('CourseDaySchedules', 'U') IS NULL
                 BEGIN
@@ -38,7 +38,7 @@ namespace LMS.DataAccess.Migrations
                 END
             ");
 
-            // If table existed but columns missing (e.g. InstructorId, StartTime)
+
             migrationBuilder.Sql(@"
                 IF COL_LENGTH('CourseDaySchedules', 'InstructorId') IS NULL
                 BEGIN
@@ -63,10 +63,10 @@ namespace LMS.DataAccess.Migrations
             ");
         }
 
-        /// <inheritdoc />
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            // Revert changes if needed (simplified)
+
             migrationBuilder.Sql("IF OBJECT_ID('CourseDaySchedules', 'U') IS NOT NULL EXEC sp_rename 'CourseDaySchedules', 'CourseDaySchedule'");
         }
     }

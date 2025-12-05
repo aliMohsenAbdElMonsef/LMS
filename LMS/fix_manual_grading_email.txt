@@ -1,0 +1,37 @@
+// REPLACE lines 1039-1048 in LMS.BusinessLogic/Services/QuizServices.cs
+// In the GradeQuizAsync method
+
+// OLD CODE (lines 1039-1048):
+        try
+        {
+            await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
+            {
+                UserId = dto.StudentId,
+                Title = "Quiz Graded",
+                Message = $"Your quiz '{quiz?.Title}' has been graded. You scored {attempt.Grade}%.",
+                Type = NotificationType.QuizResult
+            });
+        }
+        catch { }
+
+// NEW CODE (replace with this):
+        try
+        {
+            await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
+            {
+                UserId = dto.StudentId,
+                Title = "Quiz Graded",
+                Message = $"Your quiz '{quiz?.Title}' has been graded. You scored {attempt.Grade}%.",
+                Type = NotificationType.QuizResult
+            });
+
+            // Send email notification
+            var student = await _unitOfWork.Users.FindByIdAsync(dto.StudentId);
+            if (student != null && !string.IsNullOrEmpty(student.Email) && quiz != null)
+            {
+                var emailSubject = "Quiz Graded";
+                var emailBody = $"<h2>Quiz Graded</h2><p>Your quiz '<strong>{quiz.Title}</strong>' for the course '<strong>{quiz.Course?.Name}</strong>' has been graded by your instructor!</p><h3>Results:</h3><ul><li>Score: <strong>{attempt.Grade}%</strong></li><li>Status: <strong>{(attempt.Grade >= quiz.PassingScore ? "Passed" : "Failed")}</strong></li></ul><p>You can view your detailed results in the LMS.</p>";
+                await _emailService.SendEmailAsync(student.Email, emailSubject, emailBody);
+            }
+        }
+        catch { }

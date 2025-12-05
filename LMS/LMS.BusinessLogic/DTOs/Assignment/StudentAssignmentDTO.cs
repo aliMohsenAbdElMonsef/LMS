@@ -29,14 +29,14 @@ namespace LMS.BusinessLogic.DTOs.Assignment
 
         public string? Feedback { get; set; }
 
-        // ✅ Properties needed for MySubmissions page
+
         public string? AssignmentTitle { get; set; }
         public string? CourseName { get; set; }
         public DateTime DueDate { get; set; }
 
         public bool IsSubmitted => SubmittedAt != default(DateTime);
 
-        // Helper property for display
+
         public string StatusDisplay => GetStatusDisplay(Status);
 
         private string GetStatusDisplay(AssignmentStatus status)

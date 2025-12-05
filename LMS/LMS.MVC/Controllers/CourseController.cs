@@ -273,21 +273,6 @@ namespace LMS.MVC.Controllers
                 // Repopulate categories
                 var categories = await _services.CategoryService.GetAllCategories();
                 
-                // Debug: Log validation errors
-                Console.WriteLine("❌ Course Creation - ModelState Invalid:");
-                foreach (var key in ModelState.Keys)
-                {
-                    var errors = ModelState[key].Errors;
-                    if (errors.Count > 0)
-                    {
-                        Console.WriteLine($"  Field: {key}");
-                        foreach (var error in errors)
-                        {
-                            Console.WriteLine($"    - {error.ErrorMessage}");
-                        }
-                    }
-                }
-
                 if (categories != null)
                 {
                     model.AvailableCategories = categories.Select(c => new CategoryOption

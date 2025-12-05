@@ -80,16 +80,6 @@ namespace LMS.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                foreach (var entry in ModelState)
-                {
-                    var key = entry.Key;
-                    var errors = entry.Value.Errors;
-                    foreach (var error in errors)
-                    {
-                        Console.WriteLine($"Property: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
-
                 return View("Edit", model);
             }
 
@@ -127,15 +117,6 @@ namespace LMS.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                foreach (var entry in ModelState)
-                {
-                    var key = entry.Key;
-                    var errors = entry.Value.Errors;
-                    foreach (var error in errors)
-                    {
-                        Console.WriteLine($"Property: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
                 return View("Create", model);
             }
 

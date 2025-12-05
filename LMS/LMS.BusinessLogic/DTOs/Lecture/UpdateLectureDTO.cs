@@ -14,8 +14,8 @@ namespace LMS.BusinessLogic.DTOs.Lecture
         [MaxLength(1000)]
         public string? Description { get; set; }
 
-        // check if the lecture passed 
-        // should be before the lecture date
+ 
+
         public string? AssignedInstructorId { get; set; }
         public DateTime? LectureDate { get; set; }
         public TimeSpan? StartTime { get; set; }
@@ -24,9 +24,11 @@ namespace LMS.BusinessLogic.DTOs.Lecture
 
         public string? RecordingPath { get; set; }
 
-        // should be after the lecture date
+
         public string? lastUpdatedById { get; set; }
-        // end
+
         public IFormFile? NewRecordingFile { get; set; }
+        public string? MaterialsPath { get; set; }
+        public IFormFile? NewMaterialsFile { get; set; }
     }
 }

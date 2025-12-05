@@ -31,9 +31,6 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                Console.WriteLine($"🔍 ProfileService.GetProfileAsync - UserId: {userId}");
-                Console.WriteLine($"🔍 ProfileService.GetProfileAsync - API URL: api/user/profile/{userId}");
-                
                 var profile = await GetAsync<ProfileViewModel>($"api/user/profile/{userId}");
                 
                 if (profile != null && !string.IsNullOrEmpty(profile.UserImage) && profile.UserImage.StartsWith("/"))
@@ -41,8 +38,6 @@ namespace LMS.MVC.Services.Services
                     profile.UserImage = $"{_client.BaseAddress?.ToString().TrimEnd('/')}{profile.UserImage}";
                 }
 
-                Console.WriteLine($"✅ ProfileService.GetProfileAsync - Profile retrieved successfully");
-                
                 return new SuccessServiceResult<ProfileViewModel>
                 {
                     Success = true,
@@ -55,7 +50,7 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                // Create multipart form data for file upload
+
                 var formData = new MultipartFormDataContent();
                 
                 formData.Add(new StringContent(model.Id), "Id");
@@ -100,7 +95,7 @@ namespace LMS.MVC.Services.Services
                     UserId = userId,
                     CurrentPassword = currentPassword,
                     NewPassword = newPassword,
-                    ConfirmPassword = newPassword // Backend expects this
+                    ConfirmPassword = newPassword
                 };
 
                 await PostAsync<object>("api/user/change-password", JsonContent.Create(model));

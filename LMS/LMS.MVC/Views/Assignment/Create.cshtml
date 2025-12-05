@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Create Assignment";
 }
-@* /Assignment/Create?courseId=0108F54D-900D-4727-BA97-DD78E0BF60C7 *@
+
 <h2 class="mb-4">Create New Assignment</h2>
 
 @if (TempData["SuccessMessage"] != null)
@@ -52,19 +52,19 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Client-side validation for due date and file
+
         document.addEventListener('DOMContentLoaded', function() {
             var dueDateInput = document.getElementById('DueDate');
             var today = new Date().toISOString().slice(0, 16);
             dueDateInput.min = today;
 
-            // File size validation
+
             var fileInput = document.getElementById('assignmentFile');
             fileInput.addEventListener('change', function(e) {
                 var file = e.target.files[0];
                 var fileValidation = document.getElementById('fileValidation');
 
-                if (file && file.size > 10 * 1024 * 1024) { // 10MB
+                if (file && file.size > 10 * 1024 * 1024) {
                     fileValidation.textContent = 'File size must be less than 10MB';
                     e.target.value = '';
                 } else {

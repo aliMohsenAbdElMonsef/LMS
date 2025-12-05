@@ -1,4 +1,4 @@
-﻿using DataAccess.Context;
+using DataAccess.Context;
 using Domain.Enums;
 using LMS.DataAccess.Contracts.Repositories;
 using LMS.Entity.Entities.RelationTables;

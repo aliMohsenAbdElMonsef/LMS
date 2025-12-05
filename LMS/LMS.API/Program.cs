@@ -5,10 +5,8 @@ using LMS.DataAccess.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.FileProviders;
-using LMS.API.Services;
 using Microsoft.OpenApi.Models;
 
 namespace LMS.API
@@ -19,7 +17,6 @@ namespace LMS.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ---------------------- Services ----------------------
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
@@ -41,7 +38,6 @@ namespace LMS.API
                     .WithExposedHeaders("*"));
             });
 
-            // ---------------------- Swagger ----------------------
             builder.Services.AddSwaggerGen(c =>
             {
                 c.UseInlineDefinitionsForEnums();
@@ -71,7 +67,6 @@ namespace LMS.API
                 });
             });
 
-            // ---------------------- JWT Authentication ----------------------
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -101,30 +96,19 @@ namespace LMS.API
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        Console.WriteLine($"[API JWT] ❌ Authentication failed: {context.Exception.Message}");
-                        Console.WriteLine($"[API JWT] Exception: {context.Exception}");
                         return Task.CompletedTask;
                     },
                     OnTokenValidated = context =>
                     {
-                        Console.WriteLine($"[API JWT] ✅ Token validated for user: {context.Principal.Identity?.Name}");
-                        var roles = context.Principal.Claims
-                            .Where(c => c.Type == ClaimTypes.Role)
-                            .Select(c => c.Value)
-                            .ToList();
-                        Console.WriteLine($"[API JWT] Roles found: {string.Join(", ", roles)}");
                         return Task.CompletedTask;
                     },
                     OnMessageReceived = context =>
                     {
-                        // Check both header and query string for token
                         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                        Console.WriteLine($"[API JWT] 📨 Token from header: {!string.IsNullOrEmpty(token)}");
 
                         if (string.IsNullOrEmpty(token))
                         {
                             token = context.Request.Query["access_token"];
-                            Console.WriteLine($"[API JWT] 📨 Token from query: {!string.IsNullOrEmpty(token)}");
                         }
 
                         context.Token = token;
@@ -132,22 +116,18 @@ namespace LMS.API
                     },
                     OnForbidden = context =>
                     {
-                        Console.WriteLine($"[API JWT] 🚫 Access forbidden for: {context.HttpContext.User.Identity?.Name}");
                         return Task.CompletedTask;
                     },
                     OnChallenge = context =>
                     {
-                        Console.WriteLine($"[API JWT] 🚨 Challenge issued: {context.Error} - {context.ErrorDescription}");
                         return Task.CompletedTask;
                     }
                 };
             });
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // ---------------------- Build App ----------------------
             var app = builder.Build();
 
-            // ---------------------- Seed Admin ----------------------
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -156,7 +136,6 @@ namespace LMS.API
 
                 await IdentitySeeding.SeedAdminAsync(userManager, roleManager);
                 
-                // [ADDED] Create uploads directory
                 var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>();
                 var uploadsPath = Path.Combine(webHostEnvironment.WebRootPath, "uploads");
 
@@ -165,7 +144,6 @@ namespace LMS.API
                     Directory.CreateDirectory(uploadsPath);
                     Directory.CreateDirectory(Path.Combine(uploadsPath, "assignments"));
                     Directory.CreateDirectory(Path.Combine(uploadsPath, "submissions"));
-                    Console.WriteLine("✅ API Uploads directories created successfully");
                 }
             }
 
@@ -180,7 +158,6 @@ namespace LMS.API
 
             app.UseCors("AllowMvc");
             
-            // [ADDED] Serve static uploads directory
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "uploads")),

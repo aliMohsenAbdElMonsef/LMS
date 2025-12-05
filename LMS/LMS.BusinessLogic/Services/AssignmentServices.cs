@@ -55,23 +55,23 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // Get all assignments from all courses
+
                 var allCourseAssignments = await _unitOfWork.Assignments.GetAllAsync();
                 var allAssignments = new List<StudentAllAssignmentsDTO>();
 
                 foreach (var assignment in allCourseAssignments)
                 {
-                    // Check if student is enrolled in this course
+
                     var isEnrolled = await _unitOfWork.StudentEnrollments
                         .IsStudentEnrolledInCourseAsync(studentId, assignment.CourseId);
 
                     if (!isEnrolled)
                         continue;
 
-                    // Get course info
+
                     var course = await _unitOfWork.Courses.FindByIdAsync(assignment.CourseId);
 
-                    // Get submission if exists
+
                     var submission = await _unitOfWork.Assignments
                         .GetStudentAssignmentAsync(assignment.Id, studentId);
 
@@ -233,7 +233,7 @@ namespace LMS.BusinessLogic.Services
                 };
             }
 
-            // Check if the assignment deadline has passed
+
             if (assignment.DueDate < DateTime.UtcNow)
             {
                 return new ServiceResponseDTO<StudentAssignmentDTO>
@@ -253,23 +253,23 @@ namespace LMS.BusinessLogic.Services
                 };
             }
 
-            // Check if already submitted
+
             var existingSubmission = await _unitOfWork.Assignments.GetStudentAssignmentAsync(submission.AssignmentId, submission.StudentId);
 
             if (existingSubmission != null)
             {
-                // Update existing submission
+
                 existingSubmission.FilePath = submission.FilePath;
                 existingSubmission.SubmittedAt = DateTime.UtcNow;
-                existingSubmission.Status = AssignmentStatus.PendingGrading; // NEW: Update status
-                existingSubmission.Grade = null; // Reset grade if resubmitting
+                existingSubmission.Status = AssignmentStatus.PendingGrading;
+                existingSubmission.Grade = null;
                 existingSubmission.GradedAt = null;
 
                 await _unitOfWork.Assignments.UpdateStudentAssignmentAsync(existingSubmission);
             }
             else
             {
-                // Create new submission
+
                 var studentAssignment = new StudentAssignment
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -277,7 +277,7 @@ namespace LMS.BusinessLogic.Services
                     AssignmentId = submission.AssignmentId,
                     FilePath = submission.FilePath,
                     SubmittedAt = DateTime.UtcNow,
-                    Status = AssignmentStatus.PendingGrading, // NEW: Set initial status
+                    Status = AssignmentStatus.PendingGrading,
                     Grade = null,
                     GradedAt = null
                 };
@@ -316,7 +316,7 @@ namespace LMS.BusinessLogic.Services
             await _unitOfWork.Assignments.UpdateStudentAssignmentAsync(studentAssignment);
             await _unitOfWork.SaveChangesAsync();
 
-            // Send email notification to student
+
             if (studentAssignment.Student != null && !string.IsNullOrEmpty(studentAssignment.Student.Email))
             {
                 var subject = $"Assignment Graded: {studentAssignment.Assignment?.Title}";
@@ -331,10 +331,9 @@ namespace LMS.BusinessLogic.Services
                 {
                     await _emailService.SendEmailAsync(studentAssignment.Student.Email, subject, body);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    // Log error but don't fail the request
-                    Console.WriteLine($"Failed to send grade notification email: {ex.Message}");
+
                 }
             }
 
@@ -421,17 +420,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Check if assignment can be deleted (due date not passed or admin)
-                // Note: You might want to get current user from context in a real scenario
-                if (assignment.DueDate < DateTime.UtcNow)
-                {
-                    // For instructors, they can only delete before due date
-                    // Admins can delete anytime - you would check user roles here
-                    // For now, we'll allow deletion but you can add role checking later
-                    Console.WriteLine($"Warning: Deleting assignment after due date: {assignment.Title}");
-                }
 
-                // Use the base delete functionality which handles soft delete
                 return await base.DeleteAsync(id);
             }
             catch (Exception ex)
@@ -444,7 +433,7 @@ namespace LMS.BusinessLogic.Services
             }
         }
 
-        // ADD THIS METHOD - for the bool return type used by MVC
+
         public async Task<ServiceResponseDTO<bool>> DeleteAssignmentAsync(string id)
         {
             var result = await base.DeleteAsync(id);
@@ -462,7 +451,7 @@ namespace LMS.BusinessLogic.Services
             {
                 var assignments = await _unitOfWork.Assignments.GetAssignmentsByInstructorAsync(instructorId);
                 
-                // Filter to only include assignments from courses where instructor has active enrollment
+
                 var instructorEnrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
                 var activeCourseIds = instructorEnrollments
                     .Where(e => e.InstructorId == instructorId && !e.IsDeleted && e.Status == Domain.Enums.ApplicationStatus.Approved)

@@ -18,6 +18,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
     <ProjectReference Include="..\LMS.API\LMS.API.csproj" />
     <ProjectReference Include="..\LMS.BusinessLogic\LMS.BusinessLogic.csproj" />
     <ProjectReference Include="..\LMS.MVC\LMS.MVC.csproj" />
+    <ProjectReference Include="..\DataAccess\LMS.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

@@ -46,7 +46,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateUserAsync_ShouldReturnSuccess_WhenUserIsCreated()
         {
-            // Arrange
+
             var signUpDto = new SignUpDTO
             {
                 UserName = "testuser",
@@ -54,7 +54,7 @@ namespace LMS.Tests.Services
                 Password = "Password123!",
                 FirstName = "Test",
                 LastName = "User",
-                ApplyAs = 0 // Student
+                ApplyAs = 0
             };
 
             var users = new List<ApplicationUser>().BuildMockDbSet().Object;
@@ -62,10 +62,10 @@ namespace LMS.Tests.Services
             _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success);
 
-            // Act
+
             var result = await _userServices.CreateUserAsync(signUpDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("User created successfully. Pending approval from admin.", result.Message);
         }
@@ -73,7 +73,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateUserAsync_ShouldReturnFailure_WhenUserAlreadyExists()
         {
-            // Arrange
+
             var signUpDto = new SignUpDTO
             {
                 UserName = "existinguser",
@@ -89,10 +89,10 @@ namespace LMS.Tests.Services
             
             _userManagerMock.Setup(x => x.Users).Returns(users);
 
-            // Act
+
             var result = await _userServices.CreateUserAsync(signUpDto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("A user with this email or username already exists.", result.Message);
         }
@@ -100,7 +100,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task LoginUser_ShouldReturnSuccess_WhenCredentialsAreValidAndUserIsApproved()
         {
-            // Arrange
+
             var loginDto = new LoginDTO { EmailOrUserName = "testuser", Password = "Password123!" };
             var user = new ApplicationUser 
             { 
@@ -119,10 +119,10 @@ namespace LMS.Tests.Services
             _tokenServicesMock.Setup(x => x.GenerateRefreshToken())
                 .Returns(("refresh_token", DateTime.UtcNow.AddDays(7)));
 
-            // Act
+
             var result = await _userServices.LoginUser(loginDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Login successful", result.Message);
             Assert.NotNull(result.AccessToken);
@@ -131,7 +131,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task LoginUser_ShouldReturnFailure_WhenUserIsNotApproved()
         {
-            // Arrange
+
             var loginDto = new LoginDTO { EmailOrUserName = "pendinguser", Password = "Password123!" };
             var user = new ApplicationUser 
             { 
@@ -143,10 +143,10 @@ namespace LMS.Tests.Services
             _userManagerMock.Setup(x => x.FindByNameAsync(loginDto.EmailOrUserName)).ReturnsAsync(user);
             _userManagerMock.Setup(x => x.CheckPasswordAsync(user, loginDto.Password)).ReturnsAsync(true);
 
-            // Act
+
             var result = await _userServices.LoginUser(loginDto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("User not approved by admin yet", result.Message);
         }
@@ -154,7 +154,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ApproveUserAsync_ShouldApproveUser_WhenUserExists()
         {
-            // Arrange
+
             var userId = "user1";
             var user = new ApplicationUser { Id = userId, Status = ApplicationStatus.Pending, ApplyAs = UserType.Student };
 
@@ -162,10 +162,10 @@ namespace LMS.Tests.Services
             _userManagerMock.Setup(x => x.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
             _userManagerMock.Setup(x => x.AddToRoleAsync(user, "Student")).ReturnsAsync(IdentityResult.Success);
 
-            // Act
+
             var result = await _userServices.ApproveUserAsync(userId);
 
-            // Assert
+
             Assert.True(result.Succeeded);
             Assert.Equal(ApplicationStatus.Approved, user.Status);
         }

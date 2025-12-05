@@ -72,7 +72,15 @@ namespace LMS.API.Controllers
             var result = await _unitOfServices.Lectures.GetUpcomingLecturesAsync(courseId, userId, userRole);
             return result.Success ? Ok(result) : BadRequest(result);
         }
-
+        [HttpPost("{lectureId}/join")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> JoinLecture(string lectureId)
+        {
+            var userId = GetCurrentUserId();
+            
+            var result = await _unitOfServices.Lectures.MarkAsAttendedAsync(lectureId, userId);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
         [HttpGet("today/course/{courseId}")]
         public async Task<IActionResult> GetTodayLectures(string courseId)
         {
@@ -93,6 +101,13 @@ namespace LMS.API.Controllers
             [FromQuery] string excludeLectureId = null)
         {
             var result = await _unitOfServices.Lectures.CheckLectureConflictAsync(courseId, date, startTime, endTime, excludeLectureId);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+        [HttpGet("attendance-statistics/{studentId}")]
+        [Authorize(Roles = "Student,Admin")]
+        public async Task<IActionResult> GetAttendanceStatistics(string studentId)
+        {
+            var result = await _unitOfServices.Lectures.GetAttendanceStatisticsAsync(studentId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
@@ -162,7 +177,17 @@ namespace LMS.API.Controllers
         {
             public string ZoomLink { get; set; }
         }
+        [HttpPost("{lectureId}/upload-content")]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> UploadLectureContent(string lectureId, [FromForm] IFormFile? recording, [FromForm] IFormFile? materials)
+        {
+            var userId = GetCurrentUserId();
+            var userRole = GetCurrentUserRole();
 
+            var result = await _unitOfServices.Lectures.UploadLectureContentAsync(lectureId, recording, materials, userId, userRole);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+        
         [HttpGet("my-lectures")]
         public async Task<IActionResult> GetMyLectures()
         {

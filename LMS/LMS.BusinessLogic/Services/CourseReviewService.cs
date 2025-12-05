@@ -24,7 +24,7 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // Check if student already reviewed this course
+
                 var existingReview = await _unitOfWork.GetQueryable<CourseReview>()
                     .FirstOrDefaultAsync(r => r.StudentId == dto.StudentId && r.CourseId == dto.CourseId && !r.IsDeleted);
 
@@ -47,7 +47,7 @@ namespace LMS.BusinessLogic.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
-                // Note: Requires CourseReview repository or DbContext access
+
                 await _unitOfWork.SaveChangesAsync();
 
                 var readDto = await GetReviewByIdAsync(review.Id);

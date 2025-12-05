@@ -4,10 +4,11 @@ using LMS.MVC.Models.ViewModels.Lecture;
 using LMS.MVC.Models.ViewModels.CourseReview;
 using LMS.MVC.Models.ViewModels.Certificate;
 using LMS.MVC.Models.ViewModels.Notification;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.MVC.Services.Contracts.Services
 {
-    // Lecture Service Interface
+
     public interface ILectureService
     {
         Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetLecturesByCourseAsync(string courseId);
@@ -23,10 +24,15 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetUpcomingLecturesAsync(string courseId);
         Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetTodayLecturesAsync(string courseId);
         Task<SuccessServiceResult<IEnumerable<LectureViewModel>>> GetMyLecturesAsync(string userId, string userRole);
+        Task<SuccessServiceResult<AttendanceStatisticsViewModel>> GetAttendanceStatisticsAsync(string userId);
+        Task<SuccessServiceResult<AttendanceStatisticsViewModel>> GetCourseAttendanceStatisticsAsync(string courseId);
+        Task<SuccessServiceResult<bool>> JoinLectureAsync(string lectureId);
+        Task<SuccessServiceResult<LectureViewModel>> UploadLectureContentAsync(string lectureId, IFormFile? recording, IFormFile? materials, string userId, string userRole);
+        Task<byte[]?> DownloadFileAsync(string filePath);
 
     }
 
-    // Profile Service Interface
+
     public interface IProfileService
     {
         Task<SuccessServiceResult<Models.ViewModels.Profile.ProfileViewModel>> GetProfileAsync(string userId);
@@ -35,7 +41,7 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<Models.ViewModels.Profile.UserStatsViewModel>> GetUserStatsAsync(string userId);
     }
 
-    // Notification Service Interface
+
     public interface INotificationService
     {
         Task<SuccessServiceResult<IEnumerable<NotificationViewModel>>> GetUserNotificationsAsync(string userId);
@@ -46,7 +52,7 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<bool> DeleteNotificationAsync(string notificationId);
     }
 
-    // Certificate Service Interface
+
     public interface ICertificateService
     {
         Task<SuccessServiceResult<IEnumerable<CertificateViewModel>>> GetUserCertificatesAsync(string userId);
@@ -55,7 +61,7 @@ namespace LMS.MVC.Services.Contracts.Services
         Task<SuccessServiceResult<string>> GenerateCertificateAsync(string courseId, string userId);
     }
 
-    // Course Review Service Interface
+
     public interface ICourseReviewService
     {
         Task<SuccessServiceResult<IEnumerable<CourseReviewViewModel>>> GetCourseReviewsAsync(string courseId);

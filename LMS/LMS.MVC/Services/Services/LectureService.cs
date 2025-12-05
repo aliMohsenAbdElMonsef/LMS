@@ -60,12 +60,28 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var response = await PostAsync<ApiResponse<LectureViewModel>>($"api/Lecture", JsonContent.Create(model));
+                var dto = new
+                {
+                    model.CourseId,
+                    model.Title,
+                    model.Description,
+                    model.LectureDate,
+                    model.StartTime,
+                    model.EndTime,
+                    model.DurationMinutes,
+                    model.LectureNumber,
+                    model.InstructorId
+                };
+
+                await AttachAccessTokenAsync();
+                var response = await _client.PostAsJsonAsync("api/Lecture", dto);
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<LectureViewModel>>();
+
                 return new SuccessServiceResult<LectureViewModel>
                 {
-                    Success = response.Success,
-                    Data = response.Data,
-                    Message = response.Message
+                    Success = result.Success,
+                    Data = result.Data,
+                    Message = result.Message
                 };
             });
         }
@@ -74,19 +90,45 @@ namespace LMS.MVC.Services.Services
         {
             return await ExecuteApiCallAsync(async () =>
             {
-                var response = await PutAsync<ApiResponse<LectureViewModel>>($"api/Lecture/{id}", JsonContent.Create(model));
+                using var content = new MultipartFormDataContent();
+                content.Add(new StringContent(model.Id), nameof(model.Id));
+                if (model.Title != null) content.Add(new StringContent(model.Title), nameof(model.Title));
+                if (model.Description != null) content.Add(new StringContent(model.Description), nameof(model.Description));
+                if (model.LectureDate != default) content.Add(new StringContent(model.LectureDate.ToString("O")), nameof(model.LectureDate));
+                if (model.StartTime != default) content.Add(new StringContent(model.StartTime.ToString()), nameof(model.StartTime));
+                if (model.EndTime.HasValue) content.Add(new StringContent(model.EndTime.Value.ToString()), nameof(model.EndTime));
+                if (model.InstructorId != null) content.Add(new StringContent(model.InstructorId), nameof(model.InstructorId));
+
+                if (model.NewRecordingFile != null)
+                {
+                    var fileContent = new StreamContent(model.NewRecordingFile.OpenReadStream());
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(model.NewRecordingFile.ContentType);
+                    content.Add(fileContent, nameof(model.NewRecordingFile), model.NewRecordingFile.FileName);
+                }
+
+                if (model.NewMaterialsFile != null)
+                {
+                    var fileContent = new StreamContent(model.NewMaterialsFile.OpenReadStream());
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(model.NewMaterialsFile.ContentType);
+                    content.Add(fileContent, nameof(model.NewMaterialsFile), model.NewMaterialsFile.FileName);
+                }
+
+                await AttachAccessTokenAsync();
+                var response = await _client.PutAsync($"api/Lecture/{id}", content);
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<LectureViewModel>>();
+
                 return new SuccessServiceResult<LectureViewModel>
                 {
-                    Success = response.Success,
-                    Data = response.Data,
-                    Message = response.Message
+                    Success = result.Success,
+                    Data = result.Data,
+                    Message = result.Message
                 };
             });
         }
 
         public async Task<SuccessServiceResult<bool>> TrackProgressAsync(string lectureId, int watchedSeconds)
         {
-            // Mocking this for now as API endpoint is missing
+
             return await Task.FromResult(new SuccessServiceResult<bool>
             {
                 Success = true,
@@ -133,11 +175,11 @@ namespace LMS.MVC.Services.Services
                 
                 var existingLecture = getLectureResponse.Data;
                 
-                // Calculate the new EndTime based on the existing duration
+
                 var existingDuration = existingLecture.DurationMinutes;
                 var newEndTime = newStartTime.Add(TimeSpan.FromMinutes(existingDuration));
                 
-                // Create UpdateLectureDTO with all existing data, but update date and time
+
                 var dto = new 
                 { 
                     Id = lectureId,
@@ -145,7 +187,7 @@ namespace LMS.MVC.Services.Services
                     Description = existingLecture.Description,
                     LectureDate = newDate, 
                     StartTime = newStartTime,
-                    EndTime = newEndTime, // Preserve the duration
+                    EndTime = newEndTime,
                     ZoomLink = existingLecture.ZoomLink
                 };
                 
@@ -251,6 +293,106 @@ namespace LMS.MVC.Services.Services
                     Message = response.Message
                 };
             });
+        }
+
+        public async Task<SuccessServiceResult<AttendanceStatisticsViewModel>> GetAttendanceStatisticsAsync(string userId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<AttendanceStatisticsViewModel>>($"api/Lecture/attendance-statistics/{userId}");
+                return new SuccessServiceResult<AttendanceStatisticsViewModel>
+                {
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<AttendanceStatisticsViewModel>> GetCourseAttendanceStatisticsAsync(string courseId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await GetAsync<ApiResponse<AttendanceStatisticsViewModel>>($"api/Lecture/attendance/course/{courseId}");
+                return new SuccessServiceResult<AttendanceStatisticsViewModel>
+                {
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<bool>> JoinLectureAsync(string lectureId)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                await AttachAccessTokenAsync();
+                var response = await PostAsync<ApiResponse<bool>>($"api/Lecture/{lectureId}/join", null);
+                return new SuccessServiceResult<bool>
+                {
+                    Success = response.Success,
+                    Data = response.Data,
+                    Message = response.Message
+                };
+            });
+        }
+
+        public async Task<SuccessServiceResult<LectureViewModel>> UploadLectureContentAsync(string lectureId, IFormFile? recording, IFormFile? materials, string userId, string userRole)
+        {
+            return await ExecuteApiCallAsync(async () =>
+            {
+                using var content = new MultipartFormDataContent();
+                content.Add(new StringContent(userId), "userId");
+                content.Add(new StringContent(userRole), "userRole");
+
+                if (recording != null)
+                {
+                    var recordingContent = new StreamContent(recording.OpenReadStream());
+                    recordingContent.Headers.ContentType = new MediaTypeHeaderValue(recording.ContentType);
+                    content.Add(recordingContent, "recording", recording.FileName);
+                }
+
+                if (materials != null)
+                {
+                    var materialsContent = new StreamContent(materials.OpenReadStream());
+                    materialsContent.Headers.ContentType = new MediaTypeHeaderValue(materials.ContentType);
+                    content.Add(materialsContent, "materials", materials.FileName);
+                }
+
+                var response = await _client.PostAsync($"api/Lecture/{lectureId}/upload-content", content);
+                var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<LectureViewModel>>();
+                
+                return new SuccessServiceResult<LectureViewModel>
+                {
+                    Success = apiResponse.Success,
+                    Data = apiResponse.Data,
+                    Message = apiResponse.Message
+                };
+            });
+        }
+
+        public async Task<byte[]?> DownloadFileAsync(string filePath)
+        {
+            try
+            {
+                await AttachAccessTokenAsync();
+                var encodedPath = Uri.EscapeDataString(filePath);
+                var response = await _client.GetAsync($"api/files/{encodedPath}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

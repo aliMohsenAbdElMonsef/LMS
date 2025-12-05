@@ -23,6 +23,7 @@ namespace LMS.Tests.Services
         private readonly Mock<IStudentEnrollIntoCourseRepository> _studentEnrollmentRepoMock;
         private readonly Mock<IInstructorEnrolltoCourseRepository> _instructorEnrollmentRepoMock;
         private readonly Mock<IEmailService> _emailServiceMock;
+        private readonly Mock<IFileService> _fileServiceMock;
         private readonly LectureService _lectureService;
 
         public LectureServiceTests()
@@ -30,6 +31,7 @@ namespace LMS.Tests.Services
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
             _emailServiceMock = new Mock<IEmailService>();
+            _fileServiceMock = new Mock<IFileService>();
             _lectureRepoMock = new Mock<ILectureRepository>();
             _courseRepoMock = new Mock<ICourseRepository>();
             _studentEnrollmentRepoMock = new Mock<IStudentEnrollIntoCourseRepository>();
@@ -40,13 +42,13 @@ namespace LMS.Tests.Services
             _unitOfWorkMock.Setup(u => u.StudentEnrollments).Returns(_studentEnrollmentRepoMock.Object);
             _unitOfWorkMock.Setup(u => u.InstructorEnrollments).Returns(_instructorEnrollmentRepoMock.Object);
 
-            _lectureService = new LectureService(_unitOfWorkMock.Object, _mapperMock.Object, _emailServiceMock.Object);
+            _lectureService = new LectureService(_unitOfWorkMock.Object, _mapperMock.Object, _emailServiceMock.Object, _fileServiceMock.Object);
         }
 
         [Fact]
         public async Task CreateAsync_ShouldReturnSuccess_WhenAdminCreatesLecture()
         {
-            // Arrange
+
             var dto = new CreateLectureDTO
             {
                 CourseId = "course1",
@@ -65,11 +67,11 @@ namespace LMS.Tests.Services
             _lectureRepoMock.Setup(r => r.FindByIdAsync("lecture1")).ReturnsAsync(lecture);
             _mapperMock.Setup(m => m.Map<GetLectureDTO>(lecture)).Returns(getLectureDto);
 
-            // Act
+
             var result = await _lectureService.CreateAsync(dto, userId, userRole);
 
-            // Assert
-            // Assert
+
+
             Assert.True(result.Success);
             Assert.Equal("Lecture created successfully", result.Message);
         }
@@ -77,7 +79,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateAsync_ShouldReturnError_WhenInstructorNotEnrolled()
         {
-            // Arrange
+
             var dto = new CreateLectureDTO { CourseId = "course1" };
             var userId = "instructor1";
             var userRole = "Instructor";
@@ -87,10 +89,10 @@ namespace LMS.Tests.Services
             _instructorEnrollmentRepoMock.Setup(r => r.GetByInstructorAndCourseAsync(userId, "course1"))
                 .ReturnsAsync(null as InstructorEnrolltoCourse);
 
-            // Act
+
             var result = await _lectureService.CreateAsync(dto, userId, userRole);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("You are not authorized to create lectures for this course", result.Message);
         }
@@ -98,7 +100,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ShouldReturnLecture_WhenStudentIsEnrolled()
         {
-            // Arrange
+
             var courseId = "course1";
             var lectureId = "lecture1";
             var userId = "student1";
@@ -114,10 +116,10 @@ namespace LMS.Tests.Services
             _studentEnrollmentRepoMock.Setup(r => r.GetFirstOrDefaultAsync(userId, courseId, It.IsAny<string?>())).ReturnsAsync(enrollment);
             _mapperMock.Setup(m => m.Map<GetLectureDTO>(lecture)).Returns(getLectureDto);
 
-            // Act
+
             var result = await _lectureService.GetByIdAsync(courseId, lectureId, userId, userRole);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(lectureId, result.Data.Id);
         }
@@ -125,7 +127,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ShouldReturnError_WhenStudentNotEnrolled()
         {
-            // Arrange
+
             var courseId = "course1";
             var lectureId = "lecture1";
             var userId = "student1";
@@ -138,10 +140,10 @@ namespace LMS.Tests.Services
             _lectureRepoMock.Setup(r => r.FindByIdAsync(lectureId)).ReturnsAsync(lecture);
             _studentEnrollmentRepoMock.Setup(r => r.GetFirstOrDefaultAsync(userId, courseId, It.IsAny<string?>())).ReturnsAsync(null as StudentEnrollIntoCourse);
 
-            // Act
+
             var result = await _lectureService.GetByIdAsync(courseId, lectureId, userId, userRole);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("You are not authorized to access this lecture", result.Message);
         }

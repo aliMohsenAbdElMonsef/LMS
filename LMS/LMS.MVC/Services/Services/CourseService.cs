@@ -257,7 +257,7 @@ namespace LMS.MVC.Services.Services
         {
             using var formData = new MultipartFormDataContent();
 
-            // Add all form fields
+
             formData.Add(new StringContent(vm.Name ?? ""), nameof(vm.Name));
             formData.Add(new StringContent(vm.Description ?? ""), nameof(vm.Description));
             formData.Add(new StringContent(vm.CourseCode ?? ""), nameof(vm.CourseCode));
@@ -281,7 +281,7 @@ namespace LMS.MVC.Services.Services
             if (!string.IsNullOrEmpty(vm.CertificateTemplateId))
                 formData.Add(new StringContent(vm.CertificateTemplateId), nameof(vm.CertificateTemplateId));
 
-            // Thumbnail file
+
             if (vm.ThumbnailFile != null)
             {
                 var fileContent = new StreamContent(vm.ThumbnailFile.OpenReadStream());
@@ -289,7 +289,7 @@ namespace LMS.MVC.Services.Services
                 formData.Add(fileContent, nameof(vm.ThumbnailFile), vm.ThumbnailFile.FileName);
             }
 
-            // Call API
+
             var wrapper = await SendAndReadAsync<GetCourseDTO>(
                 () => _httpClient.PutAsync($"{ApiBase}/api/courses/update/{id}", formData)
             );
@@ -482,13 +482,13 @@ namespace LMS.MVC.Services.Services
                 var allCourses = allCoursesResult.Data;
                 var myCourses = new List<ReadCourseResult>();
 
-                // 1. Add courses where user is Instructor or Admin (fast check)
+
                 var ownedCourses = allCourses.Where(c =>
                     c.AdminId == userId ||
                     c.Instructors.Any(i => i.Id == userId));
                 myCourses.AddRange(ownedCourses);
 
-                // 2. Add courses where user is Enrolled (API call)
+
                 if (role == "Student")
                 {
                     var enrollments = await _enrollmentService.GetStudentEnrollmentsAsync(userId);
@@ -518,7 +518,7 @@ namespace LMS.MVC.Services.Services
                     }
                 }
 
-                // Deduplicate by ID
+
                 var result = myCourses.GroupBy(c => c.Id).Select(g => g.First()).ToList();
 
                 return new SuccessServiceResult<IEnumerable<ReadCourseResult>>

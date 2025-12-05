@@ -10,6 +10,11 @@
             <p class="text-secondary mb-0">All your upcoming and past lectures</p>
         </div>
     </div>
+    
+    @if (!User.IsInRole("Instructor") && !User.IsInRole("Admin"))
+    {
+        <div id="attendance-stats-container" class="mb-4"></div>
+    }
 
     <div class="row g-4">
         @if (Model != null && Model.Any())
@@ -17,13 +22,31 @@
             @foreach (var lecture in Model)
             {
                 <div class="col-lg-6 animate-fade-in-up">
-                    <div class="card lecture-card mb-3">
+                    <div class="card lecture-card mb-3 @(lecture.AttendanceStatus == "Absent" ? "lecture-card-absent" : (lecture.AttendanceStatus == "Ongoing" ? "lecture-card-ongoing" : (lecture.AttendanceStatus == "Present" ? "lecture-card-attended" : "")))">
                         <div class="row g-0">
                             <div class="col-md-12">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span class="badge bg-primary">Lecture @lecture.LectureNumber</span>
-                                        <span class="badge bg-info text-dark">@lecture.CourseName</span>
+                                        <div>
+                                            <span class="badge bg-primary">Lecture @lecture.LectureNumber</span>
+                                            <span class="badge bg-info text-dark">@lecture.CourseName</span>
+                                            @if (lecture.AttendanceStatus == "Absent")
+                                            {
+                                                <span class="badge bg-danger ms-1"><i class="bi bi-x-circle"></i> Missed</span>
+                                            }
+                                            else if (lecture.AttendanceStatus == "Present")
+                                            {
+                                                <span class="badge bg-success ms-1"><i class="bi bi-check-circle"></i> Attended</span>
+                                            }
+                                            else if (lecture.AttendanceStatus == "Ongoing")
+                                            {
+                                                <span class="badge bg-warning text-dark ms-1"><i class="bi bi-broadcast"></i> Live Now</span>
+                                            }
+                                            else if (lecture.AttendanceStatus == "Upcoming")
+                                            {
+                                                <span class="badge bg-secondary ms-1"><i class="bi bi-clock"></i> Upcoming</span>
+                                            }
+                                        </div>
                                     </div>
                                     <h5 class="card-title">@lecture.Title</h5>
                                     <p class="card-text text-muted small mb-3">
@@ -38,10 +61,17 @@
                                     </div>
                                     
                                     <div class="d-flex gap-2 flex-wrap">
-                                        @if (!string.IsNullOrEmpty(lecture.VideoUrl))
+                                        @if (!string.IsNullOrEmpty(lecture.RecordingPath))
                                         {
                                             <a href="@Url.Action("Watch", "Lecture", new { id = lecture.Id })" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-play"></i> Watch
+                                                <i class="bi bi-play"></i> Watch Recording
+                                            </a>
+                                        }
+                                        
+                                        @if (!string.IsNullOrEmpty(lecture.MaterialsPath))
+                                        {
+                                            <a href="@Url.Action("DownloadMaterials", "Lecture", new { id = lecture.Id })" class="btn btn-success btn-sm">
+                                                <i class="bi bi-download"></i> Download Materials
                                             </a>
                                         }
                                         
@@ -50,7 +80,7 @@
                                             var lectureEnd = (lecture.LectureDate.Date + lecture.StartTime).AddMinutes(lecture.DurationMinutes);
                                             if (DateTime.Now <= lectureEnd)
                                             {
-                                                <a href="@lecture.ZoomLink" class="btn btn-success btn-sm" target="_blank">
+                                                <a href="@Url.Action("Join", "Lecture", new { id = lecture.Id })" class="btn btn-success btn-sm join-lecture-btn" data-lecture-id="@lecture.Id" target="_blank">
                                                     <i class="bi bi-camera-video"></i> Join Live
                                                 </a>
                                             }
@@ -70,6 +100,9 @@
                                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#launchModal" data-lecture-id="@lecture.Id">
                                                     <i class="bi bi-broadcast"></i> Launch
                                                 </button>
+                                                <a asp-action="UploadContent" asp-route-id="@lecture.Id" class="btn btn-info btn-sm text-white">
+                                                    <i class="bi bi-cloud-upload"></i> Upload Content
+                                                </a>
                                             }
                                         }
                                     </div>
@@ -93,7 +126,7 @@
     </div>
 </div>
 
-<!-- Launch Modal -->
+
 <div class="modal fade" id="launchModal" tabindex="-1" aria-labelledby="launchModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -121,7 +154,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Handle Modal Data
+
         var launchModal = document.getElementById('launchModal');
         if (launchModal) {
             launchModal.addEventListener('show.bs.modal', function (event) {
@@ -132,13 +165,74 @@
             });
         }
 
-        // Auto Refresh Logic
+
         var isInstructorOrAdmin = @((User.IsInRole("Instructor") || User.IsInRole("Admin")).ToString().ToLower());
-        var refreshInterval = isInstructorOrAdmin ? 90000 : 60000; // 90s for instructor, 60s for student
+        var refreshInterval = isInstructorOrAdmin ? 90000 : 60000;
 
         setInterval(function () {
             location.reload();
         }, refreshInterval);
+
+        // Attendance Logic
+        if (!isInstructorOrAdmin) {
+            fetchAttendanceStats();
+        }
+
+        function fetchAttendanceStats() {
+            fetch('/Lecture/GetAttendanceStats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const stats = data.data;
+                        const percentage = stats.attendancePercentage.toFixed(1);
+                        const statsHtml = `
+                            <div class="card bg-light mb-4 border-0 shadow-sm">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="mb-0 text-primary"><i class="bi bi-bar-chart-fill"></i> Attendance</h5>
+                                        <small class="text-muted">Your overall attendance record</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <h3 class="mb-0 ${percentage >= 75 ? 'text-success' : 'text-warning'}">${percentage}%</h3>
+                                        <small class="text-muted">${stats.attendedLectures} / ${stats.totalLectures} Lectures</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        const container = document.getElementById('attendance-stats-container');
+                        if (container) {
+                            container.innerHTML = statsHtml;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching attendance stats:', error));
+        }
+
+        document.querySelectorAll('.join-lecture-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lectureId = this.getAttribute('data-lecture-id');
+                const zoomLink = this.getAttribute('href');
+
+                fetch(`/Lecture/JoinLecture?lectureId=${lectureId}`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.open(zoomLink, '_blank');
+                        // Refresh stats after a short delay
+                        setTimeout(fetchAttendanceStats, 1000);
+                    } else {
+                        console.error('Failed to mark attendance');
+                        window.open(zoomLink, '_blank'); // Open anyway
+                    }
+                })
+                .catch(error => {
+                    console.error('Error marking attendance:', error);
+                    window.open(zoomLink, '_blank'); // Open anyway
+                });
+            });
+        });
     });
 
 </script>
@@ -155,6 +249,21 @@
 .lecture-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.lecture-card-absent {
+    background-color: #fff5f5;
+    border-left: 5px solid #dc3545;
+}
+
+.lecture-card-ongoing {
+    border-left: 5px solid #ffc107;
+    background-color: #fffdf5;
+}
+
+.lecture-card-attended {
+    background-color: #f0fff4;
+    border-left: 5px solid #28a745;
 }
 
 .animate-fade-in-up {

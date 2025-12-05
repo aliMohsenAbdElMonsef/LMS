@@ -44,7 +44,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateCategory_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var createDto = new ReadCategoryFromUserDTO { Name = "Test Category", Description = "Desc" };
             var responseDto = new ServiceResponseDTO<ReadCategoryDTO> { Success = true };
 
@@ -52,10 +52,10 @@ namespace LMS.Tests.Controllers
             _mockCategoryServices.Setup(s => s.CreateAsync(It.IsAny<CreateCategoryDTO>()))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateCategory(createDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.True(((ServiceResponseDTO<ReadCategoryDTO>)okResult.Value).Success);
         }
@@ -63,67 +63,67 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task UpdateCategory_ReturnsOk_WhenSuccessful()
         {
-            // Arrange
+
             var updateDto = new UpdateCategoryDTO { Id = "1", Name = "Updated" };
             var responseDto = new ServiceResponseDTO<ReadCategoryDTO> { Success = true };
 
             _mockCategoryServices.Setup(s => s.UpdateAsync(updateDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.UpdateCategory(updateDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetAllCategories_ReturnsOk()
         {
-            // Arrange
+
             var responseDto = new ServiceResponseDTO<IEnumerable<ReadCategoryDTO>> { Success = true, Data = new List<ReadCategoryDTO>() };
 
             _mockCategoryServices.Setup(s => s.GetAllAsync())
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetAllCategories();
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetCategoryByIdInDetails_ReturnsOk_WhenFound()
         {
-            // Arrange
+
             var id = "1";
             var responseDto = new ServiceResponseDTO<CategoryDetailsDTO> { Success = true };
 
             _mockCategoryServices.Setup(s => s.GetCategoryWithCourseDetails(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetCategoryByIdInDetails(id);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]
         public async Task GetCategoryById_ReturnsOk_WhenFound()
         {
-            // Arrange
+
             var id = "1";
             var responseDto = new ServiceResponseDTO<ReadCategoryDTO> { Success = true };
 
             _mockCategoryServices.Setup(s => s.GetCategoryAsync(id))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetCategoryById(id);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
         }
     }

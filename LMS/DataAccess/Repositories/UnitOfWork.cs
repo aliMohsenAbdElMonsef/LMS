@@ -1,4 +1,4 @@
-﻿using DataAccess.Context;
+using DataAccess.Context;
 using LMS.DataAccess.Contracts;
 using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;

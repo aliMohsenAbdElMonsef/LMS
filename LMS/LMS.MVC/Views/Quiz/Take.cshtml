@@ -7,7 +7,7 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <!-- Quiz Header -->
+
             <div class="card mb-4 animate-fade-in-up">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
@@ -44,7 +44,7 @@
                 </div>
             }
 
-            <!-- Quiz Form -->
+
             <form method="post" asp-action="Submit" id="quizForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="QuizId" value="@Model.Id" />
@@ -64,7 +64,7 @@
                                 <input type="hidden" name="Answers[@i].QuestionId" value="@question.Id" />
                                 
                                 @{
-                                    // Determine question type based on available options
+
                                     var hasOptionC = !string.IsNullOrEmpty(question.OptionC);
                                     var hasOptionD = !string.IsNullOrEmpty(question.OptionD);
                                     var hasOptionA = !string.IsNullOrEmpty(question.OptionA);
@@ -77,17 +77,17 @@
 
                                 @if (isShortAnswer)
                                 {
-                                    <!-- Short Answer Question -->
+
                                     <div class="form-group">
                                         <textarea class="form-control" name="Answers[@i].ShortAnswerText" rows="3" placeholder="Type your answer here..."></textarea>
                                         <small class="text-muted">This is a short answer question. Your answer will be manually graded by the instructor.</small>
                                     </div>
-                                    <!-- Hidden field to indicate no option selected for short answer -->
+
                                     <input type="hidden" name="Answers[@i].SelectedAnswer" value="" />
                                 }
                                 else if (isTrueFalse)
                                 {
-                                    <!-- True/False Question -->
+
                                     <div class="form-check answer-option">
                                         <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
                                         <label class="form-check-label" for="q@(i)a">
@@ -103,7 +103,7 @@
                                 }
                                 else
                                 {
-                                    <!-- Multiple Choice Question -->
+
                                     <div class="form-check answer-option">
                                         <input class="form-check-input" type="radio" name="Answers[@i].SelectedAnswer" id="q@(i)a" value="0">
                                         <label class="form-check-label" for="q@(i)a">
@@ -134,7 +134,7 @@
                     </div>
                 }
 
-                <!-- Navigation -->
+
                 <div class="card animate-fade-in-up">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -161,7 +161,7 @@
 
 @section Scripts {
     <script>
-        // Timer functionality
+
         let timeRemaining = @timeRemaining;
         
         function updateTimer() {
@@ -173,7 +173,7 @@
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
             if (timeRemaining <= 0) {
-                // Prevent multiple submissions
+
                 if (!document.getElementById('quizForm').dataset.submitted) {
                     document.getElementById('quizForm').dataset.submitted = true;
                     alert('Time is up! Submitting quiz...');
@@ -185,9 +185,9 @@
         }
         
         setInterval(updateTimer, 1000);
-        updateTimer(); // Initial call
+        updateTimer();
         
-        // Progress tracking
+
         const questions = document.querySelectorAll('.question-card');
         const progressBar = document.getElementById('progressBar');
         
@@ -208,7 +208,7 @@
             radio.addEventListener('change', updateProgress);
         });
         
-        // Restore answers from localStorage if available (optional enhancement)
+
         const savedAnswers = JSON.parse(localStorage.getItem('quiz_@Model.Id') || '{}');
         if (savedAnswers) {
             Object.keys(savedAnswers).forEach(key => {
@@ -220,7 +220,7 @@
             updateProgress();
         }
 
-        // Auto-save to localStorage
+
         document.getElementById('quizForm').addEventListener('change', () => {
             const formData = new FormData(document.getElementById('quizForm'));
             const answers = {};
@@ -232,27 +232,27 @@
             localStorage.setItem('quiz_@Model.Id', JSON.stringify(answers));
         });
         
-        // Clear storage on submit
+
         document.getElementById('quizForm').addEventListener('submit', () => {
             localStorage.removeItem('quiz_@Model.Id');
         });
         
-        // Validation function for quiz submission
+
         function validateQuizSubmission() {
-            // Check for unanswered questions
+
             let unansweredCount = 0;
             questions.forEach((q, index) => {
                 const questionInputs = q.querySelectorAll('input[type="radio"]');
                 const shortAnswerTextarea = q.querySelector('textarea[name*="ShortAnswerText"]');
                 
-                // Check if it's a short answer question
+
                 if (shortAnswerTextarea) {
-                    // Short answer is considered unanswered if empty or only whitespace
+
                     if (!shortAnswerTextarea.value || shortAnswerTextarea.value.trim() === '') {
                         unansweredCount++;
                     }
                 } else {
-                    // For radio button questions (True/False and Multiple Choice)
+
                     if (!Array.from(questionInputs).some(input => input.checked)) {
                         unansweredCount++;
                     }

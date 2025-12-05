@@ -43,42 +43,23 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Create(ReadAssignmentResult model, IFormFile assignmentFile)
         {
-            Console.WriteLine("=== CREATE ASSIGNMENT POST ===");
-            Console.WriteLine($"Title: {model.Title}");
-            Console.WriteLine($"CourseId: {model.CourseId}");
-            Console.WriteLine($"File: {assignmentFile?.FileName ?? "NULL"}");
-            Console.WriteLine($"File Size: {assignmentFile?.Length ?? 0} bytes");
             ModelState.Remove("FilePath");
-            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("? ModelState Errors:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
-                    }
-                }
                 return View("Create", model);
             }
 
             if (assignmentFile == null || assignmentFile.Length == 0)
             {
-                Console.WriteLine("? No file uploaded");
                 ModelState.AddModelError("", "Please select an assignment file.");
                 return View("Create", model);
             }
 
             try
             {
-                Console.WriteLine("? Calling CreateAssignmentWithFile...");
-
                 var createdAssignment = await _services.AssignmentService.CreateAssignmentWithFile(
                     model, assignmentFile);
-
-                Console.WriteLine($"? Assignment created with ID: {createdAssignment?.Id}");
 
                 if (createdAssignment != null && !string.IsNullOrEmpty(createdAssignment.Id))
                 {
@@ -86,14 +67,11 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Details", new { id = createdAssignment.Id });
                 }
 
-                Console.WriteLine("? Creation failed - returned null or empty ID");
                 ModelState.AddModelError("", "Failed to create assignment. Please try again.");
                 return View("Create", model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"? Exception: {ex.Message}");
-                Console.WriteLine($"? Stack Trace: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Error: {ex.Message}");
                 return View("Create", model);
             }
@@ -136,13 +114,6 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Edit(ReadAssignmentResult model)
         {
-            Console.WriteLine("=== EDIT ASSIGNMENT POST ===");
-            Console.WriteLine($"Id: {model.Id}");
-            Console.WriteLine($"Title: {model.Title}");
-            Console.WriteLine($"DueDate: {model.DueDate}");
-            Console.WriteLine($"CourseId: {model.CourseId}");
-            Console.WriteLine($"FilePath: {model.FilePath}");
-            
             // Remove validation for fields that are not editable
             ModelState.Remove("FilePath");
             ModelState.Remove("UploadDate");
@@ -151,18 +122,8 @@ namespace LMS.MVC.Controllers
             ModelState.Remove("InstructorName");
             ModelState.Remove("InstructorId");
             
-            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
-            
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("❌ ModelState Errors:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
-                    }
-                }
                 return View(model);
             }
 
@@ -300,9 +261,8 @@ namespace LMS.MVC.Controllers
 
                 return fileResult;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"? Error downloading file: {ex.Message}");
                 TempData["ErrorMessage"] = "Error downloading file.";
                 return RedirectToAction("Details", new { id });
             }
@@ -330,9 +290,8 @@ namespace LMS.MVC.Controllers
 
                 return fileResult;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"? Error downloading file: {ex.Message}");
                 TempData["ErrorMessage"] = "Error downloading file.";
                 return RedirectToAction("Index", "Course");
             }
@@ -353,11 +312,6 @@ namespace LMS.MVC.Controllers
         [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Grade(StudentAssignmentResult model)
         {
-            Console.WriteLine("=== GRADE ASSIGNMENT POST ===");
-            Console.WriteLine($"StudentAssignmentId: {model.Id}");
-            Console.WriteLine($"Grade: {model.Grade}");
-            Console.WriteLine($"Feedback: {model.Feedback}");
-
             ModelState.Remove("FilePath");
             ModelState.Remove("Status");
             ModelState.Remove("StudentName");
@@ -367,28 +321,15 @@ namespace LMS.MVC.Controllers
             ModelState.Remove("GradedAt");
             ModelState.Remove("IsSubmitted");
             ModelState.Remove("StudentAssignmentId");
-            Console.WriteLine($"ModelState Valid: {ModelState.IsValid}");
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("? ModelState Errors:");
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"  - {state.Key}: {error.ErrorMessage}");
-                    }
-                }
                 return View("Grade", model);
             }
 
             try
             {
-                Console.WriteLine("? Calling GradeAssignment...");
-
                 var result = await _services.AssignmentService.GradeAssignment(model);
-
-                Console.WriteLine($"? Result: {(result != null ? "Success" : "NULL")}");
 
                 if (result != null)
                 {
@@ -396,14 +337,11 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("Submissions", new { id = result.AssignmentId });
                 }
 
-                Console.WriteLine("? Result was null");
                 ModelState.AddModelError("", "Failed to grade assignment. Please try again.");
                 return View("Grade", model);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"? Error grading assignment: {ex.Message}");
-                Console.WriteLine($"? Stack: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Error while grading assignment: {ex.Message}");
                 return View("Grade", model);
             }
@@ -442,7 +380,6 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error deleting assignment: {ex.Message}");
                 TempData["ErrorMessage"] = $"Error: {ex.Message}";
                 return RedirectToAction("InstructorAssignments");
             }

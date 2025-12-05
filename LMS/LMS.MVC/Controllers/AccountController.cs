@@ -102,25 +102,6 @@ namespace LMS.MVC.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult TestCookies()
-        {
-            var cookies = Request.Cookies;
-            var cookieInfo = new List<object>();
-
-            foreach (var cookie in cookies)
-            {
-                cookieInfo.Add(new { Name = cookie.Key, Value = cookie.Value });
-            }
-
-            return Json(new
-            {
-                Message = "Cookie test",
-                Cookies = cookieInfo,
-                Count = cookies.Count
-            });
-        }
-
         [HttpPost("ApproveUser/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveUser(string id)
@@ -164,14 +145,12 @@ namespace LMS.MVC.Controllers
 
             try
             {
-                Console.WriteLine($"🔍 ForgotPassword - Requesting reset for: {email}");
                 var result = await _services.AccountService.ForgotPasswordAsync(email);
-                Console.WriteLine($"🔍 ForgotPassword - Result: Success={result.Success}, Message={result.Message}");
                 
                 if (result.Success)
                 {
                     ViewBag.SuccessMessage = result.Message;
-                    ModelState.Clear(); // Clear the form
+                    ModelState.Clear(); 
                     return View();
                 }
 
@@ -180,7 +159,6 @@ namespace LMS.MVC.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ ForgotPassword - Exception: {ex.Message}");
                 ModelState.AddModelError("", "An error occurred. Please try again.");
                 return View();
             }

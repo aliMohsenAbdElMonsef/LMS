@@ -40,17 +40,17 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task EnrollAsync_ShouldReturnFailure_WhenCourseNotFound()
         {
-            // Arrange
+
             var dto = new RequestEnrollIntoCourseDTO { UserId = "student1", CourseId = "nonexistent" };
             var user = new ApplicationUser { Id = "student1" };
 
             _userRepoMock.Setup(r => r.FindByIdAsync("student1")).ReturnsAsync(user);
             _courseRepoMock.Setup(r => r.FindByIdAsync("nonexistent")).ReturnsAsync(null as Course);
 
-            // Act
+
             var result = await _enrollmentService.EnrollAsync(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Course not found.", result.Message);
         }
@@ -58,14 +58,14 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task EnrollAsync_ShouldReturnFailure_WhenUserNotFound()
         {
-            // Arrange
+
             var dto = new RequestEnrollIntoCourseDTO { UserId = "nonexistent", CourseId = "course1" };
             _userRepoMock.Setup(r => r.FindByIdAsync("nonexistent")).ReturnsAsync(null as ApplicationUser);
 
-            // Act
+
             var result = await _enrollmentService.EnrollAsync(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("User not found.", result.Message);
         }
@@ -73,7 +73,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ApproveEnrollment_ShouldSendNotification_WhenApproved()
         {
-            // Arrange
+
             var dto = new UpdateStudentEnrollmentDTO { UserId = "student1", CourseId = "course1" };
             var enrollment = new StudentEnrollIntoCourse 
             { 
@@ -89,10 +89,10 @@ namespace LMS.Tests.Services
             _emailServiceMock.Setup(e => e.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            // Act
+
             var result = await _enrollmentService.ApproveEnrollment(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Enrollment approved successfully.", result.Message);
             Assert.Equal(ApplicationStatus.Approved, enrollment.Status);
@@ -102,7 +102,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetEnrollmentsAsync_ShouldReturnUserEnrollments()
         {
-            // Arrange
+
             var userId = "student1";
             var enrollments = new List<StudentEnrollIntoCourse>
             {
@@ -112,10 +112,10 @@ namespace LMS.Tests.Services
 
             _studentEnrollRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(enrollments);
 
-            // Act
+
             var result = await _enrollmentService.GetEnrollmentsAsync(userId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.Count);
         }

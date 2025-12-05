@@ -91,14 +91,14 @@ namespace LMS.BusinessLogic.Services
             if (existing != null)
             {
                 existing.IsDeleted = false;
-                existing.Status = ApplicationStatus.Pending; // Reset status to pending or approved based on course settings
+                existing.Status = ApplicationStatus.Pending;
                 if (course.EveryStuCouldEnroll)
                 {
                     existing.Status = ApplicationStatus.Approved;
                 }
-                existing.CreatedAt = DateTime.UtcNow; // Optional: Update created date
+                existing.CreatedAt = DateTime.UtcNow;
                 
-                await _unitOfWork.SaveChangesAsync(); // CRITICAL FIX: Save changes
+                await _unitOfWork.SaveChangesAsync();
 
                 return new BasicResponseDTO
                 {

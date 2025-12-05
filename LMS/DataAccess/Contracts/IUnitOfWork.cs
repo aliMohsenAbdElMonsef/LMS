@@ -1,4 +1,4 @@
-﻿using LMS.DataAccess.Contracts.Repositories;
+using LMS.DataAccess.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;

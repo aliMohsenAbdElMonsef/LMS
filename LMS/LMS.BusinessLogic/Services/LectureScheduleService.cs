@@ -28,7 +28,7 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // Validate permissions (Admin only)
+
                 if (userRole != "Admin")
                 {
                     return new ServiceResponseDTO<GetLectureScheduleDTO>
@@ -38,7 +38,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Validate course exists
+
                 var course = await _unitOfWork.Courses.FindByIdAsync(dto.CourseId);
                 if (course == null)
                 {
@@ -49,16 +49,16 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Create schedules for each selected day
+
                 var createdSchedules = new List<GetLectureScheduleDTO>();
                 
                 foreach (var scheduleDto in dto.Schedules)
                 {
-                    // Check if schedule already exists for this day
+
                     var existingSchedules = await _unitOfWork.LectureSchedules.GetByCourseIdAsync(dto.CourseId);
                     if (existingSchedules.Any(s => s.DayOfWeek == scheduleDto.DayOfWeek))
                     {
-                        continue; // Skip if already exists
+                        continue;
                     }
 
                     var schedule = _mapper.Map<LectureSchedule>(scheduleDto);
@@ -69,7 +69,7 @@ namespace LMS.BusinessLogic.Services
                     await _unitOfWork.LectureSchedules.CreateAsync(schedule);
                     await _unitOfWork.SaveChangesAsync();
 
-                    // Generate lectures for this schedule
+
                     await GenerateLecturesForScheduleInternalAsync(schedule);
                     
                     createdSchedules.Add(_mapper.Map<GetLectureScheduleDTO>(schedule));
@@ -84,7 +84,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Return the first created schedule as representative, or modify DTO to return list
+
                 return new ServiceResponseDTO<GetLectureScheduleDTO>
                 {
                     Success = true,
@@ -117,16 +117,18 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<bool> { Success = false, Message = "Schedule not found" };
                 }
 
-                // Soft delete schedule
+
                 await _unitOfWork.LectureSchedules.DeleteByEntityAsync(schedule);
                 
-                // Also soft delete associated lectures
+
                 foreach (var lecture in schedule.Lectures)
                 {
                     await _unitOfWork.Lectures.DeleteByEntityAsync(lecture);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
+
+                await RenumberCourseLecturesAsync(schedule.CourseId);
 
                 return new ServiceResponseDTO<bool>
                 {
@@ -140,6 +142,8 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<bool> { Success = false, Message = ex.Message };
             }
         }
+
+
 
         public async Task<ServiceResponseDTO<bool>> GenerateLecturesFromScheduleAsync(string scheduleId, string userId, string userRole)
         {
@@ -178,7 +182,7 @@ namespace LMS.BusinessLogic.Services
                 var schedules = await _unitOfWork.LectureSchedules.GetByCourseIdWithLecturesAsync(courseId);
                 var dtos = _mapper.Map<IEnumerable<GetLectureScheduleDTO>>(schedules);
                 
-                // Manually map generated lectures count if not handled by automapper
+
                 var scheduleList = schedules.ToList();
                 var dtoList = dtos.ToList();
                 
@@ -239,26 +243,27 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<GetLectureScheduleDTO> { Success = false, Message = "Schedule not found" };
                 }
 
-                // Check if DayOfWeek changed
+
                 bool dayChanged = schedule.DayOfWeek != dto.DayOfWeek;
 
-                // Update properties
+
                 schedule.Title = dto.Title;
                 schedule.Description = dto.Description;
                 schedule.DayOfWeek = dto.DayOfWeek;
                 schedule.StartTime = dto.StartTime;
                 schedule.DurationMinutes = dto.DurationMinutes;
+                schedule.InstructorId = dto.InstructorId;
 
                 await _unitOfWork.LectureSchedules.UpdateAsync(schedule);
                 await _unitOfWork.SaveChangesAsync();
 
-                // Propagate changes to future lectures
+
                 var today = DateTime.Today;
                 var futureLectures = schedule.Lectures.Where(l => l.LectureDate >= today && !l.IsDeleted).ToList();
 
                 if (dayChanged)
                 {
-                    // If day changed, delete future lectures and regenerate
+
                     foreach (var lecture in futureLectures)
                     {
                         await _unitOfWork.Lectures.DeleteByEntityAsync(lecture);
@@ -269,13 +274,14 @@ namespace LMS.BusinessLogic.Services
                 }
                 else
                 {
-                    // If day didn't change, update existing future lectures
+
                     foreach (var lecture in futureLectures)
                     {
                         lecture.Title = $"{schedule.Title} {lecture.LectureNumber}";
                         lecture.Description = schedule.Description;
                         lecture.StartTime = schedule.StartTime;
                         lecture.EndTime = schedule.StartTime.Add(TimeSpan.FromMinutes(schedule.DurationMinutes));
+                        lecture.InstructorId = schedule.InstructorId;
                         
                         await _unitOfWork.Lectures.UpdateAsync(lecture);
                     }
@@ -300,21 +306,21 @@ namespace LMS.BusinessLogic.Services
             var course = await _unitOfWork.Courses.FindByIdAsync(schedule.CourseId);
             if (course == null) return;
 
-            // Calculate dates
+
             var currentDate = fromDate ?? course.StartDate;
             var endDate = course.EndDate;
 
-            // Find the first occurrence of the scheduled day
+
             while (currentDate.DayOfWeek != schedule.DayOfWeek)
             {
                 currentDate = currentDate.AddDays(1);
             }
 
-            // Generate lectures until end date
+
             var lectures = new List<Lecture>();
             int lectureNumber = 1;
 
-            // Get existing max lecture number
+
             var existingLectures = await _unitOfWork.Lectures.GetCourseLecturesAsync(schedule.CourseId);
             if (existingLectures.Any())
             {
@@ -323,7 +329,7 @@ namespace LMS.BusinessLogic.Services
 
             while (currentDate <= endDate)
             {
-                // Check if lecture already exists for this date (to prevent duplicates)
+
                 bool exists = existingLectures.Any(l => l.LectureDate.Date == currentDate.Date && !l.IsDeleted);
                 
                 if (!exists)
@@ -338,7 +344,7 @@ namespace LMS.BusinessLogic.Services
                         StartTime = schedule.StartTime,
                         EndTime = schedule.StartTime.Add(TimeSpan.FromMinutes(schedule.DurationMinutes)),
                         LectureNumber = lectureNumber,
-                        InstructorId = schedule.InstructorId // Use assigned instructor
+                        InstructorId = schedule.InstructorId
                     };
                     lectures.Add(lecture);
                     lectureNumber++;
@@ -353,7 +359,7 @@ namespace LMS.BusinessLogic.Services
                 await _unitOfWork.SaveChangesAsync();
             }
 
-            // Re-number all lectures for the course to ensure chronological order
+
             await RenumberCourseLecturesAsync(schedule.CourseId);
         }
 
@@ -371,11 +377,7 @@ namespace LMS.BusinessLogic.Services
                 {
                     lecture.LectureNumber = newNumber;
                     
-                    // Update title if it follows the standard format "{Title} {Number}"
-                    // We assume the last part is the number. This is a heuristic.
-                    // Better approach: If we have the schedule, use its title.
-                    // Since we might not have the schedule loaded here easily for all, 
-                    // we can try to reconstruct it or just update the number at the end.
+
                     
                     if (!string.IsNullOrEmpty(lecture.Title))
                     {

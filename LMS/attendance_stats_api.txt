@@ -1,0 +1,10 @@
+// ADD THIS TO LMS.API/Controllers/LectureController.cs
+// Place it after the join endpoint
+
+        [HttpGet("attendance-statistics/{studentId}")]
+        [Authorize(Roles = "Student,Admin")]
+        public async Task<IActionResult> GetAttendanceStatistics(string studentId)
+        {
+            var result = await _unitOfServices.Lectures.GetAttendanceStatisticsAsync(studentId);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }

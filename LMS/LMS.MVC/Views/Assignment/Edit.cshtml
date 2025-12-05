@@ -117,13 +117,13 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Client-side validation for due date
+
         document.addEventListener('DOMContentLoaded', function() {
             var dueDateInput = document.getElementById('DueDate');
             var today = new Date().toISOString().slice(0, 16);
             dueDateInput.min = today;
 
-            // Bootstrap validation
+
             var forms = document.querySelectorAll('.needs-validation');
             Array.prototype.slice.call(forms).forEach(function(form) {
                 form.addEventListener('submit', function(event) {

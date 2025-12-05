@@ -11,7 +11,7 @@ namespace LMS.MVC.Services.Contracts.Services
     /// </summary>
     public interface IAssignmentService
     {
-        // ============== FILE UPLOAD METHODS ==============
+
 
         /// <summary>
         /// Creates assignment with file by sending to API
@@ -28,7 +28,7 @@ namespace LMS.MVC.Services.Contracts.Services
         /// </summary>
         Task<FileContentResult?> DownloadFileFromApi(string filePath);
 
-        // ============== GET METHODS ==============
+
 
         /// <summary>
         /// Gets all assignments for a specific course
@@ -71,7 +71,7 @@ namespace LMS.MVC.Services.Contracts.Services
         /// </summary>
         ReadAssignmentResult GetCreateModel();
 
-        // ============== CRUD METHODS ==============
+
 
         /// <summary>
         /// Creates assignment (without file)
@@ -88,7 +88,7 @@ namespace LMS.MVC.Services.Contracts.Services
         /// </summary>
         Task<bool> DeleteAssignment(string id);
 
-        // ============== SUBMISSION & GRADING ==============
+
 
         /// <summary>
         /// Submits assignment (without file)
@@ -100,8 +100,8 @@ namespace LMS.MVC.Services.Contracts.Services
         /// </summary>
         Task<StudentAssignmentResult> GradeAssignment(StudentAssignmentResult model);
 
-        // ============== DEPRECATED METHODS ==============
-        // These are kept for backward compatibility but should not be used
+
+
 
         /// <summary>
         /// [DEPRECATED] Use DownloadFileFromApi instead

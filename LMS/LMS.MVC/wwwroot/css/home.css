@@ -1,6 +1,4 @@
-﻿/* ============================
-   Hero Section
-   ============================ */
+﻿
 
 .hero-section {
     background: linear-gradient(135deg, #f8f5ff 0%, #ede7f6 100%);
@@ -89,9 +87,7 @@
     }
 }
 
-/* ============================
-   Section Styles
-   ============================ */
+
 
 .section-header {
     margin-bottom: 3rem;
@@ -109,9 +105,7 @@
     color: #666;
 }
 
-/* ============================
-   Category Cards
-   ============================ */
+
 
 .category-card {
     background: var(--white);
@@ -192,9 +186,7 @@
     font-weight: 600;
 }
 
-/* ============================
-   Course Cards
-   ============================ */
+
 
 .course-thumbnail {
     height: 200px;
@@ -272,9 +264,7 @@
     font-weight: 600;
 }
 
-/* ============================
-   Features Section
-   ============================ */
+
 
 .feature-card {
     padding: 2rem;
@@ -322,9 +312,7 @@
     line-height: 1.6;
 }
 
-/* ============================
-   CTA Section
-   ============================ */
+
 
 .cta-section {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -386,9 +374,7 @@
         transform: translateY(-3px);
     }
 
-/* ============================
-   Responsive Design
-   ============================ */
+
 
 @media (max-width: 992px) {
     .hero-title {

@@ -19,10 +19,12 @@ namespace LMS.BusinessLogic.Services
     internal class QuizServices : BaseServices<Quiz, ReadQuizDTO, CreateQuizDTO, UpdateQuizDTO>, IQuizServices
     {
         private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
-        public QuizServices(IUnitOfWork unitOfWork, INotificationService notificationService) : base(unitOfWork)
+        public QuizServices(IUnitOfWork unitOfWork, INotificationService notificationService, IEmailService emailService) : base(unitOfWork)
         {
             _notificationService = notificationService;
+            _emailService = emailService;
         }
 
         protected override string GetIdFromUpdateDTO(UpdateQuizDTO dto) => dto.Id;
@@ -71,16 +73,6 @@ namespace LMS.BusinessLogic.Services
 
         protected override ReadQuizDTO MapToReadDTO(Quiz entity)
         {
-            var totalQuestions = entity.Questions?.Count ?? 0;
-            var nonDeletedQuestions = entity.Questions?.Count(q => !q.IsDeleted) ?? 0;
-            var deletedQuestions = entity.Questions?.Count(q => q.IsDeleted) ?? 0;
-            
-            Console.WriteLine($"📊 MapToReadDTO for Quiz {entity.Id}:");
-            Console.WriteLine($"   Total questions in collection: {totalQuestions}");
-            Console.WriteLine($"   Non-deleted questions: {nonDeletedQuestions}");
-            Console.WriteLine($"   Deleted questions: {deletedQuestions}");
-            Console.WriteLine($"   Database NumberOfQuestions: {entity.NumberOfQuestions}");
-            
             return new ReadQuizDTO
             {
                 Id = entity.Id,
@@ -97,7 +89,7 @@ namespace LMS.BusinessLogic.Services
                 InstructorId = entity.InstructorId,
                 InstructorName = entity.Instructor != null ? $"{entity.Instructor.FirstName} {entity.Instructor.LastName}" : "",
                 Questions = entity.Questions?
-                    .Where(q => !q.IsDeleted)  // Filter out deleted questions
+                    .Where(q => !q.IsDeleted)
                     .Select(q => new ReadQuestionDTO
                     {
                         Id = q.Id,
@@ -115,10 +107,6 @@ namespace LMS.BusinessLogic.Services
 
         protected override Quiz UpdateToEntity(UpdateQuizDTO dto, Quiz existingEntity)
         {
-            Console.WriteLine($"🔄 UpdateToEntity called for quiz {existingEntity.Id}");
-            Console.WriteLine($"Existing questions count: {existingEntity.Questions.Count}");
-            Console.WriteLine($"DTO questions count: {dto.Questions?.Count ?? 0}");
-            
             existingEntity.Title = dto.Title ?? existingEntity.Title;
             existingEntity.Description = dto.Description ?? existingEntity.Description;
             existingEntity.DurationMinutes = dto.DurationMinutes ?? existingEntity.DurationMinutes;
@@ -128,38 +116,34 @@ namespace LMS.BusinessLogic.Services
             existingEntity.MaxAttempts = dto.MaxAttempts ?? existingEntity.MaxAttempts;
             existingEntity.InstructorId = dto.InstructorId ?? existingEntity.InstructorId;
 
-            // Update questions
+
             if (dto.Questions != null && dto.Questions.Any())
             {
-                // Get the list of question IDs from the DTO
+
                 var dtoQuestionIds = dto.Questions
                     .Where(q => !string.IsNullOrEmpty(q.Id))
                     .Select(q => q.Id)
                     .ToHashSet();
 
-                Console.WriteLine($"DTO Question IDs: {string.Join(", ", dtoQuestionIds)}");
 
-                // Mark questions for deletion if they're not in the DTO
                 foreach (var existingQuestion in existingEntity.Questions.Where(q => !q.IsDeleted).ToList())
                 {
                     if (!dtoQuestionIds.Contains(existingQuestion.Id))
                     {
-                        Console.WriteLine($"Marking question {existingQuestion.Id} as deleted");
                         existingQuestion.IsDeleted = true;
                         existingQuestion.DeletedAt = DateTime.UtcNow;
                     }
                 }
 
-                // Update existing questions and add new ones
+
                 foreach (var qDto in dto.Questions)
                 {
                     if (!string.IsNullOrEmpty(qDto.Id))
                     {
-                        // Update existing question
+
                         var existingQuestion = existingEntity.Questions.FirstOrDefault(q => q.Id == qDto.Id && !q.IsDeleted);
                         if (existingQuestion != null)
                         {
-                            Console.WriteLine($"Updating existing question {existingQuestion.Id}");
                             existingQuestion.Text = qDto.Text ?? existingQuestion.Text;
                             existingQuestion.OptionA = qDto.OptionA;
                             existingQuestion.OptionB = qDto.OptionB;
@@ -168,16 +152,11 @@ namespace LMS.BusinessLogic.Services
                             existingQuestion.CorrectAnswer = qDto.CorrectAnswer ?? existingQuestion.CorrectAnswer;
                             existingQuestion.Points = qDto.Points ?? existingQuestion.Points;
                         }
-                        else
-                        {
-                            Console.WriteLine($"⚠️ Question {qDto.Id} not found in existing questions!");
-                        }
                     }
                     else
                     {
-                        // Add new question (only if it doesn't already exist)
+
                         var newQuestionId = Guid.NewGuid().ToString();
-                        Console.WriteLine($"Adding new question {newQuestionId}");
                         var newQuestion = new Question
                         {
                             Id = newQuestionId,
@@ -194,9 +173,8 @@ namespace LMS.BusinessLogic.Services
                     }
                 }
 
-                // Update question count (only count non-deleted questions)
+
                 existingEntity.NumberOfQuestions = existingEntity.Questions.Count(q => !q.IsDeleted);
-                Console.WriteLine($"Final question count: {existingEntity.NumberOfQuestions}");
             }
             
             return existingEntity;
@@ -233,15 +211,13 @@ namespace LMS.BusinessLogic.Services
             {
                 var id = dto.Id;
 
-                // Eager load questions to ensure we can update them properly
+
                 var existingEntity = await GetRepo().GetQueryable()
                     .Include(q => q.Questions)
                     .FirstOrDefaultAsync(q => q.Id == id);
 
                 if (existingEntity == null)
                     throw new Exception($"Quiz with id '{id}' not found.");
-
-                Console.WriteLine($"📝 UpdateAsync: Found quiz with {existingEntity.Questions.Count} existing questions");
 
                 var updatedEntity = UpdateToEntity(dto, existingEntity);
                 await GetRepo().UpdateAsync(updatedEntity);
@@ -259,7 +235,6 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ UpdateAsync Exception: {ex.Message}");
                 throw new Exception($"Error updating quiz: {ex.Message}", ex);
             }
         }
@@ -304,7 +279,7 @@ namespace LMS.BusinessLogic.Services
                 if (quiz == null)
                     return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz not found." };
 
-                // Check availability
+
                 bool isStarted = quiz.StartDate == DateTime.MinValue || DateTime.Now >= quiz.StartDate;
                 bool isEnded = quiz.EndDate != DateTime.MinValue && DateTime.Now > quiz.EndDate;
 
@@ -313,7 +288,7 @@ namespace LMS.BusinessLogic.Services
                     return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz is not currently available." };
                 }
 
-                // Check enrollment
+
                 var isEnrolled = await _unitOfWork.StudentEnrollments.IsStudentEnrolledInCourseAsync(studentId, quiz.CourseId);
                 if (!isEnrolled)
                 {
@@ -322,7 +297,7 @@ namespace LMS.BusinessLogic.Services
 
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
 
-                // Check max attempts
+
                 var completedAttempts = await studentQuizSet
                     .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId && 
                            (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
@@ -336,7 +311,7 @@ namespace LMS.BusinessLogic.Services
                         Message = "You have already completed this quiz. Only one attempt is allowed." 
                     };
                 }
-                // Check if already in progress
+
                 var inProgressAttempt = await studentQuizSet
                     .FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId && sq.Status == QuizStatus.InProgress);
 
@@ -350,7 +325,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Create new attempt
+
                 var newAttempt = new StudentQuiz
                 {
                     StudentId = studentId,
@@ -391,20 +366,19 @@ namespace LMS.BusinessLogic.Services
                 if (quiz == null)
                     return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "Quiz not found." };
 
-                // Check availability
-                // If StartDate is MinValue, it's available from the beginning
-                // If EndDate is MinValue, it's available indefinitely
+
+
+
                 bool isStarted = quiz.StartDate == DateTime.MinValue || DateTime.Now >= quiz.StartDate;
                 bool isEnded = quiz.EndDate != DateTime.MinValue && DateTime.Now > quiz.EndDate;
 
                 if (!isStarted || isEnded)
                 {
-                    var msg = $"Quiz is not currently available. Now: {DateTime.Now}, Start: {quiz.StartDate}, End: {quiz.EndDate}";
-                    Console.WriteLine($"❌ {msg}");
+                    var msg = $"Quiz is not currently available.";
                     return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = msg };
                 }
 
-                // Check enrollment
+
                 var isEnrolled = await _unitOfWork.StudentEnrollments.IsStudentEnrolledInCourseAsync(studentId, quiz.CourseId);
                 if (!isEnrolled)
                 {
@@ -413,13 +387,13 @@ namespace LMS.BusinessLogic.Services
 
                 var studentQuizSet = _unitOfWork.GetQueryable<StudentQuiz>();
                 
-                // Get all completed attempts for this student and quiz
+
                 var completedAttempts = await studentQuizSet
                     .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId && 
                            (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
                     .CountAsync();
 
-                // Check if student has exceeded max attempts
+
                 if (completedAttempts >= quiz.MaxAttempts)
                 {
                     return new ServiceResponseDTO<QuizAttemptDTO> 
@@ -429,14 +403,14 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Get current in-progress attempt if exists
+
                 var attempt = await studentQuizSet
                     .FirstOrDefaultAsync(sq => sq.StudentId == studentId && sq.QuizId == quizId && sq.Status == QuizStatus.InProgress);
 
                 int timeRemaining = quiz.DurationMinutes * 60;
                 DateTime startTime = DateTime.UtcNow;
 
-                // Check timer for in-progress attempt
+
                 if (attempt != null)
                 {
                     startTime = attempt.StartTime;
@@ -445,7 +419,7 @@ namespace LMS.BusinessLogic.Services
                     
                     if (timeRemaining <= 0)
                     {
-                        // Auto-submit logic could be triggered here or handled by frontend
+
                         return new ServiceResponseDTO<QuizAttemptDTO> { Success = false, Message = "Time expired." };
                     }
                 }
@@ -467,7 +441,7 @@ namespace LMS.BusinessLogic.Services
                         OptionB = q.OptionB,
                         OptionC = q.OptionC,
                         OptionD = q.OptionD,
-                        CorrectAnswer = "", // Don't send correct answer to client!
+                        CorrectAnswer = "",
                         Points = q.Points
                     }).ToList() ?? new List<ReadQuestionDTO>()
                 };
@@ -489,7 +463,7 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // Get quiz with questions
+
                 var quiz = await GetRepo().GetQueryable()
                     .Include(q => q.Questions)
                     .Include(q => q.Course)
@@ -503,7 +477,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                if (quiz.StartDate > DateTime.UtcNow || quiz.EndDate < DateTime.UtcNow)
+                if (quiz.StartDate > DateTime.Now || quiz.EndDate < DateTime.Now)
                 {
                     return new ServiceResponseDTO<QuizResultDTO>
                     {
@@ -514,13 +488,13 @@ namespace LMS.BusinessLogic.Services
 
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
                 
-                // Find the current in-progress attempt
+
                 var attempt = await studentQuizSet
                     .FirstOrDefaultAsync(sq => sq.StudentId == dto.StudentId && sq.QuizId == dto.QuizId && sq.Status == QuizStatus.InProgress);
 
                 if (attempt == null)
                 {
-                    // Check if max attempts reached before creating a new one implicitly
+
                     var completedAttempts = await studentQuizSet
                         .Where(sq => sq.StudentId == dto.StudentId && sq.QuizId == dto.QuizId && 
                                (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
@@ -535,7 +509,7 @@ namespace LMS.BusinessLogic.Services
                         };
                     }
 
-                    // Create new attempt if missing (shouldn't happen normally)
+
                     attempt = new StudentQuiz
                     {
                         StudentId = dto.StudentId,
@@ -557,7 +531,7 @@ namespace LMS.BusinessLogic.Services
 
                     foreach (var question in quiz.Questions)
                     {
-                        // Determine if this is a short answer question (no options)
+
                         bool isShortAnswer = string.IsNullOrEmpty(question.OptionA) && 
                                            string.IsNullOrEmpty(question.OptionB) && 
                                            string.IsNullOrEmpty(question.OptionC) && 
@@ -572,15 +546,15 @@ namespace LMS.BusinessLogic.Services
 
                         if (isShortAnswer)
                         {
-                            // Short answer questions require manual grading
-                            // Don't auto-grade, mark as pending review
+
+
                             selectedAnswerText = "Pending Review";
                             correctAnswerText = "Requires Manual Grading";
-                            // isCorrect stays false for now, instructor will grade later
+
                         }
                         else
                         {
-                            // Auto-grade multiple choice and true/false questions
+
                             isCorrect = studentAnswer != null && 
                                        studentAnswer.SelectedAnswer.HasValue && 
                                        studentAnswer.SelectedAnswer.Value == question.CorrectAnswer;
@@ -604,7 +578,7 @@ namespace LMS.BusinessLogic.Services
                             Points = isCorrect ? question.Points : 0
                         });
 
-                        // Save or update student answer if provided (either selected option or text)
+
                         if (studentAnswer != null && (studentAnswer.SelectedAnswer.HasValue || !string.IsNullOrEmpty(studentAnswer.ShortAnswerText)))
                         {
                             var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
@@ -612,7 +586,7 @@ namespace LMS.BusinessLogic.Services
                             
                             if (existingAnswer != null)
                             {
-                                existingAnswer.Answer = studentAnswer.SelectedAnswer ?? Options.OptionA; // Default to OptionA if null (for short answer)
+                                existingAnswer.Answer = studentAnswer.SelectedAnswer ?? Options.OptionA;
                                 existingAnswer.TextAnswer = studentAnswer.ShortAnswerText;
                                 existingAnswer.IsCorrect = isCorrect;
                             }
@@ -622,7 +596,7 @@ namespace LMS.BusinessLogic.Services
                                 {
                                     StudentId = dto.StudentId,
                                     QuestionId = question.Id,
-                                    Answer = studentAnswer.SelectedAnswer ?? Options.OptionA, // Default to OptionA if null
+                                    Answer = studentAnswer.SelectedAnswer ?? Options.OptionA,
                                     TextAnswer = studentAnswer.ShortAnswerText,
                                     IsCorrect = isCorrect
                                 };
@@ -631,7 +605,7 @@ namespace LMS.BusinessLogic.Services
                         }
                     }
 
-                    // Check if there are any short answer questions that require manual grading
+
                     bool hasShortAnswerQuestions = quiz.Questions.Any(q => 
                         string.IsNullOrEmpty(q.OptionA) && 
                         string.IsNullOrEmpty(q.OptionB) && 
@@ -643,13 +617,13 @@ namespace LMS.BusinessLogic.Services
 
                     if (hasShortAnswerQuestions)
                     {
-                        // Defer grading
+
                         attempt.Grade = null;
-                        attempt.Status = QuizStatus.Completed; // Completed but not Graded
+                        attempt.Status = QuizStatus.Completed;
                     }
                     else
                     {
-                        // Auto-grade
+
                         percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
                         grade = (int)Math.Round(percentage);
                         
@@ -664,13 +638,20 @@ namespace LMS.BusinessLogic.Services
                 try
                 {
                     string notificationMessage;
+                    string emailSubject;
+                    string emailBody;
+                    
                     if (hasShortAnswerQuestions)
                     {
                         notificationMessage = $"You have submitted '{quiz.Title}'. Your quiz is pending manual review by the instructor.";
+                        emailSubject = "Quiz Submitted - Pending Review";
+                        emailBody = $"<h2>Quiz Submitted</h2><p>You have successfully submitted the quiz '<strong>{quiz.Title}</strong>' for the course '<strong>{quiz.Course.Name}</strong>'.</p><p>Your quiz contains short-answer questions and is pending manual review by the instructor. You will receive another email once your quiz has been graded.</p>";
                     }
                     else
                     {
                         notificationMessage = $"You scored {attempt.Grade}% on '{quiz.Title}'. You got {correctAnswers} out of {quiz.Questions.Count} questions correct.";
+                        emailSubject = "Quiz Graded";
+                        emailBody = $"<h2>Quiz Graded</h2><p>Your quiz '<strong>{quiz.Title}</strong>' for the course '<strong>{quiz.Course.Name}</strong>' has been graded!</p><h3>Results:</h3><ul><li>Score: <strong>{attempt.Grade}%</strong></li><li>Correct Answers: <strong>{correctAnswers} out of {quiz.Questions.Count}</strong></li><li>Status: <strong>{(attempt.Grade >= quiz.PassingScore ? "Passed" : "Failed")}</strong></li></ul>";
                     }
 
                     await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
@@ -680,10 +661,17 @@ namespace LMS.BusinessLogic.Services
                         Message = notificationMessage,
                         Type = NotificationType.QuizResult
                     });
+
+                    // Send email notification
+                    var student = await _unitOfWork.Users.FindByIdAsync(dto.StudentId);
+                    if (student != null && !string.IsNullOrEmpty(student.Email))
+                    {
+                        await _emailService.SendEmailAsync(student.Email, emailSubject, emailBody);
+                    }
                 }
                 catch
                 {
-                    // Notification failure shouldn't fail the quiz submission
+
                 }
 
                 var result = new QuizResultDTO
@@ -755,7 +743,7 @@ namespace LMS.BusinessLogic.Services
                     .Where(q => q.InstructorId == instructorId)
                     .ToListAsync();
 
-                // Filter to only include quizzes from courses where instructor has active enrollment
+
                 var instructorEnrollments = await _unitOfWork.InstructorEnrollments.GetAllAsync();
                 var activeCourseIds = instructorEnrollments
                     .Where(e => e.InstructorId == instructorId && !e.IsDeleted && e.Status == Domain.Enums.ApplicationStatus.Approved)
@@ -790,41 +778,34 @@ namespace LMS.BusinessLogic.Services
                     .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId)
                     .ToListAsync();
                 
-                // Prioritize completed/graded attempts with highest grade
+
                 var bestAttempt = attempts
                     .Where(a => a.Status == QuizStatus.Completed || a.Status == QuizStatus.Graded)
                     .OrderByDescending(a => a.Grade)
                     .FirstOrDefault();
 
-                // If no completed attempt, take the latest one (e.g. InProgress)
+
                 var attempt = bestAttempt ?? attempts.OrderByDescending(a => a.StartTime).FirstOrDefault();
 
                 if (attempt == null)
                 {
                     return new ServiceResponseDTO<StudentQuizStatusDTO>
                     {
-                        Data = new StudentQuizStatusDTO
-                        {
-                            QuizId = quizId,
-                            StudentId = studentId,
-                            Status = QuizStatus.NotStarted
-                        },
-                        Success = true
+                        Success = true,
+                        Data = new StudentQuizStatusDTO { Status = QuizStatus.NotStarted }
                     };
                 }
 
                 return new ServiceResponseDTO<StudentQuizStatusDTO>
                 {
-                    Data = new StudentQuizStatusDTO
-                    {
-                        QuizId = quizId,
-                        StudentId = studentId,
+                    Success = true,
+                    Data = new StudentQuizStatusDTO 
+                    { 
                         Status = attempt.Status,
                         Grade = attempt.Grade,
                         StartTime = attempt.StartTime,
                         EndTime = attempt.EndTime
-                    },
-                    Success = true
+                    }
                 };
             }
             catch (Exception ex)
@@ -837,10 +818,49 @@ namespace LMS.BusinessLogic.Services
             }
         }
 
+        public async Task<ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId)
+        {
+            try
+            {
+                var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
+                
+                var submissions = await studentQuizSet
+                    .Include(sq => sq.Student)
+                    .Where(sq => sq.QuizId == quizId && (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
+                    .OrderByDescending(sq => sq.EndTime)
+                    .ToListAsync();
+
+                var dtos = submissions.Select(s => new QuizSubmissionDTO
+                {
+                    StudentId = s.StudentId,
+                    StudentName = s.Student != null ? $"{s.Student.FirstName} {s.Student.LastName}" : "Unknown Student",
+                    StudentEmail = s.Student?.Email ?? "",
+                    CompletedAt = s.EndTime ?? DateTime.MinValue,
+                    Grade = s.Grade,
+                    Passed = s.Grade.HasValue && s.Grade.Value >= 60
+                }).ToList();
+
+                return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>
+                {
+                    Success = true,
+                    Data = dtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>
+                {
+                    Success = false,
+                    Message = $"Error retrieving submissions: {ex.Message}"
+                };
+            }
+        }
+
         public async Task<ServiceResponseDTO<QuizResultDTO>> GetQuizResultAsync(string quizId, string studentId)
         {
             try
             {
+
                 var quiz = await GetRepo().GetQueryable()
                     .Include(q => q.Questions)
                     .FirstOrDefaultAsync(q => q.Id == quizId);
@@ -848,160 +868,206 @@ namespace LMS.BusinessLogic.Services
                 if (quiz == null)
                     return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz not found." };
 
+
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
-                var attempts = await studentQuizSet
-                    .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId)
-                    .ToListAsync();
+                var attempt = await studentQuizSet
+                    .Where(sq => sq.StudentId == studentId && sq.QuizId == quizId && 
+                           (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
+                    .OrderByDescending(sq => sq.Grade)
+                    .FirstOrDefaultAsync();
 
-                var bestAttempt = attempts
-                    .Where(a => a.Status == QuizStatus.Completed || a.Status == QuizStatus.Graded)
-                    .OrderByDescending(a => a.Grade)
-                    .FirstOrDefault();
+                if (attempt == null)
+                    return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz result not found." };
 
-                var attempt = bestAttempt ?? attempts.OrderByDescending(a => a.StartTime).FirstOrDefault();
-
-                if (attempt == null || (attempt.Status != QuizStatus.Completed && attempt.Status != QuizStatus.Graded))
-                {
-                    return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = "Quiz not completed yet." };
-                }
 
                 var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
-                var questionIds = quiz.Questions.Select(q => q.Id).ToList();
-                var answers = await answerSet.Where(a => a.StudentId == studentId && questionIds.Contains(a.QuestionId)).ToListAsync();
+                var answers = await answerSet
+                    .Where(a => a.StudentId == studentId && quiz.Questions.Select(q => q.Id).Contains(a.QuestionId))
+                    .ToListAsync();
 
                 var questionResults = new List<QuestionResultDTO>();
                 int correctAnswers = 0;
-                int earnedPoints = 0;
                 int totalPoints = 0;
+                int earnedPoints = 0;
 
                 foreach (var question in quiz.Questions)
                 {
                     totalPoints += question.Points;
                     var answer = answers.FirstOrDefault(a => a.QuestionId == question.Id);
-                    bool isCorrect = answer?.IsCorrect ?? false;
                     
+                    bool isCorrect = answer?.IsCorrect ?? false;
                     if (isCorrect)
                     {
                         correctAnswers++;
                         earnedPoints += question.Points;
                     }
 
-                    // Determine if this is a short answer question
+                    string selectedAnswerText = "Not Answered";
+                    if (answer != null)
+                    {
+                        if (!string.IsNullOrEmpty(answer.TextAnswer))
+                            selectedAnswerText = answer.TextAnswer;
+                        else
+                            selectedAnswerText = answer.Answer.ToString();
+                    }
+
+
                     bool isShortAnswer = string.IsNullOrEmpty(question.OptionA) && 
                                        string.IsNullOrEmpty(question.OptionB) && 
                                        string.IsNullOrEmpty(question.OptionC) && 
                                        string.IsNullOrEmpty(question.OptionD);
 
-                    string selectedAnswerDisplay;
-                    string correctAnswerDisplay;
-
+                    string correctAnswerText = question.CorrectAnswer.ToString();
                     if (isShortAnswer)
                     {
-                        selectedAnswerDisplay = !string.IsNullOrEmpty(answer?.TextAnswer) 
-                            ? answer.TextAnswer 
-                            : "Not Answered";
-                        correctAnswerDisplay = "Requires Manual Grading";
-                    }
-                    else
-                    {
-                        selectedAnswerDisplay = answer != null ? answer.Answer.ToString() : "Not Answered";
-                        correctAnswerDisplay = question.CorrectAnswer.ToString();
+                        correctAnswerText = "Requires Manual Grading";
+
+                        if (attempt.Status == QuizStatus.Graded)
+                        {
+
+                        }
+                        else
+                        {
+                            selectedAnswerText += " (Pending Review)";
+                        }
                     }
 
                     questionResults.Add(new QuestionResultDTO
                     {
                         QuestionId = question.Id,
                         QuestionText = question.Text,
-                        SelectedAnswer = selectedAnswerDisplay,
-                        CorrectAnswer = correctAnswerDisplay,
+                        SelectedAnswer = selectedAnswerText,
+                        CorrectAnswer = correctAnswerText,
                         IsCorrect = isCorrect,
                         Points = isCorrect ? question.Points : 0
                     });
                 }
-                
-                double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
+
+                var result = new QuizResultDTO
+                {
+                    QuizId = quiz.Id,
+                    QuizTitle = quiz.Title,
+                    CourseId = quiz.CourseId,
+                    StudentId = studentId,
+                    TotalQuestions = quiz.Questions.Count,
+                    CorrectAnswers = correctAnswers,
+                    TotalPoints = totalPoints,
+                    EarnedPoints = earnedPoints,
+                    Percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0,
+                    Grade = attempt.Grade,
+                    Passed = attempt.Grade.HasValue && attempt.Grade.Value >= quiz.PassingScore,
+                    IsPendingGrading = attempt.Status == QuizStatus.Completed,
+                    QuestionResults = questionResults
+                };
 
                 return new ServiceResponseDTO<QuizResultDTO>
                 {
-                    Data = new QuizResultDTO
-                    {
-                        QuizId = quiz.Id,
-                        QuizTitle = quiz.Title,
-                        CourseId = quiz.CourseId,
-                        StudentId = studentId,
-                        TotalQuestions = quiz.Questions.Count,
-                        CorrectAnswers = correctAnswers,
-                        TotalPoints = totalPoints,
-                        EarnedPoints = earnedPoints,
-                        Percentage = percentage,
-                        Grade = attempt.Grade,
-                        Passed = attempt.Grade.HasValue && attempt.Grade >= quiz.PassingScore,
-                        IsPendingGrading = attempt.Grade == null,
-                        QuestionResults = questionResults
-                    },
-                    Success = true
+                    Success = true,
+                    Data = result
                 };
             }
             catch (Exception ex)
             {
-                 return new ServiceResponseDTO<QuizResultDTO> { Success = false, Message = $"Error retrieving results: {ex.Message}" };
+                return new ServiceResponseDTO<QuizResultDTO>
+                {
+                    Success = false,
+                    Message = $"Error retrieving results: {ex.Message}"
+                };
             }
         }
 
-        public async Task<ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>> GetQuizSubmissionsAsync(string quizId)
+        public async Task<ServiceResponseDTO<bool>> GradeQuizAsync(ManualGradeDTO dto)
         {
             try
             {
                 var studentQuizSet = (DbSet<StudentQuiz>)_unitOfWork.GetQueryable<StudentQuiz>();
-                var quiz = await GetRepo().GetQueryable()
-                    .FirstOrDefaultAsync(q => q.Id == quizId);
+                var attempt = await studentQuizSet
+                    .FirstOrDefaultAsync(sq => sq.StudentId == dto.StudentId && sq.QuizId == dto.QuizId);
 
-                if (quiz == null)
-                    return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>> { Success = false, Message = "Quiz not found." };
-
-                var submissions = await studentQuizSet
-                    .Where(sq => sq.QuizId == quizId && (sq.Status == QuizStatus.Completed || sq.Status == QuizStatus.Graded))
-                    .Include(sq => sq.Student)
-                    .ToListAsync();
+                if (attempt == null)
+                    return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz attempt not found." };
 
                 var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
-                var questionSet = (DbSet<Question>)_unitOfWork.GetQueryable<Question>();
-                var quizQuestions = await questionSet.Where(q => q.QuizId == quizId).ToListAsync();
+                var answers = await answerSet
+                    .Where(a => a.StudentId == dto.StudentId && dto.Grades.Select(g => g.QuestionId).Contains(a.QuestionId))
+                    .ToListAsync();
 
-                var submissionDtos = new List<QuizSubmissionDTO>();
 
-                foreach (var submission in submissions)
+                foreach (var grade in dto.Grades)
                 {
-                    var questionIds = quizQuestions.Select(q => q.Id).ToList();
-                    var studentAnswers = await answerSet
-                        .Where(a => a.StudentId == submission.StudentId && questionIds.Contains(a.QuestionId))
-                        .ToListAsync();
-
-                    int correctAnswers = studentAnswers.Count(a => a.IsCorrect);
-
-                    submissionDtos.Add(new QuizSubmissionDTO
+                    var answer = answers.FirstOrDefault(a => a.QuestionId == grade.QuestionId);
+                    if (answer != null)
                     {
-                        StudentId = submission.StudentId,
-                        StudentName = $"{submission.Student.FirstName} {submission.Student.LastName}",
-                        StudentEmail = submission.Student.Email,
-                        Grade = submission.Grade,
-                        CompletedAt = submission.EndTime,
-                        CorrectAnswers = correctAnswers,
-                        TotalQuestions = quizQuestions.Count,
-                        Passed = submission.Grade >= quiz.PassingScore
-                    });
+                        answer.IsCorrect = grade.IsCorrect;
+                    }
                 }
 
-                return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>>
+
+                var quiz = await GetRepo().GetQueryable()
+                    .Include(q => q.Questions)
+                    .FirstOrDefaultAsync(q => q.Id == dto.QuizId);
+
+                if (quiz != null)
                 {
-                    Data = submissionDtos.OrderByDescending(s => s.CompletedAt),
+
+                    var allAnswers = await answerSet
+                        .Where(a => a.StudentId == dto.StudentId && quiz.Questions.Select(q => q.Id).Contains(a.QuestionId))
+                        .ToListAsync();
+
+                    int totalPoints = quiz.Questions.Sum(q => q.Points);
+                    int earnedPoints = 0;
+
+                    foreach (var question in quiz.Questions)
+                    {
+                        var answer = allAnswers.FirstOrDefault(a => a.QuestionId == question.Id);
+                        if (answer != null && answer.IsCorrect)
+                        {
+                            earnedPoints += question.Points;
+                        }
+                    }
+
+                    double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
+                    attempt.Grade = (int)Math.Round(percentage);
+                    attempt.Status = QuizStatus.Graded;
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+
+
+                try
+                {
+                    await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
+                    {
+                        UserId = dto.StudentId,
+                        Title = "Quiz Graded",
+                        Message = $"Your quiz '{quiz?.Title}' has been graded. You scored {attempt.Grade}%.",
+                        Type = NotificationType.QuizResult
+                    });
+                    var student = await _unitOfWork.Users.FindByIdAsync(dto.StudentId);
+                    if (student != null && !string.IsNullOrEmpty(student.Email) && quiz != null)
+                    {
+                        var emailSubject = "Quiz Graded";
+                        var emailBody = $"<h2>Quiz Graded</h2><p>Your quiz '<strong>{quiz.Title}</strong>' for the course '<strong>{quiz.Course?.Name}</strong>' has been graded by your instructor!</p><h3>Results:</h3><ul><li>Score: <strong>{attempt.Grade}%</strong></li><li>Status: <strong>{(attempt.Grade >= quiz.PassingScore ? "Passed" : "Failed")}</strong></li></ul><p>You can view your detailed results in the LMS.</p>";
+                        await _emailService.SendEmailAsync(student.Email, emailSubject, emailBody);
+                    }
+
+                }
+                catch { }
+
+                return new ServiceResponseDTO<bool>
+                {
                     Success = true,
-                    Message = "Quiz submissions retrieved successfully."
+                    Data = true,
+                    Message = "Quiz graded successfully."
                 };
             }
             catch (Exception ex)
             {
-                return new ServiceResponseDTO<IEnumerable<QuizSubmissionDTO>> { Success = false, Message = $"Error retrieving submissions: {ex.Message}" };
+                return new ServiceResponseDTO<bool>
+                {
+                    Success = false,
+                    Message = $"Error grading quiz: {ex.Message}"
+                };
             }
         }
 
@@ -1009,43 +1075,22 @@ namespace LMS.BusinessLogic.Services
         {
             try
             {
-                // 1. Get enrolled courses
-                var studentEnrollments = await _unitOfWork.GetQueryable<StudentEnrollIntoCourse>()
-                    .Where(se => se.StudentId == studentId && !se.IsDeleted && se.Status == ApplicationStatus.Approved)
-                    .Select(se => se.CourseId)
-                    .ToListAsync();
 
-                // 2. Get quizzes for these courses
+                var enrollments = await _unitOfWork.StudentEnrollments.GetAllAsync(e => e.StudentId == studentId);
+                var courseIds = enrollments.Select(e => e.CourseId).ToList();
+                
                 var quizzes = await GetRepo().GetQueryable()
                     .Include(q => q.Course)
                     .Include(q => q.Instructor)
                     .Include(q => q.Questions)
-                    .Where(q => studentEnrollments.Contains(q.CourseId))
-                    .OrderBy(q => q.StartDate) // 3. Sort by time
+                    .Where(q => courseIds.Contains(q.CourseId))
                     .ToListAsync();
-
-                // 3. Get student attempts
-                var attempts = await _unitOfWork.GetQueryable<StudentQuiz>()
-                    .Where(sq => sq.StudentId == studentId)
-                    .ToListAsync();
-
-                var quizDtos = quizzes.Select(q => 
-                {
-                    var dto = MapToReadDTO(q);
-                    var attempt = attempts.FirstOrDefault(a => a.QuizId == q.Id);
-                    if (attempt != null)
-                    {
-                        dto.IsCompleted = attempt.Status == QuizStatus.Completed || attempt.Status == QuizStatus.Graded;
-                        dto.Grade = attempt.Grade;
-                    }
-                    return dto;
-                }).ToList();
 
                 return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
                 {
-                    Data = quizDtos,
+                    Data = quizzes.Select(q => MapToReadDTO(q)).ToList(),
                     Success = true,
-                    Message = "Student quizzes retrieved successfully."
+                    Message = "Quizzes retrieved successfully."
                 };
             }
             catch (Exception ex)
@@ -1053,79 +1098,12 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<IEnumerable<ReadQuizDTO>>
                 {
                     Success = false,
-                    Message = $"Error retrieving student quizzes: {ex.Message}"
+                    Message = $"Error retrieving quizzes: {ex.Message}"
                 };
             }
         }
+        
 
 
-
-        public async Task<ServiceResponseDTO<bool>> GradeQuizAsync(ManualGradeDTO dto)
-        {
-            try
-            {
-                var attempt = await _unitOfWork.GetQueryable<StudentQuiz>()
-                    .FirstOrDefaultAsync(sq => sq.QuizId == dto.QuizId && sq.StudentId == dto.StudentId);
-
-                if (attempt == null)
-                    return new ServiceResponseDTO<bool> { Success = false, Message = "Quiz attempt not found." };
-
-                var answerSet = (DbSet<StudentAnswerQuestion>)_unitOfWork.GetQueryable<StudentAnswerQuestion>();
-                var questionSet = (DbSet<Question>)_unitOfWork.GetQueryable<Question>();
-
-                var quizQuestions = await questionSet.Where(q => q.QuizId == dto.QuizId).ToListAsync();
-                var studentAnswers = await answerSet
-                    .Where(a => a.StudentId == dto.StudentId && a.Question.QuizId == dto.QuizId)
-                    .ToListAsync();
-
-                // Update correctness based on instructor input
-                foreach (var grade in dto.Grades)
-                {
-                    var answer = studentAnswers.FirstOrDefault(a => a.QuestionId == grade.QuestionId);
-                    if (answer != null)
-                    {
-                        answer.IsCorrect = grade.IsCorrect;
-                    }
-                }
-
-                // Recalculate score
-                int earnedPoints = 0;
-                int totalPoints = quizQuestions.Sum(q => q.Points);
-
-                foreach (var question in quizQuestions)
-                {
-                    var answer = studentAnswers.FirstOrDefault(a => a.QuestionId == question.Id);
-                    if (answer != null && answer.IsCorrect)
-                    {
-                        earnedPoints += question.Points;
-                    }
-                }
-
-                double percentage = totalPoints > 0 ? (double)earnedPoints / totalPoints * 100 : 0;
-                int finalGrade = (int)Math.Round(percentage);
-
-                // Update attempt
-                attempt.Grade = finalGrade;
-                attempt.Status = QuizStatus.Graded;
-                
-                await _unitOfWork.SaveChangesAsync();
-
-                // Notify student
-                var quiz = await GetRepo().FindByIdAsync(dto.QuizId);
-                await _notificationService.CreateNotificationAsync(new CreateNotificationDTO
-                {
-                    UserId = dto.StudentId,
-                    Title = "Quiz Graded",
-                    Message = $"Your quiz '{quiz?.Title}' has been graded. You scored {finalGrade}%.",
-                    Type = NotificationType.QuizResult
-                });
-
-                return new ServiceResponseDTO<bool> { Success = true, Data = true, Message = "Quiz graded successfully." };
-            }
-            catch (Exception ex)
-            {
-                return new ServiceResponseDTO<bool> { Success = false, Message = $"Error grading quiz: {ex.Message}" };
-            }
-        }
     }
 }

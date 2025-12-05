@@ -9,7 +9,7 @@ namespace LMS.BusinessLogic.DTOs.User
         public int QuizzesTaken { get; set; }
         public double AverageScore { get; set; }
         
-        // Instructor specific
+
         public int CreatedCoursesCount { get; set; }
         public int TotalStudents { get; set; }
         public double AverageRating { get; set; }

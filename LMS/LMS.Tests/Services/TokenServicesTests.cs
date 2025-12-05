@@ -40,14 +40,14 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GenerateAccessToken_ShouldReturnToken_WhenUserIsValid()
         {
-            // Arrange
+
             var user = new ApplicationUser { Id = "user1", UserName = "testuser", Email = "test@example.com" };
             var roles = new List<string> { "Student" };
 
-            // Act
+
             var (token, expires) = await _tokenServices.GenerateAccessToken(user, roles);
 
-            // Assert
+
             Assert.NotNull(token);
             Assert.True(expires > DateTime.UtcNow);
         }
@@ -55,10 +55,10 @@ namespace LMS.Tests.Services
         [Fact]
         public void GenerateRefreshToken_ShouldReturnToken_WhenCalled()
         {
-            // Act
+
             var (refreshToken, expires) = _tokenServices.GenerateRefreshToken();
 
-            // Assert
+
             Assert.NotNull(refreshToken);
             Assert.True(expires > DateTime.UtcNow);
         }
@@ -66,7 +66,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task ValidateRefreshTokenAsync_ShouldReturnTrue_WhenTokenIsValid()
         {
-            // Arrange
+
             var user = new ApplicationUser { Id = "user1" };
             var refreshToken = "valid_refresh_token";
             var expiryDate = DateTime.UtcNow.AddDays(1).ToString("O");
@@ -74,17 +74,17 @@ namespace LMS.Tests.Services
             _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "LMS", "RefreshToken")).ReturnsAsync(refreshToken);
             _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "LMS", "RefreshTokenExpiry")).ReturnsAsync(expiryDate);
 
-            // Act
+
             var result = await _tokenServices.ValidateRefreshTokenAsync(user, refreshToken);
 
-            // Assert
+
             Assert.True(result);
         }
 
         [Fact]
         public async Task ValidateRefreshTokenAsync_ShouldReturnFalse_WhenTokenIsExpired()
         {
-            // Arrange
+
             var user = new ApplicationUser { Id = "user1" };
             var refreshToken = "expired_refresh_token";
             var expiryDate = DateTime.UtcNow.AddDays(-1).ToString("O");
@@ -92,10 +92,10 @@ namespace LMS.Tests.Services
             _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "LMS", "RefreshToken")).ReturnsAsync(refreshToken);
             _userManagerMock.Setup(x => x.GetAuthenticationTokenAsync(user, "LMS", "RefreshTokenExpiry")).ReturnsAsync(expiryDate);
 
-            // Act
+
             var result = await _tokenServices.ValidateRefreshTokenAsync(user, refreshToken);
 
-            // Assert
+
             Assert.False(result);
         }
     }

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.MainEntities;
+using Domain.Entities.MainEntities;
 using Domain.Entities.RelationTables;
 using LMS.Entity.Enums;
 

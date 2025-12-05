@@ -19,7 +19,7 @@ namespace LMS.BusinessLogic.DTOs.Quiz
         [Required]
         public string QuestionId { get; set; }
 
-        // Nullable to allow unanswered questions (null instead of defaulting to OptionA)
+
         public Options? SelectedAnswer { get; set; }
         public string? ShortAnswerText { get; set; }
     }

@@ -38,16 +38,16 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Enroll_StudentAlreadyEnrolled_ReturnsConflict()
         {
-            // Arrange
+
             SetUserRole("Student");
             var dto = new RequestEnrollIntoCourseDTO { UserId = "student1", CourseId = "course1" };
             _mockService.Setup(s => s.EnrollAsync(dto))
                 .ReturnsAsync(new BasicResponseDTO { Success = false, Message = "Already enrolled" });
 
-            // Act
+
             var result = await _controller.EnrollStudent(dto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.NotNull(badRequestResult.Value);
         }
@@ -55,15 +55,15 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task Enroll_MissingStudentId_ReturnsBadRequest()
         {
-            // Arrange
+
             SetUserRole("Student");
             var dto = new RequestEnrollIntoCourseDTO { UserId = "", CourseId = "course1" };
             _controller.ModelState.AddModelError("UserId", "Required");
 
-            // Act
+
             var result = await _controller.EnrollStudent(dto);
 
-            // Assert
+
             var badResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.NotNull(badResult.Value);
         }
@@ -71,15 +71,15 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task ApproveEnrollment_StudentRole_Unauthorized()
         {
-            // Arrange
-            SetUserRole("Student"); // Student should not be able to approve
+
+            SetUserRole("Student");
             var enrollmentId = "enroll123";
 
-            // Act - This test may need adjustment based on actual controller implementation
-            // var result = await _controller.ApproveEnrollment(enrollmentId);
 
-            // Assert
-            // Assert.IsType<UnauthorizedResult>(result);
+
+
+
+
         }
     }
 }

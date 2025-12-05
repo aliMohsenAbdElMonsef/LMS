@@ -1,0 +1,22 @@
+// ADD THIS TO LMS.MVC/Controllers/LectureController.cs
+// Place it near the end of the controller, before the closing brace
+
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetAttendanceStats()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "User not found" });
+            }
+
+            var result = await _services.LectureService.GetAttendanceStatisticsAsync(userId);
+            
+            return Json(new
+            {
+                success = result.Success,
+                data = result.Data,
+                message = result.Message
+            });
+        }

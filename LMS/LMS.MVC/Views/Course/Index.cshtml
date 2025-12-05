@@ -110,7 +110,7 @@ else
                                 </div>
                             }
 
-                            <!-- 🆕 Open Enrollment badge -->
+
                             @if (course.EveryStuCouldEnroll)
                             {
                                 <div class="mb-2">
@@ -172,7 +172,7 @@ else
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Find the course card by ID and remove it with animation
+
                     const courseCard = document.getElementById(`course-${courseId}`);
                     if (courseCard) {
                         courseCard.style.transition = 'opacity 0.3s, transform 0.3s';
@@ -182,8 +182,7 @@ else
                     } else {
                         location.reload();
                     }
-                    // Optional: Show a toast or alert if you want, but the visual removal is often enough
-                    // alert(result.message || 'Course deleted successfully!');
+
                 } else {
                     alert(result.message || 'Failed to delete course.');
                 }

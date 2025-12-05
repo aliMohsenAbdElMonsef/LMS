@@ -34,7 +34,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateAsync_ReturnsSuccess_WhenQuestionCreated()
         {
-            // Arrange
+
             var createDto = new CreateQuestionDTO
             {
                 QuizId = "quiz1",
@@ -61,10 +61,10 @@ namespace LMS.Tests.Services
                     Points = createDto.Points
                 });
 
-            // Act
+
             var result = await _service.CreateAsync(createDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Equal("What is 2+2?", result.Data.Text);
@@ -77,7 +77,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateAsync_ThrowsException_WhenRepositoryFails()
         {
-            // Arrange
+
             var createDto = new CreateQuestionDTO
             {
                 QuizId = "quiz1",
@@ -93,14 +93,14 @@ namespace LMS.Tests.Services
             _mockQuestionRepo.Setup(r => r.CreateAsync(It.IsAny<Question>()))
                 .ThrowsAsync(new Exception("Database error"));
 
-            // Act & Assert
+
             await Assert.ThrowsAsync<Exception>(() => _service.CreateAsync(createDto));
         }
 
         [Fact]
         public async Task UpdateAsync_ReturnsSuccess_WhenQuestionUpdated()
         {
-            // Arrange
+
             var questionId = "question1";
             var existingQuestion = new Question
             {
@@ -141,10 +141,10 @@ namespace LMS.Tests.Services
                     Points = updateDto.Points.Value
                 });
 
-            // Act
+
             var result = await _service.UpdateAsync(updateDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Equal("Updated Question", result.Data.Text);
@@ -158,7 +158,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task UpdateAsync_ThrowsException_WhenQuestionNotFound()
         {
-            // Arrange
+
             var updateDto = new UpdateQuestionDTO
             {
                 Id = "nonexistent",
@@ -168,10 +168,10 @@ namespace LMS.Tests.Services
             _mockQuestionRepo.Setup(r => r.FindByIdAsync("nonexistent"))
                 .ReturnsAsync((Question?)null);
 
-            // Act
+
             var result = await _service.UpdateAsync(updateDto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
         }
@@ -179,7 +179,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task UpdateAsync_PartialUpdate_WhenSomeFieldsNull()
         {
-            // Arrange
+
             var questionId = "question1";
             var existingQuestion = new Question
             {
@@ -199,9 +199,9 @@ namespace LMS.Tests.Services
                 Id = questionId,
                 QuizId = "quiz1",
                 Text = "Updated Text",
-                OptionA = null, // Not updating
-                CorrectAnswer = null, // Not updating
-                Points = null // Not updating
+                OptionA = null,
+                CorrectAnswer = null,
+                Points = null
             };
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync(questionId))
@@ -220,21 +220,21 @@ namespace LMS.Tests.Services
                     Points = existingQuestion.Points
                 });
 
-            // Act
+
             var result = await _service.UpdateAsync(updateDto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Updated Text", result.Data.Text);
-            Assert.Equal("Original A", result.Data.OptionA); // Should remain unchanged
-            Assert.Equal("OptionA", result.Data.CorrectAnswer); // Should remain unchanged
-            Assert.Equal(10, result.Data.Points); // Should remain unchanged
+            Assert.Equal("Original A", result.Data.OptionA);
+            Assert.Equal("OptionA", result.Data.CorrectAnswer);
+            Assert.Equal(10, result.Data.Points);
         }
 
         [Fact]
         public async Task DeleteAsync_ReturnsSuccess_WhenQuestionDeleted()
         {
-            // Arrange
+
             var questionId = "question1";
             var existingQuestion = new Question
             {
@@ -256,10 +256,10 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync())
                 .ReturnsAsync(1);
 
-            // Act
+
             var result = await _service.DeleteAsync(questionId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Entity Deleted Succesfully.", result.Message);
             _mockQuestionRepo.Verify(r => r.FindByIdAsync(questionId), Times.Once);
@@ -269,16 +269,16 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task DeleteAsync_ReturnsFailure_WhenQuestionNotFound()
         {
-            // Arrange
+
             var questionId = "nonexistent";
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync(questionId))
                 .ReturnsAsync((Question?)null);
 
-            // Act
+
             var result = await _service.DeleteAsync(questionId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
             _mockQuestionRepo.Verify(r => r.DeleteByEntityAsync(It.IsAny<Question>()), Times.Never);
@@ -287,7 +287,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ReturnsSuccess_WhenQuestionFound()
         {
-            // Arrange
+
             var questionId = "question1";
             var question = new Question
             {
@@ -314,10 +314,10 @@ namespace LMS.Tests.Services
                     Points = question.Points
                 });
 
-            // Act
+
             var result = await _service.GetByIdAsync(questionId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Equal(questionId, result.Data.Id);
@@ -329,16 +329,16 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetByIdAsync_ReturnsFailure_WhenQuestionNotFound()
         {
-            // Arrange
+
             var questionId = "nonexistent";
 
             _mockQuestionRepo.Setup(r => r.FindByIdAsync(questionId))
                 .ReturnsAsync((Question?)null);
 
-            // Act
+
             var result = await _service.GetByIdAsync(questionId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Entity Not Found.", result.Message);
             Assert.Null(result.Data);
@@ -347,7 +347,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetAllAsync_ReturnsAllQuestions()
         {
-            // Arrange
+
             var questions = new List<Question>
             {
                 new Question
@@ -386,10 +386,10 @@ namespace LMS.Tests.Services
                     new ReadQuestionDTO { Id = "2", Text = "Question 2" }
                 });
 
-            // Act
+
             var result = await _service.GetAllAsync();
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Equal(2, result.Data.Count());
@@ -400,7 +400,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetAllAsync_ReturnsEmptyList_WhenNoQuestions()
         {
-            // Arrange
+
             var emptyList = new List<Question>();
 
             _mockQuestionRepo.Setup(r => r.GetAllAsync())
@@ -409,10 +409,10 @@ namespace LMS.Tests.Services
             _mockMapper.Setup(m => m.Map<IEnumerable<ReadQuestionDTO>>(emptyList))
                 .Returns(new List<ReadQuestionDTO>());
 
-            // Act
+
             var result = await _service.GetAllAsync();
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
             Assert.Empty(result.Data);
@@ -421,7 +421,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task MapToReadDTO_ConvertsCorrectAnswerToString()
         {
-            // Arrange
+
             var question = new Question
             {
                 Id = "1",
@@ -441,10 +441,10 @@ namespace LMS.Tests.Services
             _mockMapper.Setup(m => m.Map<ReadQuestionDTO>(question))
                 .Returns(new ReadQuestionDTO { CorrectAnswer = "OptionD" });
 
-            // Act
+
             var result = await _service.GetByIdAsync("1");
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("OptionD", result.Data.CorrectAnswer);
         }

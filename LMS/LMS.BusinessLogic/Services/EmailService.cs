@@ -22,18 +22,10 @@ namespace LMS.BusinessLogic.Services
         {
             if (_emailSettings.UseMockEmail)
             {
-                // Mock mode - just log to console
                 await Task.Delay(100);
-                Console.WriteLine("===========================================");
-                Console.WriteLine($"📧 MOCK EMAIL SENT");
-                Console.WriteLine($"To: {to}");
-                Console.WriteLine($"Subject: {subject}");
-                Console.WriteLine($"Body: {body}");
-                Console.WriteLine("===========================================");
                 return;
             }
 
-            // Real SMTP implementation
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
             message.To.Add(MailboxAddress.Parse(to));
@@ -48,8 +40,7 @@ namespace LMS.BusinessLogic.Services
             using var client = new SmtpClient();
             try
             {
-                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, 
-                    _emailSettings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, _emailSettings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
                 
                 if (!string.IsNullOrEmpty(_emailSettings.Username))
                 {
@@ -61,7 +52,6 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Email send failed: {ex.Message}");
                 throw new Exception($"Failed to send email: {ex.Message}", ex);
             }
         }
@@ -70,19 +60,12 @@ namespace LMS.BusinessLogic.Services
         {
             if (_emailSettings.UseMockEmail)
             {
-                // Mock mode - just log to console
+
                 await Task.Delay(100);
-                Console.WriteLine("===========================================");
-                Console.WriteLine($"📧 MOCK EMAIL SENT WITH ATTACHMENT");
-                Console.WriteLine($"To: {to}");
-                Console.WriteLine($"Subject: {subject}");
-                Console.WriteLine($"Body: {body}");
-                Console.WriteLine($"Attachment: {attachmentName} ({attachmentData.Length} bytes)");
-                Console.WriteLine("===========================================");
                 return;
             }
 
-            // Real SMTP implementation with attachment
+
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
             message.To.Add(MailboxAddress.Parse(to));
@@ -93,7 +76,7 @@ namespace LMS.BusinessLogic.Services
                 HtmlBody = body
             };
 
-            // Add attachment
+
             builder.Attachments.Add(attachmentName, attachmentData);
             message.Body = builder.ToMessageBody();
 
@@ -113,7 +96,6 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Email with attachment send failed: {ex.Message}");
                 throw new Exception($"Failed to send email with attachment: {ex.Message}", ex);
             }
         }

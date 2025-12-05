@@ -35,7 +35,7 @@ namespace LMS.BusinessLogic.Services
                     CreatedAt = DateTime.UtcNow
                 };
 
-                // Add to DbSet
+
                 var dbSet = _unitOfWork.GetQueryable<Notification>() as DbSet<Notification>;
                 if (dbSet != null)
                 {

@@ -13,6 +13,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
             public string Title { get; set; }
             public string? Description { get; set; }
             public string? RecordingPath { get; set; }
+            public string? MaterialsPath { get; set; }
             public string? ZoomLink { get; set; }
 
             public DateTime CreatedAt { get; set; }
@@ -33,6 +34,7 @@ namespace LMS.BusinessLogic.DTOs.Lecture
             public string? UploadedByName { get; set; }
         public int? NumberofAttendedStudents { get; set; }
         public int LectureNumber { get; set; }
+        public string? AttendanceStatus { get; set; } 
         public InstructorInformationDTO Instructor { get; set; }
     }
 }

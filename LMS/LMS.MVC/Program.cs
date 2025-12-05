@@ -15,7 +15,7 @@ namespace LMS.MVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ---------------- MVC & Session ----------------
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -26,7 +26,7 @@ namespace LMS.MVC
             });
             builder.Services.AddHttpContextAccessor();
 
-            // ---------------- CORS ----------------
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowMvc", policy =>
@@ -42,7 +42,7 @@ namespace LMS.MVC
 
             var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7033/";
 
-            // ---------------- Token & Auth ----------------
+
             builder.Services.AddHttpClient<ITokenService, TokenService>(client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
@@ -50,7 +50,7 @@ namespace LMS.MVC
             });
             builder.Services.AddTransient<AuthHeaderHandler>();
 
-            // ---------------- HttpClients ----------------
+
             builder.Services.AddHttpClient("LMS.API", client =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
@@ -111,7 +111,7 @@ namespace LMS.MVC
                 client.Timeout = TimeSpan.FromSeconds(300);
             }).AddHttpMessageHandler<AuthHeaderHandler>();
 
-            // ---------------- JWT Authentication ----------------
+
             var jwtSettings = builder.Configuration.GetSection("Jwt");
             var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
@@ -152,10 +152,10 @@ namespace LMS.MVC
                     };
                 });
 
-            // ---------------- AutoMapper ----------------
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // ---------------- Build App ----------------
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -171,8 +171,7 @@ namespace LMS.MVC
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-            // Disabled AuthRedirectMiddleware - using standard [Authorize]/[AllowAnonymous] attributes instead
-            // app.UseMiddleware<AuthRedirectMiddleware>();
+
 
             app.MapControllerRoute(
                 name: "default",

@@ -19,7 +19,7 @@ namespace LMS.MVC.Models.ViewModels.Course
         public int DaysPerWeek { get; set; }
 
         public List<LMS.BusinessLogic.DTOs.LectureSchedule.GetLectureScheduleDTO> Schedule { get; set; } = new();
-        public List<InstructorInformationDTO> Instructors { get; set; } = new();// need update
+        public List<InstructorInformationDTO> Instructors { get; set; } = new();
         public DateTime? LastUpdate { get; set; }
         public List<LMS.MVC.Models.ViewModels.Assignment.ReadAssignmentResult> Assignments { get; set; } = new();
         public List<LMS.MVC.Models.ViewModels.Quiz.QuizItemViewModel> Quizzes { get; set; } = new();

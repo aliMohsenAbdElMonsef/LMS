@@ -22,7 +22,7 @@ namespace LMS.Tests.Controllers
             _mockUnitOfServices = new Mock<IUnitOfServices>();
             _mockQuizServices = new Mock<IQuizServices>();
 
-            // Setup the Quizzes property of UnitOfServices to return the mock QuizServices
+
             _mockUnitOfServices.Setup(u => u.Quizzes).Returns(_mockQuizServices.Object);
 
             _controller = new QuizzesController(_mockUnitOfServices.Object);
@@ -45,7 +45,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateQuiz_ReturnsOk_WhenCreationIsSuccessful()
         {
-            // Arrange
+
             SetUser("user1");
             var createDto = new CreateQuizDTO { Title = "Test Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
@@ -57,10 +57,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.CreateAsync(createDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateQuiz(createDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -70,7 +70,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task CreateQuiz_ReturnsBadRequest_WhenCreationFails()
         {
-            // Arrange
+
             SetUser("user1");
             var createDto = new CreateQuizDTO { Title = "Test Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
@@ -82,10 +82,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.CreateAsync(createDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.CreateQuiz(createDto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(badRequestResult.Value);
             Assert.False(returnValue.Success);
@@ -95,7 +95,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task UpdateQuiz_ReturnsOk_WhenUpdateIsSuccessful()
         {
-            // Arrange
+
             var updateDto = new UpdateQuizDTO { Id = "1", Title = "Updated Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -106,10 +106,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.UpdateAsync(updateDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.UpdateQuiz(updateDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -119,7 +119,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task UpdateQuiz_ReturnsBadRequest_WhenUpdateFails()
         {
-            // Arrange
+
             var updateDto = new UpdateQuizDTO { Id = "1", Title = "Updated Quiz" };
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -130,10 +130,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.UpdateAsync(updateDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.UpdateQuiz(updateDto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(badRequestResult.Value);
             Assert.False(returnValue.Success);
@@ -143,7 +143,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task DeleteQuiz_ReturnsOk_WhenDeleteIsSuccessful()
         {
-            // Arrange
+
             var quizId = "1";
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -154,10 +154,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.DeleteAsync(quizId))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.DeleteQuiz(quizId);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -166,7 +166,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task DeleteQuiz_ReturnsNotFound_WhenDeleteFails()
         {
-            // Arrange
+
             var quizId = "1";
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -177,10 +177,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.DeleteAsync(quizId))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.DeleteQuiz(quizId);
 
-            // Assert
+
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(notFoundResult.Value);
             Assert.False(returnValue.Success);
@@ -190,7 +190,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task GetQuizById_ReturnsOk_WhenQuizExists()
         {
-            // Arrange
+
             var quizId = "1";
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -201,10 +201,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.GetByIdAsync(quizId))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetQuizById(quizId);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -214,7 +214,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task GetQuizById_ReturnsNotFound_WhenQuizDoesNotExist()
         {
-            // Arrange
+
             var quizId = "1";
             var responseDto = new ServiceResponseDTO<ReadQuizDTO> 
             { 
@@ -225,10 +225,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.GetByIdAsync(quizId))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetQuizById(quizId);
 
-            // Assert
+
             var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<ReadQuizDTO>>(notFoundResult.Value);
             Assert.False(returnValue.Success);
@@ -238,7 +238,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task GetAllQuizzes_ReturnsOk_WithListOfQuizzes()
         {
-            // Arrange
+
             var quizzes = new List<ReadQuizDTO>
             {
                 new ReadQuizDTO { Id = "1", Title = "Quiz 1" },
@@ -253,10 +253,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.GetAllAsync())
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.GetAllQuizzes();
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<IEnumerable<ReadQuizDTO>>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -266,7 +266,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task SubmitQuiz_ReturnsOk_WhenSubmissionIsSuccessful()
         {
-            // Arrange
+
             SetUser("user1");
             var submitDto = new SubmitQuizDTO { QuizId = "1" };
             var responseDto = new ServiceResponseDTO<QuizResultDTO> 
@@ -278,10 +278,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.SubmitQuizAsync(submitDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.SubmitQuiz(submitDto);
 
-            // Assert
+
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<QuizResultDTO>>(okResult.Value);
             Assert.True(returnValue.Success);
@@ -291,7 +291,7 @@ namespace LMS.Tests.Controllers
         [Fact]
         public async Task SubmitQuiz_ReturnsBadRequest_WhenSubmissionFails()
         {
-            // Arrange
+
             SetUser("user1");
             var submitDto = new SubmitQuizDTO { QuizId = "1" };
             var responseDto = new ServiceResponseDTO<QuizResultDTO> 
@@ -303,10 +303,10 @@ namespace LMS.Tests.Controllers
             _mockQuizServices.Setup(s => s.SubmitQuizAsync(submitDto))
                 .ReturnsAsync(responseDto);
 
-            // Act
+
             var result = await _controller.SubmitQuiz(submitDto);
 
-            // Assert
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var returnValue = Assert.IsType<ServiceResponseDTO<QuizResultDTO>>(badRequestResult.Value);
             Assert.False(returnValue.Success);

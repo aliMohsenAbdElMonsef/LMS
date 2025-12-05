@@ -267,7 +267,7 @@ namespace LMS.BusinessLogic.Services
                     return response;
                 }
 
-                // Check for duplicate course code
+
                 if (existingCourse.CourseCode != dto.CourseCode)
                 {
                     if (string.IsNullOrWhiteSpace(dto.CourseCode))
@@ -423,7 +423,7 @@ namespace LMS.BusinessLogic.Services
                     };
                 }
 
-                // Soft delete related entities
+
                 foreach (var quiz in course.Quizzes) { quiz.IsDeleted = true; quiz.DeletedAt = DateTime.UtcNow; }
                 foreach (var assignment in course.Assignments) { assignment.IsDeleted = true; assignment.DeletedAt = DateTime.UtcNow; }
                 foreach (var student in course.Students) { student.IsDeleted = true; student.DeletedAt = DateTime.UtcNow; }
@@ -434,7 +434,7 @@ namespace LMS.BusinessLogic.Services
                 foreach (var review in course.Reviews) { review.IsDeleted = true; review.DeletedAt = DateTime.UtcNow; }
                 foreach (var skill in course.Skills) { skill.IsDeleted = true; skill.DeletedAt = DateTime.UtcNow; }
 
-                // Soft delete the course
+
                 course.IsDeleted = true;
                 course.DeletedAt = DateTime.UtcNow;
 

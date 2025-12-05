@@ -41,7 +41,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task StartQuizAsync_ReturnsError_WhenStudentNotEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var studentId = "student1";
             var courseId = "course1";
@@ -56,10 +56,10 @@ namespace LMS.Tests.Services
             _mockEnrollmentRepo.Setup(r => r.IsStudentEnrolledInCourseAsync(studentId, courseId))
                 .ReturnsAsync(false);
 
-            // Act
+
             var result = await _service.StartQuizAsync(quizId, studentId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("You must be enrolled in the course to take this quiz.", result.Message);
         }
@@ -67,7 +67,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task StartQuizAsync_Success_WhenStudentEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var studentId = "student1";
             var courseId = "course1";
@@ -86,10 +86,10 @@ namespace LMS.Tests.Services
             _mockUnitOfWork.Setup(u => u.GetQueryable<StudentQuiz>()).Returns(emptyStudentQuizzes);
             _mockUnitOfWork.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
-            // Act
+
             var result = await _service.StartQuizAsync(quizId, studentId);
 
-            // Assert
+
             Assert.True(result.Success);
         }
 
@@ -100,7 +100,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetQuizForTakingAsync_ReturnsError_WhenStudentNotEnrolled()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var studentId = "student1";
             var courseId = "course1";
@@ -115,10 +115,10 @@ namespace LMS.Tests.Services
             _mockEnrollmentRepo.Setup(r => r.IsStudentEnrolledInCourseAsync(studentId, courseId))
                 .ReturnsAsync(false);
 
-            // Act
+
             var result = await _service.GetQuizForTakingAsync(quizId, studentId);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("You must be enrolled in the course to take this quiz.", result.Message);
         }
@@ -130,16 +130,16 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_ReturnsError_WhenQuizNotFound()
         {
-            // Arrange
+
             var dto = new SubmitQuizDTO { QuizId = "non-existent", StudentId = "student1" };
             
             var emptyQuizzes = new List<Quiz>().BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(emptyQuizzes);
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Quiz not found.", result.Message);
         }
@@ -147,9 +147,9 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_ReturnsError_WhenQuizNotStarted()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz(
-                startDate: DateTime.UtcNow.AddDays(1), // Future start date
+                startDate: DateTime.UtcNow.AddDays(1),
                 endDate: DateTime.UtcNow.AddDays(7)
             );
 
@@ -160,10 +160,10 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Quiz is not currently available.", result.Message);
         }
@@ -171,10 +171,10 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_ReturnsError_WhenQuizExpired()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz(
                 startDate: DateTime.UtcNow.AddDays(-7),
-                endDate: DateTime.UtcNow.AddDays(-1) // Past end date
+                endDate: DateTime.UtcNow.AddDays(-1)
             );
 
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
@@ -184,10 +184,10 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("Quiz is not currently available.", result.Message);
         }
@@ -195,7 +195,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_CalculatesGrade_AllCorrectAnswers()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
@@ -207,16 +207,16 @@ namespace LMS.Tests.Services
                 Answers = quiz.Questions.Select(q => new StudentAnswerDTO
                 {
                     QuestionId = q.Id,
-                    SelectedAnswer = q.CorrectAnswer // All correct
+                    SelectedAnswer = q.CorrectAnswer
                 }).ToList()
             };
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(100.0, result.Data.Percentage);
             Assert.Equal(100, result.Data.Grade);
@@ -227,7 +227,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_CalculatesGrade_AllWrongAnswers()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
@@ -239,16 +239,16 @@ namespace LMS.Tests.Services
                 Answers = quiz.Questions.Select(q => new StudentAnswerDTO
                 {
                     QuestionId = q.Id,
-                    SelectedAnswer = GetWrongAnswer(q.CorrectAnswer) // All wrong
+                    SelectedAnswer = GetWrongAnswer(q.CorrectAnswer)
                 }).ToList()
             };
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(0.0, result.Data.Percentage);
             Assert.Equal(0, result.Data.Grade);
@@ -259,8 +259,8 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_CalculatesGrade_HalfCorrect()
         {
-            // Arrange
-            var quiz = CreateTestQuiz(questionCount: 4); // 4 questions, 10 points each
+
+            var quiz = CreateTestQuiz(questionCount: 4);
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
 
@@ -284,22 +284,22 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(50.0, result.Data.Percentage);
             Assert.Equal(50, result.Data.Grade);
             Assert.Equal(2, result.Data.CorrectAnswers);
-            Assert.Equal(20, result.Data.EarnedPoints); // 2 questions * 10 points
-            Assert.Equal(40, result.Data.TotalPoints); // 4 questions * 10 points
+            Assert.Equal(20, result.Data.EarnedPoints);
+            Assert.Equal(40, result.Data.TotalPoints);
         }
 
         [Fact]
         public async Task SubmitQuizAsync_HandlesNoAnswers()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
@@ -308,15 +308,15 @@ namespace LMS.Tests.Services
             {
                 QuizId = quiz.Id,
                 StudentId = "student1",
-                Answers = new List<StudentAnswerDTO>() // No answers submitted
+                Answers = new List<StudentAnswerDTO>()
             };
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(0.0, result.Data.Percentage);
             Assert.Equal(0, result.Data.Grade);
@@ -327,12 +327,12 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_CalculatesGrade_DifferentPointValues()
         {
-            // Arrange
+
             var quiz = CreateTestQuizWithDifferentPoints();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
 
-            // Answer first two questions correctly (5 + 10 = 15 points)
+
             var answers = new List<StudentAnswerDTO>();
             for (int i = 0; i < quiz.Questions.Count; i++)
             {
@@ -353,27 +353,27 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(2, result.Data.CorrectAnswers);
-            Assert.Equal(15, result.Data.EarnedPoints); // 5 + 10
-            Assert.Equal(30, result.Data.TotalPoints); // 5 + 10 + 15
-            Assert.Equal(50.0, result.Data.Percentage); // 15/30 * 100
+            Assert.Equal(15, result.Data.EarnedPoints);
+            Assert.Equal(30, result.Data.TotalPoints);
+            Assert.Equal(50.0, result.Data.Percentage);
             Assert.Equal(50, result.Data.Grade);
         }
 
         [Fact]
         public async Task SubmitQuizAsync_RoundsGradeCorrectly()
         {
-            // Arrange - Create quiz where percentage will be 66.666...
+
             var quiz = CreateTestQuiz(questionCount: 3);
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
 
-            // Answer 2 out of 3 correctly
+
             var answers = new List<StudentAnswerDTO>();
             for (int i = 0; i < quiz.Questions.Count; i++)
             {
@@ -394,18 +394,18 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
-            Assert.Equal(67, result.Data.Grade); // Should round 66.666... to 67
+            Assert.Equal(67, result.Data.Grade);
         }
 
         [Fact]
         public async Task SubmitQuizAsync_SendsNotification()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
@@ -426,10 +426,10 @@ namespace LMS.Tests.Services
             _mockNotificationService.Setup(n => n.CreateNotificationAsync(It.IsAny<CreateNotificationDTO>()))
                 .ReturnsAsync(new ServiceResponseDTO<ReadNotificationDTO> { Success = true });
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             _mockNotificationService.Verify(n => n.CreateNotificationAsync(
                 It.Is<CreateNotificationDTO>(dto =>
@@ -442,7 +442,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task SubmitQuizAsync_ContinuesWhenNotificationFails()
         {
-            // Arrange
+
             var quiz = CreateTestQuiz();
             var quizzes = new List<Quiz> { quiz }.BuildMockDbSet().Object;
             _mockQuizRepo.Setup(r => r.GetQueryable()).Returns(quizzes);
@@ -460,14 +460,14 @@ namespace LMS.Tests.Services
 
             SetupMockForSubmission();
 
-            // Make notification fail
+
             _mockNotificationService.Setup(n => n.CreateNotificationAsync(It.IsAny<CreateNotificationDTO>()))
                 .ThrowsAsync(new Exception("Notification service down"));
 
-            // Act
+
             var result = await _service.SubmitQuizAsync(dto);
 
-            // Assert - Should still succeed even though notification failed
+
             Assert.True(result.Success);
             Assert.Equal(100, result.Data.Grade);
         }
@@ -559,7 +559,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task GetStudentQuizStatusAsync_ReturnsBestAttempt_WhenMultipleAttemptsExist()
         {
-            // Arrange
+
             var quizId = "quiz1";
             var studentId = "student1";
             var attempts = new List<StudentQuiz>
@@ -572,10 +572,10 @@ namespace LMS.Tests.Services
             var mockSet = attempts.AsQueryable().BuildMockDbSet();
             _mockUnitOfWork.Setup(u => u.GetQueryable<StudentQuiz>()).Returns(mockSet.Object);
 
-            // Act
+
             var result = await _service.GetStudentQuizStatusAsync(quizId, studentId);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal(80, result.Data.Grade);
         }

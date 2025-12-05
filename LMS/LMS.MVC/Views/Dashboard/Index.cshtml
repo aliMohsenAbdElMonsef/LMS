@@ -5,7 +5,7 @@
 }
 
 <div class="container-fluid py-4">
-    <!-- Page Header -->
+
     <div class="row mb-4">
         <div class="col-12">
             <div class="page-header animate-fade-in-up">
@@ -17,9 +17,9 @@
 
     @if (User.IsInRole("Student"))
     {
-        <!-- Student Dashboard -->
+
         <div class="row g-4">
-            <!-- Stats Cards -->
+
             <div class="col-md-3 animate-fade-in-up animate-delay-100">
                 <div class="card stat-card bg-gradient-primary text-white">
                     <div class="card-body">
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- My Courses -->
+
             <div class="col-lg-8 animate-fade-in-up animate-delay-500">
                 <div class="card">
                     <div class="card-header">
@@ -127,7 +127,7 @@
                 </div>
             </div>
 
-            <!-- Upcoming Assignments -->
+
             <div class="col-lg-4 animate-fade-in-up animate-delay-600">
                 <div class="card">
                     <div class="card-header">
@@ -164,7 +164,7 @@
     }
     else if (User.IsInRole("Instructor"))
     {
-        <!-- Instructor Dashboard -->
+
         <div class="row g-4">
             <div class="col-md-3 animate-fade-in-up">
                 <div class="card stat-card bg-gradient-primary text-white">
@@ -230,7 +230,7 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+
             <div class="col-12 animate-fade-in-up animate-delay-400">
                 <div class="card">
                     <div class="card-header">
@@ -266,7 +266,7 @@
     }
     else
     {
-        <!-- Admin Dashboard -->
+
         <div class="row g-4">
             <div class="col-md-3 animate-fade-in-up">
                 <div class="card stat-card bg-gradient-primary text-white">
@@ -332,7 +332,7 @@
                 </div>
             </div>
 
-            <!-- Admin Actions -->
+
             <div class="col-12 animate-fade-in-up animate-delay-400">
                 <div class="card">
                     <div class="card-header">

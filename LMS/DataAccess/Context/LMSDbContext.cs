@@ -27,23 +27,9 @@ namespace DataAccess.Context
 
         public LMSDbContext(DbContextOptions<LMSDbContext> options) : base(options)
         {
-            // Add this constructor to see what's being passed
-            if (Database.IsSqlServer())
-            {
-                try
-                {
-                    var connection = Database.GetDbConnection();
-                    Console.WriteLine($"DbContext Connection String: {connection.ConnectionString}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error getting connection string: {ex.Message}");
-                }
-            }
         }
 
 
-        // Main Entities
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -56,7 +42,6 @@ namespace DataAccess.Context
         public DbSet<CertificateTemplate> CertificateTemplates { get; set; }
         public DbSet<LectureSchedule> LectureSchedules { get; set; }
 
-        // Relation Entities
         public DbSet<CourseReview> CourseReviews { get; set; }
         public DbSet<CourseDaySchedule> CourseDaySchedules { get; set; }
         public DbSet<StudentCertificate> StudentCertificates { get; set; }
@@ -72,7 +57,6 @@ namespace DataAccess.Context
         {
             base.OnModelCreating(builder);
 
-            // global query filters - ADDED ALL RELATIONSHIP ENTITIES
             builder.Entity<ApplicationUser>().HasQueryFilter(u => !u.IsDeleted);
             builder.Entity<Course>().HasQueryFilter(c => !c.IsDeleted);
             builder.Entity<Lecture>().HasQueryFilter(l => !l.IsDeleted);
@@ -83,12 +67,10 @@ namespace DataAccess.Context
             builder.Entity<Skills>().HasQueryFilter(s => !s.IsDeleted);
             builder.Entity<CourseSkill>().HasQueryFilter(cs => !cs.IsDeleted);
 
-            // ADDED: Decimal precision for Price
             builder.Entity<Course>()
                 .Property(c => c.Price)
                 .HasPrecision(18, 2);
 
-            // with admin
             builder.Entity<Course>()
                 .HasOne(c => c.Admin)
                 .WithMany(u => u.CreatedCourses)
@@ -112,9 +94,7 @@ namespace DataAccess.Context
                 .WithMany(u => u.certificateTemplates)
                 .HasForeignKey(ct => ct.AdminId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // end 
 
-            // with course
             builder.Entity<Category>()
                 .HasMany(cat => cat.Courses)
                 .WithOne(c => c.Category)
@@ -144,17 +124,13 @@ namespace DataAccess.Context
                 .WithOne(q => q.Course)
                 .HasForeignKey(q => q.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // end
 
-            // with assignment
             builder.Entity<Assignment>()
                 .HasOne(a => a.Instructor)
                 .WithMany(u => u.CreatedAssignments)
                 .HasForeignKey(a => a.InstructorId)
                 .OnDelete(DeleteBehavior.Restrict);
-            //end
 
-            // with lecture
             builder.Entity<Lecture>()
                 .HasOne(l => l.AssignedInstructor)
                 .WithMany(u => u.TeachedLectures)
@@ -166,9 +142,7 @@ namespace DataAccess.Context
                 .WithMany(u => u.LecturesLastUploaded)
                 .HasForeignKey(l => l.LastUploadedByInstructorId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // end
 
-            // with quiz
             builder.Entity<Quiz>()
                 .HasOne(q => q.Instructor)
                 .WithMany(u => u.CreatedQuizzes)
@@ -180,9 +154,7 @@ namespace DataAccess.Context
                 .WithMany(z => z.Questions)
                 .HasForeignKey(q => q.QuizId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // end
 
-            // with lecture schedule
             builder.Entity<LectureSchedule>()
                 .HasOne(ls => ls.Course)
                 .WithMany(c => c.LectureSchedules)
@@ -194,9 +166,7 @@ namespace DataAccess.Context
                 .WithMany(ls => ls.Lectures)
                 .HasForeignKey(l => l.LectureScheduleId)
                 .OnDelete(DeleteBehavior.Restrict);
-            // end
 
-            // student enroll into course
             builder.Entity<StudentEnrollIntoCourse>()
                 .HasKey(se => new { se.StudentId, se.CourseId });
 
@@ -212,7 +182,6 @@ namespace DataAccess.Context
                 .HasForeignKey(se => se.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // course review
             builder.Entity<CourseReview>()
                 .HasKey(cr => cr.Id);
 
@@ -228,7 +197,6 @@ namespace DataAccess.Context
                 .HasForeignKey(cr => cr.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // course skill
             builder.Entity<CourseSkill>()
                 .HasKey(cs => new { cs.CourseId, cs.SkillId });
 
@@ -244,7 +212,6 @@ namespace DataAccess.Context
                 .HasForeignKey(cs => cs.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // InstructorEnrollment configuration
             builder.Entity<InstructorEnrolltoCourse>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -259,11 +226,9 @@ namespace DataAccess.Context
                     .HasForeignKey(e => e.CourseId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                // Prevent duplicate pending enrollments
                 entity.HasIndex(e => new { e.InstructorId, e.CourseId, e.Status });
             });
 
-            // student answer question
             builder.Entity<StudentAnswerQuestion>()
                 .HasKey(saq => new { saq.StudentId, saq.QuestionId });
 
@@ -279,7 +244,6 @@ namespace DataAccess.Context
                 .HasForeignKey(saq => saq.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // student assignment
             builder.Entity<StudentAssignment>()
                 .HasKey(sa => new { sa.StudentId, sa.AssignmentId });
 
@@ -295,7 +259,6 @@ namespace DataAccess.Context
                 .HasForeignKey(sa => sa.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // student certificate
             builder.Entity<StudentCertificate>()
                 .HasKey(sc => new { sc.StudentId, sc.certificateTamplateId });
 
@@ -311,7 +274,6 @@ namespace DataAccess.Context
                 .HasForeignKey(sc => sc.certificateTamplateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // student lecture
             builder.Entity<StudentLecture>()
                 .HasKey(sl => new { sl.StudentId, sl.LectureId });
 
@@ -327,7 +289,6 @@ namespace DataAccess.Context
                 .HasForeignKey(sl => sl.LectureId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // student quiz
             builder.Entity<StudentQuiz>()
                 .HasKey(sq => sq.Id);
 
@@ -356,7 +317,6 @@ namespace DataAccess.Context
             HandleSoftDeleteForLectures();
             HandleSoftDeleteForAssignments();
             HandleSoftDeleteForCertificateTemplates();
-            // ADDED: Handle soft delete for relationship entities
             HandleSoftDeleteForRelationshipEntities();
             return base.SaveChanges();
         }
@@ -373,12 +333,10 @@ namespace DataAccess.Context
             HandleSoftDeleteForLectures();
             HandleSoftDeleteForAssignments();
             HandleSoftDeleteForCertificateTemplates();
-            // ADDED: Handle soft delete for relationship entities
             HandleSoftDeleteForRelationshipEntities();
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        // ADDED: Combined method to handle soft delete for all relationship entities
         private void HandleSoftDeleteForRelationshipEntities()
         {
             HandleSoftDeleteForEntity<CourseReview>();
@@ -392,7 +350,6 @@ namespace DataAccess.Context
             HandleSoftDeleteForEntity<CourseSkill>();
         }
 
-        // ADDED: Generic method to handle soft delete for any entity
         private void HandleSoftDeleteForEntity<T>() where T : class
         {
             var entities = ChangeTracker.Entries<T>()
@@ -520,7 +477,6 @@ namespace DataAccess.Context
                 ((SoftDeletion)entry.Entity).IsDeleted = true;
                 ((SoftDeletion)entry.Entity).DeletedAt = DateTime.UtcNow;
 
-                // Also soft delete related student assignments
                 var assignment = entry.Entity;
                 foreach (var studentAssignment in assignment.Students)
                 {

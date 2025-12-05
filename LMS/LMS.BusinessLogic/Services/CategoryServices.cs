@@ -145,7 +145,7 @@ namespace LMS.BusinessLogic.Services
 
                 var dtos = _mapper.Map<List<ReadCategoryDTO>>(topCategories);
                 
-                // Manually populate CoursesCount since it might not be mapped automatically depending on configuration
+
                 for (int i = 0; i < topCategories.Count; i++)
                 {
                     dtos[i].CoursesCount = topCategories[i].Courses?.Count(c => !c.IsDeleted) ?? 0;

@@ -19,7 +19,7 @@ namespace LMS.API.Controllers
         {
             _userServices = userServices;
         }
-        // ---------------Admin---------------
+
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers()
@@ -68,9 +68,6 @@ namespace LMS.API.Controllers
             var instructorCount = users.Count(u => u.ApplyAs == Domain.Enums.UserType.Instructor && u.Status == Domain.Enums.ApplicationStatus.Approved);
             return Ok(new { StudentCount = studentCount, InstructorCount = instructorCount });
         }
-
-        // ------------------------------
-        // ---------------All---------------
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> RegisterUser([FromForm] SignUpDTO dto)

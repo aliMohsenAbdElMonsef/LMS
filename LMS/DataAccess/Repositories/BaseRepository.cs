@@ -1,4 +1,4 @@
-﻿using DataAccess.Context;
+using DataAccess.Context;
 using LMS.DataAccess.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

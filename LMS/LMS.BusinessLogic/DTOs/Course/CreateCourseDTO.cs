@@ -8,7 +8,7 @@ namespace LMS.BusinessLogic.DTOs.Course
 {
     public class CreateCourseDTO: IValidatableObject
     {
-        // ================= BASIC COURSE INFO =================
+
         [Required(ErrorMessage = "Course name is required")]
         [MaxLength(200)]
         [Display(Name = "Course Name")]
@@ -40,7 +40,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Language")]
         public string Language { get; set; } = "English";
 
-        // ================= DURATION =================
+
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
@@ -54,7 +54,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Duration (Weeks)")]
         public int? DurationWeeks => CalculateTotalWeeks();
 
-        // ================= MODE & STATUS =================
+
         [Required]
         [Display(Name = "Delivery Mode")]
         public DeliveryMode DeliveryMode { get; set; } = DeliveryMode.Online;
@@ -62,7 +62,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Status")]
         public Status Status { get; set; } = Status.Draft;
 
-        // ================= PRICE & CERTIFICATE =================
+
         [Range(0, 10000)]
         [Display(Name = "Price")]
         public decimal? Price { get; set; } = 0;
@@ -84,11 +84,11 @@ namespace LMS.BusinessLogic.DTOs.Course
         [Display(Name = "Certificate Template")]
         public string? CertificateTemplateId { get; set; }
 
-        // ================= MEDIA =================
+
         [Display(Name = "Course Thumbnail")]
         public IFormFile? ThumbnailFile { get; set; }
 
-        // ================= RELATIONS =================
+
         [Required]
         [Display(Name = "Category")]
         public string CategoryId { get; set; } = string.Empty;
@@ -98,7 +98,7 @@ namespace LMS.BusinessLogic.DTOs.Course
         public string AdminId { get; set; } = string.Empty;
 
 
-        // ================= ADDITIONAL HELPERS =================
+
         [Display(Name = "Available Categories")]
         public List<CategoryOption> AvailableCategories { get; set; } = new();
 

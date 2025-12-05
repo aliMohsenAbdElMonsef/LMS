@@ -1,4 +1,4 @@
-﻿using LMS.Entity.Entities.RelationTables;
+using LMS.Entity.Entities.RelationTables;
 using System;
 using System.Collections.Generic;
 using System.Linq;

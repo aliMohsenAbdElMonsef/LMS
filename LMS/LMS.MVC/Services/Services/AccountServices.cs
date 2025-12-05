@@ -14,7 +14,6 @@ namespace LMS.MVC.Services.Services
         private readonly HttpClient _client;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<AccountServices> _logger;
-
         private readonly ITokenService _tokenService;
 
         public AccountServices(HttpClient client,
@@ -71,7 +70,7 @@ namespace LMS.MVC.Services.Services
                     authProperties
                 );
 
-                _logger.LogInformation("✅ User authenticated with cookie scheme");
+                _logger.LogInformation("User authenticated with cookie scheme");
 
                 SetTokenCookies(loginResult);
 
@@ -104,6 +103,8 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
+                await _client.PostAsync("api/user/logout", null);
+
                 ClearAuthCookies();
                 await SignOutAsync();
 
@@ -111,6 +112,8 @@ namespace LMS.MVC.Services.Services
             }
             catch
             {
+                ClearAuthCookies();
+                await SignOutAsync();
                 return false;
             }
         }
@@ -167,9 +170,7 @@ namespace LMS.MVC.Services.Services
                     };
                 }
 
-                // AuthHeaderHandler handles the Authorization header
-                // _client.DefaultRequestHeaders.Authorization =
-                //    new AuthenticationHeaderValue("Bearer", token);
+
 
                 var response = await _client.PostAsync($"api/user/approve/{userId}", null);
 
@@ -204,9 +205,7 @@ namespace LMS.MVC.Services.Services
                     };
                 }
 
-                // AuthHeaderHandler handles the Authorization header
-                // _client.DefaultRequestHeaders.Authorization =
-                //    new AuthenticationHeaderValue("Bearer", token);
+
 
                 var response = await _client.PostAsync($"api/user/deny/{userId}", null);
 
@@ -232,7 +231,7 @@ namespace LMS.MVC.Services.Services
         {
             try
             {
-                // Build the reset URL for the MVC application
+
                 var request = _httpContextAccessor.HttpContext?.Request;
                 var resetUrl = $"{request?.Scheme}://{request?.Host}/Account/ResetPassword";
 

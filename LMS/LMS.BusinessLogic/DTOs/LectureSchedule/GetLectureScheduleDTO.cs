@@ -14,5 +14,7 @@ namespace LMS.BusinessLogic.DTOs.LectureSchedule
         public int DurationMinutes { get; set; }
         public int GeneratedLecturesCount { get; set; }
         public TimeSpan EndTime => StartTime.Add(TimeSpan.FromMinutes(DurationMinutes));
+        public string InstructorId { get; set; }
+        public string InstructorName { get; set; }
     }
 }

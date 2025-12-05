@@ -9,7 +9,7 @@ namespace LMS.API.Services
     public class FileUploadService : IFileUploadService
     {
         private readonly IWebHostEnvironment _environment;
-        private readonly long _maxFileSize = 10 * 1024 * 1024; // 10MB
+        private readonly long _maxFileSize = 10 * 1024 * 1024;
         private readonly string[] _allowedExtensions = { ".pdf", ".doc", ".docx", ".txt", ".zip", ".rar", ".jpg", ".png" };
 
         public FileUploadService(IWebHostEnvironment environment)

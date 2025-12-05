@@ -1,0 +1,56 @@
+@model LMS.MVC.Models.ViewModels.Lecture.UploadLectureContentViewModel
+@{
+    ViewData["Title"] = "Upload Content - " + Model.LectureTitle;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-cloud-upload"></i> Upload Content for @Model.LectureTitle</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UploadContent" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="LectureId" />
+                        <input type="hidden" asp-for="CourseId" />
+                        <input type="hidden" asp-for="LectureTitle" />
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Lecture Recording (Video)</label>
+                            @if (!string.IsNullOrEmpty(Model.CurrentRecordingPath))
+                            {
+                                <div class="alert alert-info py-2 mb-2">
+                                    <i class="bi bi-info-circle"></i> Current: @Model.CurrentRecordingPath
+                                </div>
+                            }
+                            <input type="file" class="form-control" asp-for="NewRecordingFile" accept="video/*">
+                            <small class="text-muted">Supported formats: MP4, MKV, AVI, MOV (Max: 500MB)</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Lecture Materials (Zip)</label>
+                            @if (!string.IsNullOrEmpty(Model.CurrentMaterialsPath))
+                            {
+                                <div class="alert alert-info py-2 mb-2">
+                                    <i class="bi bi-info-circle"></i> Current: @Model.CurrentMaterialsPath
+                                </div>
+                            }
+                            <input type="file" class="form-control" asp-for="NewMaterialsFile" accept=".zip,.rar,.pdf,.doc,.docx,.ppt,.pptx">
+                            <small class="text-muted">Upload a zip file containing materials (Max: 50MB)</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="MyLectures" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-cloud-upload"></i> Upload Content
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

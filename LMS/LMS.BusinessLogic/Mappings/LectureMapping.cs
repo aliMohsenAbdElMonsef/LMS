@@ -9,10 +9,7 @@ namespace LMS.BusinessLogic.Mappings
         public LectureMapping()
         {
             CreateMap<CreateLectureDTO, Lecture>()
-                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => 
-                    src.EndTime ?? (src.DurationMinutes.HasValue 
-                        ? src.StartTime.Add(TimeSpan.FromMinutes(src.DurationMinutes.Value))
-                        : src.StartTime.Add(TimeSpan.FromHours(1)))))
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => CalculateEndTime(src)))
                 .ForMember(dest => dest.LectureNumber, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
@@ -33,6 +30,19 @@ namespace LMS.BusinessLogic.Mappings
             CreateMap<Lecture, ReadLectureDTO>()
                 .ForMember(dest => dest.DurationMinutes, opt => opt.MapFrom(src => 
                     (int)((src.EndTime < src.StartTime ? src.EndTime.Add(TimeSpan.FromDays(1)) : src.EndTime) - src.StartTime).TotalMinutes));
+        }
+
+        private static TimeSpan CalculateEndTime(CreateLectureDTO src)
+        {
+            var end = src.EndTime ?? (src.DurationMinutes.HasValue 
+                ? src.StartTime.Add(TimeSpan.FromMinutes(src.DurationMinutes.Value))
+                : src.StartTime.Add(TimeSpan.FromHours(1)));
+            
+            if (end.TotalDays >= 1)
+            {
+                return end.Subtract(TimeSpan.FromDays((int)end.TotalDays));
+            }
+            return end;
         }
     }
 }

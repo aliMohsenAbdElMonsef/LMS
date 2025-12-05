@@ -31,7 +31,7 @@ namespace LMS.BusinessLogic.Services
                     .Include(e => e.Course)
                     .AsNoTracking();
 
-                // Apply Database-side filters where possible
+
                 if (!string.IsNullOrEmpty(userSearch))
                 {
                     userSearch = userSearch.ToLower();
@@ -52,11 +52,11 @@ namespace LMS.BusinessLogic.Services
                     instructorQuery = instructorQuery.Where(e => e.Status == statusEnum);
                 }
 
-                // Materialize queries to memory
+
                 var studentEnrollments = await studentQuery.ToListAsync();
                 var instructorEnrollments = await instructorQuery.ToListAsync();
 
-                // Map to DTOs in memory
+
                 var studentDtos = studentEnrollments.Select(e => new ReadEnrollIntoCourseDTO
                 {
                     UserId = e.StudentId,
@@ -95,7 +95,7 @@ namespace LMS.BusinessLogic.Services
                     allEnrollments.AddRange(instructorDtos);
                 }
 
-                // Final ordering
+
                 var result = allEnrollments.OrderByDescending(e => e.CreatedAt).ToList();
 
                 return new ServiceResponseDTO<List<ReadEnrollIntoCourseDTO>>

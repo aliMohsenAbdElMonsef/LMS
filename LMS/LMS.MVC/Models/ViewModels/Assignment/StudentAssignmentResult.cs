@@ -27,7 +27,7 @@ namespace LMS.MVC.Models.ViewModels.Assignment
 
         public string? Feedback { get; set; }
 
-        // ✅ Added properties that the view needs
+
         public string? AssignmentTitle { get; set; }
         public string? CourseName { get; set; }
         public DateTime DueDate { get; set; }

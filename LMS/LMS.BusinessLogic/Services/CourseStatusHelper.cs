@@ -10,9 +10,7 @@ namespace LMS.BusinessLogic.Services.Helpers
 {
     public static class CourseStatusHelper
     {
-        //private readonly IUnitOfWork _unitOfWork;
-        //private readonly IWebHostEnvironment _webHostEnvironment;
-        //private readonly IMapper _mapper;
+
 
         public static Status DetermineCourseStatus(DateTime startDate, DateTime endDate, DateTime currentDate)
         {

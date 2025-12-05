@@ -106,28 +106,23 @@ namespace LMS.BusinessLogic.Services
 
             if (existingUser != null || existingUsername != null)
             {
-                var user = existingUser ?? existingUsername;
+                var conflictingUsers = new List<ApplicationUser>();
+                if (existingUser != null) conflictingUsers.Add(existingUser);
+                if (existingUsername != null && (existingUser == null || existingUsername.Id != existingUser.Id)) conflictingUsers.Add(existingUsername);
 
-                if (user.IsDeleted)
-                {
-                    user.IsDeleted = false;
-                    user.Status = Domain.Enums.ApplicationStatus.Pending;
-
-                    CreateFile(dto.UserImage, user);
-
-                    await _userManager.UpdateAsync(user);
-
-                    response.Success = true;
-                    response.Message = "Account reactivated. Pending approval from admin.";
-                    response.UserId = user.Id;
-                }
-                else
+                if (conflictingUsers.Any(u => !u.IsDeleted))
                 {
                     response.Success = false;
                     response.Message = "A user with this email or username already exists.";
+                    return response;
                 }
 
-                return response;
+                foreach (var user in conflictingUsers)
+                {
+                    user.UserName = $"{user.UserName}_deleted_{Guid.NewGuid()}";
+                    user.Email = $"{user.Email}_deleted_{Guid.NewGuid()}";
+                    await _userManager.UpdateAsync(user);
+                }
             }
 
             var newUser = MapToApplicationUser(dto);
@@ -142,7 +137,7 @@ namespace LMS.BusinessLogic.Services
                 response.Message = "User created successfully. Pending approval from admin.";
                 response.UserId = newUser.Id;
 
-                // Send Welcome Email
+
                 try
                 {
                     string subject = "Welcome to LMS - Registration Successful";
@@ -151,7 +146,7 @@ namespace LMS.BusinessLogic.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to send welcome email: {ex.Message}");
+
                 }
             }
             else
@@ -264,7 +259,7 @@ namespace LMS.BusinessLogic.Services
             var roleName = Enum.GetName(typeof(UserType), user.ApplyAs);
             var roleResult = await AddUserToRoleAsync(user, roleName);
 
-            // Send Approval Email
+
             try
             {
                 string subject = "LMS Account Approved";
@@ -273,7 +268,7 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to send approval email: {ex.Message}");
+
             }
 
             return roleResult;
@@ -290,7 +285,7 @@ namespace LMS.BusinessLogic.Services
 
             var result = await _userManager.UpdateAsync(user);
 
-            // Send Denial Email
+
             try
             {
                 string subject = "LMS Account Application Update";
@@ -299,7 +294,7 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to send denial email: {ex.Message}");
+
             }
 
             return result;
@@ -386,7 +381,7 @@ namespace LMS.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to send password reset email: {ex.Message}");
+
                 return new BasicResponseDTO { Success = false, Message = "Failed to send email." };
             }
 
@@ -500,31 +495,13 @@ namespace LMS.BusinessLogic.Services
                 return new ServiceResponseDTO<UserStatsDTO> { Success = false, Message = "User not found." };
             }
 
-            Console.WriteLine($"🔍 GetUserStatsAsync - UserId: {userId}");
-            Console.WriteLine($"🔍 Student Enrollments Count: {user.Enrollment.Count}");
-            Console.WriteLine($"🔍 Instructor Enrollments Count: {user.Courses.Count}");
-            
-            // Debug: Log each student enrollment
-            foreach (var enrollment in user.Enrollment)
-            {
-                Console.WriteLine($"  📚 Student Enrollment - CourseId: {enrollment.CourseId}, Status: {enrollment.Status}, IsDeleted: {enrollment.IsDeleted}, Progress: {enrollment.progress}");
-            }
-            
-            // Debug: Log each instructor enrollment
-            foreach (var course in user.Courses)
-            {
-                Console.WriteLine($"  🎓 Instructor Enrollment - CourseId: {course.CourseId}, Status: {course.Status}, IsDeleted: {course.IsDeleted}");
-                if (course.Course != null)
-                {
-                    Console.WriteLine($"    Course Name: {course.Course.Name}, Students: {course.Course.Students?.Count ?? 0}, Reviews: {course.Course.Reviews?.Count ?? 0}");
-                }
-                else
-                {
-                    Console.WriteLine($"    ⚠️ Course is NULL!");
-                }
-            }
 
-            // Calculate Total Students for Instructor (unique students across all courses they teach)
+            
+
+            
+
+
+
             var totalStudents = user.Courses
                 .Where(c => c.Course != null)
                 .SelectMany(c => c.Course.Students)
@@ -532,14 +509,14 @@ namespace LMS.BusinessLogic.Services
                 .Distinct()
                 .Count();
 
-            // Calculate Average Rating for Instructor (average of all reviews on their courses)
+
             var allReviews = user.Courses
                 .Where(c => c.Course != null)
                 .SelectMany(c => c.Course.Reviews)
                 .ToList();
             var averageRating = allReviews.Any() ? allReviews.Average(r => r.Rating) : 0;
 
-            // Calculate Average Score for Student (average progress across enrolled courses)
+
             var averageScore = user.Enrollment.Any() ? user.Enrollment.Average(e => e.progress) : 0;
 
             var stats = new UserStatsDTO

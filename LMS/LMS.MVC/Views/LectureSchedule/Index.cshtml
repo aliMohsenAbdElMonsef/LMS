@@ -65,16 +65,16 @@
                                     <td class="text-end pe-4">
                                         <div class="btn-group">
 
-                                            <!-- Generate lectures FORM -->
+
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <!-- Edit button -->
+
                                                 <a asp-action="Edit" asp-route-id="@item.Id"
                                                    class="btn btn-sm btn-outline-primary ms-1" title="Edit">
                                                     <i class="bi bi-pencil me-1"></i> Edit
                                                 </a>
 
-                                                <!-- Delete button (OUTSIDE any form) -->
+
                                                 <button type="button"
                                                         class="btn btn-sm btn-outline-danger ms-1"
                                                         title="Delete"
@@ -95,7 +95,7 @@
     </div>
 </div>
 
-<!-- Shared Delete Modal -->
+
 <div class="modal fade" id="deleteScheduleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -129,7 +129,7 @@
             var inputId = deleteModalEl.querySelector('#deleteScheduleId');
             inputId.value = scheduleId;
             
-            // Use getOrCreateInstance to avoid creating multiple instances
+
             var modal = bootstrap.Modal.getOrCreateInstance(deleteModalEl);
             modal.show();
         }

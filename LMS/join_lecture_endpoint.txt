@@ -1,0 +1,13 @@
+
+// ADD THIS CODE AFTER THE LaunchLectureRequest CLASS (around line 164)
+// Place it BEFORE the upload-content endpoint
+
+        [HttpPost("{lectureId}/join")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> JoinLecture(string lectureId)
+        {
+            var userId = GetCurrentUserId();
+            
+            var result = await _unitOfServices.Lectures.MarkAsAttendedAsync(lectureId, userId);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }

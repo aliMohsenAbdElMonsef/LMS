@@ -44,7 +44,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateCourse_ShouldReturnSuccess_WhenDataIsValid()
         {
-            // Arrange
+
             var dto = new CreateCourseDTO
             {
                 Name = "Test Course",
@@ -70,10 +70,10 @@ namespace LMS.Tests.Services
             _courseRepoMock.Setup(r => r.FindByIdAsync("course1")).ReturnsAsync(course);
             _mapperMock.Setup(m => m.Map<GetCourseDTO>(course)).Returns(getCourseDto);
 
-            // Act
+
             var result = await _courseServices.CreateCourse(dto);
 
-            // Assert
+
             Assert.True(result.Success);
             Assert.Equal("Course created successfully.", result.Message);
             Assert.NotNull(result.Data);
@@ -82,19 +82,19 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateCourse_ShouldReturnFailure_WhenStartDateIsInPast()
         {
-            // Arrange
+
             var dto = new CreateCourseDTO
             {
                 Name = "Test Course",
                 CourseCode = "TC101",
-                StartDate = DateTime.UtcNow.AddDays(-1), // Past
+                StartDate = DateTime.UtcNow.AddDays(-1),
                 EndDate = DateTime.UtcNow.AddDays(30)
             };
 
-            // Act
+
             var result = await _courseServices.CreateCourse(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("The start date must be in the future.", result.Message);
         }
@@ -102,19 +102,19 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateCourse_ShouldReturnFailure_WhenEndDateIsBeforeStartDate()
         {
-            // Arrange
+
             var dto = new CreateCourseDTO
             {
                 Name = "Test Course",
                 CourseCode = "TC101",
                 StartDate = DateTime.UtcNow.AddDays(10),
-                EndDate = DateTime.UtcNow.AddDays(5) // Before start
+                EndDate = DateTime.UtcNow.AddDays(5)
             };
 
-            // Act
+
             var result = await _courseServices.CreateCourse(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("The start date must be before the end date.", result.Message);
         }
@@ -122,7 +122,7 @@ namespace LMS.Tests.Services
         [Fact]
         public async Task CreateCourse_ShouldReturnFailure_WhenCourseCodeExists()
         {
-            // Arrange
+
             var dto = new CreateCourseDTO
             {
                 Name = "Test Course",
@@ -141,10 +141,10 @@ namespace LMS.Tests.Services
             _categoryRepoMock.Setup(r => r.FindByIdAsync("cat1")).ReturnsAsync(category);
             _courseRepoMock.Setup(r => r.FindByCodeAsync("TC101")).ReturnsAsync(existingCourse);
 
-            // Act
+
             var result = await _courseServices.CreateCourse(dto);
 
-            // Assert
+
             Assert.False(result.Success);
             Assert.Equal("A course with this code already exists.", result.Message);
         }

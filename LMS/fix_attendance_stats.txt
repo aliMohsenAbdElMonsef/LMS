@@ -1,0 +1,17 @@
+// REPLACE lines 631-632 in LMS.BusinessLogic/Services/LectureService.cs
+// In the GetAttendanceStatisticsAsync method
+
+// OLD CODE (lines 631-632):
+            var attendedLectures = await _unitOfWork.GetQueryable<StudentLecture>()
+                .CountAsync(sl => sl.StudentId == studentId && sl.IsAttended && !sl.IsDeleted);
+
+// NEW CODE (replace with this):
+            var attendedLectures = await _unitOfWork.GetQueryable<StudentLecture>()
+                .Join(_unitOfWork.Lectures.GetQueryable(),
+                    sl => sl.LectureId,
+                    l => l.Id,
+                    (sl, l) => new { StudentLecture = sl, Lecture = l })
+                .CountAsync(x => x.StudentLecture.StudentId == studentId 
+                    && x.StudentLecture.IsAttended 
+                    && !x.StudentLecture.IsDeleted 
+                    && !x.Lecture.IsDeleted);
