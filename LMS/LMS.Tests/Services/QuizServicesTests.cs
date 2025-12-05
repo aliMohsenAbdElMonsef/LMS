@@ -19,6 +19,7 @@ namespace LMS.Tests.Services
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly Mock<INotificationService> _mockNotificationService;
+        private readonly Mock<IEmailService> _mockEmailService;
         private readonly Mock<IQuizRepository> _mockQuizRepo;
         private readonly Mock<IStudentEnrollIntoCourseRepository> _mockEnrollmentRepo;
         private readonly QuizServices _service;
@@ -27,13 +28,14 @@ namespace LMS.Tests.Services
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockNotificationService = new Mock<INotificationService>();
+            _mockEmailService = new Mock<IEmailService>();
             _mockQuizRepo = new Mock<IQuizRepository>();
             _mockEnrollmentRepo = new Mock<IStudentEnrollIntoCourseRepository>();
 
             _mockUnitOfWork.Setup(u => u.Quizzes).Returns(_mockQuizRepo.Object);
             _mockUnitOfWork.Setup(u => u.StudentEnrollments).Returns(_mockEnrollmentRepo.Object);
 
-            _service = new QuizServices(_mockUnitOfWork.Object, _mockNotificationService.Object);
+            _service = new QuizServices(_mockUnitOfWork.Object, _mockNotificationService.Object, _mockEmailService.Object);
         }
 
         #region StartQuizAsync Tests

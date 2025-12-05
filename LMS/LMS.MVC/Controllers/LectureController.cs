@@ -443,7 +443,6 @@ namespace LMS.MVC.Controllers
                     return RedirectToAction("MyLectures");
                 }
 
-                // Files are stored in the API project's wwwroot folder
                 var apiPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "LMS.API", "wwwroot");
                 var filePath = Path.Combine(apiPath, "uploads", "lectures", "materials", result.Data.MaterialsPath);
 
